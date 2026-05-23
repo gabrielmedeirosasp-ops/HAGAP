@@ -1,0 +1,11 @@
+flask
+pandas
+openpyxl
+pdfplumber
+pymupdf
+pytesseract
+pillow
+gunicorn
+psycopg2-binary
+google-api-python-client
+google-auth
