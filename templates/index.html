@@ -63,7 +63,7 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 .badge-count{background:var(--azul);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;margin-left:8px;}
 .tbl-wrap{max-width:100%;margin:0 0 16px;padding:0 14px;}
 .tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:hidden;box-shadow:var(--shadow);}
-.scroll-x{overflow-x:hidden;max-height:calc(100vh - 280px);}
+.scroll-x{overflow-x:auto;max-height:calc(100vh - 280px);}
 table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px;}
 thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);position:sticky;top:0;white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;z-index:1;}
 thead th:hover{background:#eaefff;}
@@ -171,6 +171,7 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
 ::-webkit-scrollbar-thumb{background:#c0cde8;border-radius:6px;}
 @media(max-width:1000px){.kpi-row{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:800px){.kpi-row{grid-template-columns:repeat(2,1fr);}.header-inner{flex-wrap:wrap;gap:12px;}.form-grid{grid-template-columns:1fr;}}
+@media(max-width:380px){.kpi{padding:7px 8px;gap:7px;}.kpi-txt .n{font-size:16px;}.kpi-ico{width:28px;height:28px;font-size:12px;}}
 
 /* ═══════════════════════════════════════════════════
    COLUNAS REDIMENSIONÁVEIS
@@ -187,9 +188,9 @@ thead th{position:relative;}
 th.resizing{background:#dbeafe!important;}
 
 /* ═══════════════════════════════════════════════════
-   MOBILE — CARDS (telas ≤ 680px)
+   MOBILE — CARDS (telas ≤ 760px)
 ═══════════════════════════════════════════════════ */
-@media(max-width:680px){
+@media(max-width:760px){
   body{font-size:13px;}
 
   /* Header compacto */
@@ -206,9 +207,9 @@ th.resizing{background:#dbeafe!important;}
   /* KPIs em 2 colunas, compactos */
   .kpi-row{grid-template-columns:repeat(2,1fr);padding:0 12px;margin-top:12px;gap:8px;}
   .kpi{padding:10px 12px;border-radius:12px;}
-  .kpi-txt .n{font-size:22px;}
-  .kpi-txt .l{font-size:9.5px;}
-  .kpi-ico{width:36px;height:36px;font-size:16px;border-radius:10px;}
+  .kpi-txt .n{font-size:20px;}
+  .kpi-txt .l{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kpi-ico{width:34px;height:34px;font-size:14px;border-radius:10px;flex-shrink:0;}
 
   /* Toolbar empilhada */
   .toolbar{padding:0 12px;gap:8px;}
@@ -220,7 +221,7 @@ th.resizing{background:#dbeafe!important;}
   .tbl-wrap{padding:0 12px 16px;}
 
   /* Esconde tabela, mostra cards */
-  .scroll-x{overflow:visible;max-height:none;}
+  .scroll-x{overflow:visible!important;max-height:none!important;}
   .scroll-x table{display:none!important;}
   .mobile-cards{display:flex!important;}
 
@@ -290,7 +291,7 @@ th.resizing{background:#dbeafe!important;}
 .mc-acoes .ac{padding:5px 10px;font-size:11.5px;border-radius:8px;}
 .mc-pde{position:absolute;top:10px;right:10px;font-size:20px;cursor:pointer;background:none;border:none;line-height:1;}
 /* Seção título no mobile */
-@media(max-width:680px){
+@media(max-width:760px){
   .secao-titulo h2{font-size:14px;}
   .badge-count{font-size:10px;padding:2px 9px;}
 }
@@ -2613,5 +2614,107 @@ async function deletarArquivoPg(pasta, nome){
 
 carregarDados();
 </script>
+
+<!-- ═══════════════════ TELA DE LOGIN ═══════════════════ -->
+<div id="login-overlay" style="
+  display:none;
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#072d6e 0%,#0b3d91 55%,#1453b5 100%);
+  align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;
+">
+  <!-- Logo / título -->
+  <div style="text-align:center;width:100%;max-width:400px;padding:20px;">
+    <img src="/static/logo.png" alt="HAGAP" style="height:80px;filter:drop-shadow(0 0 18px rgba(255,208,0,.6));margin-bottom:12px;"/>
+    <p style="color:rgba(255,255,255,.6);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Sistema de Gestão</p>
+    <h1 style="color:#fff;font-size:22px;font-weight:800;margin-bottom:28px;display:flex;align-items:center;justify-content:center;gap:9px;"><i class='fas fa-bolt' style='color:#ffd000;'></i> Projetos Elétricos</h1>
+
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:28px 28px 24px;backdrop-filter:blur(10px);">
+      <h2 style="color:#fff;font-size:16px;font-weight:700;margin-bottom:20px;text-align:left;"><i class='fas fa-lock' style='color:#ffd000;margin-right:8px;'></i>Acesso ao Sistema</h2>
+
+      <div style="margin-bottom:14px;text-align:left;">
+        <label style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;">Usuário</label>
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 14px;">
+          <i class='fas fa-user' style='color:rgba(255,255,255,.5);'></i>
+          <input id="login-user" type="text" placeholder="Digite o usuário" autocomplete="username"
+            style="background:none;border:none;outline:none;color:#fff;font-size:14px;font-family:inherit;width:100%;"
+            onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"/>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;text-align:left;">
+        <label style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;">Senha</label>
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 14px;">
+          <i class='fas fa-key' style='color:rgba(255,255,255,.5);'></i>
+          <input id="login-pass" type="password" placeholder="Digite a senha" autocomplete="current-password"
+            style="background:none;border:none;outline:none;color:#fff;font-size:14px;font-family:inherit;width:100%;"
+            onkeydown="if(event.key==='Enter')fazerLogin()"/>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+        <input type="checkbox" id="login-lembrar" style="width:16px;height:16px;accent-color:#ffd000;cursor:pointer;"/>
+        <label for="login-lembrar" style="color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;user-select:none;">Lembrar login e senha</label>
+      </div>
+
+      <div id="login-erro" style="display:none;background:rgba(220,38,38,.25);border:1px solid rgba(220,38,38,.5);border-radius:10px;padding:10px 14px;color:#fca5a5;font-size:13px;margin-bottom:16px;text-align:left;"><i class='fas fa-exclamation-circle' style='margin-right:6px;'></i>Usuário ou senha incorretos.</div>
+
+      <button onclick="fazerLogin()" style="width:100%;background:linear-gradient(90deg,#ffd000,#ffc200);color:#072d6e;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(255,208,0,.5)';" onmouseout="this.style.transform='';this.style.boxShadow='';">
+        <i class='fas fa-sign-in-alt' style='margin-right:7px;'></i>Entrar
+      </button>
+    </div>
+    <p style="color:rgba(255,255,255,.3);font-size:10px;margin-top:16px;">HAGAP &copy; 2025 — Sistema de Gestão de Projetos Elétricos</p>
+  </div>
+</div>
+
+<script>
+// ═══ LOGIN ═══
+(function(){
+  const USUARIO_OK = 'hagap';
+  const SENHA_OK   = 'hagap';
+  const SALVO = JSON.parse(localStorage.getItem('hagap_auth')||'null');
+
+  function mostrarLogin(){
+    const ov = document.getElementById('login-overlay');
+    ov.style.display = 'flex';
+    // Pré-preenche se salvou
+    if(SALVO && SALVO.u){
+      document.getElementById('login-user').value = SALVO.u;
+      document.getElementById('login-pass').value = SALVO.p;
+      document.getElementById('login-lembrar').checked = true;
+    }
+  }
+
+  window.fazerLogin = function(){
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value.trim();
+    const lembrar = document.getElementById('login-lembrar').checked;
+    const erro = document.getElementById('login-erro');
+
+    if(u === USUARIO_OK && p === SENHA_OK){
+      erro.style.display = 'none';
+      if(lembrar){
+        localStorage.setItem('hagap_auth', JSON.stringify({u, p, ts: Date.now()}));
+      } else {
+        sessionStorage.setItem('hagap_sess', '1');
+        localStorage.removeItem('hagap_auth');
+      }
+      document.getElementById('login-overlay').style.display = 'none';
+    } else {
+      erro.style.display = 'block';
+      document.getElementById('login-pass').value = '';
+    }
+  };
+
+  // Verifica se já está autenticado
+  const jaAutenticado = (
+    (SALVO && SALVO.u === USUARIO_OK && SALVO.p === SENHA_OK) ||
+    sessionStorage.getItem('hagap_sess') === '1'
+  );
+
+  if(!jaAutenticado) mostrarLogin();
+})();
+</script>
+
 </body>
 </html>
