@@ -84,11 +84,9 @@ tbody tr.row-alerta{background:#fffbeb!important;}
 /* Ordem: Ações | Projeto | AE | Local | US | Prazo | Custo | Situação | Status | PDE | Med1 | Med2 | Final */
 table colgroup .c-acoes  { width:16%; }
 table colgroup .c-projeto { width:8%; }
-table colgroup .c-ae      { width:5%; }
-table colgroup .c-local   { width:8%; }
-table colgroup .c-us      { width:5%; }
-table colgroup .c-prazo   { width:6%; }
-table colgroup .c-custo   { width:7%; }
+table colgroup .c-local   { width:10%; }
+table colgroup .c-us      { width:6%; }
+table colgroup .c-prazo   { width:7%; }
 table colgroup .c-alerta  { width:6%; }
 table colgroup .c-status  { width:7%; }
 table colgroup .c-pde     { width:4%; }
@@ -195,23 +193,27 @@ th.resizing{background:#dbeafe!important;}
   body{font-size:13px;}
 
   /* Header compacto */
-  .header-inner{padding:12px 16px;gap:8px;}
-  .logo-wrap img{height:48px;}
-  .logo-divider{height:36px;margin:0 12px;}
-  .header-subtitle .title{font-size:15px;}
-  .header-btns .btn-h span{display:none;} /* só ícone nos botões */
-  .header-btns .btn-h{padding:8px 10px;}
+  .header-inner{padding:10px 14px;gap:8px;flex-wrap:wrap;}
+  .logo-wrap img{height:42px;}
+  .logo-divider{height:32px;margin:0 10px;}
+  .header-subtitle .title{font-size:14px;}
+  .header-subtitle .sup{display:none;}
+  /* Botões do header: só ícone, mais compactos */
+  .header-btns .btn-h span{display:none;}
+  .header-btns .btn-h{padding:8px 10px;font-size:13px;}
+  .header-btns{gap:6px;flex-wrap:wrap;justify-content:flex-end;}
 
-  /* KPIs em 2 colunas */
-  .kpi-row{grid-template-columns:repeat(2,1fr);padding:0 12px;margin-top:14px;gap:8px;}
-  .kpi{padding:10px 12px;}
-  .kpi-txt .n{font-size:20px;}
-  .kpi-ico{width:36px;height:36px;font-size:16px;}
+  /* KPIs em 2 colunas, compactos */
+  .kpi-row{grid-template-columns:repeat(2,1fr);padding:0 12px;margin-top:12px;gap:8px;}
+  .kpi{padding:10px 12px;border-radius:12px;}
+  .kpi-txt .n{font-size:22px;}
+  .kpi-txt .l{font-size:9.5px;}
+  .kpi-ico{width:36px;height:36px;font-size:16px;border-radius:10px;}
 
   /* Toolbar empilhada */
   .toolbar{padding:0 12px;gap:8px;}
   .search{min-width:100%;}
-  .sel{flex:1;}
+  .sel{flex:1;font-size:12px;padding:8px 10px;}
 
   /* Seção e tabela */
   .secao-wrap{padding:0 12px;}
@@ -221,19 +223,23 @@ th.resizing{background:#dbeafe!important;}
   .scroll-x{overflow:visible;max-height:none;}
   .scroll-x table{display:none!important;}
   .mobile-cards{display:flex!important;}
-  /* Toolbar compacta */
-  .toolbar .sel{font-size:12px;padding:7px 10px;}
-  .kpi .kpi-txt .l{font-size:9.5px;}
 
-  /* Modais em tela cheia */
+  /* Modais em tela cheia (bottom sheet) */
   .mbg{padding:0;align-items:flex-end;}
-  .modal{border-radius:18px 18px 0 0;max-height:90vh;max-width:100%;}
+  .modal{border-radius:20px 20px 0 0;max-height:92vh;max-width:100%;}
   .mh{padding:14px 16px;}
   .mb{padding:14px 16px;}
-  .mf{padding:10px 16px 14px;}
+  .mf{padding:10px 16px 20px;}
+  .form-grid{grid-template-columns:1fr;}
 
-  /* Toast na parte de cima no mobile */
-  .toast{bottom:auto;top:16px;right:12px;left:12px;font-size:12px;padding:11px 14px;}
+  /* Toast no topo no mobile */
+  .toast{bottom:auto;top:16px;right:12px;left:12px;font-size:12px;padding:11px 14px;border-radius:12px;}
+
+  /* Calculadora financeira responsiva */
+  .kpi-fin{padding:12px 10px;}
+  .kpi-fin .v{font-size:16px;}
+  .soma-resultado{padding:16px 14px;}
+  .soma-resultado .total{font-size:30px;}
 }
 
 /* Cards mobile — ocultos no desktop */
@@ -241,29 +247,53 @@ th.resizing{background:#dbeafe!important;}
   display:none;
   flex-direction:column;
   gap:10px;
-  padding:2px 0 8px;
+  padding:2px 0 12px;
 }
 .mc{
   background:#fff;
   border:1px solid var(--borda);
-  border-radius:14px;
-  padding:13px 14px;
-  box-shadow:var(--shadow);
+  border-radius:16px;
+  padding:14px 15px;
+  box-shadow:0 2px 10px rgba(11,61,145,.08);
   position:relative;
+  transition:box-shadow .15s;
 }
-.mc.row-vencido{background:#fff1f2;border-color:#fca5a5;}
-.mc.row-critico{background:#fff7ed;border-color:#fdba74;}
-.mc.row-alerta{background:#fffbeb;border-color:#fde68a;}
-.mc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
-.mc-proj{font-size:14px;font-weight:800;color:var(--azul);line-height:1.2;}
-.mc-ae{font-size:10px;color:var(--texto-sec);margin-top:2px;}
-.mc-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-.mc-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;font-size:11.5px;}
-.mc-field{display:flex;flex-direction:column;background:#f8faff;border-radius:7px;padding:5px 8px;min-width:90px;}
+.mc:active{box-shadow:0 1px 5px rgba(11,61,145,.06);}
+.mc.row-vencido{background:#fff1f2;border-color:#fca5a5;border-left:4px solid #dc2626;}
+.mc.row-critico{background:#fff7ed;border-color:#fdba74;border-left:4px solid #d97706;}
+.mc.row-alerta{background:#fffbeb;border-color:#fde68a;border-left:4px solid #ca8a04;}
+.mc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.mc-proj{font-size:15px;font-weight:800;color:var(--azul);line-height:1.2;}
+.mc-ae{font-size:10.5px;color:var(--texto-sec);margin-top:3px;display:flex;align-items:center;gap:4px;}
+.mc-ae i{color:var(--azul-mid);font-size:9px;}
+.mc-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
+.mc-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:7px;font-size:11.5px;}
+.mc-field{
+  display:flex;flex-direction:column;
+  background:#f5f8ff;
+  border:1px solid var(--borda);
+  border-radius:8px;
+  padding:6px 9px;
+  min-width:85px;
+  flex:1;
+}
 .mc-field .lbl{font-size:9px;font-weight:700;color:var(--texto-sec);text-transform:uppercase;letter-spacing:.4px;}
-.mc-field .val{font-size:12px;font-weight:600;color:var(--texto);margin-top:1px;}
-.mc-acoes{display:flex;gap:5px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--borda);margin-top:4px;}
-.mc-pde{position:absolute;top:10px;right:10px;font-size:18px;cursor:pointer;background:none;border:none;}
+.mc-field .val{font-size:12.5px;font-weight:700;color:var(--texto);margin-top:2px;}
+.mc-acoes{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+  padding-top:9px;
+  border-top:1px solid #edf0f7;
+  margin-top:5px;
+}
+.mc-acoes .ac{padding:5px 10px;font-size:11.5px;border-radius:8px;}
+.mc-pde{position:absolute;top:10px;right:10px;font-size:20px;cursor:pointer;background:none;border:none;line-height:1;}
+/* Seção título no mobile */
+@media(max-width:680px){
+  .secao-titulo h2{font-size:14px;}
+  .badge-count{font-size:10px;padding:2px 9px;}
+}
 
 /* ── Calculadora tabs ── */
 .vtab{background:none;border:none;padding:10px 18px;font-size:13px;font-weight:600;color:var(--texto-sec);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:inherit;transition:all .15s;}
@@ -781,11 +811,9 @@ function urlRender(tipo, nome){
 const COLUNAS=[
   {k:'__acoes',      l:'Ações',        nosort:true},
   {k:'projeto',      l:'Projeto'},
-  {k:'ae',           l:'AE'},
   {k:'local',        l:'Local'},
   {k:'us',           l:'US'},
   {k:'prazo',        l:'Prazo'},
-  {k:'custo',        l:'Custo'},
   {k:'prazo_alerta', l:'Situação'},
   {k:'status',       l:'Status'},
   {k:'pde',          l:'PDE',          nosort:true},
@@ -1537,7 +1565,7 @@ function renderCards(lista, containerId){
       <div class="mc-top">
         <div>
           <div class="mc-proj">${escH(d.projeto)||'—'}</div>
-          <div class="mc-ae">AE: ${escH(d.ae)||'—'} • ${escH(d.local)||'—'}</div>
+          <div class="mc-ae"><i class="fas fa-map-marker-alt"></i> ${escH(d.local)||'—'}${d.ae?' • AE: '+escH(d.ae):''}</div>
         </div>
       </div>
       <div class="mc-badges">
@@ -1617,11 +1645,9 @@ function renderTabela(tab,lista,tbodyId,theadId){
         ${eh_final?`<button class="ac ac-reab" onclick="reabrirProjeto('${escJ(d.projeto)}')"><i class="fas fa-undo"></i> Reabrir</button>`:''}
       </td>
       <td class="td-proj" title="${escH(d.projeto)}">${escH(d.projeto)||'—'}</td>
-      <td class="td-ae">${escH(d.ae)||'—'}</td>
       <td>${escH(d.local)||'—'}</td>
       <td>${escH(d.us)||'—'}</td>
       <td>${escH(d.prazo)||'—'}</td>
-      <td>${escH(d.custo)||'—'}</td>
       <td>${badgeAlerta(d.prazo_alerta,d.prazo)}</td>
       <td>${badgeStatus(d.status)}${d.comentario_parcial&&(d.status==='Medição 1'||d.status==='Medição 2')?`<br><span style="font-size:10px;color:#92400e;background:#fef3c7;border-radius:4px;padding:1px 5px;display:inline-block;margin-top:3px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escH(d.comentario_parcial)}"><i class="fas fa-comment" style="font-size:9px;"></i> ${escH(d.comentario_parcial)}</span>`:''}</td>
       <td style="text-align:center;white-space:nowrap;">
