@@ -81,7 +81,7 @@ tbody tr.row-alerta{background:#fffbeb!important;}
 .td-proj{font-weight:700;color:var(--azul);}
 
 /* Larguras das colunas — gerenciadas via JS + localStorage */
-col.c-acoes  { width:230px; }
+col.c-acoes  { width:44px; }
 col.c-projeto{ width:85px; }
 col.c-local  { width:110px; }
 col.c-us     { width:60px; }
@@ -98,9 +98,18 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
 thead th{position:relative;}
 .col-rh{position:absolute;right:0;top:0;width:6px;height:100%;cursor:col-resize;background:transparent;z-index:2;user-select:none;}
 .col-rh:hover,.col-rh.ativo{background:rgba(11,61,145,.35);border-radius:2px;}
-/* Botões de ação: quebram linha se necessário */
-td.td-acoes{white-space:normal!important;overflow:visible!important;max-width:none!important;text-overflow:unset!important;vertical-align:middle;}
-.ac-wrap{display:flex;flex-wrap:wrap;gap:3px;align-items:center;justify-content:flex-start;}
+/* Coluna de ações — dropdown compacto */
+td.td-acoes{white-space:nowrap;overflow:visible!important;max-width:none!important;text-overflow:unset!important;vertical-align:middle;padding:6px 8px;}
+/* Botão ⋮ trigger */
+.ac-menu-btn{background:#f0f4ff;border:1px solid #c7d2fe;color:#3730a3;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:18px;font-weight:700;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;position:relative;}
+.ac-menu-btn:hover{background:#e0e7ff;border-color:#818cf8;}
+/* Dropdown */
+.ac-dropdown{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9000;min-width:180px;padding:6px;display:none;flex-direction:column;gap:2px;}
+.ac-dropdown.open{display:flex;}
+.ac-dropdown hr{border:none;border-top:1px solid #f0f4fb;margin:3px 0;}
+.ac-dropdown .ac{width:100%;justify-content:flex-start;border-radius:8px;font-size:12px;padding:7px 10px;margin:0;}
+/* Badges principais visíveis na linha */
+.ac-inline{display:inline-flex;align-items:center;gap:3px;}
 .td-ae{font-size:11px;color:var(--texto-sec);}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
 .b-pendente{background:#fef3c7;color:#92400e;}
@@ -408,6 +417,7 @@ td.td-acoes{white-space:normal!important;overflow:visible!important;max-width:no
 <div class="secao-wrap" style="margin-top:18px;">
   <div class="secao-titulo">
     <h2><i class="fas fa-tools"></i> Em Andamento <span class="badge-count" id="cnt-andamento">0</span></h2>
+    <button onclick="resetarColunas()" title="Restaurar larguras padrão das colunas" style="background:#f0f4ff;border:1px solid #c7d2fe;color:#3730a3;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;"><i class="fas fa-table-columns"></i> Redefinir colunas</button>
   </div>
 </div>
 <div class="tbl-wrap">
@@ -819,7 +829,7 @@ const COLUNAS=[
 
 // Larguras FIXAS das colunas — sem redimensionamento
 const _COL_BASE = {
-  '__acoes':    230,
+  '__acoes':    44,
   'projeto':    85,
   'local':      110,
   'us':         60,
@@ -1586,20 +1596,29 @@ function renderTabela(tab,lista,tbodyId,theadId){
       const pj=escJ(d.projeto), arq=escJ(ae.arquivo), url=escJ(ae.url||'');
       return `<span style="display:inline-flex;align-items:center;gap:1px;"><button class="ac ac-pdf" onclick="abrirAE('${arq}','${url}')" title="${escH(ae.arquivo)}"><i class="fas fa-file-pdf"></i> AE${aesLista.length>1?' '+(i+1):''}</button><button class="ac ac-del" onclick="deletarArquivo('${pj}','${arq}','ae')" title="Remover AE" style="padding:4px 7px;"><i class="fas fa-trash"></i></button></span>`;
     }).join('');
+    const _uid='dd_'+Math.random().toString(36).slice(2,7);
+    const _pj=escJ(d.projeto);
     return `<tr class="${cls}">
       <td class="td-acoes">
-        <div class="ac-wrap">
-        ${temAE?btnsAE:''}
-        ${temPasta?`<button class="ac ac-pasta" onclick="abrirPasta('${escJ(d.projeto)}')"><i class="fas fa-folder-open"></i> Pasta</button>`:''}
-        ${temMed?`<button class="ac ac-bmd" onclick="abrirMedicoes('${escJ(d.projeto)}')" title="${qtdMed} medição(s)"><i class="fas fa-clipboard-list"></i> BMD${qtdMed>1?' ('+qtdMed+')':''}</button>`:''}
-        <button class="ac ac-link" onclick="abrirLinkar('${escJ(d.projeto)}')"><i class="fas fa-link"></i></button>
-        <button class="ac ac-edit" onclick="abrirEditar('${escJ(d.projeto)}')"><i class="fas fa-pen"></i></button>
-        <button class="ac ac-del"  onclick="excluir('${escJ(d.projeto)}')"><i class="fas fa-trash"></i></button>
-        ${!eh_final?`
-          <button class="ac ac-exec"    onclick="marcarExecutado('${escJ(d.projeto)}')"><i class="fas fa-flag-checkered"></i> Executar</button>
-          <button class="ac ac-parcial" onclick="marcarParcial('${escJ(d.projeto)}')"><i class="fas fa-hard-hat"></i> Parcial</button>
-        `:''}
-        ${eh_final?`<button class="ac ac-reab" onclick="reabrirProjeto('${escJ(d.projeto)}')"><i class="fas fa-undo"></i> Reabrir</button>`:''}
+        <button class="ac-menu-btn" onclick="_abrirMenu(event,'${_uid}')" title="Ações">⋮</button>
+        <div class="ac-dropdown" id="${_uid}">
+          ${temAE?`<div style="padding:4px 6px 2px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;">Arquivos</div>`:''}
+          ${temAE?aesLista.map((ae,i)=>{
+            const arq=escJ(ae.arquivo),url=escJ(ae.url||'');
+            return `<button class="ac ac-pdf" onclick="_fecharMenus();abrirAE('${arq}','${url}')"><i class="fas fa-file-pdf"></i> AE${aesLista.length>1?' '+(i+1):''}</button>
+                    <button class="ac ac-del" onclick="_fecharMenus();deletarArquivo('${_pj}','${arq}','ae')" style="margin-left:2px;"><i class="fas fa-trash"></i> Remover AE${aesLista.length>1?' '+(i+1):''}</button>`;
+          }).join(''):''}
+          ${temPasta?`<button class="ac ac-pasta" onclick="_fecharMenus();abrirPasta('${_pj}')"><i class="fas fa-folder-open"></i> Pasta do projeto</button>`:''}
+          ${temMed?`<button class="ac ac-bmd" onclick="_fecharMenus();abrirMedicoes('${_pj}')"><i class="fas fa-clipboard-list"></i> Medições BMD/FFO${qtdMed>1?' ('+qtdMed+')':''}</button>`:''}
+          <hr>
+          <div style="padding:4px 6px 2px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;">Ações</div>
+          <button class="ac ac-link" onclick="_fecharMenus();abrirLinkar('${_pj}')"><i class="fas fa-link"></i> Vincular arquivo</button>
+          <button class="ac ac-edit" onclick="_fecharMenus();abrirEditar('${_pj}')"><i class="fas fa-pen"></i> Editar projeto</button>
+          ${!eh_final?`<button class="ac ac-exec" onclick="_fecharMenus();marcarExecutado('${_pj}')"><i class="fas fa-flag-checkered"></i> Marcar executado</button>`:''}
+          ${!eh_final?`<button class="ac ac-parcial" onclick="_fecharMenus();marcarParcial('${_pj}')"><i class="fas fa-hard-hat"></i> Marcar parcial</button>`:''}
+          ${eh_final?`<button class="ac ac-reab" onclick="_fecharMenus();reabrirProjeto('${_pj}')"><i class="fas fa-undo"></i> Reabrir projeto</button>`:''}
+          <hr>
+          <button class="ac ac-del" onclick="_fecharMenus();excluir('${_pj}')"><i class="fas fa-trash"></i> Excluir projeto</button>
         </div>
       </td>
       <td class="td-proj" title="${escH(d.projeto)}">${escH(d.projeto)||'—'}</td>
@@ -2625,6 +2644,43 @@ carregarDados();
 </div>
 
 <script>
+
+// ── Dropdown de ações ───────────────────────────────────────────
+function _abrirMenu(e, uid){
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const dd  = document.getElementById(uid);
+  if(!dd) return;
+  const jaAberto = dd.classList.contains('open');
+  _fecharMenus();
+  if(jaAberto) return;
+  // Posiciona o dropdown próximo ao botão
+  const rect = btn.getBoundingClientRect();
+  dd.style.top  = (rect.bottom + window.scrollY + 4) + 'px';
+  dd.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - 200) + 'px';
+  dd.classList.add('open');
+}
+function _fecharMenus(){
+  document.querySelectorAll('.ac-dropdown.open').forEach(d=>d.classList.remove('open'));
+}
+document.addEventListener('click', _fecharMenus);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') _fecharMenus(); });
+
+// ── Redefinir larguras das colunas ──────────────────────────────
+function resetarColunas(){
+  localStorage.removeItem('hagap_col_widths_v2');
+  // Reaplica larguras padrão nos colgroups
+  ['andamento','exec'].forEach(nome=>{
+    const cg = document.getElementById('colgroup-'+nome);
+    if(!cg) return;
+    cg.querySelectorAll('col').forEach(col=>{
+      const k = col.dataset.col;
+      if(k && _COL_BASE[k]) col.style.width = _COL_BASE[k]+'px';
+    });
+  });
+  toast('✅ Larguras das colunas redefinidas!','verde');
+}
+
 // ═══ LOGIN ═══
 (function(){
   const USUARIO_OK = 'hagap';
