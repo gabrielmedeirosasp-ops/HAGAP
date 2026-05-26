@@ -63,9 +63,9 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 .badge-count{background:var(--azul);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;margin-left:8px;}
 .tbl-wrap{max-width:100%;margin:0 0 16px;padding:0 14px;}
 .tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:hidden;box-shadow:var(--shadow);}
-.scroll-x{overflow-x:auto;max-height:calc(100vh - 280px);}
+.scroll-x{overflow-x:auto;}
 table{width:100%;min-width:920px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
-thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);position:sticky;top:0;white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;z-index:1;}
+thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;}
 thead th:hover{background:#eaefff;}
 thead th .sort-ico{opacity:.4;font-size:10px;margin-left:3px;}
 thead th.asc .sort-ico::after{content:'▲';}
@@ -80,36 +80,20 @@ tbody tr.row-critico{background:#fff7ed!important;} tbody tr.row-critico:hover{b
 tbody tr.row-alerta{background:#fffbeb!important;}
 .td-proj{font-weight:700;color:var(--azul);}
 
-/* Larguras das colunas — gerenciadas via JS + localStorage */
-col.c-acoes  { width:44px; }
-col.c-projeto{ width:85px; }
-col.c-local  { width:110px; }
-col.c-us     { width:60px; }
-col.c-prazo  { width:85px; }
-col.c-alerta { width:82px; }
-col.c-status { width:95px; }
-col.c-pde    { width:100px; }
-col.c-med1   { width:88px; }
-col.c-med2   { width:88px; }
-col.c-final  { width:95px; }
+/* Larguras FIXAS das colunas em pixels (sem redimensionamento) */
+col.c-acoes  { width:182px; }
+col.c-projeto{ width:78px; }
+col.c-local  { width:100px; }
+col.c-us     { width:54px; }
+col.c-prazo  { width:80px; }
+col.c-alerta { width:76px; }
+col.c-status { width:88px; }
+col.c-pde    { width:42px; }
+col.c-med1   { width:80px; }
+col.c-med2   { width:80px; }
+col.c-final  { width:88px; }
 /* Celulas de ações não truncam */
 td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:unset;}
-/* Resize handle nas colunas */
-thead th{position:relative;}
-.col-rh{position:absolute;right:0;top:0;width:6px;height:100%;cursor:col-resize;background:transparent;z-index:2;user-select:none;}
-.col-rh:hover,.col-rh.ativo{background:rgba(11,61,145,.35);border-radius:2px;}
-/* Coluna de ações — dropdown compacto */
-td.td-acoes{white-space:nowrap;overflow:visible!important;max-width:none!important;text-overflow:unset!important;vertical-align:middle;padding:6px 8px;}
-/* Botão ⋮ trigger */
-.ac-menu-btn{background:#f0f4ff;border:1px solid #c7d2fe;color:#3730a3;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:18px;font-weight:700;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;position:relative;}
-.ac-menu-btn:hover{background:#e0e7ff;border-color:#818cf8;}
-/* Dropdown */
-.ac-dropdown{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9000;min-width:180px;padding:6px;display:none;flex-direction:column;gap:2px;}
-.ac-dropdown.open{display:flex;}
-.ac-dropdown hr{border:none;border-top:1px solid #f0f4fb;margin:3px 0;}
-.ac-dropdown .ac{width:100%;justify-content:flex-start;border-radius:8px;font-size:12px;padding:7px 10px;margin:0;}
-/* Badges principais visíveis na linha */
-.ac-inline{display:inline-flex;align-items:center;gap:3px;}
 .td-ae{font-size:11px;color:var(--texto-sec);}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
 .b-pendente{background:#fef3c7;color:#92400e;}
@@ -188,7 +172,7 @@ td.td-acoes{white-space:nowrap;overflow:visible!important;max-width:none!importa
 @media(max-width:800px){.kpi-row{grid-template-columns:repeat(2,1fr);}.header-inner{flex-wrap:wrap;gap:12px;}.form-grid{grid-template-columns:1fr;}}
 @media(max-width:380px){.kpi{padding:7px 8px;gap:7px;}.kpi-txt .n{font-size:16px;}.kpi-ico{width:28px;height:28px;font-size:12px;}}
 
-/* colunas redimensionáveis — larguras gerenciadas via JS */
+/* colunas fixas — sem redimensionamento */
 
 /* ═══════════════════════════════════════════════════
    MOBILE — CARDS (telas ≤ 760px)
@@ -417,7 +401,6 @@ td.td-acoes{white-space:nowrap;overflow:visible!important;max-width:none!importa
 <div class="secao-wrap" style="margin-top:18px;">
   <div class="secao-titulo">
     <h2><i class="fas fa-tools"></i> Em Andamento <span class="badge-count" id="cnt-andamento">0</span></h2>
-    <button onclick="resetarColunas()" title="Restaurar larguras padrão das colunas" style="background:#f0f4ff;border:1px solid #c7d2fe;color:#3730a3;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;"><i class="fas fa-table-columns"></i> Redefinir colunas</button>
   </div>
 </div>
 <div class="tbl-wrap">
@@ -829,88 +812,39 @@ const COLUNAS=[
 
 // Larguras FIXAS das colunas — sem redimensionamento
 const _COL_BASE = {
-  '__acoes':    44,
-  'projeto':    85,
-  'local':      110,
-  'us':         60,
-  'prazo':      85,
-  'prazo_alerta':82,
-  'status':     95,
-  'pde':        100,
-  'medicao1':   88,
-  'medicao2':   88,
-  'final':      95
+  '__acoes':    '182px',
+  'projeto':    '78px',
+  'local':      '100px',
+  'us':         '54px',
+  'prazo':      '80px',
+  'prazo_alerta':'76px',
+  'status':     '88px',
+  'pde':        '42px',
+  'medicao1':   '80px',
+  'medicao2':   '80px',
+  'final':      '88px'
 };
 
-// Carrega larguras salvas ou usa os padrões
-function _getColWidths(){
-  try{
-    const s=localStorage.getItem('hagap_col_widths_v2');
-    if(s) return Object.assign({},_COL_BASE,JSON.parse(s));
-  }catch(e){}
-  return Object.assign({},_COL_BASE);
-}
-function _saveColWidths(w){
-  try{localStorage.setItem('hagap_col_widths_v2',JSON.stringify(w));}catch(e){}
-}
+// Remove widths salvos de versões anteriores
+localStorage.removeItem('hagap_col_widths');
 
 function buildThead(trId, tab){
   const tr = document.getElementById(trId); if(!tr) return;
-  const widths = _getColWidths();
   tr.innerHTML = COLUNAS.map(c=>{
-    const handle = `<div class="col-rh" data-col="${c.k}" data-tab="${tab}" onmousedown="_colResizeStart(event,this)"></div>`;
-    if(c.nosort) return `<th style="position:relative">${c.l}${handle}</th>`;
-    return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}" style="position:relative">${c.l} <span class="sort-ico"></span>${handle}</th>`;
+    if(c.nosort) return `<th>${c.l}</th>`;
+    return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}">${c.l} <span class="sort-ico"></span></th>`;
   }).join('');
 
-  // Constrói colgroup com larguras salvas
+  // Constrói colgroup com larguras fixas
   const cgId = 'colgroup-'+(tab==='a'?'andamento':'exec');
   const cg = document.getElementById(cgId);
   if(cg){
     cg.innerHTML = COLUNAS.map(c=>{
-      const w = (widths[c.k]||_COL_BASE[c.k]||80)+'px';
+      const w = _COL_BASE[c.k]||'auto';
       return `<col data-col="${c.k}" class="c-${c.k}" style="width:${w}">`;
     }).join('');
   }
 }
-
-// ── Redimensionamento de colunas ──────────────────────────────────
-let _colResizing = null;
-function _colResizeStart(e, handle){
-  e.stopPropagation(); e.preventDefault();
-  const col = handle.dataset.col;
-  const tab = handle.dataset.tab;
-  const cgId = 'colgroup-'+(tab==='a'?'andamento':'exec');
-  const cg = document.getElementById(cgId);
-  if(!cg) return;
-  const colEl = cg.querySelector(`col[data-col="${col}"]`);
-  if(!colEl) return;
-  const startX = e.clientX;
-  const startW = colEl.offsetWidth || parseInt(colEl.style.width) || (_COL_BASE[col]||80);
-  handle.classList.add('ativo');
-  _colResizing = {col, tab, cgId, colEl, startX, startW, handle};
-  document.body.style.cursor = 'col-resize';
-  document.body.style.userSelect = 'none';
-}
-document.addEventListener('mousemove', function(e){
-  if(!_colResizing) return;
-  const dx = e.clientX - _colResizing.startX;
-  const newW = Math.max(40, _colResizing.startW + dx);
-  _colResizing.colEl.style.width = newW+'px';
-});
-document.addEventListener('mouseup', function(e){
-  if(!_colResizing) return;
-  const dx = e.clientX - _colResizing.startX;
-  const newW = Math.max(40, _colResizing.startW + dx);
-  // Salva
-  const widths = _getColWidths();
-  widths[_colResizing.col] = newW;
-  _saveColWidths(widths);
-  _colResizing.handle.classList.remove('ativo');
-  document.body.style.cursor = '';
-  document.body.style.userSelect = '';
-  _colResizing = null;
-});
 
 //  GERENCIADOR DE ARQUIVOS UNIVERSAL
 // ═══════════════════════════════════════════════════════════════════
@@ -1596,30 +1530,19 @@ function renderTabela(tab,lista,tbodyId,theadId){
       const pj=escJ(d.projeto), arq=escJ(ae.arquivo), url=escJ(ae.url||'');
       return `<span style="display:inline-flex;align-items:center;gap:1px;"><button class="ac ac-pdf" onclick="abrirAE('${arq}','${url}')" title="${escH(ae.arquivo)}"><i class="fas fa-file-pdf"></i> AE${aesLista.length>1?' '+(i+1):''}</button><button class="ac ac-del" onclick="deletarArquivo('${pj}','${arq}','ae')" title="Remover AE" style="padding:4px 7px;"><i class="fas fa-trash"></i></button></span>`;
     }).join('');
-    const _uid='dd_'+Math.random().toString(36).slice(2,7);
-    const _pj=escJ(d.projeto);
     return `<tr class="${cls}">
-      <td class="td-acoes">
-        <button class="ac-menu-btn" onclick="_abrirMenu(event,'${_uid}')" title="Ações">⋮</button>
-        <div class="ac-dropdown" id="${_uid}">
-          ${temAE?`<div style="padding:4px 6px 2px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;">Arquivos</div>`:''}
-          ${temAE?aesLista.map((ae,i)=>{
-            const arq=escJ(ae.arquivo),url=escJ(ae.url||'');
-            return `<button class="ac ac-pdf" onclick="_fecharMenus();abrirAE('${arq}','${url}')"><i class="fas fa-file-pdf"></i> AE${aesLista.length>1?' '+(i+1):''}</button>
-                    <button class="ac ac-del" onclick="_fecharMenus();deletarArquivo('${_pj}','${arq}','ae')" style="margin-left:2px;"><i class="fas fa-trash"></i> Remover AE${aesLista.length>1?' '+(i+1):''}</button>`;
-          }).join(''):''}
-          ${temPasta?`<button class="ac ac-pasta" onclick="_fecharMenus();abrirPasta('${_pj}')"><i class="fas fa-folder-open"></i> Pasta do projeto</button>`:''}
-          ${temMed?`<button class="ac ac-bmd" onclick="_fecharMenus();abrirMedicoes('${_pj}')"><i class="fas fa-clipboard-list"></i> Medições BMD/FFO${qtdMed>1?' ('+qtdMed+')':''}</button>`:''}
-          <hr>
-          <div style="padding:4px 6px 2px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;">Ações</div>
-          <button class="ac ac-link" onclick="_fecharMenus();abrirLinkar('${_pj}')"><i class="fas fa-link"></i> Vincular arquivo</button>
-          <button class="ac ac-edit" onclick="_fecharMenus();abrirEditar('${_pj}')"><i class="fas fa-pen"></i> Editar projeto</button>
-          ${!eh_final?`<button class="ac ac-exec" onclick="_fecharMenus();marcarExecutado('${_pj}')"><i class="fas fa-flag-checkered"></i> Marcar executado</button>`:''}
-          ${!eh_final?`<button class="ac ac-parcial" onclick="_fecharMenus();marcarParcial('${_pj}')"><i class="fas fa-hard-hat"></i> Marcar parcial</button>`:''}
-          ${eh_final?`<button class="ac ac-reab" onclick="_fecharMenus();reabrirProjeto('${_pj}')"><i class="fas fa-undo"></i> Reabrir projeto</button>`:''}
-          <hr>
-          <button class="ac ac-del" onclick="_fecharMenus();excluir('${_pj}')"><i class="fas fa-trash"></i> Excluir projeto</button>
-        </div>
+      <td style="white-space:nowrap;text-align:center;">
+        ${temAE?btnsAE:''}
+        ${temPasta?`<button class="ac ac-pasta" onclick="abrirPasta('${escJ(d.projeto)}')"><i class="fas fa-folder-open"></i> Pasta</button>`:''}
+        ${temMed?`<button class="ac ac-bmd" onclick="abrirMedicoes('${escJ(d.projeto)}')" title="${qtdMed} medição(s)"><i class="fas fa-clipboard-list"></i> BMD${qtdMed>1?' ('+qtdMed+')':''}</button>`:''}
+        <button class="ac ac-link" onclick="abrirLinkar('${escJ(d.projeto)}')"><i class="fas fa-link"></i></button>
+        <button class="ac ac-edit" onclick="abrirEditar('${escJ(d.projeto)}')"><i class="fas fa-pen"></i></button>
+        <button class="ac ac-del"  onclick="excluir('${escJ(d.projeto)}')"><i class="fas fa-trash"></i></button>
+        ${!eh_final?`
+          <button class="ac ac-exec"    onclick="marcarExecutado('${escJ(d.projeto)}')"><i class="fas fa-flag-checkered"></i> Executar</button>
+          <button class="ac ac-parcial" onclick="marcarParcial('${escJ(d.projeto)}')"><i class="fas fa-hard-hat"></i> Parcial</button>
+        `:''}
+        ${eh_final?`<button class="ac ac-reab" onclick="reabrirProjeto('${escJ(d.projeto)}')"><i class="fas fa-undo"></i> Reabrir</button>`:''}
       </td>
       <td class="td-proj" title="${escH(d.projeto)}">${escH(d.projeto)||'—'}</td>
       <td>${escH(d.local)||'—'}</td>
@@ -2644,43 +2567,6 @@ carregarDados();
 </div>
 
 <script>
-
-// ── Dropdown de ações ───────────────────────────────────────────
-function _abrirMenu(e, uid){
-  e.stopPropagation();
-  const btn = e.currentTarget;
-  const dd  = document.getElementById(uid);
-  if(!dd) return;
-  const jaAberto = dd.classList.contains('open');
-  _fecharMenus();
-  if(jaAberto) return;
-  // Posiciona o dropdown próximo ao botão
-  const rect = btn.getBoundingClientRect();
-  dd.style.top  = (rect.bottom + window.scrollY + 4) + 'px';
-  dd.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - 200) + 'px';
-  dd.classList.add('open');
-}
-function _fecharMenus(){
-  document.querySelectorAll('.ac-dropdown.open').forEach(d=>d.classList.remove('open'));
-}
-document.addEventListener('click', _fecharMenus);
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') _fecharMenus(); });
-
-// ── Redefinir larguras das colunas ──────────────────────────────
-function resetarColunas(){
-  localStorage.removeItem('hagap_col_widths_v2');
-  // Reaplica larguras padrão nos colgroups
-  ['andamento','exec'].forEach(nome=>{
-    const cg = document.getElementById('colgroup-'+nome);
-    if(!cg) return;
-    cg.querySelectorAll('col').forEach(col=>{
-      const k = col.dataset.col;
-      if(k && _COL_BASE[k]) col.style.width = _COL_BASE[k]+'px';
-    });
-  });
-  toast('✅ Larguras das colunas redefinidas!','verde');
-}
-
 // ═══ LOGIN ═══
 (function(){
   const USUARIO_OK = 'hagap';
