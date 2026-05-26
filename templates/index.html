@@ -63,8 +63,8 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 .badge-count{background:var(--azul);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;margin-left:8px;}
 .tbl-wrap{max-width:100%;margin:0 0 16px;padding:0 14px;}
 .tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:hidden;box-shadow:var(--shadow);}
-.scroll-x{overflow-x:hidden;max-height:calc(100vh - 280px);}
-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px;}
+.scroll-x{overflow-x:auto;max-height:calc(100vh - 280px);}
+table{width:100%;min-width:920px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
 thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);position:sticky;top:0;white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;z-index:1;}
 thead th:hover{background:#eaefff;}
 thead th .sort-ico{opacity:.4;font-size:10px;margin-left:3px;}
@@ -80,21 +80,27 @@ tbody tr.row-critico{background:#fff7ed!important;} tbody tr.row-critico:hover{b
 tbody tr.row-alerta{background:#fffbeb!important;}
 .td-proj{font-weight:700;color:var(--azul);}
 
-/* Larguras proporcionais das colunas (total ~100%) */
-/* Ordem: Ações | Projeto | AE | Local | US | Prazo | Custo | Situação | Status | PDE | Med1 | Med2 | Final */
-table colgroup .c-acoes  { width:16%; }
-table colgroup .c-projeto { width:8%; }
-table colgroup .c-local   { width:10%; }
-table colgroup .c-us      { width:6%; }
-table colgroup .c-prazo   { width:7%; }
-table colgroup .c-alerta  { width:6%; }
-table colgroup .c-status  { width:7%; }
-table colgroup .c-pde     { width:4%; }
-table colgroup .c-med1    { width:7%; }
-table colgroup .c-med2    { width:7%; }
-table colgroup .c-final   { width:8%; }
+/* Larguras das colunas — gerenciadas via JS + localStorage */
+col.c-acoes  { width:230px; }
+col.c-projeto{ width:85px; }
+col.c-local  { width:110px; }
+col.c-us     { width:60px; }
+col.c-prazo  { width:85px; }
+col.c-alerta { width:82px; }
+col.c-status { width:95px; }
+col.c-pde    { width:100px; }
+col.c-med1   { width:88px; }
+col.c-med2   { width:88px; }
+col.c-final  { width:95px; }
 /* Celulas de ações não truncam */
 td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:unset;}
+/* Resize handle nas colunas */
+thead th{position:relative;}
+.col-rh{position:absolute;right:0;top:0;width:6px;height:100%;cursor:col-resize;background:transparent;z-index:2;user-select:none;}
+.col-rh:hover,.col-rh.ativo{background:rgba(11,61,145,.35);border-radius:2px;}
+/* Botões de ação: quebram linha se necessário */
+td.td-acoes{white-space:normal!important;overflow:visible!important;max-width:none!important;text-overflow:unset!important;vertical-align:middle;}
+.ac-wrap{display:flex;flex-wrap:wrap;gap:3px;align-items:center;justify-content:flex-start;}
 .td-ae{font-size:11px;color:var(--texto-sec);}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
 .b-pendente{background:#fef3c7;color:#92400e;}
@@ -171,25 +177,14 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
 ::-webkit-scrollbar-thumb{background:#c0cde8;border-radius:6px;}
 @media(max-width:1000px){.kpi-row{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:800px){.kpi-row{grid-template-columns:repeat(2,1fr);}.header-inner{flex-wrap:wrap;gap:12px;}.form-grid{grid-template-columns:1fr;}}
+@media(max-width:380px){.kpi{padding:7px 8px;gap:7px;}.kpi-txt .n{font-size:16px;}.kpi-ico{width:28px;height:28px;font-size:12px;}}
+
+/* colunas redimensionáveis — larguras gerenciadas via JS */
 
 /* ═══════════════════════════════════════════════════
-   COLUNAS REDIMENSIONÁVEIS
+   MOBILE — CARDS (telas ≤ 760px)
 ═══════════════════════════════════════════════════ */
-thead th{position:relative;}
-.col-resizer{
-  position:absolute;right:0;top:0;bottom:0;
-  width:6px;cursor:col-resize;
-  background:transparent;
-  z-index:2;
-  user-select:none;
-}
-.col-resizer:hover,.col-resizer.resizing{background:rgba(11,61,145,.25);border-radius:3px;}
-th.resizing{background:#dbeafe!important;}
-
-/* ═══════════════════════════════════════════════════
-   MOBILE — CARDS (telas ≤ 680px)
-═══════════════════════════════════════════════════ */
-@media(max-width:680px){
+@media(max-width:760px){
   body{font-size:13px;}
 
   /* Header compacto */
@@ -206,9 +201,9 @@ th.resizing{background:#dbeafe!important;}
   /* KPIs em 2 colunas, compactos */
   .kpi-row{grid-template-columns:repeat(2,1fr);padding:0 12px;margin-top:12px;gap:8px;}
   .kpi{padding:10px 12px;border-radius:12px;}
-  .kpi-txt .n{font-size:22px;}
-  .kpi-txt .l{font-size:9.5px;}
-  .kpi-ico{width:36px;height:36px;font-size:16px;border-radius:10px;}
+  .kpi-txt .n{font-size:20px;}
+  .kpi-txt .l{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kpi-ico{width:34px;height:34px;font-size:14px;border-radius:10px;flex-shrink:0;}
 
   /* Toolbar empilhada */
   .toolbar{padding:0 12px;gap:8px;}
@@ -220,7 +215,7 @@ th.resizing{background:#dbeafe!important;}
   .tbl-wrap{padding:0 12px 16px;}
 
   /* Esconde tabela, mostra cards */
-  .scroll-x{overflow:visible;max-height:none;}
+  .scroll-x{overflow:visible!important;max-height:none!important;}
   .scroll-x table{display:none!important;}
   .mobile-cards{display:flex!important;}
 
@@ -290,7 +285,7 @@ th.resizing{background:#dbeafe!important;}
 .mc-acoes .ac{padding:5px 10px;font-size:11.5px;border-radius:8px;}
 .mc-pde{position:absolute;top:10px;right:10px;font-size:20px;cursor:pointer;background:none;border:none;line-height:1;}
 /* Seção título no mobile */
-@media(max-width:680px){
+@media(max-width:760px){
   .secao-titulo h2{font-size:14px;}
   .badge-count{font-size:10px;padding:2px 9px;}
 }
@@ -822,130 +817,91 @@ const COLUNAS=[
   {k:'final',        l:'Final (FFO)'},
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   COLUNAS REDIMENSIONÁVEIS
-═══════════════════════════════════════════════════════════════ */
-const _COL_WIDTHS = JSON.parse(localStorage.getItem('hagap_col_widths')||'{}');
-function _saveColWidths(){
-  localStorage.setItem('hagap_col_widths', JSON.stringify(_COL_WIDTHS));
-}
-function _initResizer(th, colKey){
-  // Restaura largura salva
-  if(_COL_WIDTHS[colKey]) th.style.width = _COL_WIDTHS[colKey]+'px';
-  const rsz = document.createElement('div');
-  rsz.className = 'col-resizer';
-  rsz.title = 'Arraste para redimensionar';
-  th.appendChild(rsz);
-  rsz.addEventListener('mousedown', e=>{
-    e.preventDefault(); e.stopPropagation();
-    const startX = e.clientX;
-    const startW = th.offsetWidth;
-    th.classList.add('resizing'); rsz.classList.add('resizing');
-    const onMove = ev=>{
-      const w = Math.max(50, startW + ev.clientX - startX);
-      th.style.width = w+'px';
-      _COL_WIDTHS[colKey] = w;
-    };
-    const onUp = ()=>{
-      th.classList.remove('resizing'); rsz.classList.remove('resizing');
-      _saveColWidths();
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
-  // Duplo clique reseta largura
-  rsz.addEventListener('dblclick', e=>{
-    e.stopPropagation();
-    th.style.width = '';
-    delete _COL_WIDTHS[colKey];
-    _saveColWidths();
-  });
-}
-
-// Larguras base proporcionais por chave de coluna
+// Larguras FIXAS das colunas — sem redimensionamento
 const _COL_BASE = {
-  __acoes:'16%', projeto:'8%', ae:'5%', local:'8%', us:'4%',
-  prazo:'6%', custo:'7%', prazo_alerta:'6%', status:'7%',
-  pde:'4%', medicao1:'7%', medicao2:'7%', final:'8%'
+  '__acoes':    230,
+  'projeto':    85,
+  'local':      110,
+  'us':         60,
+  'prazo':      85,
+  'prazo_alerta':82,
+  'status':     95,
+  'pde':        100,
+  'medicao1':   88,
+  'medicao2':   88,
+  'final':      95
 };
+
+// Carrega larguras salvas ou usa os padrões
+function _getColWidths(){
+  try{
+    const s=localStorage.getItem('hagap_col_widths_v2');
+    if(s) return Object.assign({},_COL_BASE,JSON.parse(s));
+  }catch(e){}
+  return Object.assign({},_COL_BASE);
+}
+function _saveColWidths(w){
+  try{localStorage.setItem('hagap_col_widths_v2',JSON.stringify(w));}catch(e){}
+}
 
 function buildThead(trId, tab){
   const tr = document.getElementById(trId); if(!tr) return;
+  const widths = _getColWidths();
   tr.innerHTML = COLUNAS.map(c=>{
-    if(c.nosort) return `<th>${c.l}</th>`;
-    return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}">${c.l} <span class="sort-ico"></span></th>`;
+    const handle = `<div class="col-rh" data-col="${c.k}" data-tab="${tab}" onmousedown="_colResizeStart(event,this)"></div>`;
+    if(c.nosort) return `<th style="position:relative">${c.l}${handle}</th>`;
+    return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}" style="position:relative">${c.l} <span class="sort-ico"></span>${handle}</th>`;
   }).join('');
 
-  // Constrói colgroup para controlar larguras
+  // Constrói colgroup com larguras salvas
   const cgId = 'colgroup-'+(tab==='a'?'andamento':'exec');
   const cg = document.getElementById(cgId);
   if(cg){
     cg.innerHTML = COLUNAS.map(c=>{
-      const saved = _COL_WIDTHS[c.k];
-      const w = saved ? saved+'px' : (_COL_BASE[c.k]||'auto');
-      return `<col data-col="${c.k}" style="width:${w}">`;
+      const w = (widths[c.k]||_COL_BASE[c.k]||80)+'px';
+      return `<col data-col="${c.k}" class="c-${c.k}" style="width:${w}">`;
     }).join('');
   }
-
-  // Resizers em todos os th
-  tr.querySelectorAll('th').forEach((th, i)=>{
-    const colKey = COLUNAS[i]?.k || 'col'+i;
-    _initResizer(th, colKey, tab);
-  });
 }
 
-// Sobrescreve _initResizer para também atualizar o colgroup
-function _initResizer(th, colKey, tab){
-  if(_COL_WIDTHS[colKey]) th.style.width = _COL_WIDTHS[colKey]+'px';
-  const rsz = document.createElement('div');
-  rsz.className = 'col-resizer';
-  rsz.title = 'Arraste ↔ | Duplo clique para resetar';
-  th.appendChild(rsz);
-  rsz.addEventListener('mousedown', e=>{
-    e.preventDefault(); e.stopPropagation();
-    const startX = e.clientX;
-    const startW = th.offsetWidth;
-    th.classList.add('resizing'); rsz.classList.add('resizing');
-    const onMove = ev=>{
-      const w = Math.max(40, startW + ev.clientX - startX);
-      // Atualiza th e col correspondente
-      th.style.width = w+'px';
-      ['andamento','exec'].forEach(t=>{
-        const cg = document.getElementById('colgroup-'+t);
-        if(cg){
-          const col = cg.querySelector(`[data-col="${colKey}"]`);
-          if(col) col.style.width = w+'px';
-        }
-      });
-      _COL_WIDTHS[colKey] = w;
-    };
-    const onUp = ()=>{
-      th.classList.remove('resizing'); rsz.classList.remove('resizing');
-      _saveColWidths();
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
-  rsz.addEventListener('dblclick', e=>{
-    e.stopPropagation();
-    th.style.width = '';
-    delete _COL_WIDTHS[colKey];
-    _saveColWidths();
-    ['andamento','exec'].forEach(t=>{
-      const cg = document.getElementById('colgroup-'+t);
-      if(cg){
-        const col = cg.querySelector(`[data-col="${colKey}"]`);
-        if(col) col.style.width = _COL_BASE[colKey]||'auto';
-      }
-    });
-  });
+// ── Redimensionamento de colunas ──────────────────────────────────
+let _colResizing = null;
+function _colResizeStart(e, handle){
+  e.stopPropagation(); e.preventDefault();
+  const col = handle.dataset.col;
+  const tab = handle.dataset.tab;
+  const cgId = 'colgroup-'+(tab==='a'?'andamento':'exec');
+  const cg = document.getElementById(cgId);
+  if(!cg) return;
+  const colEl = cg.querySelector(`col[data-col="${col}"]`);
+  if(!colEl) return;
+  const startX = e.clientX;
+  const startW = colEl.offsetWidth || parseInt(colEl.style.width) || (_COL_BASE[col]||80);
+  handle.classList.add('ativo');
+  _colResizing = {col, tab, cgId, colEl, startX, startW, handle};
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
 }
+document.addEventListener('mousemove', function(e){
+  if(!_colResizing) return;
+  const dx = e.clientX - _colResizing.startX;
+  const newW = Math.max(40, _colResizing.startW + dx);
+  _colResizing.colEl.style.width = newW+'px';
+});
+document.addEventListener('mouseup', function(e){
+  if(!_colResizing) return;
+  const dx = e.clientX - _colResizing.startX;
+  const newW = Math.max(40, _colResizing.startW + dx);
+  // Salva
+  const widths = _getColWidths();
+  widths[_colResizing.col] = newW;
+  _saveColWidths(widths);
+  _colResizing.handle.classList.remove('ativo');
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+  _colResizing = null;
+});
 
-// ═══════════════════════════════════════════════════════════════════
 //  GERENCIADOR DE ARQUIVOS UNIVERSAL
 // ═══════════════════════════════════════════════════════════════════
 
@@ -1631,7 +1587,8 @@ function renderTabela(tab,lista,tbodyId,theadId){
       return `<span style="display:inline-flex;align-items:center;gap:1px;"><button class="ac ac-pdf" onclick="abrirAE('${arq}','${url}')" title="${escH(ae.arquivo)}"><i class="fas fa-file-pdf"></i> AE${aesLista.length>1?' '+(i+1):''}</button><button class="ac ac-del" onclick="deletarArquivo('${pj}','${arq}','ae')" title="Remover AE" style="padding:4px 7px;"><i class="fas fa-trash"></i></button></span>`;
     }).join('');
     return `<tr class="${cls}">
-      <td style="white-space:nowrap;text-align:center;">
+      <td class="td-acoes">
+        <div class="ac-wrap">
         ${temAE?btnsAE:''}
         ${temPasta?`<button class="ac ac-pasta" onclick="abrirPasta('${escJ(d.projeto)}')"><i class="fas fa-folder-open"></i> Pasta</button>`:''}
         ${temMed?`<button class="ac ac-bmd" onclick="abrirMedicoes('${escJ(d.projeto)}')" title="${qtdMed} medição(s)"><i class="fas fa-clipboard-list"></i> BMD${qtdMed>1?' ('+qtdMed+')':''}</button>`:''}
@@ -1643,6 +1600,7 @@ function renderTabela(tab,lista,tbodyId,theadId){
           <button class="ac ac-parcial" onclick="marcarParcial('${escJ(d.projeto)}')"><i class="fas fa-hard-hat"></i> Parcial</button>
         `:''}
         ${eh_final?`<button class="ac ac-reab" onclick="reabrirProjeto('${escJ(d.projeto)}')"><i class="fas fa-undo"></i> Reabrir</button>`:''}
+        </div>
       </td>
       <td class="td-proj" title="${escH(d.projeto)}">${escH(d.projeto)||'—'}</td>
       <td>${escH(d.local)||'—'}</td>
@@ -2613,5 +2571,107 @@ async function deletarArquivoPg(pasta, nome){
 
 carregarDados();
 </script>
+
+<!-- ═══════════════════ TELA DE LOGIN ═══════════════════ -->
+<div id="login-overlay" style="
+  display:none;
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#072d6e 0%,#0b3d91 55%,#1453b5 100%);
+  align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;
+">
+  <!-- Logo / título -->
+  <div style="text-align:center;width:100%;max-width:400px;padding:20px;">
+    <img src="/static/logo.png" alt="HAGAP" style="height:80px;filter:drop-shadow(0 0 18px rgba(255,208,0,.6));margin-bottom:12px;"/>
+    <p style="color:rgba(255,255,255,.6);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Sistema de Gestão</p>
+    <h1 style="color:#fff;font-size:22px;font-weight:800;margin-bottom:28px;display:flex;align-items:center;justify-content:center;gap:9px;"><i class='fas fa-bolt' style='color:#ffd000;'></i> Projetos Elétricos</h1>
+
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:28px 28px 24px;backdrop-filter:blur(10px);">
+      <h2 style="color:#fff;font-size:16px;font-weight:700;margin-bottom:20px;text-align:left;"><i class='fas fa-lock' style='color:#ffd000;margin-right:8px;'></i>Acesso ao Sistema</h2>
+
+      <div style="margin-bottom:14px;text-align:left;">
+        <label style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;">Usuário</label>
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 14px;">
+          <i class='fas fa-user' style='color:rgba(255,255,255,.5);'></i>
+          <input id="login-user" type="text" placeholder="Digite o usuário" autocomplete="username"
+            style="background:none;border:none;outline:none;color:#fff;font-size:14px;font-family:inherit;width:100%;"
+            onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"/>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;text-align:left;">
+        <label style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;">Senha</label>
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 14px;">
+          <i class='fas fa-key' style='color:rgba(255,255,255,.5);'></i>
+          <input id="login-pass" type="password" placeholder="Digite a senha" autocomplete="current-password"
+            style="background:none;border:none;outline:none;color:#fff;font-size:14px;font-family:inherit;width:100%;"
+            onkeydown="if(event.key==='Enter')fazerLogin()"/>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+        <input type="checkbox" id="login-lembrar" style="width:16px;height:16px;accent-color:#ffd000;cursor:pointer;"/>
+        <label for="login-lembrar" style="color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;user-select:none;">Lembrar login e senha</label>
+      </div>
+
+      <div id="login-erro" style="display:none;background:rgba(220,38,38,.25);border:1px solid rgba(220,38,38,.5);border-radius:10px;padding:10px 14px;color:#fca5a5;font-size:13px;margin-bottom:16px;text-align:left;"><i class='fas fa-exclamation-circle' style='margin-right:6px;'></i>Usuário ou senha incorretos.</div>
+
+      <button onclick="fazerLogin()" style="width:100%;background:linear-gradient(90deg,#ffd000,#ffc200);color:#072d6e;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(255,208,0,.5)';" onmouseout="this.style.transform='';this.style.boxShadow='';">
+        <i class='fas fa-sign-in-alt' style='margin-right:7px;'></i>Entrar
+      </button>
+    </div>
+    <p style="color:rgba(255,255,255,.3);font-size:10px;margin-top:16px;">HAGAP &copy; 2025 — Sistema de Gestão de Projetos Elétricos</p>
+  </div>
+</div>
+
+<script>
+// ═══ LOGIN ═══
+(function(){
+  const USUARIO_OK = 'hagap';
+  const SENHA_OK   = 'hagap';
+  const SALVO = JSON.parse(localStorage.getItem('hagap_auth')||'null');
+
+  function mostrarLogin(){
+    const ov = document.getElementById('login-overlay');
+    ov.style.display = 'flex';
+    // Pré-preenche se salvou
+    if(SALVO && SALVO.u){
+      document.getElementById('login-user').value = SALVO.u;
+      document.getElementById('login-pass').value = SALVO.p;
+      document.getElementById('login-lembrar').checked = true;
+    }
+  }
+
+  window.fazerLogin = function(){
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value.trim();
+    const lembrar = document.getElementById('login-lembrar').checked;
+    const erro = document.getElementById('login-erro');
+
+    if(u === USUARIO_OK && p === SENHA_OK){
+      erro.style.display = 'none';
+      if(lembrar){
+        localStorage.setItem('hagap_auth', JSON.stringify({u, p, ts: Date.now()}));
+      } else {
+        sessionStorage.setItem('hagap_sess', '1');
+        localStorage.removeItem('hagap_auth');
+      }
+      document.getElementById('login-overlay').style.display = 'none';
+    } else {
+      erro.style.display = 'block';
+      document.getElementById('login-pass').value = '';
+    }
+  };
+
+  // Verifica se já está autenticado
+  const jaAutenticado = (
+    (SALVO && SALVO.u === USUARIO_OK && SALVO.p === SENHA_OK) ||
+    sessionStorage.getItem('hagap_sess') === '1'
+  );
+
+  if(!jaAutenticado) mostrarLogin();
+})();
+</script>
+
 </body>
 </html>
