@@ -67,8 +67,9 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 table{width:100%;min-width:920px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
 thead{position:sticky;top:0;z-index:20;}
 thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;position:relative;}
-.col-rz{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:col-resize;background:transparent;z-index:2;border-right:2px solid transparent;transition:border-color .15s;}
-.col-rz:hover,.col-rz.rz-active{border-right-color:var(--azul);background:rgba(11,61,145,.08);}
+.col-rz{position:absolute;right:0;top:0;bottom:0;width:8px;cursor:col-resize;z-index:30;border-right:3px solid transparent;transition:border-color .15s;}
+.col-rz:hover,.col-rz.rz-active{border-right-color:var(--azul);background:rgba(11,61,145,.15);}
+body.col-resizing{cursor:col-resize!important;user-select:none!important;}
 thead th:hover{background:#eaefff;}
 thead th .sort-ico{opacity:.4;font-size:10px;margin-left:3px;}
 thead th.asc .sort-ico::after{content:'▲';}
@@ -325,6 +326,7 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
       </div>
     </div>
     <div class="header-btns">
+      <button class="btn-h ghost" onclick="abrirMateriais()"><i class="fas fa-boxes"></i> Materiais</button>
       <button class="btn-h ghost" onclick="abrirSomaUS()"><i class="fas fa-calculator"></i> Calculadora US/R$</button>
       <button class="btn-h ghost" onclick="importarMedicoes()" title="Importa medicoes.xlsx para o banco"><i class="fas fa-file-import"></i> Importar Medições</button>
       <button class="btn-h ghost" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Exportar Excel</button>
@@ -787,29 +789,237 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
   </div>
 </div>
 
+<!-- MODAL MATERIAIS PAGOS -->
+<div class="mbg" id="m-materiais">
+  <div class="modal" style="max-width:940px;">
+    <div class="mh" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);"><h3><i class="fas fa-boxes"></i> Materiais Pagos</h3><button class="mclose" onclick="fecharModal('m-materiais')">✕</button></div>
+    <div class="mb" style="padding-bottom:0;">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+        <input class="minput" id="mat-filtro-proj" placeholder="🔍 Filtrar por projeto..." oninput="_renderMateriais()" style="flex:1;min-width:160px;"/>
+        <select class="sel" id="mat-filtro-cat" onchange="_renderMateriais()" style="min-width:160px;">
+          <option value="">Todas as categorias</option>
+          <option>Cabos e Condutores</option><option>Equipamentos</option><option>Proteção</option>
+          <option>Fixação</option><option>Iluminação</option><option>Quadros e Painéis</option>
+          <option>Tubulação</option><option>EPI</option><option>Ferramentas</option><option>Outros</option>
+        </select>
+        <button class="btn-ok" style="background:#7c3aed;" onclick="matToggleForm()"><i class="fas fa-plus"></i> Novo Material</button>
+      </div>
+      <!-- Form adicionar -->
+      <div id="mat-add-form" style="display:none;background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:16px 18px;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:800;color:#6b21a8;margin-bottom:14px;"><i class="fas fa-plus-circle"></i> Lançar Novo Material</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+          <div><label>Projeto *</label><input class="minput" id="mat-f-proj" list="mat-proj-list" placeholder="Nº do projeto" autocomplete="off"/><datalist id="mat-proj-list"></datalist></div>
+          <div><label>Descrição *</label><input class="minput" id="mat-f-desc" placeholder="Ex: Cabo 10mm²"/></div>
+          <div><label>Fornecedor</label><input class="minput" id="mat-f-forn" placeholder="Ex: Elétrica Sul"/></div>
+          <div><label>Categoria</label>
+            <select class="msel" id="mat-f-cat">
+              <option>Cabos e Condutores</option><option>Equipamentos</option><option>Proteção</option>
+              <option>Fixação</option><option>Iluminação</option><option>Quadros e Painéis</option>
+              <option>Tubulação</option><option>EPI</option><option>Ferramentas</option><option>Outros</option>
+            </select>
+          </div>
+          <div><label>Valor (R$)</label><input class="minput" id="mat-f-val" placeholder="Ex: R$ 1.500,00"/></div>
+          <div><label>Data</label><input class="minput" id="mat-f-data" type="date"/></div>
+          <div><label>NF / Nota</label><input class="minput" id="mat-f-nf" placeholder="Ex: NF-12345"/></div>
+          <div style="grid-column:2/-1"><label>Observação</label><input class="minput" id="mat-f-obs" placeholder="Observação opcional"/></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;">
+          <button class="btn-cc" onclick="matToggleForm()">Cancelar</button>
+          <button class="btn-ok" style="background:#7c3aed;" onclick="salvarMaterial()"><i class="fas fa-save"></i> Salvar Material</button>
+        </div>
+      </div>
+      <!-- Tabela -->
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px;">
+          <thead><tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
+            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Projeto</th>
+            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Descrição</th>
+            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Fornecedor</th>
+            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Categoria</th>
+            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Valor</th>
+            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Data / NF</th>
+            <th style="padding:8px 10px;"></th>
+          </tr></thead>
+          <tbody id="mat-tbody"></tbody>
+        </table>
+      </div>
+      <div id="mat-rodape" style="padding:12px 4px 0;min-height:28px;"></div>
+    </div>
+    <div class="mf"><button class="btn-cc" onclick="fecharModal('m-materiais')">Fechar</button></div>
+  </div>
+</div>
+
+<!-- MODAL CONFERÊNCIA -->
+<div class="mbg" id="m-conferir">
+  <div class="modal" style="max-width:460px;">
+    <div class="mh" style="background:linear-gradient(135deg,#1e40af,#3b82f6);"><h3><i class="fas fa-clipboard-check"></i> Conferência de Medição</h3><button class="mclose" onclick="fecharModal('m-conferir')">✕</button></div>
+    <div class="mb">
+      <div id="conf-titulo" style="font-size:14px;font-weight:800;color:var(--azul);margin-bottom:16px;padding:10px 14px;background:#eff6ff;border-radius:10px;border-left:4px solid var(--azul);"></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:#f0fdf4;border:1px solid #86efac;border-radius:12px;margin-bottom:14px;">
+        <input type="checkbox" id="conf-check" style="width:22px;height:22px;accent-color:#16a34a;cursor:pointer;"/>
+        <label for="conf-check" style="font-size:14px;font-weight:700;color:#15803d;cursor:pointer;text-transform:none;letter-spacing:0;margin:0;"><i class="fas fa-check-double"></i> Marcar como CONFERIDO</label>
+      </div>
+      <label>Data da Conferência</label>
+      <input class="minput" id="conf-data" type="date"/>
+      <label>Conferido por</label>
+      <input class="minput" id="conf-quem" placeholder="Nome do responsável"/>
+      <label>Observação / Pendências</label>
+      <textarea class="minput" id="conf-obs" rows="3" style="resize:vertical;" placeholder="Ex: Diferença de R$ 200 na planilha, aguardando..."></textarea>
+    </div>
+    <div class="mf">
+      <button class="btn-cc" onclick="fecharModal('m-conferir')">Cancelar</button>
+      <button class="btn-ok" onclick="salvarConferencia()"><i class="fas fa-save"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><i class="fas fa-bolt"></i><span id="toast-msg"></span></div>
 
 <script>
 let dados=[], projetoEdit=null, projetoLink=null, _rzState=null;
 
-// Redimensionamento de colunas — mouse move / up globais
-document.addEventListener('mousemove',e=>{
+// ── Redimensionamento de colunas (event delegation, capture phase) ──
+document.addEventListener('mousedown', e=>{
+  if(!e.target.classList.contains('col-rz')) return;
+  e.preventDefault(); e.stopPropagation();
+  const th = e.target.closest('th');
+  if(!th) return;
+  const colKey = th.id.replace(/^th-[ae]-/,'');
+  // Lê largura atual do <col> para não depender de offsetWidth
+  const sel=`col[data-col="${colKey}"]`;
+  const col = document.querySelector(`#colgroup-andamento ${sel}`)
+           || document.querySelector(`#colgroup-exec ${sel}`);
+  const startW = col ? (parseInt(col.style.width)||th.offsetWidth) : th.offsetWidth;
+  _rzState = {colKey, startX:e.clientX, startW, handle:e.target};
+  e.target.classList.add('rz-active');
+  document.body.classList.add('col-resizing');
+}, true);
+
+document.addEventListener('mousemove', e=>{
   if(!_rzState) return;
-  const nw=Math.max(36,_rzState.startW+(e.clientX-_rzState.startX))+'px';
+  const nw = Math.max(36, _rzState.startW+(e.clientX-_rzState.startX))+'px';
   ['andamento','exec'].forEach(tId=>{
     const col=document.querySelector(`#colgroup-${tId} col[data-col="${_rzState.colKey}"]`);
     if(col) col.style.width=nw;
   });
 });
-document.addEventListener('mouseup',e=>{
+
+document.addEventListener('mouseup', e=>{
   if(!_rzState) return;
-  const nw=Math.max(36,_rzState.startW+(e.clientX-_rzState.startX))+'px';
+  const nw = Math.max(36, _rzState.startW+(e.clientX-_rzState.startX))+'px';
   const w=_cwLoad(); w[_rzState.colKey]=nw; _cwSave(w);
   _rzState.handle.classList.remove('rz-active');
-  document.body.style.cursor='';
-  document.body.style.userSelect='';
+  document.body.classList.remove('col-resizing');
   _rzState=null;
 });
+// ═══ MATERIAIS PAGOS ═══
+const MAT_KEY='hagap_materiais_v1';
+function _matLoad(){try{return JSON.parse(localStorage.getItem(MAT_KEY))||[];}catch(e){return[];}}
+function _matSave(a){localStorage.setItem(MAT_KEY,JSON.stringify(a));}
+function matToggleForm(){
+  const f=document.getElementById('mat-add-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+  if(f.style.display==='block'){
+    const dl=document.getElementById('mat-proj-list');
+    if(dl) dl.innerHTML=(dados||[]).map(d=>`<option value="${escH(d.projeto)}">`).join('');
+    document.getElementById('mat-f-data').value=new Date().toISOString().slice(0,10);
+  }
+}
+function abrirMateriais(proj){
+  document.getElementById('mat-filtro-proj').value=proj||'';
+  document.getElementById('mat-filtro-cat').value='';
+  document.getElementById('mat-add-form').style.display='none';
+  _renderMateriais();
+  document.getElementById('m-materiais').classList.add('open');
+}
+function _renderMateriais(){
+  const mats=_matLoad();
+  const fp=(document.getElementById('mat-filtro-proj').value||'').trim().toLowerCase();
+  const fc=(document.getElementById('mat-filtro-cat').value||'');
+  const lista=mats.filter(m=>{
+    if(fp&&!(m.projeto||'').toLowerCase().includes(fp)) return false;
+    if(fc&&m.categoria!==fc) return false;
+    return true;
+  });
+  const tbody=document.getElementById('mat-tbody');
+  if(!lista.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;"><i class="fas fa-box-open" style="font-size:32px;display:block;margin-bottom:10px;"></i>Nenhum material lançado</td></tr>`;document.getElementById('mat-rodape').innerHTML='';return;}
+  function parseBRL(s){if(!s)return 0;s=String(s).replace(/[^\d,]/g,'');const p=s.lastIndexOf(',');if(p>-1)s=s.slice(0,p).replace(/,/g,'')+'.'+s.slice(p+1);return parseFloat(s)||0;}
+  function fmt(v){const s=Math.abs(v).toFixed(2);const[i,dec]=s.split('.');const fi=i.replace(/\B(?=(\d{3})+(?!\d))/g,'.');return 'R$ '+fi+','+dec;}
+  let total=0;
+  tbody.innerHTML=lista.map((m)=>{
+    const v=parseBRL(m.valor);total+=v;
+    const catCor={'Cabos e Condutores':'#0891b2','Equipamentos':'#7c3aed','Proteção':'#dc2626','Fixação':'#d97706','Iluminação':'#ca8a04','Quadros e Painéis':'#1d4ed8','Tubulação':'#0369a1','EPI':'#15803d','Ferramentas':'#92400e','Outros':'#64748b'};
+    const cc=catCor[m.categoria]||'#64748b';
+    return `<tr style="border-bottom:1px solid #f0f4fb;">
+      <td style="padding:8px 10px;font-weight:700;color:var(--azul);">${escH(m.projeto||'—')}</td>
+      <td style="padding:8px 10px;">${escH(m.descricao||'—')}</td>
+      <td style="padding:8px 10px;color:#64748b;">${escH(m.fornecedor||'—')}</td>
+      <td style="padding:8px 10px;"><span style="background:${cc}18;color:${cc};border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;">${escH(m.categoria||'—')}</span></td>
+      <td style="padding:8px 10px;font-weight:800;color:#15803d;">${escH(m.valor||'—')}</td>
+      <td style="padding:8px 10px;font-size:11px;color:#64748b;">${escH(m.data||'—')}${m.nf?'<br><span style="font-size:10px;background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 5px;">'+escH(m.nf)+'</span>':''}</td>
+      <td style="padding:8px 10px;text-align:center;">
+        <button onclick="_matDel(${m.id})" title="Remover" style="background:#fff1f2;border:1px solid #fecdd3;color:#be123c;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:11px;"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('mat-rodape').innerHTML=`<div style="text-align:right;font-size:13px;font-weight:800;color:#15803d;padding:4px 10px;background:#f0fdf4;border-radius:8px;display:inline-block;"><i class="fas fa-coins"></i> Total: ${fmt(total)} <span style="font-weight:400;font-size:11px;color:#64748b;">(${lista.length} item${lista.length>1?'s':''})</span></div>`;
+}
+function _matDel(id){
+  if(!confirm('Remover este material?')) return;
+  _matSave(_matLoad().filter(m=>m.id!==id));
+  _renderMateriais();
+  toast('Material removido','verde');
+}
+function salvarMaterial(){
+  const proj=document.getElementById('mat-f-proj').value.trim();
+  if(!proj){toast('Informe o projeto','erro');return;}
+  const desc=document.getElementById('mat-f-desc').value.trim();
+  if(!desc){toast('Informe a descrição','erro');return;}
+  const mat={id:Date.now(),projeto:proj,descricao:desc,
+    fornecedor:document.getElementById('mat-f-forn').value.trim(),
+    categoria:document.getElementById('mat-f-cat').value,
+    valor:document.getElementById('mat-f-val').value.trim(),
+    data:document.getElementById('mat-f-data').value,
+    nf:document.getElementById('mat-f-nf').value.trim(),
+    obs:document.getElementById('mat-f-obs').value.trim()};
+  const arr=_matLoad(); arr.unshift(mat); _matSave(arr);
+  ['mat-f-desc','mat-f-forn','mat-f-val','mat-f-nf','mat-f-obs','mat-f-data'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  matToggleForm();
+  _renderMateriais();
+  toast('Material lançado!','verde');
+}
+
+// ═══ CONFERÊNCIA ═══
+const CONF_KEY='hagap_conferencia_v1';
+let _confProjeto=null,_confTipo=null;
+function _confLoad(){try{return JSON.parse(localStorage.getItem(CONF_KEY))||{};}catch(e){return{};}}
+function _confSave(o){localStorage.setItem(CONF_KEY,JSON.stringify(o));}
+function _confGet(proj,tipo){const k=`${proj}__${tipo}`;return _confLoad()[k]||{};}
+function abrirConferir(proj,tipo){
+  _confProjeto=proj;_confTipo=tipo;
+  const ck=_confGet(proj,tipo);
+  const labels={med1:'Medição 1',med2:'Medição 2',final:'FFO — Final'};
+  document.getElementById('conf-titulo').innerHTML=`<i class="fas fa-file-invoice" style="color:var(--amarelo2);"></i> ${labels[tipo]||tipo} &nbsp;—&nbsp; <span style="color:var(--azul-mid)">${escH(proj)}</span>`;
+  document.getElementById('conf-check').checked=!!ck.conferido;
+  document.getElementById('conf-data').value=ck.data||new Date().toISOString().slice(0,10);
+  document.getElementById('conf-quem').value=ck.quem||'';
+  document.getElementById('conf-obs').value=ck.obs||'';
+  document.getElementById('m-conferir').classList.add('open');
+}
+function salvarConferencia(){
+  if(!_confProjeto||!_confTipo) return;
+  const obj=_confLoad();
+  obj[`${_confProjeto}__${_confTipo}`]={
+    conferido:document.getElementById('conf-check').checked,
+    data:document.getElementById('conf-data').value,
+    quem:document.getElementById('conf-quem').value.trim(),
+    obs:document.getElementById('conf-obs').value.trim()};
+  _confSave(obj);
+  fecharModal('m-conferir');
+  renderTabelas();
+  toast(document.getElementById('conf-check').checked?'✅ Conferência registrada!':'Conferência removida','verde');
+}
+
 let colOrdem={a:null,e:null}, ordemAsc={a:true,e:true};
 let filtroExecAtivo=null, filtroAlertaAtivo='';
 
@@ -871,20 +1081,7 @@ function buildThead(trId, tab){
     }).join('');
   }
 
-  // Inicializa handles de redimensionamento
-  COLUNAS.forEach(c=>{
-    const th=document.getElementById(`th-${tab}-${c.k}`);
-    if(!th) return;
-    const handle=th.querySelector('.col-rz');
-    if(!handle) return;
-    handle.addEventListener('mousedown',e=>{
-      e.preventDefault(); e.stopPropagation();
-      _rzState={colKey:c.k, startX:e.clientX, startW:th.offsetWidth, handle};
-      handle.classList.add('rz-active');
-      document.body.style.cursor='col-resize';
-      document.body.style.userSelect='none';
-    });
-  });
+  // handles registrados via event delegation global — nada a fazer aqui
 }
 
 //  GERENCIADOR DE ARQUIVOS UNIVERSAL
@@ -1597,9 +1794,9 @@ function renderTabela(tab,lista,tbodyId,theadId){
         <input type="date" value="${d.pde_data||''}" onchange="setPDEData('${escJ(d.projeto)}',this.value)" title="Data da programação PDE"
           style="font-size:10px;width:92px;border:1px solid #cbd5e1;border-radius:5px;padding:2px 3px;background:#f8fafc;color:#334155;cursor:pointer;margin-top:2px;">
       </td>
-      <td>${checkcol(d.medicao1,'b-m1')}</td>
-      <td>${checkcol(d.medicao2,'b-m2')}</td>
-      <td>${checkcol(d.final,'b-final')}</td>
+      <td>${checkcol(d.medicao1,'b-m1',escJ(d.projeto),'med1')}</td>
+      <td>${checkcol(d.medicao2,'b-m2',escJ(d.projeto),'med2')}</td>
+      <td>${checkcol(d.final,'b-final',escJ(d.projeto),'final')}</td>
     </tr>`;
   }).join('');
 }
@@ -1615,8 +1812,13 @@ function badgeAlerta(a,prazo){
   const [cls,txt]=m[a]||['',''];
   return `<span class="badge ${cls}" title="Prazo: ${prazo||'—'}">${txt}</span>`;
 }
-function checkcol(val,cls){
-  return val?`<span class="badge ${cls}"><i class="fas fa-check"></i> ${escH(val)}</span>`:'<span style="color:#cbd5e1;font-size:11px">—</span>';
+function checkcol(val,cls,proj,tipo){
+  if(!val) return '<span style="color:#cbd5e1;font-size:11px">—</span>';
+  const ck=proj?_confGet(proj,tipo):{};
+  const confOk=ck&&ck.conferido;
+  const confTitle=confOk?`Conferido${ck.data?' em '+ck.data:''}${ck.quem?' por '+ck.quem:''}`:'Clique para conferir';
+  const confBtn=proj?`<button onclick="event.stopPropagation();abrirConferir('${proj}','${tipo}')" title="${confTitle}" style="margin-left:3px;vertical-align:middle;background:${confOk?'#dcfce7':'#f1f5f9'};border:1px solid ${confOk?'#86efac':'#cbd5e1'};color:${confOk?'#16a34a':'#94a3b8'};border-radius:5px;padding:2px 6px;font-size:10px;cursor:pointer;line-height:1;"><i class="fas fa-${confOk?'check-double':'clipboard-check'}"></i></button>`:'';
+  return `<span class="badge ${cls}"><i class="fas fa-check"></i> ${escH(val)}</span>${confBtn}`;
 }
 
 function ordenar(tab,col){
