@@ -1651,7 +1651,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1689,7 +1689,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "TUNEIRAS DO OESTE",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1727,7 +1727,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1765,7 +1765,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DASILVA AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1814,7 +1814,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "LOPES AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1852,7 +1852,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CASTRO AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -2601,6 +2601,10 @@
       {
         "arquivo": "AES 85548 4600026463 HAGAP.pdf",
         "ae": "084548"
+      },
+      {
+        "arquivo": "AES 84548 4600026463 HAGAP.pdf",
+        "ae": "084548"
       }
     ]
   },
@@ -2640,6 +2644,10 @@
       {
         "arquivo": "AES 85548 4600026463 HAGAP.pdf",
         "ae": "084548"
+      },
+      {
+        "arquivo": "AES 84548 4600026463 HAGAP.pdf",
+        "ae": "084548"
       }
     ]
   },
@@ -2677,6 +2685,10 @@
     "aes": [
       {
         "arquivo": "AES 85548 4600026463 HAGAP.pdf",
+        "ae": "084548"
+      },
+      {
+        "arquivo": "AES 84548 4600026463 HAGAP.pdf",
         "ae": "084548"
       }
     ]
@@ -2984,16 +2996,16 @@
   },
   {
     "projeto": "1714348",
-    "ae": "",
-    "us": "",
-    "us_num": 0.0,
+    "ae": "084552",
+    "us": "90,022",
+    "us_num": 90.022,
     "prazo": "12.03.2027",
     "prazo_alerta": "ok",
     "local": "DESAOJORGEDOPATROCINIO RURAL",
-    "custo": "",
+    "custo": "R$6.874,07",
     "status": "Pendente",
     "executado": false,
-    "arquivo_ae": "",
+    "arquivo_ae": "AES 84552 4600026463 HAGAP.pdf",
     "pasta_projeto": "1714348 01.20263383601119 - MUNICIPIO DE SAO JORGE DO PATROCINIO 29.06",
     "pasta_projeto_url": "",
     "pdfs_projeto": [
@@ -3009,9 +3021,16 @@
     "medicao2": "",
     "final": "",
     "origem": [
-      "pasta"
+      "pasta",
+      "ae"
     ],
-    "avisos": []
+    "avisos": [],
+    "aes": [
+      {
+        "arquivo": "AES 84552 4600026463 HAGAP.pdf",
+        "ae": "084552"
+      }
+    ]
   },
   {
     "projeto": "1714857",
@@ -5647,6 +5666,100 @@
     "medicao1": "28/04/2026",
     "medicao2": "",
     "final": "12.05.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1727778I",
+    "ae": "084624",
+    "us": "47,524",
+    "us_num": 47.524,
+    "prazo": "20/07/2026",
+    "prazo_alerta": "ok",
+    "local": "",
+    "custo": "R$3.628,93",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "AES 84624 4600026463 HAGAP.pdf",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "ae"
+    ],
+    "avisos": [],
+    "aes": [
+      {
+        "arquivo": "AES 84624 4600026463 HAGAP.pdf",
+        "ae": "084624"
+      }
+    ]
+  },
+  {
+    "projeto": "1727778",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2027",
+    "prazo_alerta": "ok",
+    "local": "TUNEIRASDOOESTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1727778 - Melhoria URGENTE",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "MATERIAIS E TAREFAS.pdf",
+      "PROJETO - 1727778.pdf",
+      "relatorio.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1677316",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL - 1677316 HAGAP.pdf",
+        "us": "",
+        "data": "20/05/2026",
+        "valor": "R$51.623,62",
+        "rateio": "51.623,62",
+        "rateio_float": 51623.62
+      }
+    ],
+    "ffos": [],
+    "medicao1": "20/05/2026",
+    "medicao2": "",
+    "final": "",
     "origem": [
       "medicao"
     ],

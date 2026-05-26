@@ -64,7 +64,7 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 .tbl-wrap{max-width:100%;margin:0 0 16px;padding:0 14px;}
 .tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:hidden;box-shadow:var(--shadow);}
 .scroll-x{overflow-x:auto;max-height:calc(100vh - 280px);}
-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px;}
+table{width:100%;min-width:920px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
 thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);position:sticky;top:0;white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;z-index:1;}
 thead th:hover{background:#eaefff;}
 thead th .sort-ico{opacity:.4;font-size:10px;margin-left:3px;}
@@ -80,19 +80,18 @@ tbody tr.row-critico{background:#fff7ed!important;} tbody tr.row-critico:hover{b
 tbody tr.row-alerta{background:#fffbeb!important;}
 .td-proj{font-weight:700;color:var(--azul);}
 
-/* Larguras proporcionais das colunas (total ~100%) */
-/* Ordem: Ações | Projeto | AE | Local | US | Prazo | Custo | Situação | Status | PDE | Med1 | Med2 | Final */
-table colgroup .c-acoes  { width:16%; }
-table colgroup .c-projeto { width:8%; }
-table colgroup .c-local   { width:10%; }
-table colgroup .c-us      { width:6%; }
-table colgroup .c-prazo   { width:7%; }
-table colgroup .c-alerta  { width:6%; }
-table colgroup .c-status  { width:7%; }
-table colgroup .c-pde     { width:4%; }
-table colgroup .c-med1    { width:7%; }
-table colgroup .c-med2    { width:7%; }
-table colgroup .c-final   { width:8%; }
+/* Larguras FIXAS das colunas em pixels (sem redimensionamento) */
+col.c-acoes  { width:182px; }
+col.c-projeto{ width:78px; }
+col.c-local  { width:100px; }
+col.c-us     { width:54px; }
+col.c-prazo  { width:80px; }
+col.c-alerta { width:76px; }
+col.c-status { width:88px; }
+col.c-pde    { width:42px; }
+col.c-med1   { width:80px; }
+col.c-med2   { width:80px; }
+col.c-final  { width:88px; }
 /* Celulas de ações não truncam */
 td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:unset;}
 .td-ae{font-size:11px;color:var(--texto-sec);}
@@ -173,19 +172,7 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
 @media(max-width:800px){.kpi-row{grid-template-columns:repeat(2,1fr);}.header-inner{flex-wrap:wrap;gap:12px;}.form-grid{grid-template-columns:1fr;}}
 @media(max-width:380px){.kpi{padding:7px 8px;gap:7px;}.kpi-txt .n{font-size:16px;}.kpi-ico{width:28px;height:28px;font-size:12px;}}
 
-/* ═══════════════════════════════════════════════════
-   COLUNAS REDIMENSIONÁVEIS
-═══════════════════════════════════════════════════ */
-thead th{position:relative;}
-.col-resizer{
-  position:absolute;right:0;top:0;bottom:0;
-  width:6px;cursor:col-resize;
-  background:transparent;
-  z-index:2;
-  user-select:none;
-}
-.col-resizer:hover,.col-resizer.resizing{background:rgba(11,61,145,.25);border-radius:3px;}
-th.resizing{background:#dbeafe!important;}
+/* colunas fixas — sem redimensionamento */
 
 /* ═══════════════════════════════════════════════════
    MOBILE — CARDS (telas ≤ 760px)
@@ -823,54 +810,23 @@ const COLUNAS=[
   {k:'final',        l:'Final (FFO)'},
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   COLUNAS REDIMENSIONÁVEIS
-═══════════════════════════════════════════════════════════════ */
-const _COL_WIDTHS = JSON.parse(localStorage.getItem('hagap_col_widths')||'{}');
-function _saveColWidths(){
-  localStorage.setItem('hagap_col_widths', JSON.stringify(_COL_WIDTHS));
-}
-function _initResizer(th, colKey){
-  // Restaura largura salva
-  if(_COL_WIDTHS[colKey]) th.style.width = _COL_WIDTHS[colKey]+'px';
-  const rsz = document.createElement('div');
-  rsz.className = 'col-resizer';
-  rsz.title = 'Arraste para redimensionar';
-  th.appendChild(rsz);
-  rsz.addEventListener('mousedown', e=>{
-    e.preventDefault(); e.stopPropagation();
-    const startX = e.clientX;
-    const startW = th.offsetWidth;
-    th.classList.add('resizing'); rsz.classList.add('resizing');
-    const onMove = ev=>{
-      const w = Math.max(50, startW + ev.clientX - startX);
-      th.style.width = w+'px';
-      _COL_WIDTHS[colKey] = w;
-    };
-    const onUp = ()=>{
-      th.classList.remove('resizing'); rsz.classList.remove('resizing');
-      _saveColWidths();
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
-  // Duplo clique reseta largura
-  rsz.addEventListener('dblclick', e=>{
-    e.stopPropagation();
-    th.style.width = '';
-    delete _COL_WIDTHS[colKey];
-    _saveColWidths();
-  });
-}
-
-// Larguras base proporcionais por chave de coluna
+// Larguras FIXAS das colunas — sem redimensionamento
 const _COL_BASE = {
-  __acoes:'16%', projeto:'8%', ae:'5%', local:'8%', us:'4%',
-  prazo:'6%', custo:'7%', prazo_alerta:'6%', status:'7%',
-  pde:'4%', medicao1:'7%', medicao2:'7%', final:'8%'
+  '__acoes':    '182px',
+  'projeto':    '78px',
+  'local':      '100px',
+  'us':         '54px',
+  'prazo':      '80px',
+  'prazo_alerta':'76px',
+  'status':     '88px',
+  'pde':        '42px',
+  'medicao1':   '80px',
+  'medicao2':   '80px',
+  'final':      '88px'
 };
+
+// Remove widths salvos de versões anteriores
+localStorage.removeItem('hagap_col_widths');
 
 function buildThead(trId, tab){
   const tr = document.getElementById(trId); if(!tr) return;
@@ -879,74 +835,17 @@ function buildThead(trId, tab){
     return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}">${c.l} <span class="sort-ico"></span></th>`;
   }).join('');
 
-  // Constrói colgroup para controlar larguras
+  // Constrói colgroup com larguras fixas
   const cgId = 'colgroup-'+(tab==='a'?'andamento':'exec');
   const cg = document.getElementById(cgId);
   if(cg){
     cg.innerHTML = COLUNAS.map(c=>{
-      const saved = _COL_WIDTHS[c.k];
-      const w = saved ? saved+'px' : (_COL_BASE[c.k]||'auto');
-      return `<col data-col="${c.k}" style="width:${w}">`;
+      const w = _COL_BASE[c.k]||'auto';
+      return `<col data-col="${c.k}" class="c-${c.k}" style="width:${w}">`;
     }).join('');
   }
-
-  // Resizers em todos os th
-  tr.querySelectorAll('th').forEach((th, i)=>{
-    const colKey = COLUNAS[i]?.k || 'col'+i;
-    _initResizer(th, colKey, tab);
-  });
 }
 
-// Sobrescreve _initResizer para também atualizar o colgroup
-function _initResizer(th, colKey, tab){
-  if(_COL_WIDTHS[colKey]) th.style.width = _COL_WIDTHS[colKey]+'px';
-  const rsz = document.createElement('div');
-  rsz.className = 'col-resizer';
-  rsz.title = 'Arraste ↔ | Duplo clique para resetar';
-  th.appendChild(rsz);
-  rsz.addEventListener('mousedown', e=>{
-    e.preventDefault(); e.stopPropagation();
-    const startX = e.clientX;
-    const startW = th.offsetWidth;
-    th.classList.add('resizing'); rsz.classList.add('resizing');
-    const onMove = ev=>{
-      const w = Math.max(40, startW + ev.clientX - startX);
-      // Atualiza th e col correspondente
-      th.style.width = w+'px';
-      ['andamento','exec'].forEach(t=>{
-        const cg = document.getElementById('colgroup-'+t);
-        if(cg){
-          const col = cg.querySelector(`[data-col="${colKey}"]`);
-          if(col) col.style.width = w+'px';
-        }
-      });
-      _COL_WIDTHS[colKey] = w;
-    };
-    const onUp = ()=>{
-      th.classList.remove('resizing'); rsz.classList.remove('resizing');
-      _saveColWidths();
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
-  rsz.addEventListener('dblclick', e=>{
-    e.stopPropagation();
-    th.style.width = '';
-    delete _COL_WIDTHS[colKey];
-    _saveColWidths();
-    ['andamento','exec'].forEach(t=>{
-      const cg = document.getElementById('colgroup-'+t);
-      if(cg){
-        const col = cg.querySelector(`[data-col="${colKey}"]`);
-        if(col) col.style.width = _COL_BASE[colKey]||'auto';
-      }
-    });
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════════
 //  GERENCIADOR DE ARQUIVOS UNIVERSAL
 // ═══════════════════════════════════════════════════════════════════
 
