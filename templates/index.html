@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/adEbSv0MVOPUUfO7RqIL2d5NmttbFY3Q/9a8a8f54-8279-4bcf-a1bb-d8f5a0d33604/files/">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>HAGAP — Gestão de Projetos Elétricos</title>
@@ -62,8 +62,8 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 .secao-titulo h2 i{color:var(--amarelo2);}
 .badge-count{background:var(--azul);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;margin-left:8px;}
 .tbl-wrap{max-width:100%;margin:0 0 16px;padding:0 14px;}
-.tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:clip;box-shadow:var(--shadow);}
-.scroll-x{overflow-x:auto;}
+.tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:hidden;box-shadow:var(--shadow);}
+.scroll-x{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - 260px);}
 table{width:100%;min-width:920px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
 thead{position:sticky;top:0;z-index:20;}
 thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;position:relative;}
@@ -789,61 +789,43 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
   </div>
 </div>
 
-<!-- MODAL MATERIAIS PAGOS -->
+<!-- MODAL MATERIAIS BMD/FFO -->
 <div class="mbg" id="m-materiais">
-  <div class="modal" style="max-width:940px;">
-    <div class="mh" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);"><h3><i class="fas fa-boxes"></i> Materiais Pagos</h3><button class="mclose" onclick="fecharModal('m-materiais')">✕</button></div>
-    <div class="mb" style="padding-bottom:0;">
-      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
-        <input class="minput" id="mat-filtro-proj" placeholder="🔍 Filtrar por projeto..." oninput="_renderMateriais()" style="flex:1;min-width:160px;"/>
-        <select class="sel" id="mat-filtro-cat" onchange="_renderMateriais()" style="min-width:160px;">
-          <option value="">Todas as categorias</option>
-          <option>Cabos e Condutores</option><option>Equipamentos</option><option>Proteção</option>
-          <option>Fixação</option><option>Iluminação</option><option>Quadros e Painéis</option>
-          <option>Tubulação</option><option>EPI</option><option>Ferramentas</option><option>Outros</option>
+  <div class="modal" style="max-width:1100px;max-height:95vh;">
+    <div class="mh" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);">
+      <h3><i class="fas fa-boxes"></i> Materiais &amp; Mão de Obra — BMD/FFO por Projeto</h3>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn-h ghost" onclick="matExportarCSV()" style="padding:5px 12px;font-size:11px;"><i class="fas fa-file-csv"></i> CSV</button>
+        <button class="mclose" onclick="fecharModal('m-materiais')">✕</button>
+      </div>
+    </div>
+    <!-- Filtros -->
+    <div style="padding:14px 20px 0;border-bottom:1px solid var(--borda);background:#faf5ff;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <input class="minput" id="mat-filtro-proj" placeholder="🔍 Filtrar por projeto..." oninput="_renderMateriais()" style="flex:1;min-width:160px;max-width:220px;"/>
+        <select class="sel" id="mat-filtro-tipo" onchange="_renderMateriais()" style="min-width:170px;">
+          <option value="">Todos (Material + Mão de Obra)</option>
+          <option value="material">Somente Materiais</option>
+          <option value="mao_obra">Somente Mão de Obra</option>
         </select>
-        <button class="btn-ok" style="background:#7c3aed;" onclick="matToggleForm()"><i class="fas fa-plus"></i> Novo Material</button>
+        <input class="minput" id="mat-filtro-data-ini" type="date" oninput="_renderMateriais()" style="width:148px;" title="Data inicial (extraída do nome do arquivo)"/>
+        <input class="minput" id="mat-filtro-data-fim" type="date" oninput="_renderMateriais()" style="width:148px;" title="Data final"/>
+        <input class="minput" id="mat-filtro-busca" placeholder="🔍 Buscar descrição..." oninput="_renderMateriais()" style="flex:1;min-width:160px;"/>
+        <button class="btn-cc" onclick="matLimparFiltros()" style="white-space:nowrap;"><i class="fas fa-times"></i> Limpar</button>
       </div>
-      <!-- Form adicionar -->
-      <div id="mat-add-form" style="display:none;background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:16px 18px;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:800;color:#6b21a8;margin-bottom:14px;"><i class="fas fa-plus-circle"></i> Lançar Novo Material</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-          <div><label>Projeto *</label><input class="minput" id="mat-f-proj" list="mat-proj-list" placeholder="Nº do projeto" autocomplete="off"/><datalist id="mat-proj-list"></datalist></div>
-          <div><label>Descrição *</label><input class="minput" id="mat-f-desc" placeholder="Ex: Cabo 10mm²"/></div>
-          <div><label>Fornecedor</label><input class="minput" id="mat-f-forn" placeholder="Ex: Elétrica Sul"/></div>
-          <div><label>Categoria</label>
-            <select class="msel" id="mat-f-cat">
-              <option>Cabos e Condutores</option><option>Equipamentos</option><option>Proteção</option>
-              <option>Fixação</option><option>Iluminação</option><option>Quadros e Painéis</option>
-              <option>Tubulação</option><option>EPI</option><option>Ferramentas</option><option>Outros</option>
-            </select>
-          </div>
-          <div><label>Valor (R$)</label><input class="minput" id="mat-f-val" placeholder="Ex: R$ 1.500,00"/></div>
-          <div><label>Data</label><input class="minput" id="mat-f-data" type="date"/></div>
-          <div><label>NF / Nota</label><input class="minput" id="mat-f-nf" placeholder="Ex: NF-12345"/></div>
-          <div style="grid-column:2/-1"><label>Observação</label><input class="minput" id="mat-f-obs" placeholder="Observação opcional"/></div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;">
-          <button class="btn-cc" onclick="matToggleForm()">Cancelar</button>
-          <button class="btn-ok" style="background:#7c3aed;" onclick="salvarMaterial()"><i class="fas fa-save"></i> Salvar Material</button>
-        </div>
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;border-bottom:none;">
+        <button class="vtab active" id="mat-tab-resumo" onclick="matSetTab('resumo')"><i class="fas fa-chart-bar"></i> Resumo por Projeto</button>
+        <button class="vtab" id="mat-tab-arquivos" onclick="matSetTab('arquivos')"><i class="fas fa-file-alt"></i> Por Arquivo (BMD/FFO)</button>
+        <button class="vtab" id="mat-tab-itens" onclick="matSetTab('itens')"><i class="fas fa-list"></i> Itens Detalhados</button>
       </div>
-      <!-- Tabela -->
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px;">
-          <thead><tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
-            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Projeto</th>
-            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Descrição</th>
-            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Fornecedor</th>
-            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Categoria</th>
-            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Valor</th>
-            <th style="padding:8px 10px;text-align:left;font-size:11px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Data / NF</th>
-            <th style="padding:8px 10px;"></th>
-          </tr></thead>
-          <tbody id="mat-tbody"></tbody>
-        </table>
-      </div>
-      <div id="mat-rodape" style="padding:12px 4px 0;min-height:28px;"></div>
+    </div>
+    <!-- Corpo -->
+    <div class="mb" style="padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column;">
+      <!-- KPIs -->
+      <div id="mat-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 20px;background:#f8f5ff;border-bottom:1px solid #ede9fe;"></div>
+      <!-- Conteúdo das tabs -->
+      <div id="mat-content" style="flex:1;overflow:auto;padding:0;"></div>
     </div>
     <div class="mf"><button class="btn-cc" onclick="fecharModal('m-materiais')">Fechar</button></div>
   </div>
@@ -912,81 +894,255 @@ document.addEventListener('mouseup', e=>{
   document.body.classList.remove('col-resizing');
   _rzState=null;
 });
-// ═══ MATERIAIS PAGOS ═══
-const MAT_KEY='hagap_materiais_v1';
-function _matLoad(){try{return JSON.parse(localStorage.getItem(MAT_KEY))||[];}catch(e){return[];}}
-function _matSave(a){localStorage.setItem(MAT_KEY,JSON.stringify(a));}
-function matToggleForm(){
-  const f=document.getElementById('mat-add-form');
-  f.style.display=f.style.display==='none'?'block':'none';
-  if(f.style.display==='block'){
-    const dl=document.getElementById('mat-proj-list');
-    if(dl) dl.innerHTML=(dados||[]).map(d=>`<option value="${escH(d.projeto)}">`).join('');
-    document.getElementById('mat-f-data').value=new Date().toISOString().slice(0,10);
-  }
-}
-function abrirMateriais(proj){
-  document.getElementById('mat-filtro-proj').value=proj||'';
-  document.getElementById('mat-filtro-cat').value='';
-  document.getElementById('mat-add-form').style.display='none';
+// ═══ MATERIAIS BMD/FFO ═══
+let _matDados = null;  // cache dos dados da API
+let _matTabAtiva = 'resumo';
+
+function matSetTab(t){
+  _matTabAtiva = t;
+  ['resumo','arquivos','itens'].forEach(x=>{
+    const b = document.getElementById('mat-tab-'+x);
+    if(b) b.classList.toggle('active', x===t);
+  });
   _renderMateriais();
-  document.getElementById('m-materiais').classList.add('open');
 }
-function _renderMateriais(){
-  const mats=_matLoad();
+
+function matLimparFiltros(){
+  ['mat-filtro-proj','mat-filtro-busca','mat-filtro-data-ini','mat-filtro-data-fim'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('mat-filtro-tipo').value='';
+  _renderMateriais();
+}
+
+function _matFmt(v){
+  if(!v&&v!==0) return '—';
+  const s=Math.abs(v).toFixed(2); const[i,dec]=s.split('.');
+  return (v<0?'-':'')+'R$ '+i.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+dec;
+}
+
+function _matFiltrarDados(dados){
   const fp=(document.getElementById('mat-filtro-proj').value||'').trim().toLowerCase();
-  const fc=(document.getElementById('mat-filtro-cat').value||'');
-  const lista=mats.filter(m=>{
-    if(fp&&!(m.projeto||'').toLowerCase().includes(fp)) return false;
-    if(fc&&m.categoria!==fc) return false;
+  const ft=document.getElementById('mat-filtro-tipo').value||'';
+  const fb=(document.getElementById('mat-filtro-busca').value||'').trim().toLowerCase();
+  const dIni=document.getElementById('mat-filtro-data-ini').value||'';
+  const dFim=document.getElementById('mat-filtro-data-fim').value||'';
+
+  function parseData(s){
+    // tenta extrair data do formato DD-MM-YYYY ou YYYY-MM-DD no nome do arquivo
+    if(!s) return null;
+    const m1 = s.match(/(\d{2})-(\d{2})-(\d{4})/);
+    if(m1) return new Date(m1[3],m1[2]-1,m1[1]);
+    const m2 = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if(m2) return new Date(m2[1],m2[2]-1,m2[3]);
+    return null;
+  }
+
+  return (dados||[]).filter(row=>{
+    if(fp && !String(row.projeto||'').toLowerCase().includes(fp)) return false;
+    if(ft==='material' && !(row.total_material>0)) return false;
+    if(ft==='mao_obra' && !(row.total_mao_obra>0)) return false;
+    if(fb && !String(row.arquivo||row.descricao||'').toLowerCase().includes(fb)) return false;
+    if(dIni || dFim){
+      const dt = parseData(row.arquivo||'');
+      if(dt){
+        const dtStr = dt.toISOString().slice(0,10);
+        if(dIni && dtStr < dIni) return false;
+        if(dFim && dtStr > dFim) return false;
+      }
+    }
     return true;
   });
-  const tbody=document.getElementById('mat-tbody');
-  if(!lista.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;"><i class="fas fa-box-open" style="font-size:32px;display:block;margin-bottom:10px;"></i>Nenhum material lançado</td></tr>`;document.getElementById('mat-rodape').innerHTML='';return;}
-  function parseBRL(s){if(!s)return 0;s=String(s).replace(/[^\d,]/g,'');const p=s.lastIndexOf(',');if(p>-1)s=s.slice(0,p).replace(/,/g,'')+'.'+s.slice(p+1);return parseFloat(s)||0;}
-  function fmt(v){const s=Math.abs(v).toFixed(2);const[i,dec]=s.split('.');const fi=i.replace(/\B(?=(\d{3})+(?!\d))/g,'.');return 'R$ '+fi+','+dec;}
-  let total=0;
-  tbody.innerHTML=lista.map((m)=>{
-    const v=parseBRL(m.valor);total+=v;
-    const catCor={'Cabos e Condutores':'#0891b2','Equipamentos':'#7c3aed','Proteção':'#dc2626','Fixação':'#d97706','Iluminação':'#ca8a04','Quadros e Painéis':'#1d4ed8','Tubulação':'#0369a1','EPI':'#15803d','Ferramentas':'#92400e','Outros':'#64748b'};
-    const cc=catCor[m.categoria]||'#64748b';
-    return `<tr style="border-bottom:1px solid #f0f4fb;">
-      <td style="padding:8px 10px;font-weight:700;color:var(--azul);">${escH(m.projeto||'—')}</td>
-      <td style="padding:8px 10px;">${escH(m.descricao||'—')}</td>
-      <td style="padding:8px 10px;color:#64748b;">${escH(m.fornecedor||'—')}</td>
-      <td style="padding:8px 10px;"><span style="background:${cc}18;color:${cc};border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;">${escH(m.categoria||'—')}</span></td>
-      <td style="padding:8px 10px;font-weight:800;color:#15803d;">${escH(m.valor||'—')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#64748b;">${escH(m.data||'—')}${m.nf?'<br><span style="font-size:10px;background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 5px;">'+escH(m.nf)+'</span>':''}</td>
-      <td style="padding:8px 10px;text-align:center;">
-        <button onclick="_matDel(${m.id})" title="Remover" style="background:#fff1f2;border:1px solid #fecdd3;color:#be123c;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:11px;"><i class="fas fa-trash"></i></button>
-      </td>
-    </tr>`;
-  }).join('');
-  document.getElementById('mat-rodape').innerHTML=`<div style="text-align:right;font-size:13px;font-weight:800;color:#15803d;padding:4px 10px;background:#f0fdf4;border-radius:8px;display:inline-block;"><i class="fas fa-coins"></i> Total: ${fmt(total)} <span style="font-weight:400;font-size:11px;color:#64748b;">(${lista.length} item${lista.length>1?'s':''})</span></div>`;
 }
-function _matDel(id){
-  if(!confirm('Remover este material?')) return;
-  _matSave(_matLoad().filter(m=>m.id!==id));
+
+async function abrirMateriais(proj){
+  document.getElementById('mat-filtro-proj').value=proj||'';
+  document.getElementById('mat-filtro-tipo').value='';
+  document.getElementById('mat-filtro-busca').value='';
+  document.getElementById('m-materiais').classList.add('open');
+  if(!_matDados){
+    document.getElementById('mat-kpis').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:12px;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+    document.getElementById('mat-content').innerHTML='';
+    try{
+      const r = await fetch('/api/materiais_bmd');
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      _matDados = await r.json();
+    }catch(e){
+      document.getElementById('mat-kpis').innerHTML=`<div style="grid-column:1/-1;color:#dc2626;padding:12px;">❌ Erro ao carregar: ${escH(e.message)}</div>`;
+      return;
+    }
+  }
   _renderMateriais();
-  toast('Material removido','verde');
 }
-function salvarMaterial(){
-  const proj=document.getElementById('mat-f-proj').value.trim();
-  if(!proj){toast('Informe o projeto','erro');return;}
-  const desc=document.getElementById('mat-f-desc').value.trim();
-  if(!desc){toast('Informe a descrição','erro');return;}
-  const mat={id:Date.now(),projeto:proj,descricao:desc,
-    fornecedor:document.getElementById('mat-f-forn').value.trim(),
-    categoria:document.getElementById('mat-f-cat').value,
-    valor:document.getElementById('mat-f-val').value.trim(),
-    data:document.getElementById('mat-f-data').value,
-    nf:document.getElementById('mat-f-nf').value.trim(),
-    obs:document.getElementById('mat-f-obs').value.trim()};
-  const arr=_matLoad(); arr.unshift(mat); _matSave(arr);
-  ['mat-f-desc','mat-f-forn','mat-f-val','mat-f-nf','mat-f-obs','mat-f-data'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  matToggleForm();
-  _renderMateriais();
-  toast('Material lançado!','verde');
+
+function _renderMateriais(){
+  if(!_matDados) return;
+  const resumo  = _matFiltrarDados(_matDados.resumo  || []);
+  const itens   = _matFiltrarDados(_matDados.itens   || []);
+
+  // KPIs
+  const totGeral   = resumo.reduce((a,r)=>a+(r.total_geral||0),0);
+  const totMat     = resumo.reduce((a,r)=>a+(r.total_material||0),0);
+  const totMO      = resumo.reduce((a,r)=>a+(r.total_mao_obra||0),0);
+  const projetos   = [...new Set(resumo.map(r=>r.projeto))].length;
+
+  document.getElementById('mat-kpis').innerHTML=`
+    <div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:12px;padding:12px;text-align:center;">
+      <div style="font-size:22px;font-weight:800;color:#6d28d9;">${projetos}</div>
+      <div style="font-size:11px;color:#7c3aed;font-weight:700;margin-top:2px;">PROJETOS</div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:12px;text-align:center;">
+      <div style="font-size:18px;font-weight:800;color:#15803d;">${_matFmt(totGeral)}</div>
+      <div style="font-size:11px;color:#15803d;font-weight:700;margin-top:2px;">TOTAL GERAL</div>
+    </div>
+    <div style="background:#fff7ed;border:1px solid #fdba74;border-radius:12px;padding:12px;text-align:center;">
+      <div style="font-size:18px;font-weight:800;color:#c2410c;">${_matFmt(totMat)}</div>
+      <div style="font-size:11px;color:#c2410c;font-weight:700;margin-top:2px;">MATERIAIS</div>
+    </div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;text-align:center;">
+      <div style="font-size:18px;font-weight:800;color:#1e40af;">${_matFmt(totMO)}</div>
+      <div style="font-size:11px;color:#1e40af;font-weight:700;margin-top:2px;">MÃO DE OBRA</div>
+    </div>`;
+
+  const content = document.getElementById('mat-content');
+
+  if(_matTabAtiva === 'resumo'){
+    // Agrega por projeto
+    const porProj = {};
+    resumo.forEach(r=>{
+      if(!porProj[r.projeto]) porProj[r.projeto]={projeto:r.projeto,total_geral:0,total_material:0,total_mao_obra:0,arquivos:0};
+      porProj[r.projeto].total_geral   += r.total_geral   ||0;
+      porProj[r.projeto].total_material+= r.total_material||0;
+      porProj[r.projeto].total_mao_obra+= r.total_mao_obra||0;
+      porProj[r.projeto].arquivos++;
+    });
+    const lista = Object.values(porProj).sort((a,b)=>b.total_geral-a.total_geral);
+    if(!lista.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;"><i class="fas fa-box-open" style="font-size:36px;display:block;margin-bottom:10px;"></i>Nenhum dado para os filtros selecionados.</div>';return;}
+    content.innerHTML=`<div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead style="position:sticky;top:0;z-index:5;">
+        <tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
+          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Projeto</th>
+          <th style="padding:9px 12px;text-align:center;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Arquivos</th>
+          <th style="padding:9px 12px;text-align:right;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Total Geral</th>
+          <th style="padding:9px 12px;text-align:right;color:#c2410c;font-weight:700;font-size:11px;text-transform:uppercase;">Materiais</th>
+          <th style="padding:9px 12px;text-align:right;color:#1e40af;font-weight:700;font-size:11px;text-transform:uppercase;">Mão de Obra</th>
+          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Composição</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${lista.map(p=>{
+          const pctM = p.total_geral>0?Math.round(p.total_material/p.total_geral*100):0;
+          const pctMO = p.total_geral>0?Math.round(p.total_mao_obra/p.total_geral*100):0;
+          return `<tr style="border-bottom:1px solid #f0f4fb;" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+            <td style="padding:9px 12px;font-weight:800;color:var(--azul);">${escH(p.projeto)}</td>
+            <td style="padding:9px 12px;text-align:center;"><span style="background:#ede9fe;color:#6d28d9;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;">${p.arquivos}</span></td>
+            <td style="padding:9px 12px;text-align:right;font-weight:800;color:#15803d;">${_matFmt(p.total_geral)}</td>
+            <td style="padding:9px 12px;text-align:right;color:#c2410c;font-weight:700;">${_matFmt(p.total_material)}</td>
+            <td style="padding:9px 12px;text-align:right;color:#1e40af;font-weight:700;">${_matFmt(p.total_mao_obra)}</td>
+            <td style="padding:9px 12px;min-width:150px;">
+              <div style="display:flex;height:8px;border-radius:99px;overflow:hidden;gap:1px;">
+                <div style="background:#f97316;width:${pctM}%;border-radius:99px 0 0 99px;" title="Mat: ${pctM}%"></div>
+                <div style="background:#3b82f6;width:${pctMO}%;border-radius:0 99px 99px 0;" title="MO: ${pctMO}%"></div>
+              </div>
+              <div style="font-size:10px;color:#94a3b8;margin-top:3px;">${pctM}% mat / ${pctMO}% MO</div>
+            </td>
+          </tr>`;
+        }).join('')}
+        <tr style="background:#f5f0ff;font-weight:800;border-top:2px solid #e9d5ff;">
+          <td style="padding:9px 12px;color:#6d28d9;">TOTAL — ${lista.length} projetos</td>
+          <td></td>
+          <td style="padding:9px 12px;text-align:right;color:#15803d;">${_matFmt(totGeral)}</td>
+          <td style="padding:9px 12px;text-align:right;color:#c2410c;">${_matFmt(totMat)}</td>
+          <td style="padding:9px 12px;text-align:right;color:#1e40af;">${_matFmt(totMO)}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table></div>`;
+
+  } else if(_matTabAtiva === 'arquivos'){
+    if(!resumo.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">Nenhum arquivo nos filtros.</div>';return;}
+    content.innerHTML=`<div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead style="position:sticky;top:0;z-index:5;">
+        <tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
+          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Projeto</th>
+          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Arquivo (BMD/FFO)</th>
+          <th style="padding:9px 12px;text-align:right;color:#15803d;font-weight:700;font-size:11px;text-transform:uppercase;">Total</th>
+          <th style="padding:9px 12px;text-align:right;color:#c2410c;font-weight:700;font-size:11px;text-transform:uppercase;">Material</th>
+          <th style="padding:9px 12px;text-align:right;color:#1e40af;font-weight:700;font-size:11px;text-transform:uppercase;">Mão Obra</th>
+          <th style="padding:9px 12px;text-align:center;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Tipo</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${resumo.map(r=>{
+          const tipo = (r.arquivo||'').toUpperCase().includes('FFO')?'FFO':'BMD';
+          const tipoCor = tipo==='FFO'?'#166534':'#6d28d9';
+          const tipoBg  = tipo==='FFO'?'#dcfce7':'#ede9fe';
+          return `<tr style="border-bottom:1px solid #f0f4fb;" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+            <td style="padding:8px 12px;font-weight:800;color:var(--azul);">${escH(r.projeto)}</td>
+            <td style="padding:8px 12px;font-size:11px;color:#475569;" title="${escH(r.arquivo)}">${escH(r.arquivo)}</td>
+            <td style="padding:8px 12px;text-align:right;font-weight:800;color:#15803d;">${_matFmt(r.total_geral)}</td>
+            <td style="padding:8px 12px;text-align:right;color:#c2410c;">${r.total_material>0?_matFmt(r.total_material):'—'}</td>
+            <td style="padding:8px 12px;text-align:right;color:#1e40af;">${r.total_mao_obra>0?_matFmt(r.total_mao_obra):'—'}</td>
+            <td style="padding:8px 12px;text-align:center;"><span style="background:${tipoBg};color:${tipoCor};border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;">${tipo}</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table></div>`;
+
+  } else {
+    // Itens detalhados
+    const ft=document.getElementById('mat-filtro-tipo').value||'';
+    let itensFil = itens;
+    if(ft==='material') itensFil = itens.filter(i=>(i.valor_total||0)>0);
+    const fp=(document.getElementById('mat-filtro-proj').value||'').trim().toLowerCase();
+    const fb=(document.getElementById('mat-filtro-busca').value||'').trim().toLowerCase();
+    itensFil = itensFil.filter(i=>{
+      if(fp && !String(i.projeto||'').toLowerCase().includes(fp)) return false;
+      if(fb && !String(i.descricao||i.codigo||'').toLowerCase().includes(fb)) return false;
+      return true;
+    });
+    if(!itensFil.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">Nenhum item nos filtros.</div>';return;}
+    content.innerHTML=`<div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead style="position:sticky;top:0;z-index:5;">
+        <tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
+          <th style="padding:8px 10px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Projeto</th>
+          <th style="padding:8px 10px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Código</th>
+          <th style="padding:8px 10px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Descrição</th>
+          <th style="padding:8px 10px;text-align:right;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Qtd</th>
+          <th style="padding:8px 10px;text-align:right;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Vl Unit</th>
+          <th style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700;font-size:11px;text-transform:uppercase;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itensFil.slice(0,500).map(i=>{
+          return `<tr style="border-bottom:1px solid #f0f4fb;" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+            <td style="padding:7px 10px;font-weight:700;color:var(--azul);">${escH(i.projeto)}</td>
+            <td style="padding:7px 10px;font-size:11px;color:#64748b;">${escH(i.codigo||'—')}</td>
+            <td style="padding:7px 10px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escH(i.descricao)}">${escH(i.descricao||'—')}</td>
+            <td style="padding:7px 10px;text-align:right;">${i.quantidade!=null?Number(i.quantidade).toFixed(3):'—'}</td>
+            <td style="padding:7px 10px;text-align:right;color:#475569;">${i.valor_unitario!=null?_matFmt(i.valor_unitario):'—'}</td>
+            <td style="padding:7px 10px;text-align:right;font-weight:700;color:#15803d;">${_matFmt(i.valor_total)}</td>
+          </tr>`;
+        }).join('')}
+        ${itensFil.length>500?`<tr><td colspan="6" style="text-align:center;padding:10px;color:#94a3b8;font-size:11px;">...mostrando 500 de ${itensFil.length} itens. Use os filtros para refinar.</td></tr>`:''}
+      </tbody>
+    </table></div>`;
+  }
+}
+
+function matExportarCSV(){
+  if(!_matDados){toast('Carregue os dados primeiro','erro');return;}
+  const resumo = _matFiltrarDados(_matDados.resumo||[]);
+  const rows = [['Projeto','Arquivo','Total Geral','Total Material','Total Mão Obra']];
+  resumo.forEach(r=>rows.push([r.projeto,r.arquivo,(r.total_geral||0).toFixed(2).replace('.',','),(r.total_material||0).toFixed(2).replace('.',','),(r.total_mao_obra||0).toFixed(2).replace('.',',')]));
+  const csv = rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';')).join('\n');
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='HAGAP_materiais_bmd.csv'; a.click();
+  toast('📥 CSV exportado!','verde');
 }
 
 // ═══ CONFERÊNCIA ═══

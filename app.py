@@ -1817,6 +1817,93 @@ def api_listar_todos_arquivos():
     return jsonify(resultado)
 
 
+# ─────────────────────────────────────────────────────────────────────
+#  API: materiais BMD/FFO por projeto (lê materiais_por_projeto.xlsx)
+# ─────────────────────────────────────────────────────────────────────
+
+MATERIAIS_XLSX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "materiais_por_projeto.xlsx")
+
+@app.route("/api/materiais_bmd")
+def api_materiais_bmd():
+    """Lê materiais_por_projeto.xlsx e retorna dados das abas Resumo e Materiais_Detalhados."""
+    # Tenta encontrar o arquivo
+    caminhos = [
+        MATERIAIS_XLSX,
+        os.path.join(os.getcwd(), "materiais_por_projeto.xlsx"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "materiais_por_projeto.xlsx"),
+    ]
+    xlsx_path = next((c for c in caminhos if os.path.exists(c)), None)
+
+    # Fallback: tenta buscar do PostgreSQL (caso tenha sido enviado via upload)
+    if not xlsx_path and DATABASE_URL:
+        try:
+            conteudo, _ = _ler_arquivo_pg('uploads', 'materiais_por_projeto.xlsx')
+            if conteudo:
+                import tempfile
+                tmp = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
+                tmp.write(conteudo); tmp.close()
+                xlsx_path = tmp.name
+        except Exception:
+            pass
+
+    if not xlsx_path:
+        return jsonify({"erro": "Arquivo materiais_por_projeto.xlsx não encontrado. Faça upload pelo botão de upload."}), 404
+
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(xlsx_path, data_only=True)
+    except Exception as e:
+        return jsonify({"erro": f"Erro ao ler xlsx: {e}"}), 500
+
+    resumo = []
+    itens  = []
+
+    # Aba Resumo
+    if 'Resumo' in wb.sheetnames:
+        ws = wb['Resumo']
+        header = None
+        for row in ws.iter_rows(values_only=True):
+            if header is None:
+                header = [str(c).strip().lower() if c else '' for c in row]
+                continue
+            if not any(row):
+                continue
+            r = dict(zip(header, row))
+            resumo.append({
+                'projeto':       str(r.get('projeto') or '').strip(),
+                'arquivo':       str(r.get('arquivo') or '').strip(),
+                'total_geral':   float(r.get('total_geral') or 0),
+                'total_material': float(r.get('total_material') or 0),
+                'total_mao_obra': float(r.get('total_mao_obra') or 0),
+                'possui_material': str(r.get('possui_material') or 'NAO').strip(),
+            })
+
+    # Aba Materiais_Detalhados
+    aba_det = next((s for s in wb.sheetnames if 'detalha' in s.lower()), None)
+    if aba_det:
+        ws = wb[aba_det]
+        header = None
+        for row in ws.iter_rows(values_only=True):
+            if header is None:
+                header = [str(c).strip().lower() if c else '' for c in row]
+                continue
+            if not any(row):
+                continue
+            r = dict(zip(header, row))
+            itens.append({
+                'projeto':        str(r.get('projeto') or '').strip(),
+                'arquivo':        str(r.get('arquivo') or '').strip(),
+                'item':           str(r.get('item') or '').strip(),
+                'codigo':         str(r.get('codigo') or '').strip(),
+                'descricao':      str(r.get('descricao') or '').strip(),
+                'quantidade':     float(r.get('quantidade') or 0),
+                'valor_unitario': float(r.get('valor_unitario') or 0),
+                'valor_total':    float(r.get('valor_total') or 0),
+            })
+
+    return jsonify({'resumo': resumo, 'itens': itens})
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
