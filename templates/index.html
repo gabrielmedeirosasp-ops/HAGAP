@@ -62,10 +62,13 @@ header{background:var(--azul-dark);position:relative;overflow:hidden;box-shadow:
 .secao-titulo h2 i{color:var(--amarelo2);}
 .badge-count{background:var(--azul);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;margin-left:8px;}
 .tbl-wrap{max-width:100%;margin:0 0 16px;padding:0 14px;}
-.tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:hidden;box-shadow:var(--shadow);}
+.tbl-card{background:#fff;border-radius:16px;border:1px solid var(--borda);overflow:clip;box-shadow:var(--shadow);}
 .scroll-x{overflow-x:auto;}
 table{width:100%;min-width:920px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
-thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;}
+thead{position:sticky;top:0;z-index:20;}
+thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;position:relative;}
+.col-rz{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:col-resize;background:transparent;z-index:2;border-right:2px solid transparent;transition:border-color .15s;}
+.col-rz:hover,.col-rz.rz-active{border-right-color:var(--azul);background:rgba(11,61,145,.08);}
 thead th:hover{background:#eaefff;}
 thead th .sort-ico{opacity:.4;font-size:10px;margin-left:3px;}
 thead th.asc .sort-ico::after{content:'▲';}
@@ -787,7 +790,26 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
 <div class="toast" id="toast"><i class="fas fa-bolt"></i><span id="toast-msg"></span></div>
 
 <script>
-let dados=[], projetoEdit=null, projetoLink=null;
+let dados=[], projetoEdit=null, projetoLink=null, _rzState=null;
+
+// Redimensionamento de colunas — mouse move / up globais
+document.addEventListener('mousemove',e=>{
+  if(!_rzState) return;
+  const nw=Math.max(36,_rzState.startW+(e.clientX-_rzState.startX))+'px';
+  ['andamento','exec'].forEach(tId=>{
+    const col=document.querySelector(`#colgroup-${tId} col[data-col="${_rzState.colKey}"]`);
+    if(col) col.style.width=nw;
+  });
+});
+document.addEventListener('mouseup',e=>{
+  if(!_rzState) return;
+  const nw=Math.max(36,_rzState.startW+(e.clientX-_rzState.startX))+'px';
+  const w=_cwLoad(); w[_rzState.colKey]=nw; _cwSave(w);
+  _rzState.handle.classList.remove('rz-active');
+  document.body.style.cursor='';
+  document.body.style.userSelect='';
+  _rzState=null;
+});
 let colOrdem={a:null,e:null}, ordemAsc={a:true,e:true};
 let filtroExecAtivo=null, filtroAlertaAtivo='';
 
@@ -825,25 +847,44 @@ const _COL_BASE = {
   'final':      '88px'
 };
 
-// Remove widths salvos de versões anteriores
-localStorage.removeItem('hagap_col_widths');
+// Gerenciamento de larguras de colunas (salvas no localStorage)
+const COL_WIDTHS_KEY='hagap_col_widths_v3';
+function _cwLoad(){try{return JSON.parse(localStorage.getItem(COL_WIDTHS_KEY))||{};}catch(e){return{};}}
+function _cwSave(w){localStorage.setItem(COL_WIDTHS_KEY,JSON.stringify(w));}
+function _cwGet(k){const s=_cwLoad();return s[k]||_COL_BASE[k]||'auto';}
 
 function buildThead(trId, tab){
   const tr = document.getElementById(trId); if(!tr) return;
   tr.innerHTML = COLUNAS.map(c=>{
-    if(c.nosort) return `<th>${c.l}</th>`;
-    return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}">${c.l} <span class="sort-ico"></span></th>`;
+    const rz=`<div class="col-rz" onclick="event.stopPropagation()"></div>`;
+    if(c.nosort) return `<th id="th-${tab}-${c.k}">${c.l}${rz}</th>`;
+    return `<th onclick="ordenar('${tab}','${c.k}')" id="th-${tab}-${c.k}">${c.l} <span class="sort-ico"></span>${rz}</th>`;
   }).join('');
 
-  // Constrói colgroup com larguras fixas
+  // Constrói colgroup com larguras salvas ou padrão
   const cgId = 'colgroup-'+(tab==='a'?'andamento':'exec');
   const cg = document.getElementById(cgId);
   if(cg){
     cg.innerHTML = COLUNAS.map(c=>{
-      const w = _COL_BASE[c.k]||'auto';
+      const w = _cwGet(c.k);
       return `<col data-col="${c.k}" class="c-${c.k}" style="width:${w}">`;
     }).join('');
   }
+
+  // Inicializa handles de redimensionamento
+  COLUNAS.forEach(c=>{
+    const th=document.getElementById(`th-${tab}-${c.k}`);
+    if(!th) return;
+    const handle=th.querySelector('.col-rz');
+    if(!handle) return;
+    handle.addEventListener('mousedown',e=>{
+      e.preventDefault(); e.stopPropagation();
+      _rzState={colKey:c.k, startX:e.clientX, startW:th.offsetWidth, handle};
+      handle.classList.add('rz-active');
+      document.body.style.cursor='col-resize';
+      document.body.style.userSelect='none';
+    });
+  });
 }
 
 //  GERENCIADOR DE ARQUIVOS UNIVERSAL
