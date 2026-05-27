@@ -67,6 +67,23 @@ def _pg_init():
                 INSERT INTO hagap_db (id, dados) VALUES (1, '[]')
                 ON CONFLICT (id) DO NOTHING
             """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS hagap_mat_overrides (
+                    id           SERIAL PRIMARY KEY,
+                    projeto      TEXT NOT NULL,
+                    arquivo      TEXT NOT NULL,
+                    item_key     TEXT NOT NULL,
+                    descricao    TEXT,
+                    quantidade   FLOAT,
+                    valor_unitario FLOAT,
+                    valor_total  FLOAT,
+                    is_deleted   BOOLEAN DEFAULT FALSE,
+                    is_checked   BOOLEAN DEFAULT FALSE,
+                    check_obs    TEXT DEFAULT '',
+                    updated_at   TIMESTAMP DEFAULT NOW(),
+                    UNIQUE (projeto, arquivo, item_key)
+                )
+            """)
         conn.commit()
 
 
@@ -1901,7 +1918,141 @@ def api_materiais_bmd():
                 'valor_total':    float(r.get('valor_total') or 0),
             })
 
-    return jsonify({'resumo': resumo, 'itens': itens})
+    # Aplicar overrides do banco de dados
+    overrides = {}
+    checks = {}
+    if DATABASE_URL:
+        try:
+            with _pg_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT projeto, arquivo, item_key, descricao, quantidade, valor_unitario, valor_total, is_deleted, is_checked, check_obs FROM hagap_mat_overrides")
+                    for row in cur.fetchall():
+                        k = (row[0], row[1], row[2])
+                        overrides[k] = {
+                            'descricao': row[3], 'quantidade': row[4],
+                            'valor_unitario': row[5], 'valor_total': row[6],
+                            'is_deleted': row[7]
+                        }
+                        checks[k] = {'is_checked': row[8], 'check_obs': row[9] or ''}
+        except Exception as e:
+            print(f'[mat_overrides] erro: {e}')
+
+    # Aplica overrides nos itens
+    itens_filtrados = []
+    for it in itens:
+        k = (it['projeto'], it['arquivo'], it.get('item','') + '|' + it.get('codigo',''))
+        ov = overrides.get(k, {})
+        if ov.get('is_deleted'):
+            continue
+        if ov:
+            it = {**it}
+            for f in ('descricao','quantidade','valor_unitario','valor_total'):
+                if ov.get(f) is not None:
+                    it[f] = ov[f]
+        ck = checks.get(k, {})
+        it['is_checked'] = ck.get('is_checked', False)
+        it['check_obs']  = ck.get('check_obs', '')
+        it['item_key']   = k[2]
+        itens_filtrados.append(it)
+
+    # Aplica checks nos resumo
+    for rv in resumo:
+        k_resumo = (rv['projeto'], rv['arquivo'], '__resumo__')
+        ck = checks.get(k_resumo, {})
+        rv['is_checked'] = ck.get('is_checked', False)
+        rv['check_obs']  = ck.get('check_obs', '')
+
+    return jsonify({'resumo': resumo, 'itens': itens_filtrados})
+
+
+# ── Editar item de material ──────────────────────────────────────────
+@app.route("/api/materiais_item_update", methods=["POST"])
+def api_materiais_item_update():
+    if not DATABASE_URL:
+        return jsonify({"erro": "DATABASE_URL não configurado"}), 400
+    body = request.get_json(force=True)
+    projeto   = body.get('projeto', '')
+    arquivo   = body.get('arquivo', '')
+    item_key  = body.get('item_key', '')
+    fields    = body.get('fields', {})
+    if not projeto or not item_key:
+        return jsonify({"erro": "projeto e item_key são obrigatórios"}), 400
+    try:
+        with _pg_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO hagap_mat_overrides (projeto, arquivo, item_key, descricao, quantidade, valor_unitario, valor_total)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (projeto, arquivo, item_key) DO UPDATE SET
+                        descricao      = COALESCE(EXCLUDED.descricao,      hagap_mat_overrides.descricao),
+                        quantidade     = COALESCE(EXCLUDED.quantidade,     hagap_mat_overrides.quantidade),
+                        valor_unitario = COALESCE(EXCLUDED.valor_unitario, hagap_mat_overrides.valor_unitario),
+                        valor_total    = COALESCE(EXCLUDED.valor_total,    hagap_mat_overrides.valor_total),
+                        updated_at     = NOW()
+                """, (
+                    projeto, arquivo, item_key,
+                    fields.get('descricao'), fields.get('quantidade'),
+                    fields.get('valor_unitario'), fields.get('valor_total')
+                ))
+            conn.commit()
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
+
+
+# ── Deletar item de material ─────────────────────────────────────────
+@app.route("/api/materiais_item_delete", methods=["POST"])
+def api_materiais_item_delete():
+    if not DATABASE_URL:
+        return jsonify({"erro": "DATABASE_URL não configurado"}), 400
+    body = request.get_json(force=True)
+    projeto  = body.get('projeto', '')
+    arquivo  = body.get('arquivo', '')
+    item_key = body.get('item_key', '')
+    if not projeto or not item_key:
+        return jsonify({"erro": "projeto e item_key são obrigatórios"}), 400
+    try:
+        with _pg_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO hagap_mat_overrides (projeto, arquivo, item_key, is_deleted)
+                    VALUES (%s, %s, %s, TRUE)
+                    ON CONFLICT (projeto, arquivo, item_key) DO UPDATE SET is_deleted=TRUE, updated_at=NOW()
+                """, (projeto, arquivo, item_key))
+            conn.commit()
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
+
+
+# ── Checklist de item/resumo ─────────────────────────────────────────
+@app.route("/api/materiais_item_check", methods=["POST"])
+def api_materiais_item_check():
+    if not DATABASE_URL:
+        return jsonify({"erro": "DATABASE_URL não configurado"}), 400
+    body = request.get_json(force=True)
+    projeto   = body.get('projeto', '')
+    arquivo   = body.get('arquivo', '')
+    item_key  = body.get('item_key', '__resumo__')
+    checked   = bool(body.get('checked', False))
+    check_obs = body.get('check_obs', '')
+    if not projeto:
+        return jsonify({"erro": "projeto é obrigatório"}), 400
+    try:
+        with _pg_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO hagap_mat_overrides (projeto, arquivo, item_key, is_checked, check_obs)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (projeto, arquivo, item_key) DO UPDATE SET
+                        is_checked = EXCLUDED.is_checked,
+                        check_obs  = EXCLUDED.check_obs,
+                        updated_at = NOW()
+                """, (projeto, arquivo, item_key, checked, check_obs))
+            conn.commit()
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
 
 
 if __name__ == "__main__":

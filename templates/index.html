@@ -69,6 +69,7 @@ thead{position:sticky;top:0;z-index:20;}
 thead th{background:#f5f8ff;color:var(--azul);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;border-bottom:2px solid var(--borda);white-space:nowrap;overflow:hidden;cursor:pointer;user-select:none;position:relative;}
 .col-rz{position:absolute;right:0;top:0;bottom:0;width:8px;cursor:col-resize;z-index:30;border-right:3px solid transparent;transition:border-color .15s;}
 .col-rz:hover,.col-rz.rz-active{border-right-color:var(--azul);background:rgba(11,61,145,.15);}
+.mat-col-rz:hover,.mat-col-rz.rz-active{border-right-color:#7c3aed!important;background:rgba(124,58,237,.15);}
 body.col-resizing{cursor:col-resize!important;user-select:none!important;}
 thead th:hover{background:#eaefff;}
 thead th .sort-ico{opacity:.4;font-size:10px;margin-left:3px;}
@@ -796,6 +797,7 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
       <h3><i class="fas fa-boxes"></i> Materiais &amp; Mão de Obra — BMD/FFO por Projeto</h3>
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="btn-h ghost" onclick="matExportarCSV()" style="padding:5px 12px;font-size:11px;"><i class="fas fa-file-csv"></i> CSV</button>
+        <button class="btn-h ghost" onclick="matRecarregar()" style="padding:5px 12px;font-size:11px;" title="Recarregar dados do servidor"><i class="fas fa-sync-alt"></i> Recarregar</button>
         <button class="mclose" onclick="fecharModal('m-materiais')">✕</button>
       </div>
     </div>
@@ -817,7 +819,7 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
       <div style="display:flex;gap:0;border-bottom:none;">
         <button class="vtab active" id="mat-tab-resumo" onclick="matSetTab('resumo')"><i class="fas fa-chart-bar"></i> Resumo por Projeto</button>
         <button class="vtab" id="mat-tab-arquivos" onclick="matSetTab('arquivos')"><i class="fas fa-file-alt"></i> Por Arquivo (BMD/FFO)</button>
-        <button class="vtab" id="mat-tab-itens" onclick="matSetTab('itens')"><i class="fas fa-list"></i> Itens Detalhados</button>
+        <button class="vtab" id="mat-tab-itens" onclick="matSetTab('itens')" title="Duplo clique nas células para editar"><i class="fas fa-list"></i> Itens Detalhados <span style="font-size:10px;opacity:.6;">(✏️ duplo-clique p/ editar)</span></button>
       </div>
     </div>
     <!-- Corpo -->
@@ -894,9 +896,33 @@ document.addEventListener('mouseup', e=>{
   document.body.classList.remove('col-resizing');
   _rzState=null;
 });
-// ═══ MATERIAIS BMD/FFO ═══
+// ═══ MATERIAIS BMD/FFO — VERSÃO MELHORADA ═══
 let _matDados = null;  // cache dos dados da API
 let _matTabAtiva = 'resumo';
+let _matRzState = null;  // estado de redimensionamento de coluna no modal
+
+// ─── Redimensionamento de colunas no modal materiais ─────────────
+document.addEventListener('mousedown', e => {
+  if (!e.target.classList.contains('mat-col-rz')) return;
+  e.preventDefault(); e.stopPropagation();
+  const th = e.target.closest('th');
+  if (!th) return;
+  _matRzState = { th, startX: e.clientX, startW: th.offsetWidth };
+  e.target.classList.add('rz-active');
+  document.body.classList.add('col-resizing');
+}, true);
+document.addEventListener('mousemove', e => {
+  if (!_matRzState) return;
+  const nw = Math.max(40, _matRzState.startW + (e.clientX - _matRzState.startX));
+  _matRzState.th.style.width = nw + 'px';
+  _matRzState.th.style.minWidth = nw + 'px';
+});
+document.addEventListener('mouseup', e => {
+  if (!_matRzState) return;
+  _matRzState.th.querySelector('.mat-col-rz')?.classList.remove('rz-active');
+  document.body.classList.remove('col-resizing');
+  _matRzState = null;
+});
 
 function matSetTab(t){
   _matTabAtiva = t;
@@ -916,35 +942,49 @@ function matLimparFiltros(){
 }
 
 function _matFmt(v){
-  if(!v&&v!==0) return '—';
-  const s=Math.abs(v).toFixed(2); const[i,dec]=s.split('.');
-  return (v<0?'-':'')+'R$ '+i.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+dec;
+  if(v===null||v===undefined||v==='') return '—';
+  const n=parseFloat(v); if(isNaN(n)) return '—';
+  const s=Math.abs(n).toFixed(2); const[i,dec]=s.split('.');
+  return (n<0?'-':'')+'R$ '+i.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+dec;
 }
 
-function _matFiltrarDados(dados){
-  const fp=(document.getElementById('mat-filtro-proj').value||'').trim().toLowerCase();
-  const ft=document.getElementById('mat-filtro-tipo').value||'';
-  const fb=(document.getElementById('mat-filtro-busca').value||'').trim().toLowerCase();
-  const dIni=document.getElementById('mat-filtro-data-ini').value||'';
-  const dFim=document.getElementById('mat-filtro-data-fim').value||'';
+// ─── Extrai data de string (nome do arquivo ou campo data) ───
+function _matParseData(s){
+  if(!s) return null;
+  // DD/MM/YYYY
+  let m = String(s).match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if(m) return new Date(m[3], m[2]-1, m[1]);
+  // DD-MM-YYYY
+  m = String(s).match(/(\d{2})-(\d{2})-(\d{4})/);
+  if(m) return new Date(m[3], m[2]-1, m[1]);
+  // YYYY-MM-DD
+  m = String(s).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return new Date(m[1], m[2]-1, m[3]);
+  return null;
+}
 
-  function parseData(s){
-    // tenta extrair data do formato DD-MM-YYYY ou YYYY-MM-DD no nome do arquivo
-    if(!s) return null;
-    const m1 = s.match(/(\d{2})-(\d{2})-(\d{4})/);
-    if(m1) return new Date(m1[3],m1[2]-1,m1[1]);
-    const m2 = s.match(/(\d{4})-(\d{2})-(\d{2})/);
-    if(m2) return new Date(m2[1],m2[2]-1,m2[3]);
-    return null;
-  }
+function _matGetFiltros(){
+  return {
+    fp: (document.getElementById('mat-filtro-proj')?.value||'').trim().toLowerCase(),
+    ft: document.getElementById('mat-filtro-tipo')?.value||'',
+    fb: (document.getElementById('mat-filtro-busca')?.value||'').trim().toLowerCase(),
+    dIni: document.getElementById('mat-filtro-data-ini')?.value||'',
+    dFim: document.getElementById('mat-filtro-data-fim')?.value||'',
+  };
+}
 
-  return (dados||[]).filter(row=>{
+function _matFiltrarResumo(lista){
+  const {fp,ft,fb,dIni,dFim} = _matGetFiltros();
+  return (lista||[]).filter(row=>{
     if(fp && !String(row.projeto||'').toLowerCase().includes(fp)) return false;
     if(ft==='material' && !(row.total_material>0)) return false;
     if(ft==='mao_obra' && !(row.total_mao_obra>0)) return false;
-    if(fb && !String(row.arquivo||row.descricao||'').toLowerCase().includes(fb)) return false;
-    if(dIni || dFim){
-      const dt = parseData(row.arquivo||'');
+    // busca livre no arquivo ou projeto
+    if(fb && !String(row.arquivo||'').toLowerCase().includes(fb) &&
+             !String(row.projeto||'').toLowerCase().includes(fb)) return false;
+    // filtro de data
+    if(dIni||dFim){
+      const dt = _matParseData(row.arquivo||'');
       if(dt){
         const dtStr = dt.toISOString().slice(0,10);
         if(dIni && dtStr < dIni) return false;
@@ -955,36 +995,158 @@ function _matFiltrarDados(dados){
   });
 }
 
+function _matFiltrarItens(lista){
+  const {fp,ft,fb,dIni,dFim} = _matGetFiltros();
+  return (lista||[]).filter(it=>{
+    if(fp && !String(it.projeto||'').toLowerCase().includes(fp)) return false;
+    // Para itens detalhados: todos são materiais; mao_obra não tem itens individuais
+    if(ft==='mao_obra') return false; // não há itens individuais de mão de obra
+    // busca na descrição ou código
+    if(fb && !String(it.descricao||'').toLowerCase().includes(fb) &&
+             !String(it.codigo||'').toLowerCase().includes(fb) &&
+             !String(it.projeto||'').toLowerCase().includes(fb)) return false;
+    // filtro de data pelo nome do arquivo
+    if(dIni||dFim){
+      const dt = _matParseData(it.arquivo||'');
+      if(dt){
+        const dtStr = dt.toISOString().slice(0,10);
+        if(dIni && dtStr < dIni) return false;
+        if(dFim && dtStr > dFim) return false;
+      }
+    }
+    return true;
+  });
+}
+
+// Compatível com código antigo
+function _matFiltrarDados(dados){
+  return _matFiltrarResumo(dados);
+}
+
 async function abrirMateriais(proj){
   document.getElementById('mat-filtro-proj').value=proj||'';
   document.getElementById('mat-filtro-tipo').value='';
   document.getElementById('mat-filtro-busca').value='';
+  document.getElementById('mat-filtro-data-ini').value='';
+  document.getElementById('mat-filtro-data-fim').value='';
   document.getElementById('m-materiais').classList.add('open');
-  if(!_matDados){
-    document.getElementById('mat-kpis').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:12px;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
-    document.getElementById('mat-content').innerHTML='';
-    try{
-      const r = await fetch('/api/materiais_bmd');
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      _matDados = await r.json();
-    }catch(e){
-      document.getElementById('mat-kpis').innerHTML=`<div style="grid-column:1/-1;color:#dc2626;padding:12px;">❌ Erro ao carregar: ${escH(e.message)}</div>`;
-      return;
-    }
+  // Sempre recarrega para pegar últimas edições
+  document.getElementById('mat-kpis').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:12px;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+  document.getElementById('mat-content').innerHTML='';
+  try{
+    const r = await fetch('/api/materiais_bmd');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    _matDados = await r.json();
+  }catch(e){
+    document.getElementById('mat-kpis').innerHTML=`<div style="grid-column:1/-1;color:#dc2626;padding:12px;">❌ Erro ao carregar: ${escH(e.message)}</div>`;
+    return;
   }
   _renderMateriais();
 }
 
+async function matRecarregar(){
+  _matDados = null;
+  await abrirMateriais(document.getElementById('mat-filtro-proj')?.value||'');
+}
+
+function _matThResizable(label, minW){
+  return `<th style="position:relative;padding:8px 20px 8px 10px;white-space:nowrap;min-width:${minW||50}px;">${label}<div class="mat-col-rz" onclick="event.stopPropagation()" style="position:absolute;right:0;top:0;bottom:0;width:8px;cursor:col-resize;border-right:3px solid transparent;transition:border-color .15s;" onmouseover="this.style.borderRightColor='#7c3aed'" onmouseout="if(!document.body.classList.contains('col-resizing'))this.style.borderRightColor='transparent'"></div></th>`;
+}
+
+function _matCheckBtn(proj, arquivo, item_key, is_checked, check_obs){
+  const bg   = is_checked ? '#dcfce7' : '#f1f5f9';
+  const col  = is_checked ? '#16a34a' : '#94a3b8';
+  const ico  = is_checked ? 'fa-check-square' : 'fa-square';
+  const tip  = escH(check_obs || (is_checked ? 'Conferido' : 'Marcar como conferido'));
+  return `<button onclick="matToggleCheck('${escJ(proj)}','${escJ(arquivo)}','${escJ(item_key)}',${!is_checked})" title="${tip}" style="background:${bg};border:1px solid ${col};color:${col};border-radius:5px;padding:3px 7px;font-size:12px;cursor:pointer;line-height:1;white-space:nowrap;"><i class="fas ${ico}"></i></button>`;
+}
+
+async function matToggleCheck(proj, arquivo, item_key, checked){
+  try{
+    await fetch('/api/materiais_item_check',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({projeto:proj,arquivo:arquivo,item_key:item_key,checked})});
+    // atualiza local
+    if(_matDados){
+      const arr = item_key==='__resumo__' ? (_matDados.resumo||[]) : (_matDados.itens||[]);
+      arr.forEach(it=>{
+        const k = item_key==='__resumo__'
+          ? (it.projeto===proj && it.arquivo===arquivo)
+          : (it.item_key===item_key && it.projeto===proj);
+        if(k){ it.is_checked=checked; }
+      });
+    }
+    _renderMateriais();
+    toast(checked?'✅ Marcado como conferido':'Desmarcado','verde');
+  }catch(e){ toast('Erro: '+e.message,'erro'); }
+}
+
+async function matEditarCelula(el, proj, arquivo, item_key, campo){
+  const valorAtual = el.textContent.trim().replace(/[R$\s\.]/g,'').replace(',','.');
+  const input = document.createElement('input');
+  input.type = (campo==='quantidade'||campo==='valor_unitario'||campo==='valor_total') ? 'number' : 'text';
+  input.step = '0.01';
+  input.value = valorAtual;
+  input.style.cssText = 'width:100%;padding:3px 6px;border:2px solid #7c3aed;border-radius:5px;font-size:12px;outline:none;font-family:inherit;';
+  el.innerHTML = '';
+  el.appendChild(input);
+  input.focus(); input.select();
+
+  const salvar = async ()=>{
+    const novoVal = input.value.trim();
+    const fields = {};
+    if(campo==='descricao') fields.descricao = novoVal;
+    else fields[campo] = parseFloat(novoVal)||0;
+    try{
+      await fetch('/api/materiais_item_update',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({projeto:proj,arquivo:arquivo,item_key:item_key,fields})});
+      // atualiza cache local
+      if(_matDados){
+        (_matDados.itens||[]).forEach(it=>{
+          if(it.item_key===item_key && it.projeto===proj){
+            if(campo==='descricao') it.descricao=novoVal;
+            else it[campo]=parseFloat(novoVal)||0;
+          }
+        });
+      }
+      _renderMateriais();
+      toast('✏️ Item atualizado!','verde');
+    }catch(e){ toast('Erro: '+e.message,'erro'); _renderMateriais(); }
+  };
+
+  input.addEventListener('blur', salvar);
+  input.addEventListener('keydown', e=>{
+    if(e.key==='Enter') input.blur();
+    if(e.key==='Escape'){ _renderMateriais(); }
+  });
+}
+
+async function matDeletarItem(proj, arquivo, item_key, descricao){
+  if(!confirm(`Deletar item "${descricao}"?\n(pode ser refeito recarregando os dados do arquivo original)`)) return;
+  try{
+    await fetch('/api/materiais_item_delete',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({projeto:proj,arquivo:arquivo,item_key:item_key})});
+    // remove do cache local
+    if(_matDados){
+      _matDados.itens = (_matDados.itens||[]).filter(it=>!(it.item_key===item_key&&it.projeto===proj));
+    }
+    _renderMateriais();
+    toast('🗑️ Item removido!','verde');
+  }catch(e){ toast('Erro: '+e.message,'erro'); }
+}
+
 function _renderMateriais(){
   if(!_matDados) return;
-  const resumo  = _matFiltrarDados(_matDados.resumo  || []);
-  const itens   = _matFiltrarDados(_matDados.itens   || []);
+  const resumoAll = _matDados.resumo || [];
+  const itensAll  = _matDados.itens  || [];
 
-  // KPIs
-  const totGeral   = resumo.reduce((a,r)=>a+(r.total_geral||0),0);
-  const totMat     = resumo.reduce((a,r)=>a+(r.total_material||0),0);
-  const totMO      = resumo.reduce((a,r)=>a+(r.total_mao_obra||0),0);
-  const projetos   = [...new Set(resumo.map(r=>r.projeto))].length;
+  const resumo = _matFiltrarResumo(resumoAll);
+  const itens  = _matFiltrarItens(itensAll);
+
+  // ── KPIs (sempre baseados no resumo filtrado) ──
+  const totGeral = resumo.reduce((a,r)=>a+(r.total_geral||0),0);
+  const totMat   = resumo.reduce((a,r)=>a+(r.total_material||0),0);
+  const totMO    = resumo.reduce((a,r)=>a+(r.total_mao_obra||0),0);
+  const projetos = [...new Set(resumo.map(r=>r.projeto))].length;
 
   document.getElementById('mat-kpis').innerHTML=`
     <div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:12px;padding:12px;text-align:center;">
@@ -1005,42 +1167,50 @@ function _renderMateriais(){
     </div>`;
 
   const content = document.getElementById('mat-content');
+  const thS = 'background:#f5f0ff;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;position:sticky;top:0;z-index:5;';
+  const trH = 'border-bottom:1px solid #f0f4fb;';
 
+  // ── ABA RESUMO POR PROJETO ──
   if(_matTabAtiva === 'resumo'){
-    // Agrega por projeto
     const porProj = {};
     resumo.forEach(r=>{
-      if(!porProj[r.projeto]) porProj[r.projeto]={projeto:r.projeto,total_geral:0,total_material:0,total_mao_obra:0,arquivos:0};
+      if(!porProj[r.projeto]) porProj[r.projeto]={projeto:r.projeto,total_geral:0,total_material:0,total_mao_obra:0,arquivos:0,rows:[]};
       porProj[r.projeto].total_geral   += r.total_geral   ||0;
       porProj[r.projeto].total_material+= r.total_material||0;
       porProj[r.projeto].total_mao_obra+= r.total_mao_obra||0;
       porProj[r.projeto].arquivos++;
+      porProj[r.projeto].rows.push(r);
     });
     const lista = Object.values(porProj).sort((a,b)=>b.total_geral-a.total_geral);
     if(!lista.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;"><i class="fas fa-box-open" style="font-size:36px;display:block;margin-bottom:10px;"></i>Nenhum dado para os filtros selecionados.</div>';return;}
     content.innerHTML=`<div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;font-size:12px;">
-      <thead style="position:sticky;top:0;z-index:5;">
-        <tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
-          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Projeto</th>
-          <th style="padding:9px 12px;text-align:center;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Arquivos</th>
-          <th style="padding:9px 12px;text-align:right;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Total Geral</th>
-          <th style="padding:9px 12px;text-align:right;color:#c2410c;font-weight:700;font-size:11px;text-transform:uppercase;">Materiais</th>
-          <th style="padding:9px 12px;text-align:right;color:#1e40af;font-weight:700;font-size:11px;text-transform:uppercase;">Mão de Obra</th>
-          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Composição</th>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;">
+      <thead>
+        <tr style="${thS}">
+          ${_matThResizable('✔',40)}
+          ${_matThResizable('Projeto',80)}
+          ${_matThResizable('Arquivos',70)}
+          ${_matThResizable('Total Geral',110)}
+          ${_matThResizable('Materiais',110)}
+          ${_matThResizable('Mão de Obra',110)}
+          ${_matThResizable('Composição %',140)}
         </tr>
       </thead>
       <tbody>
         ${lista.map(p=>{
-          const pctM = p.total_geral>0?Math.round(p.total_material/p.total_geral*100):0;
+          const pctM  = p.total_geral>0?Math.round(p.total_material/p.total_geral*100):0;
           const pctMO = p.total_geral>0?Math.round(p.total_mao_obra/p.total_geral*100):0;
-          return `<tr style="border-bottom:1px solid #f0f4fb;" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
-            <td style="padding:9px 12px;font-weight:800;color:var(--azul);">${escH(p.projeto)}</td>
+          // check consolidado: conferido se todos os arquivos do projeto estiverem conferidos
+          const allChecked = p.rows.every(r=>r.is_checked);
+          const checkBtn = _matCheckBtn(p.projeto, p.rows[0]?.arquivo||'', '__resumo__proj__'+p.projeto, allChecked, '');
+          return `<tr style="${trH}" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+            <td style="padding:9px 10px;text-align:center;">${checkBtn}</td>
+            <td style="padding:9px 12px;font-weight:800;color:var(--azul);cursor:pointer;" onclick="matSetTab('arquivos');document.getElementById('mat-filtro-proj').value='${escJ(p.projeto)}';_renderMateriais();" title="Ver arquivos deste projeto">${escH(p.projeto)}</td>
             <td style="padding:9px 12px;text-align:center;"><span style="background:#ede9fe;color:#6d28d9;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;">${p.arquivos}</span></td>
             <td style="padding:9px 12px;text-align:right;font-weight:800;color:#15803d;">${_matFmt(p.total_geral)}</td>
             <td style="padding:9px 12px;text-align:right;color:#c2410c;font-weight:700;">${_matFmt(p.total_material)}</td>
             <td style="padding:9px 12px;text-align:right;color:#1e40af;font-weight:700;">${_matFmt(p.total_mao_obra)}</td>
-            <td style="padding:9px 12px;min-width:150px;">
+            <td style="padding:9px 12px;min-width:130px;">
               <div style="display:flex;height:8px;border-radius:99px;overflow:hidden;gap:1px;">
                 <div style="background:#f97316;width:${pctM}%;border-radius:99px 0 0 99px;" title="Mat: ${pctM}%"></div>
                 <div style="background:#3b82f6;width:${pctMO}%;border-radius:0 99px 99px 0;" title="MO: ${pctMO}%"></div>
@@ -1050,6 +1220,7 @@ function _renderMateriais(){
           </tr>`;
         }).join('')}
         <tr style="background:#f5f0ff;font-weight:800;border-top:2px solid #e9d5ff;">
+          <td></td>
           <td style="padding:9px 12px;color:#6d28d9;">TOTAL — ${lista.length} projetos</td>
           <td></td>
           <td style="padding:9px 12px;text-align:right;color:#15803d;">${_matFmt(totGeral)}</td>
@@ -1060,18 +1231,20 @@ function _renderMateriais(){
       </tbody>
     </table></div>`;
 
+  // ── ABA POR ARQUIVO (BMD/FFO) ──
   } else if(_matTabAtiva === 'arquivos'){
     if(!resumo.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">Nenhum arquivo nos filtros.</div>';return;}
     content.innerHTML=`<div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;font-size:12px;">
-      <thead style="position:sticky;top:0;z-index:5;">
-        <tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
-          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Projeto</th>
-          <th style="padding:9px 12px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Arquivo (BMD/FFO)</th>
-          <th style="padding:9px 12px;text-align:right;color:#15803d;font-weight:700;font-size:11px;text-transform:uppercase;">Total</th>
-          <th style="padding:9px 12px;text-align:right;color:#c2410c;font-weight:700;font-size:11px;text-transform:uppercase;">Material</th>
-          <th style="padding:9px 12px;text-align:right;color:#1e40af;font-weight:700;font-size:11px;text-transform:uppercase;">Mão Obra</th>
-          <th style="padding:9px 12px;text-align:center;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Tipo</th>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;">
+      <thead>
+        <tr style="${thS}">
+          ${_matThResizable('✔',40)}
+          ${_matThResizable('Projeto',80)}
+          ${_matThResizable('Arquivo (BMD/FFO)',180)}
+          ${_matThResizable('Total',110)}
+          ${_matThResizable('Material',110)}
+          ${_matThResizable('Mão Obra',110)}
+          ${_matThResizable('Tipo',60)}
         </tr>
       </thead>
       <tbody>
@@ -1079,7 +1252,9 @@ function _renderMateriais(){
           const tipo = (r.arquivo||'').toUpperCase().includes('FFO')?'FFO':'BMD';
           const tipoCor = tipo==='FFO'?'#166534':'#6d28d9';
           const tipoBg  = tipo==='FFO'?'#dcfce7':'#ede9fe';
-          return `<tr style="border-bottom:1px solid #f0f4fb;" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+          const checkBtn = _matCheckBtn(r.projeto, r.arquivo, '__resumo__', r.is_checked, r.check_obs);
+          return `<tr style="${trH}" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+            <td style="padding:8px 10px;text-align:center;">${checkBtn}</td>
             <td style="padding:8px 12px;font-weight:800;color:var(--azul);">${escH(r.projeto)}</td>
             <td style="padding:8px 12px;font-size:11px;color:#475569;" title="${escH(r.arquivo)}">${escH(r.arquivo)}</td>
             <td style="padding:8px 12px;text-align:right;font-weight:800;color:#15803d;">${_matFmt(r.total_geral)}</td>
@@ -1091,57 +1266,87 @@ function _renderMateriais(){
       </tbody>
     </table></div>`;
 
+  // ── ABA ITENS DETALHADOS ──
   } else {
-    // Itens detalhados
-    const ft=document.getElementById('mat-filtro-tipo').value||'';
-    let itensFil = itens;
-    if(ft==='material') itensFil = itens.filter(i=>(i.valor_total||0)>0);
-    const fp=(document.getElementById('mat-filtro-proj').value||'').trim().toLowerCase();
-    const fb=(document.getElementById('mat-filtro-busca').value||'').trim().toLowerCase();
-    itensFil = itensFil.filter(i=>{
-      if(fp && !String(i.projeto||'').toLowerCase().includes(fp)) return false;
-      if(fb && !String(i.descricao||i.codigo||'').toLowerCase().includes(fb)) return false;
-      return true;
-    });
-    if(!itensFil.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">Nenhum item nos filtros.</div>';return;}
+    const {ft} = _matGetFiltros();
+    if(ft==='mao_obra'){
+      content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;"><i class="fas fa-info-circle" style="font-size:32px;display:block;margin-bottom:10px;"></i><b>Mão de Obra</b> não possui itens individuais nos PDFs.<br><span style="font-size:12px;">Use a aba <b>Resumo por Projeto</b> para ver o total de mão de obra por arquivo.</span></div>';
+      return;
+    }
+    if(!itens.length){content.innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">Nenhum item nos filtros.</div>';return;}
+    const mostrando = itens.slice(0,600);
     content.innerHTML=`<div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;font-size:12px;">
-      <thead style="position:sticky;top:0;z-index:5;">
-        <tr style="background:#f5f0ff;border-bottom:2px solid #e9d5ff;">
-          <th style="padding:8px 10px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Projeto</th>
-          <th style="padding:8px 10px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Código</th>
-          <th style="padding:8px 10px;text-align:left;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Descrição</th>
-          <th style="padding:8px 10px;text-align:right;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Qtd</th>
-          <th style="padding:8px 10px;text-align:right;color:#6b21a8;font-weight:700;font-size:11px;text-transform:uppercase;">Vl Unit</th>
-          <th style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700;font-size:11px;text-transform:uppercase;">Total</th>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;">
+      <thead>
+        <tr style="${thS}">
+          ${_matThResizable('✔',40)}
+          ${_matThResizable('Projeto',80)}
+          ${_matThResizable('Arquivo',120)}
+          ${_matThResizable('Item',50)}
+          ${_matThResizable('Código',80)}
+          ${_matThResizable('Descrição',200)}
+          ${_matThResizable('Qtd',70)}
+          ${_matThResizable('Vl Unit',100)}
+          ${_matThResizable('Total',100)}
+          ${_matThResizable('Ações',80)}
         </tr>
       </thead>
       <tbody>
-        ${itensFil.slice(0,500).map(i=>{
-          return `<tr style="border-bottom:1px solid #f0f4fb;" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
-            <td style="padding:7px 10px;font-weight:700;color:var(--azul);">${escH(i.projeto)}</td>
-            <td style="padding:7px 10px;font-size:11px;color:#64748b;">${escH(i.codigo||'—')}</td>
-            <td style="padding:7px 10px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escH(i.descricao)}">${escH(i.descricao||'—')}</td>
-            <td style="padding:7px 10px;text-align:right;">${i.quantidade!=null?Number(i.quantidade).toFixed(3):'—'}</td>
-            <td style="padding:7px 10px;text-align:right;color:#475569;">${i.valor_unitario!=null?_matFmt(i.valor_unitario):'—'}</td>
-            <td style="padding:7px 10px;text-align:right;font-weight:700;color:#15803d;">${_matFmt(i.valor_total)}</td>
+        ${mostrando.map(it=>{
+          const ik = escJ(it.item_key||'');
+          const pj = escJ(it.projeto||'');
+          const arq = escJ(it.arquivo||'');
+          const checkBtn = _matCheckBtn(it.projeto, it.arquivo, it.item_key||'', it.is_checked, it.check_obs);
+          return `<tr style="${trH};${it.is_checked?'background:#f0fdf4;':''}" onmouseover="this.style.background='${it.is_checked?'#dcfce7':'#faf5ff'}'" onmouseout="this.style.background='${it.is_checked?'#f0fdf4':''}'">
+            <td style="padding:7px 10px;text-align:center;">${checkBtn}</td>
+            <td style="padding:7px 10px;font-weight:700;color:var(--azul);">${escH(it.projeto)}</td>
+            <td style="padding:7px 10px;font-size:10px;color:#64748b;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escH(it.arquivo)}">${escH(it.arquivo)}</td>
+            <td style="padding:7px 10px;text-align:center;color:#64748b;">${escH(it.item||'—')}</td>
+            <td style="padding:7px 10px;color:#64748b;cursor:pointer;" ondblclick="matEditarCelula(this,'${pj}','${arq}','${ik}','codigo')" title="Duplo clique para editar">${escH(it.codigo||'—')}</td>
+            <td style="padding:7px 10px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;" ondblclick="matEditarCelula(this,'${pj}','${arq}','${ik}','descricao')" title="${escH(it.descricao)} — duplo clique para editar">${escH(it.descricao||'—')}</td>
+            <td style="padding:7px 10px;text-align:right;cursor:pointer;" ondblclick="matEditarCelula(this,'${pj}','${arq}','${ik}','quantidade')" title="Duplo clique para editar">${it.quantidade!=null?Number(it.quantidade).toFixed(3):'—'}</td>
+            <td style="padding:7px 10px;text-align:right;color:#475569;cursor:pointer;" ondblclick="matEditarCelula(this,'${pj}','${arq}','${ik}','valor_unitario')" title="Duplo clique para editar">${it.valor_unitario!=null?_matFmt(it.valor_unitario):'—'}</td>
+            <td style="padding:7px 10px;text-align:right;font-weight:700;color:#15803d;cursor:pointer;" ondblclick="matEditarCelula(this,'${pj}','${arq}','${ik}','valor_total')" title="Duplo clique para editar">${_matFmt(it.valor_total)}</td>
+            <td style="padding:7px 10px;text-align:center;">
+              <button onclick="matDeletarItem('${pj}','${arq}','${ik}','${escJ(it.descricao||'')}')" title="Remover item" style="background:#fff1f2;border:1px solid #fecdd3;color:#be123c;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;"><i class="fas fa-trash"></i></button>
+            </td>
           </tr>`;
         }).join('')}
-        ${itensFil.length>500?`<tr><td colspan="6" style="text-align:center;padding:10px;color:#94a3b8;font-size:11px;">...mostrando 500 de ${itensFil.length} itens. Use os filtros para refinar.</td></tr>`:''}
+        ${itens.length>600?`<tr><td colspan="10" style="text-align:center;padding:10px;color:#94a3b8;font-size:11px;">...mostrando 600 de ${itens.length} itens. Use os filtros para refinar.</td></tr>`:''}
       </tbody>
     </table></div>`;
   }
 }
 
+
+
 function matExportarCSV(){
   if(!_matDados){toast('Carregue os dados primeiro','erro');return;}
-  const resumo = _matFiltrarDados(_matDados.resumo||[]);
-  const rows = [['Projeto','Arquivo','Total Geral','Total Material','Total Mão Obra']];
-  resumo.forEach(r=>rows.push([r.projeto,r.arquivo,(r.total_geral||0).toFixed(2).replace('.',','),(r.total_material||0).toFixed(2).replace('.',','),(r.total_mao_obra||0).toFixed(2).replace('.',',')]));
+  let rows, filename;
+  if(_matTabAtiva==='itens'){
+    const itens = _matFiltrarItens(_matDados.itens||[]);
+    rows = [['Projeto','Arquivo','Item','Código','Descrição','Quantidade','Valor Unitário','Total']];
+    itens.forEach(i=>rows.push([i.projeto,i.arquivo,i.item,i.codigo,i.descricao,
+      (i.quantidade||0).toFixed(3).replace('.',','),
+      (i.valor_unitario||0).toFixed(2).replace('.',','),
+      (i.valor_total||0).toFixed(2).replace('.',',')
+    ]));
+    filename='HAGAP_itens_detalhados.csv';
+  } else {
+    const resumo = _matFiltrarResumo(_matDados.resumo||[]);
+    rows = [['Projeto','Arquivo','Total Geral','Total Material','Mão de Obra','Conferido']];
+    resumo.forEach(r=>rows.push([r.projeto,r.arquivo,
+      (r.total_geral||0).toFixed(2).replace('.',','),
+      (r.total_material||0).toFixed(2).replace('.',','),
+      (r.total_mao_obra||0).toFixed(2).replace('.',','),
+      r.is_checked?'SIM':'NÃO'
+    ]));
+    filename='HAGAP_materiais_bmd.csv';
+  }
   const csv = rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';')).join('\n');
   const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='HAGAP_materiais_bmd.csv'; a.click();
+  a.download=filename; a.click();
   toast('📥 CSV exportado!','verde');
 }
 
