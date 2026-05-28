@@ -267,10 +267,15 @@
             <div class="lbl" style="color:var(--success)">SIM</div>
             <div class="desc">Pela equipe executora</div>
           </div>
-          <div class="toggle-opt" id="man-nao" onclick="setManobra(null)">
+          <div class="toggle-opt" id="man-nao" onclick="setManobra('outras')">
             <div class="icon">🔄</div>
             <div class="lbl" style="color:var(--primary)">NÃO</div>
             <div class="desc">Outra equipe</div>
+          </div>
+          <div class="toggle-opt" id="man-sem" onclick="setManobra('sem')">
+            <div class="icon">⛔</div>
+            <div class="lbl" style="color:var(--warning)">SEM</div>
+            <div class="desc">Sem manobra</div>
           </div>
         </div>
         <div id="manobra-outras" style="display:none;margin-top:16px">
@@ -541,12 +546,13 @@ function setServicoLivre(sim) {
 
 // ── Manobra
 function setManobra(val) {
-  const equipe = (val === 'equipe');
   manobraState = val;
-  document.getElementById('man-sim').className = 'toggle-opt' + (equipe  ? ' sel-sim' : '');
-  document.getElementById('man-nao').className = 'toggle-opt' + (!equipe ? ' sel-nao' : '');
-  document.getElementById('manobra-outras').style.display = equipe ? 'none' : '';
-  if (!equipe) {
+  document.getElementById('man-sim').className = 'toggle-opt' + (val==='equipe' ? ' sel-sim' : '');
+  document.getElementById('man-nao').className = 'toggle-opt' + (val==='outras'  ? ' sel-nao' : '');
+  document.getElementById('man-sem').className = 'toggle-opt' + (val==='sem'     ? ' sel-nao' : '');
+  const mostrarOutras = (val === 'outras');
+  document.getElementById('manobra-outras').style.display = mostrarOutras ? '' : 'none';
+  if (mostrarOutras) {
     document.getElementById('man-copel').className = 'radio-opt';
     document.getElementById('man-hagap').className = 'radio-opt';
     document.getElementById('manobra-auto-txt').style.display = 'none';
@@ -572,9 +578,10 @@ function showManobraAutoText() {
 }
 
 function getManobraText() {
-  if (manobraState === 'equipe') return 'Feito abertura de chaves e GLV pela equipe executora.';
+  if (manobraState === 'equipe') return 'Feito abertura e fechamento de chaves e glv, porta fusíveis retirados e reinstalados.';
   if (manobraState === 'copel')  return 'Manobra executada pela Agência COPEL.';
   if (manobraState === 'hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
+  if (manobraState === 'sem')    return 'Sem manobra realizada.';
   return '';
 }
 
@@ -774,30 +781,109 @@ function abrirModal() {
 }
 function fecharModal() { document.getElementById('modal-pdf').classList.remove('open'); }
 
-async function gerarPDF() {
+function gerarPDF() {
   document.getElementById('modal-confirm').style.display = 'none';
   document.getElementById('modal-loading').style.display = '';
   const dados = coletarDados();
+  setTimeout(() => {
+    try {
+      const htmlPDF = _montarHTMLBDO(dados);
+      const win = window.open('', '_blank', 'width=900,height=700');
+      win.document.write(htmlPDF);
+      win.document.close();
+      document.getElementById('modal-loading').style.display = 'none';
+      document.getElementById('modal-success').style.display = '';
+      document.getElementById('btn-download').onclick = function(e) {
+        e.preventDefault();
+        const win2 = window.open('', '_blank', 'width=900,height=700');
+        win2.document.write(htmlPDF);
+        win2.document.close();
+      };
+      document.getElementById('btn-download').href = '#';
+      // Envia e-mail automático
+      _enviarEmailBDO(dados);
+    } catch(e) {
+      document.getElementById('modal-loading').style.display = 'none';
+      document.getElementById('modal-error').style.display   = '';
+      document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
+    }
+  }, 300);
+}
+
+async function _enviarEmailBDO(dados) {
   try {
-    const res  = await fetch('http://localhost:5000/gerar-pdf', {
+    const r = await fetch('/api/enviar_bdo_email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dados)
     });
-    const json = await res.json();
-    document.getElementById('modal-loading').style.display = 'none';
-    if (json.ok) {
-      document.getElementById('modal-success').style.display = '';
-      document.getElementById('btn-download').href = 'http://localhost:5000/files/' + json.filename;
-    } else {
-      document.getElementById('modal-error').style.display = '';
-      document.getElementById('error-msg').textContent = json.error || 'Erro desconhecido.';
-    }
-  } catch(e) {
-    document.getElementById('modal-loading').style.display = 'none';
-    document.getElementById('modal-error').style.display   = '';
-    document.getElementById('error-msg').textContent = 'Não foi possível conectar ao servidor Python. Certifique-se de que o server.py está rodando.';
-  }
+    const res = await r.json();
+    if (res.ok) console.log('✅ E-mail BDO enviado para gabriel');
+    else console.warn('⚠️ E-mail BDO: ' + (res.erro||'falha'));
+  } catch(e) { console.warn('⚠️ E-mail BDO não enviado:', e.message); }
+}
+
+function _montarHTMLBDO(d) {
+  const srv = d.servicos.length ? d.servicos.join('; ') : 'Nenhum';
+  const linhasServico = [d.manobra_texto, d.alteracoes_texto, ...(d.servicos||[])].filter(Boolean).join('. ');
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/>
+  <title>BDO — ${d.num_projeto||'HAGAP'}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;color:#0d1b3e;padding:24px 32px;font-size:12px;}
+    .header{background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:14px 20px;border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:0;}
+    .header h2{font-size:15px;font-weight:800;}
+    .header p{font-size:10px;opacity:.75;}
+    .header .num{font-size:22px;font-weight:900;opacity:.9;}
+    .sec{background:#0a2557;color:white;padding:4px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+    .row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e8ecf5;}
+    .field{padding:7px 14px;border-right:1px solid #e8ecf5;}
+    .field:last-child{border-right:none;}
+    .fl{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:2px;}
+    .fv{font-size:12px;font-weight:700;color:#0d1b3e;}
+    .block{padding:10px 14px;border-bottom:1px solid #e8ecf5;}
+    .bl{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:4px;}
+    .sig-row{display:grid;grid-template-columns:1fr 1fr;}
+    .sig-cell{padding:12px;text-align:center;border-right:1px solid #e8ecf5;}
+    .sig-cell:last-child{border-right:none;}
+    .sig-line{border-top:1.5px solid #333;margin:30px 20px 6px;}
+    .footer{background:#f0f4fb;padding:6px 14px;font-size:9px;color:#4a5a7a;text-align:center;}
+    @media print{body{padding:10px 16px;}}
+  </style></head><body>
+  <div style="border:2px solid #b8c8e8;border-radius:8px;overflow:hidden;">
+    <div class="header">
+      <div><h2>BDO — Boletim Diário de Obras</h2><p>Hagap Instalações Elétricas</p></div>
+      <div class="num">${d.num_projeto||'—'}</div>
+    </div>
+    <div class="sec">Identificação</div>
+    <div class="row">
+      <div class="field"><div class="fl">Projeto</div><div class="fv">${d.num_projeto||'—'}</div></div>
+      <div class="field"><div class="fl">Cidade</div><div class="fv">${d.cidade||'—'}</div></div>
+    </div>
+    <div class="row">
+      <div class="field"><div class="fl">Data</div><div class="fv">${d.data_bdo||'—'}</div></div>
+      <div class="field"><div class="fl">Horário</div><div class="fv">${d.hora_inicio||'—'} → ${d.hora_final||'—'}</div></div>
+    </div>
+    <div class="row">
+      <div class="field"><div class="fl">Encarregado</div><div class="fv">${d.encarregado||'—'}</div></div>
+      <div class="field"><div class="fl">Serviço Livre</div><div class="fv">${d.servico_livre===true?'Sim':d.servico_livre===false?'Não (OMB/PLV)':'—'}</div></div>
+    </div>
+    ${d.servico_livre===false?`<div class="row">
+      <div class="field"><div class="fl">OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
+      <div class="field"><div class="fl">PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
+    </div>`:''}
+    <div class="sec">Execução</div>
+    <div class="block"><div class="bl">Manobra / Serviços</div><div>${linhasServico||'<em style="color:#94a3b8">Não preenchido</em>'}</div></div>
+    ${d.observacoes?`<div class="block"><div class="bl">Observações</div><div>${d.observacoes}</div></div>`:''}
+    <div class="sec">Assinaturas</div>
+    <div class="sig-row">
+      <div class="sig-cell">${d.assinatura_enc?`<img src="${d.assinatura_enc}" style="max-height:60px;"/>`:''}<div class="sig-line"></div><div style="font-size:11px;font-weight:700;">${d.encarregado||'Encarregado'}</div><div style="font-size:10px;color:#4a5a7a;">Encarregado</div></div>
+      <div class="sig-cell"><div class="sig-line"></div><div style="font-size:11px;font-weight:700;">Cliente / Representante</div><div style="font-size:10px;color:#4a5a7a;">Aprovação</div></div>
+    </div>
+    <div class="footer">HAGAP Instalações Elétricas — Gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
+  </div>
+  <script>window.onload=()=>{window.print();}<\/script>
+  </body></html>`;
 }
 
 // ── WhatsApp
@@ -818,7 +904,17 @@ ${d.servico_livre===false ? `📄 OMB: ${d.num_omb}  |  PLV: ${d.num_plv}\n` : '
 ${d.observacoes ? `📝 Obs: ${d.observacoes}` : ''}
 ━━━━━━━━━━━━━━━━━━
 _HAGAP Engenharia Elétrica_`;
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  // Abre PDF para salvar/compartilhar e depois WhatsApp
+  const htmlPDF = _montarHTMLBDO(d);
+  const pdfWin = window.open('', '_blank', 'width=900,height=700');
+  if (pdfWin) {
+    pdfWin.document.write(htmlPDF);
+    pdfWin.document.close();
+    showToast('📄 PDF aberto! Salve como PDF e compartilhe via WhatsApp.', 'success');
+  }
+  setTimeout(() => {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }, 800);
 }
 
 // ── Rascunho / Limpar
@@ -840,7 +936,7 @@ function limparFormulario() {
   });
   document.querySelectorAll('.servico-item').forEach(i => i.classList.remove('checked'));
   servicoLivre = null; manobraState = null; alteracoes = null;
-  ['sl-sim','sl-nao','man-sim','man-nao','alt-sim','alt-nao'].forEach(id => {
+  ['sl-sim','sl-nao','man-sim','man-nao','man-sem','alt-sim','alt-nao'].forEach(id => {
     const el = document.getElementById(id); if(el) el.className='toggle-opt';
   });
   ['man-copel','man-hagap'].forEach(id => { const el=document.getElementById(id); if(el) el.className='radio-opt'; });

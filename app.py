@@ -2060,6 +2060,88 @@ def api_materiais_item_check():
         return jsonify({'erro': str(e)}), 500
 
 
+# ── Envio automático de BDO por e-mail ─────────────────────────────
+@app.route("/api/enviar_bdo_email", methods=["POST"])
+def api_enviar_bdo_email():
+    """
+    Recebe os dados do BDO e envia um e-mail formatado para
+    gabrielmedeirosasp@gmail.com.
+
+    Variáveis de ambiente necessárias no Render:
+      EMAIL_REMETENTE  → seu e-mail Gmail remetente
+      EMAIL_SENHA      → senha de app do Gmail (16 caracteres)
+    """
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text      import MIMEText
+
+    DESTINATARIO = "gabrielmedeirosasp@gmail.com"
+    remetente    = os.environ.get("EMAIL_REMETENTE", "")
+    senha        = os.environ.get("EMAIL_SENHA",     "")
+
+    if not remetente or not senha:
+        return jsonify({"ok": False, "erro": "EMAIL_REMETENTE ou EMAIL_SENHA não configurados"}), 200
+
+    try:
+        d = request.get_json(force=True) or {}
+
+        srv      = ", ".join(d.get("servicos", [])) or "Nenhum"
+        manobra  = d.get("manobra_texto", "—")
+        alt      = d.get("alteracoes_texto", "—")
+        omb_plv  = f"OMB: {d.get('num_omb','—')} | PLV: {d.get('num_plv','—')}" \
+                   if d.get("servico_livre") is False else "Serviço Livre"
+
+        corpo_html = f"""
+        <html><body style="font-family:Arial,sans-serif;color:#0d1b3e;">
+        <div style="max-width:620px;margin:0 auto;border:2px solid #b8c8e8;border-radius:10px;overflow:hidden;">
+          <div style="background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:16px 20px;">
+            <h2 style="margin:0;font-size:16px;">📋 BDO — Boletim Diário de Obras</h2>
+            <p style="margin:4px 0 0;font-size:11px;opacity:.75;">Hagap Instalações Elétricas</p>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;width:40%;">Projeto</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('num_projeto','—')}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Cidade</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('cidade','—')}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Data</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('data_bdo','—')}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Horário</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('hora_inicio','—')} → {d.get('hora_final','—')}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Encarregado</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('encarregado','—')}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Serviço Livre</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{omb_plv}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Manobra</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{manobra}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Alterações</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{alt}</td></tr>
+            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Serviços</td>
+                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{srv}</td></tr>
+            {f'<tr><td style="padding:8px 14px;font-weight:700;color:#4a5a7a;">Observações</td><td style="padding:8px 14px;">{d.get("observacoes","")}</td></tr>' if d.get('observacoes') else ''}
+          </table>
+          <div style="background:#f0f4fb;padding:8px 14px;font-size:10px;color:#4a5a7a;text-align:center;">
+            HAGAP Instalações Elétricas — Enviado automaticamente em {datetime.now().strftime('%d/%m/%Y %H:%M')}
+          </div>
+        </div></body></html>
+        """
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"BDO — {d.get('num_projeto','Sem projeto')} | {d.get('data_bdo','')}"
+        msg["From"]    = remetente
+        msg["To"]      = DESTINATARIO
+        msg.attach(MIMEText(corpo_html, "html", "utf-8"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as smtp:
+            smtp.login(remetente, senha)
+            smtp.sendmail(remetente, DESTINATARIO, msg.as_string())
+
+        return jsonify({"ok": True})
+
+    except Exception as e:
+        print(f"[E-mail BDO] Erro: {e}")
+        return jsonify({"ok": False, "erro": str(e)}), 200
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)

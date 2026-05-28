@@ -335,6 +335,7 @@ td:first-child{white-space:normal;overflow:visible;max-width:none;text-overflow:
       <button class="btn-h ghost" onclick="abrirUpload()"><i class="fas fa-upload"></i> Upload Arquivo</button>
       <input type="file" id="upload-pdf" hidden multiple onchange="upSelecionarArquivos(this.files);abrirUpload();"/>
       <button class="btn-h amarelo" onclick="carregarDados()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+      <a href="/boletim" target="_blank" class="btn-h" style="background:rgba(255,208,0,.18);border:1.5px solid rgba(255,208,0,.6);color:#ffd000;font-size:12px;padding:6px 12px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-clipboard-list"></i> BDO</a>
 
     </div>
   </div>
@@ -3125,44 +3126,16 @@ carregarDados();
   background:linear-gradient(135deg,#072d6e 0%,#0b3d91 55%,#1453b5 100%);
   align-items:center;justify-content:center;
   font-family:'Inter',sans-serif;
+  overflow-y:auto;
 ">
-<!-- Separador "OU" -->
-<div style="display:flex;align-items:center;gap:12px;margin:18px 0 16px;">
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.15);"></div>
-  <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:600;letter-spacing:.5px;white-space:nowrap;">OU</span>
-  <div style="flex:1;height:1px;background:rgba(255,255,255,.15);"></div>
-</div>
-
-<!-- Botão BDO — acesso sem login -->
-<a href="/boletim" target="_blank" style="
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  width:100%;
-  background:rgba(255,255,255,.08);
-  border:1.5px solid rgba(255,208,0,.45);
-  border-radius:10px;
-  padding:11px;
-  font-size:13px;font-weight:700;
-  color:#ffd000;
-  text-decoration:none;
-  font-family:inherit;
-  transition:all .2s;
-  cursor:pointer;"
-onmouseover="this.style.background='rgba(255,208,0,.15)';this.style.borderColor='#ffd000';"
-onmouseout="this.style.background='rgba(255,255,255,.08)';this.style.borderColor='rgba(255,208,0,.45)';">
-  <i class="fas fa-clipboard-list" style="font-size:15px;"></i>
-  Preencher Boletim de Obras (BDO)
-</a>
-<p style="color:rgba(255,255,255,.3);font-size:10px;margin-top:8px;text-align:center;">
-  Acesso sem senha — apenas para preenchimento do boletim
-</p>
-  <!-- Logo / título -->
-  <div style="text-align:center;width:100%;max-width:400px;padding:20px;">
+  <!-- Container centralizado -->
+  <div style="text-align:center;width:100%;max-width:400px;padding:20px;margin:auto;">
     <img src="/static/logo.png" alt="HAGAP" style="height:80px;filter:drop-shadow(0 0 18px rgba(255,208,0,.6));margin-bottom:12px;"/>
     <p style="color:rgba(255,255,255,.6);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Sistema de Gestão</p>
     <h1 style="color:#fff;font-size:22px;font-weight:800;margin-bottom:28px;display:flex;align-items:center;justify-content:center;gap:9px;"><i class='fas fa-bolt' style='color:#ffd000;'></i> Projetos Elétricos</h1>
 
     <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:28px 28px 24px;backdrop-filter:blur(10px);">
-      <h2 style="color:#fff;font-size:16px;font-weight:700;margin-bottom:20px;text-align:left;"><i class='fas fa-lock' style='color:#ffd000;margin-right:8px;'></i>Acesso ao Sistema</h2>
+      <h2 style="color:#fff;font-size:16px;font-weight:700;margin-bottom:20px;text-align:center;"><i class='fas fa-lock' style='color:#ffd000;margin-right:8px;'></i>Acesso ao Sistema</h2>
 
       <div style="margin-bottom:14px;text-align:left;">
         <label style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;">Usuário</label>
@@ -3194,6 +3167,19 @@ onmouseout="this.style.background='rgba(255,255,255,.08)';this.style.borderColor
       <button onclick="fazerLogin()" style="width:100%;background:linear-gradient(90deg,#ffd000,#ffc200);color:#072d6e;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(255,208,0,.5)';" onmouseout="this.style.transform='';this.style.boxShadow='';">
         <i class='fas fa-sign-in-alt' style='margin-right:7px;'></i>Entrar
       </button>
+
+      <!-- Separador OU -->
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0 14px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.15);"></div>
+        <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:600;letter-spacing:.5px;">OU</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.15);"></div>
+      </div>
+
+      <!-- Botão BDO menor -->
+      <a href="/boletim" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,208,0,.4);border-radius:9px;padding:9px 14px;font-size:12px;font-weight:700;color:#ffd000;text-decoration:none;font-family:inherit;transition:all .2s;" onmouseover="this.style.background='rgba(255,208,0,.12)';this.style.borderColor='#ffd000';" onmouseout="this.style.background='rgba(255,255,255,.07)';this.style.borderColor='rgba(255,208,0,.4)';">
+        <i class="fas fa-clipboard-list" style="font-size:13px;"></i>
+        Preencher BDO sem login
+      </a>
     </div>
     <p style="color:rgba(255,255,255,.3);font-size:10px;margin-top:16px;">HAGAP &copy; 2025 — Sistema de Gestão de Projetos Elétricos</p>
   </div>
