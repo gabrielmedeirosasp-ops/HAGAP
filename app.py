@@ -465,13 +465,18 @@ def _extrair_rateio_e_us(texto):
 @app.route("/")
 def index():
     from flask import make_response
+
     resp = make_response(send_from_directory("templates", "index.html"))
+
     resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    resp.headers["Pragma"]        = "no-cache"
-    resp.headers["Expires"]       = "0"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
+
     return resp
-
-
+# ─── BOLETIM DE OBRAS (BDO) — acesso público, sem login ───
+@app.route("/boletim")
+def boletim():
+    return send_from_directory("templates", "boletim.html")
 # ─────────────────────────────────────────────────────────────────────
 #  API: dados
 # ─────────────────────────────────────────────────────────────────────

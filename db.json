@@ -62,14 +62,24 @@
       "1704891-6.pdf",
       "LM PROJETO 1704891.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1704891 - BMD PARC - HAGAP.pdf",
+        "us": "",
+        "data": "25/05/2026",
+        "valor": "R$100.528,77",
+        "rateio": "100.528,77",
+        "rateio_float": 100528.77
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "25/05/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "ae",
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -6331,6 +6341,170 @@
     ],
     "ffos": [],
     "medicao1": "20/05/2026",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1727808I",
+    "ae": "084796",
+    "us": "121,685",
+    "us_num": 121.685,
+    "prazo": "26/07/2026",
+    "prazo_alerta": "ok",
+    "local": "",
+    "custo": "R$8.676,98",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "AES 84796 4600026463 HAGAP.pdf",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "ae"
+    ],
+    "avisos": [
+      "⚠ AE '084796' em múltiplos projetos: 1727808I, 1728163I"
+    ],
+    "aes": [
+      {
+        "arquivo": "AES 84796 4600026463 HAGAP.pdf",
+        "ae": "084796"
+      }
+    ]
+  },
+  {
+    "projeto": "1728163I",
+    "ae": "084796",
+    "us": "121,685",
+    "us_num": 121.685,
+    "prazo": "26/07/2026",
+    "prazo_alerta": "ok",
+    "local": "",
+    "custo": "R$8.676,98",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "AES 84796 4600026463 HAGAP.pdf",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "ae"
+    ],
+    "avisos": [
+      "⚠ AE '084796' em múltiplos projetos: 1727808I, 1728163I"
+    ],
+    "aes": [
+      {
+        "arquivo": "AES 84796 4600026463 HAGAP.pdf",
+        "ae": "084796"
+      }
+    ]
+  },
+  {
+    "projeto": "1727808",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "20/04/2026",
+    "prazo_alerta": "vencido",
+    "local": "GLOSSÁRIO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1727808 UC 17399556 _CTO 8940815214_SS 20264161400821",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "AvaliacaoQualidadeTensao_UC17399556_CTO8940815214.pdf",
+      "MATERIAIS E TAREFAS - 1727808.pdf",
+      "PROJETO - 1727808.pdf",
+      "RelatorioSecundaria_UC17399556_CTO8940815214.pdf",
+      "TraceEletrico_UC17399556_CTO8940815214.pdf",
+      "VALIDADOR - 1727808I.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1728163",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "05/05/2026",
+    "prazo_alerta": "vencido",
+    "local": "GLOSSÁRIO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1728163 UC 106615580_CTO 8940847951_SS 20264367568796",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "AvaliacaoQualidadeTensao_UC106615580_CTO8940847951.pdf",
+      "MATERIAIS E TAREFAS - 1728163I.pdf",
+      "PROJETO - 1728163I.pdf",
+      "RelatorioSecundaria_UC106615580_CTO8940847951.pdf",
+      "TraceEletrico_UC106615580_CTO8940847951.pdf",
+      "relatorio.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1676605",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "1676605 - BMD PARCIAL - HAGAP.pdf",
+        "us": "",
+        "data": "25/05/2026",
+        "valor": "R$39.199,95",
+        "rateio": "39.199,95",
+        "rateio_float": 39199.95
+      }
+    ],
+    "ffos": [],
+    "medicao1": "25/05/2026",
     "medicao2": "",
     "final": "",
     "origem": [

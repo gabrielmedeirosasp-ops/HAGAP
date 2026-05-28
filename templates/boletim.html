@@ -1,0 +1,868 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDO — Boletim Diário de Obras</title>
+<style>
+  :root {
+    --primary: #0a2557;
+    --primary2: #0d2f6e;
+    --accent: #1565c0;
+    --bg: #e8eef8;
+    --border: #b8c8e8;
+    --text: #0d1b3e;
+    --muted: #4a5a7a;
+    --success: #1a7a3c;
+    --danger: #c0392b;
+    --warning: #d68910;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Segoe UI', Arial, sans-serif; color: var(--text); }
+
+  .topbar {
+    background: linear-gradient(135deg, #061539 0%, #0a2557 100%);
+    color: white; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  }
+  .topbar-inner {
+    max-width: 860px; margin: 0 auto; padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .topbar-logo { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo img { height: 44px; object-fit: contain; background: white; border-radius: 6px; padding: 3px 6px; }
+  .topbar-logo h1 { font-size: 15px; font-weight: 800; line-height: 1.3; }
+  .topbar-logo h1 span { font-size: 11px; opacity: 0.65; font-weight: 400; display: block; }
+  .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .progress-wrap { width: 100%; padding: 0 20px 8px; max-width: 860px; margin: 0 auto; }
+  .progress-bar { background: rgba(255,255,255,0.15); border-radius: 20px; height: 3px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e67e22, #f1c40f); height: 100%; border-radius: 20px; transition: width 0.4s; }
+
+  .btn { padding: 9px 18px; border: none; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
+  .btn-success { background: var(--success); color: white; }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--border); }
+  .btn-sm { padding: 5px 11px; font-size: 12px; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  .step-indicator { display: flex; gap: 0; margin-bottom: 24px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .step-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 10px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+  .step-item:hover { color: var(--primary); background: var(--bg); }
+  .step-item.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f4ff; }
+  .step-item.done { color: var(--success); border-bottom-color: var(--success); }
+  .step-item .step-num { display: block; font-size: 16px; margin-bottom: 3px; }
+
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); margin-bottom: 14px; overflow: hidden; }
+  .card-header { background: linear-gradient(135deg, #0a2557 0%, #0d3580 100%); color: white; padding: 11px 16px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .card-body { padding: 16px; }
+
+  .form-grid { display: grid; gap: 12px; }
+  .col-2 { grid-template-columns: 1fr 1fr; }
+  .col-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media(max-width:640px) { .col-2,.col-3 { grid-template-columns: 1fr; } }
+
+  .form-group label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
+  .form-group label .req { color: var(--danger); }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 7px; padding: 9px 11px; font-size: 13px; color: var(--text);
+    transition: all 0.2s; background: white; font-family: inherit;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,52,96,0.1);
+  }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  .toggle-group { display: flex; gap: 10px; margin-top: 6px; }
+  .toggle-opt {
+    flex: 1; border: 2px solid var(--border); border-radius: 10px; padding: 13px 10px;
+    cursor: pointer; text-align: center; transition: all 0.2s;
+  }
+  .toggle-opt:hover { border-color: var(--primary); background: #f5f7ff; }
+  .toggle-opt.sel-sim { border-color: var(--success); background: #f0fff4; box-shadow: 0 0 0 3px rgba(39,174,96,0.13); }
+  .toggle-opt.sel-nao { border-color: var(--danger); background: #fff5f5; box-shadow: 0 0 0 3px rgba(231,76,60,0.13); }
+  .toggle-opt .icon { font-size: 26px; margin-bottom: 5px; }
+  .toggle-opt .lbl { font-weight: 800; font-size: 15px; }
+  .toggle-opt .desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  .radio-group { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .radio-opt {
+    border: 2px solid var(--border); border-radius: 8px; padding: 10px 16px;
+    cursor: pointer; text-align: center; transition: all 0.2s; font-size: 13px; font-weight: 600;
+  }
+  .radio-opt:hover { border-color: var(--primary); background: #f5f7ff; }
+  .radio-opt.selected { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+
+  .servico-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 9px; margin-bottom: 8px; transition: all 0.2s; }
+  .servico-item:hover { border-color: var(--primary); background: #f9faff; }
+  .servico-item.checked { border-color: var(--primary); background: #eef4ff; }
+  .servico-check { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; margin-top: 1px; flex-shrink: 0; }
+  .servico-info { flex: 1; }
+  .servico-label { font-weight: 700; font-size: 13px; cursor: pointer; }
+  .servico-qty { display: none; margin-top: 8px; }
+  .servico-qty input { padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit; width: 100%; max-width: 220px; }
+  .servico-item.checked .servico-qty { display: block; }
+
+  .auto-text { background: linear-gradient(135deg, #eef4ff, #f5f7ff); border: 1.5px solid #c5d5f8; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--primary); font-style: italic; display: flex; align-items: center; gap: 8px; }
+  .auto-text::before { content: '🤖'; font-size: 16px; flex-shrink: 0; }
+
+  .sig-wrapper { border: 2px dashed var(--border); border-radius: 10px; background: #fafbff; padding: 10px; }
+  .sig-canvas { display: block; width: 100%; height: 130px; border-radius: 6px; background: white; border: 1px solid var(--border); cursor: crosshair; touch-action: none; }
+  .sig-controls { display: flex; gap: 8px; margin-top: 6px; align-items: center; }
+
+  .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+  .nav-buttons .btn { min-width: 120px; justify-content: center; }
+
+  /* ── PREVIEW BDO ── */
+  .bdo-preview { background: white; border-radius: 10px; border: 2px solid var(--border); overflow: hidden; font-size: 12px; line-height: 1.6; }
+  .bdo-header-bar { background: linear-gradient(135deg, #061539, #0a2f7a); color: white; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .bdo-header-bar img { height: 50px; background: white; border-radius: 6px; padding: 3px 8px; }
+  .bdo-header-info { flex: 1; }
+  .bdo-header-info h2 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+  .bdo-header-info p { font-size: 10px; opacity: 0.75; }
+  .bdo-num { font-size: 22px; font-weight: 900; opacity: 0.9; text-align: right; white-space: nowrap; }
+  .bdo-sec { background: #0a2557; color: white; padding: 5px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bdo-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .bdo-field { padding: 7px 14px; border-bottom: 1px solid #e8ecf5; }
+  .bdo-field:nth-child(odd) { border-right: 1px solid #e8ecf5; }
+  .bdo-field .fl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+  .bdo-field .fv { font-size: 12px; font-weight: 700; color: var(--text); }
+  .bdo-text-block { padding: 10px 14px; border-bottom: 1px solid #e8ecf5; font-size: 12px; }
+  .bdo-text-block .bl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .bdo-sig-area { display: grid; grid-template-columns: 1fr 1fr; }
+  .bdo-sig-cell { padding: 12px; border-right: 1px solid #e8ecf5; text-align: center; }
+  .bdo-sig-cell:last-child { border-right: none; }
+  .bdo-sig-line { border-top: 1.5px solid #333; margin: 30px 20px 6px; }
+  .bdo-sig-name { font-size: 11px; font-weight: 700; }
+  .bdo-sig-role { font-size: 10px; color: var(--muted); }
+  .bdo-footer { background: #f0f4fb; padding: 6px 14px; font-size: 9px; color: var(--muted); text-align: center; border-top: 1px solid var(--border); }
+
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+  .alert { border-radius: 8px; padding: 11px 14px; margin-bottom: 12px; font-size: 12px; display: flex; align-items: center; gap: 9px; }
+  .alert-info { background: #e8f4fd; border: 1px solid #b8d9f7; color: #1a5276; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: white; border-radius: 14px; padding: 28px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+  .modal-icon { font-size: 46px; margin-bottom: 12px; }
+  .modal-box h3 { font-size: 18px; margin-bottom: 8px; }
+  .modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .spinner { width: 34px; height: 34px; border: 4px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: white; padding: 13px 22px; border-radius: 9px; z-index: 999; font-size: 13px; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,0.3); transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: #1e8449; }
+  .toast.error { background: #c0392b; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-logo">
+      <img src="/static/logo.png" alt="HAGAP" onerror="this.style.display='none'">
+      <h1>BDO — Boletim Diário de Obras
+        <span>Hagap Instalações Elétricas</span>
+      </h1>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="limparFormulario()">🔄 Limpar</button>
+      <button class="btn btn-secondary btn-sm" onclick="salvarRascunho()">💾 Rascunho</button>
+      <button class="btn btn-primary btn-sm" onclick="irParaExportar()">📄 Gerar BDO</button>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="mainProgress" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STEP INDICATOR -->
+  <div class="step-indicator">
+    <div class="step-item active" id="si-1" onclick="goStep(1)"><span class="step-num">📋</span>Cabeçalho</div>
+    <div class="step-item" id="si-2" onclick="goStep(2)"><span class="step-num">🔑</span>Serviço</div>
+    <div class="step-item" id="si-3" onclick="goStep(3)"><span class="step-num">🔌</span>Manobra</div>
+    <div class="step-item" id="si-4" onclick="goStep(4)"><span class="step-num">📦</span>Materiais</div>
+    <div class="step-item" id="si-5" onclick="goStep(5)"><span class="step-num">🔧</span>Serviços</div>
+    <div class="step-item" id="si-6" onclick="goStep(6)"><span class="step-num">📝</span>Obs.</div>
+    <div class="step-item" id="si-7" onclick="goStep(7)"><span class="step-num">✍️</span>Assinatura</div>
+    <div class="step-item" id="si-8" onclick="goStep(8)"><span class="step-num">📤</span>Exportar</div>
+  </div>
+
+  <!-- STEP 1 — CABEÇALHO -->
+  <div class="step-panel active" id="step-1">
+    <div class="card">
+      <div class="card-header">📋 1. Identificação do BDO</div>
+      <div class="card-body">
+        <div class="form-grid col-2">
+          <div class="form-group"><label>Número do Projeto <span class="req">*</span></label><input type="text" id="num_projeto" placeholder="Ex: PRJ-2026-001" oninput="updateProgress()"></div>
+          <div class="form-group"><label>Cidade <span class="req">*</span></label><input type="text" id="cidade" placeholder="Ex: Londrina / PR" oninput="updateProgress()"></div>
+        </div>
+        <div class="form-grid col-3" style="margin-top:12px">
+          <div class="form-group"><label>Data <span class="req">*</span></label><input type="date" id="data_bdo" oninput="updateProgress()"></div>
+          <div class="form-group"><label>Hora Início</label><input type="time" id="hora_inicio"></div>
+          <div class="form-group"><label>Hora Final</label><input type="time" id="hora_final"></div>
+        </div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="form-group"><label>Encarregado <span class="req">*</span></label><input type="text" id="encarregado" placeholder="Nome do encarregado" oninput="updateProgress()"></div>
+        </div>
+        <input type="hidden" id="equipe" value="">
+      </div>
+    </div>
+    <div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="goStep(2)">Próximo →</button></div>
+  </div>
+
+  <!-- STEP 2 — SERVIÇO LIVRE -->
+  <div class="step-panel" id="step-2">
+    <div class="card">
+      <div class="card-header">🔑 2. Serviço Livre</div>
+      <div class="card-body">
+        <p style="font-size:13px;margin-bottom:12px;font-weight:600">Trata-se de serviço livre? <span class="req">*</span></p>
+        <div class="toggle-group">
+          <div class="toggle-opt" id="sl-sim" onclick="setServicoLivre(true)">
+            <div class="icon">✅</div>
+            <div class="lbl" style="color:var(--success)">SIM</div>
+            <div class="desc">Serviço livre</div>
+          </div>
+          <div class="toggle-opt" id="sl-nao" onclick="setServicoLivre(false)">
+            <div class="icon">📋</div>
+            <div class="lbl" style="color:var(--primary)">NÃO</div>
+            <div class="desc">Preencher OMB / PLV</div>
+          </div>
+        </div>
+        <div id="campos-omb-plv" style="display:none;margin-top:16px">
+          <div class="form-grid col-2">
+            <div class="form-group"><label>Nº OMB <span class="req">*</span></label><input type="text" id="num_omb" placeholder="Número da OMB"></div>
+            <div class="form-group"><label>Nº PLV <span class="req">*</span></label><input type="text" id="num_plv" placeholder="Número do PLV"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(1)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 — MANOBRA -->
+  <div class="step-panel" id="step-3">
+    <div class="card">
+      <div class="card-header">🔌 3. Manobra</div>
+      <div class="card-body">
+        <p style="font-size:13px;margin-bottom:12px;font-weight:600">Manobra executada pela equipe? <span class="req">*</span></p>
+        <div class="toggle-group">
+          <div class="toggle-opt" id="man-sim" onclick="setManobra('equipe')">
+            <div class="icon">👷</div>
+            <div class="lbl" style="color:var(--success)">SIM</div>
+            <div class="desc">Pela equipe executora</div>
+          </div>
+          <div class="toggle-opt" id="man-nao" onclick="setManobra(null)">
+            <div class="icon">🔄</div>
+            <div class="lbl" style="color:var(--primary)">NÃO</div>
+            <div class="desc">Outra equipe</div>
+          </div>
+        </div>
+        <div id="manobra-outras" style="display:none;margin-top:16px">
+          <p style="font-size:12px;margin-bottom:8px;font-weight:600;color:var(--muted)">Selecione quem executou a manobra:</p>
+          <div class="radio-group">
+            <div class="radio-opt" id="man-copel" onclick="setManobraExt('copel')">🏢 Agência COPEL</div>
+            <div class="radio-opt" id="man-hagap" onclick="setManobraExt('hagap')">⚡ Linha Viva HAGAP</div>
+          </div>
+        </div>
+        <div id="manobra-auto-txt" style="display:none;margin-top:14px"></div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(2)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 — ALTERAÇÕES / MATERIAL -->
+  <div class="step-panel" id="step-4">
+    <div class="card">
+      <div class="card-header">📦 4. Alterações / Materiais Adicionais</div>
+      <div class="card-body">
+        <p style="font-size:13px;margin-bottom:12px;font-weight:600">Houve alterações ou materiais adicionais? <span class="req">*</span></p>
+        <div class="toggle-group">
+          <div class="toggle-opt" id="alt-nao" onclick="setAlteracoes(false)">
+            <div class="icon">✅</div>
+            <div class="lbl" style="color:var(--success)">NÃO</div>
+            <div class="desc">Conforme projeto</div>
+          </div>
+          <div class="toggle-opt" id="alt-sim" onclick="setAlteracoes(true)">
+            <div class="icon">📝</div>
+            <div class="lbl" style="color:var(--warning)">SIM</div>
+            <div class="desc">Descrever alterações</div>
+          </div>
+        </div>
+        <div id="alt-auto-txt" style="display:none;margin-top:14px">
+          <div class="auto-text">Executado conforme projeto.</div>
+        </div>
+        <div id="alt-desc-campo" style="display:none;margin-top:14px">
+          <div class="form-group">
+            <label>Descreva as alterações ou materiais adicionais</label>
+            <textarea id="alt_descricao" placeholder="Descreva as alterações realizadas, materiais diferentes utilizados, quantidades alteradas..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(5)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 — SERVIÇOS EXECUTADOS -->
+  <div class="step-panel" id="step-5">
+    <div class="card">
+      <div class="card-header">🔧 5. Serviços Executados</div>
+      <div class="card-body">
+        <div class="alert alert-info">ℹ️ Marque os serviços realizados e informe a quantidade quando necessário.</div>
+
+        <div class="servico-item" id="si-calcada">
+          <input type="checkbox" class="servico-check" id="chk-calcada" onchange="toggleServico('si-calcada','chk-calcada')">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-calcada">🏗️ Reforma de calçada</label>
+            <div class="servico-qty"><input type="text" id="qty-calcada" placeholder="Quantidade / descrição (opcional)"></div>
+          </div>
+        </div>
+
+        <div class="servico-item" id="si-podas">
+          <input type="checkbox" class="servico-check" id="chk-podas" onchange="toggleServico('si-podas','chk-podas')">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-podas">🌳 Podas</label>
+            <div class="servico-qty"><input type="text" id="qty-podas" placeholder="Quantidade / descrição (opcional)"></div>
+          </div>
+        </div>
+
+        <div class="servico-item" id="si-luminarias">
+          <input type="checkbox" class="servico-check" id="chk-luminarias" onchange="toggleServico('si-luminarias','chk-luminarias')">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-luminarias">💡 Reinstalação de luminárias</label>
+            <div class="servico-qty"><input type="text" id="qty-luminarias" placeholder="Quantidade (opcional)"></div>
+          </div>
+        </div>
+
+        <div class="servico-item" id="si-fibra">
+          <input type="checkbox" class="servico-check" id="chk-fibra" onchange="toggleServico('si-fibra','chk-fibra')">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-fibra">🔗 Amarração de fibra óptica</label>
+            <div class="servico-qty"><input type="text" id="qty-fibra" placeholder="Quantidade (opcional)"></div>
+          </div>
+        </div>
+
+        <div class="servico-item" id="si-malha">
+          <input type="checkbox" class="servico-check" id="chk-malha" onchange="toggleServico('si-malha','chk-malha'); updateMalhaText()">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-malha">⚡ Malha de aterramento</label>
+            <div class="servico-qty"><input type="number" id="qty-malha" placeholder="Metros executados" min="0" oninput="updateMalhaText()"></div>
+          </div>
+        </div>
+        <div id="malha-auto-txt" style="display:none;margin-top:6px;margin-bottom:8px"></div>
+
+        <div class="servico-item" id="si-estai">
+          <input type="checkbox" class="servico-check" id="chk-estai" onchange="toggleServico('si-estai','chk-estai')">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-estai">🪝 Estai prov.</label>
+            <div class="servico-qty"><input type="text" id="qty-estai" placeholder="Quantidade / descrição (opcional)"></div>
+          </div>
+        </div>
+
+        <div class="servico-item" id="si-ramal">
+          <input type="checkbox" class="servico-check" id="chk-ramal" onchange="toggleServico('si-ramal','chk-ramal')">
+          <div class="servico-info">
+            <label class="servico-label" for="chk-ramal">🔌 Reinstalação de ramal</label>
+            <div class="servico-qty"><input type="text" id="qty-ramal" placeholder="Quantidade / descrição (opcional)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(4)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(6)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 — OBSERVAÇÕES -->
+  <div class="step-panel" id="step-6">
+    <div class="card">
+      <div class="card-header">📝 6. Observações Adicionais</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Observações (campo livre)</label>
+          <textarea id="observacoes" rows="6" placeholder="Intercorrências, condições climáticas, horários especiais, pendências..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(5)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(7)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 — ASSINATURA -->
+  <div class="step-panel" id="step-7">
+    <div class="card">
+      <div class="card-header">✍️ 7. Assinatura do Encarregado</div>
+      <div class="card-body">
+        <div class="form-grid col-2">
+          <div class="form-group"><label>Nome <span class="req">*</span></label><input type="text" id="sig-nome" placeholder="Nome completo do encarregado"></div>
+          <div class="form-group"><label>Cargo / Função</label><input type="text" id="sig-cargo" placeholder="Ex: Encarregado Elétrico" value="Encarregado Elétrico"></div>
+        </div>
+        <div class="sig-wrapper" style="margin-top:12px">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:block">✍️ Desenhe a assinatura abaixo</label>
+          <canvas class="sig-canvas" id="canvas-sig" width="800" height="130"></canvas>
+          <div class="sig-controls">
+            <button class="btn btn-sm btn-outline" onclick="limparCanvas()">🗑️ Limpar</button>
+            <span style="font-size:11px;color:var(--muted)">Use o mouse ou toque na tela para assinar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(6)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(8)">Ver BDO →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8 — EXPORTAR -->
+  <div class="step-panel" id="step-8">
+    <div class="card">
+      <div class="card-header">📤 8. Prévia e Exportar BDO</div>
+      <div class="card-body">
+        <div class="bdo-preview" id="bdo-preview-box"></div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+          <button class="btn btn-primary" style="font-size:14px;padding:12px 28px" onclick="abrirModal()">📄 Exportar PDF</button>
+          <button class="btn btn-success" style="font-size:14px;padding:12px 28px" onclick="compartilharWhatsApp()">💬 Enviar WhatsApp</button>
+          <button class="btn btn-outline" style="font-size:14px;padding:12px 28px" onclick="window.print()">🖨️ Imprimir</button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goStep(7)">← Voltar</button>
+      <div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-pdf">
+  <div class="modal-box">
+    <div id="modal-confirm">
+      <div class="modal-icon">📄</div>
+      <h3>Gerar BDO em PDF?</h3>
+      <p>O boletim será gerado com todos os dados preenchidos e a logo da empresa.</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="gerarPDF()">✅ Confirmar</button>
+      </div>
+    </div>
+    <div id="modal-loading" style="display:none">
+      <div class="spinner"></div>
+      <h3>Gerando PDF...</h3>
+      <p>Aguarde alguns segundos.</p>
+    </div>
+    <div id="modal-success" style="display:none">
+      <div class="modal-icon">✅</div>
+      <h3>BDO Gerado com Sucesso!</h3>
+      <p>Seu boletim está pronto para download.</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="fecharModal()">Fechar</button>
+        <a class="btn btn-success" id="btn-download" href="#" target="_blank">⬇️ Baixar PDF</a>
+      </div>
+    </div>
+    <div id="modal-error" style="display:none">
+      <div class="modal-icon">❌</div>
+      <h3>Erro ao Gerar PDF</h3>
+      <p id="error-msg">Verifique se o servidor Python está rodando.</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentStep = 1;
+let servicoLivre = null;
+let manobraState = null;
+let alteracoes   = null;
+
+function goStep(n) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('si-'   + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  document.getElementById('si-'   + currentStep).classList.add('active');
+  window.scrollTo({top: 0, behavior:'smooth'});
+  updateProgress();
+  if (n === 8) renderPreview();
+}
+
+function irParaExportar() { goStep(8); }
+
+function updateProgress() {
+  let filled = 0;
+  if (document.getElementById('num_projeto').value) filled++;
+  if (document.getElementById('cidade').value)      filled++;
+  if (document.getElementById('data_bdo').value)    filled++;
+  // equipe removido do cabeçalho
+  if (document.getElementById('encarregado').value) filled++;
+  if (servicoLivre !== null) filled++;
+  if (manobraState)          filled++;
+  if (alteracoes !== null)   filled++;
+  document.getElementById('mainProgress').style.width = Math.round(filled / 8 * 100) + '%';
+}
+
+// ── Serviço Livre
+function setServicoLivre(sim) {
+  servicoLivre = sim;
+  document.getElementById('sl-sim').className = 'toggle-opt' + (sim  ? ' sel-sim' : '');
+  document.getElementById('sl-nao').className = 'toggle-opt' + (!sim ? ' sel-nao' : '');
+  document.getElementById('campos-omb-plv').style.display = sim ? 'none' : '';
+  updateProgress();
+}
+
+// ── Manobra
+function setManobra(val) {
+  const equipe = (val === 'equipe');
+  manobraState = val;
+  document.getElementById('man-sim').className = 'toggle-opt' + (equipe  ? ' sel-sim' : '');
+  document.getElementById('man-nao').className = 'toggle-opt' + (!equipe ? ' sel-nao' : '');
+  document.getElementById('manobra-outras').style.display = equipe ? 'none' : '';
+  if (!equipe) {
+    document.getElementById('man-copel').className = 'radio-opt';
+    document.getElementById('man-hagap').className = 'radio-opt';
+    document.getElementById('manobra-auto-txt').style.display = 'none';
+  } else {
+    showManobraAutoText();
+  }
+  updateProgress();
+}
+
+function setManobraExt(tipo) {
+  manobraState = tipo;
+  document.getElementById('man-copel').className = 'radio-opt' + (tipo==='copel' ? ' selected' : '');
+  document.getElementById('man-hagap').className = 'radio-opt' + (tipo==='hagap' ? ' selected' : '');
+  showManobraAutoText();
+  updateProgress();
+}
+
+function showManobraAutoText() {
+  const div = document.getElementById('manobra-auto-txt');
+  const txt = getManobraText();
+  if (txt) { div.innerHTML = `<div class="auto-text">${txt}</div>`; div.style.display = ''; }
+  else div.style.display = 'none';
+}
+
+function getManobraText() {
+  if (manobraState === 'equipe') return 'Feito abertura de chaves e GLV pela equipe executora.';
+  if (manobraState === 'copel')  return 'Manobra executada pela Agência COPEL.';
+  if (manobraState === 'hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
+  return '';
+}
+
+
+// ── Alterações
+function setAlteracoes(sim) {
+  alteracoes = sim;
+  document.getElementById('alt-sim').className = 'toggle-opt' + (sim  ? ' sel-sim' : '');
+  document.getElementById('alt-nao').className = 'toggle-opt' + (!sim ? ' sel-nao' : '');
+  document.getElementById('alt-auto-txt').style.display   = !sim ? '' : 'none';
+  document.getElementById('alt-desc-campo').style.display = sim  ? '' : 'none';
+  updateProgress();
+}
+
+function getAlteracoesText() {
+  if (alteracoes === false) return 'Executado conforme projeto.';
+  if (alteracoes === true)  return document.getElementById('alt_descricao').value || '';
+  return '';
+}
+
+// ── Serviços
+function toggleServico(itemId, chkId) {
+  const item = document.getElementById(itemId);
+  const chk  = document.getElementById(chkId);
+  if (chk.checked) item.classList.add('checked');
+  else             item.classList.remove('checked');
+}
+
+function updateMalhaText() {
+  const chk = document.getElementById('chk-malha');
+  const qty = document.getElementById('qty-malha').value;
+  const div = document.getElementById('malha-auto-txt');
+  if (chk.checked && qty) {
+    div.innerHTML = `<div class="auto-text">Feito ${qty} metros de malha de aterramento.</div>`;
+    div.style.display = '';
+  } else { div.style.display = 'none'; }
+}
+
+function getServicosText() {
+  const list = [];
+  if (document.getElementById('chk-calcada').checked) {
+    const q = document.getElementById('qty-calcada').value;
+    list.push('Reforma de calçada' + (q ? ` (${q})` : ''));
+  }
+  if (document.getElementById('chk-podas').checked) {
+    const q = document.getElementById('qty-podas').value;
+    list.push('Podas' + (q ? ` (${q})` : ''));
+  }
+  if (document.getElementById('chk-luminarias').checked) {
+    const q = document.getElementById('qty-luminarias').value;
+    list.push('Reinstalação de luminárias' + (q ? ` — ${q} un.` : ''));
+  }
+  if (document.getElementById('chk-fibra').checked) {
+    const q = document.getElementById('qty-fibra').value;
+    list.push('Amarração de fibra óptica' + (q ? ` (${q})` : ''));
+  }
+  if (document.getElementById('chk-malha').checked) {
+    const q = document.getElementById('qty-malha').value;
+    list.push('Malha de aterramento' + (q ? ` — ${q} metros` : ''));
+  }
+  if (document.getElementById('chk-estai').checked) {
+    const q = document.getElementById('qty-estai').value;
+    list.push('Estai prov.' + (q ? ` (${q})` : ''));
+  }
+  if (document.getElementById('chk-ramal').checked) {
+    const q = document.getElementById('qty-ramal').value;
+    list.push('Reinstalação de ramal' + (q ? ` (${q})` : ''));
+  }
+  return list;
+}
+
+// ── Canvas
+function initCanvas() {
+  const c = document.getElementById('canvas-sig');
+  const ctx = c.getContext('2d');
+  let drawing = false, lx = 0, ly = 0;
+  function pos(e) {
+    const r = c.getBoundingClientRect(), sx = c.width/r.width, sy = c.height/r.height;
+    return e.touches
+      ? [(e.touches[0].clientX-r.left)*sx, (e.touches[0].clientY-r.top)*sy]
+      : [(e.clientX-r.left)*sx, (e.clientY-r.top)*sy];
+  }
+  c.addEventListener('mousedown',  e => { drawing=true; [lx,ly]=pos(e); });
+  c.addEventListener('mousemove',  e => { if(!drawing) return; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.strokeStyle='#1a1a2e'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.stroke(); [lx,ly]=[x,y]; });
+  c.addEventListener('mouseup',    () => drawing=false);
+  c.addEventListener('mouseleave', () => drawing=false);
+  c.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; [lx,ly]=pos(e); }, {passive:false});
+  c.addEventListener('touchmove',  e => { e.preventDefault(); if(!drawing) return; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.strokeStyle='#1a1a2e'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.stroke(); [lx,ly]=[x,y]; }, {passive:false});
+  c.addEventListener('touchend',   () => drawing=false);
+}
+function limparCanvas() { document.getElementById('canvas-sig').getContext('2d').clearRect(0,0,800,130); }
+
+// ── Coletar dados
+function fmtData(v) { if(!v) return ''; const [y,m,d]=v.split('-'); return `${d}/${m}/${y}`; }
+
+function coletarDados() {
+  return {
+    num_projeto:      document.getElementById('num_projeto').value,
+    cidade:           document.getElementById('cidade').value,
+    data_bdo:         fmtData(document.getElementById('data_bdo').value),
+    hora_inicio:      document.getElementById('hora_inicio').value,
+    hora_final:       document.getElementById('hora_final').value,
+    equipe:           document.getElementById('equipe').value,
+    encarregado:      document.getElementById('encarregado').value,
+    servico_livre:    servicoLivre,
+    num_omb:          document.getElementById('num_omb').value,
+    num_plv:          document.getElementById('num_plv').value,
+    manobra_texto:    getManobraText(),
+    alteracoes_texto: getAlteracoesText(),
+    servicos:         getServicosText(),
+    malha_metros:     document.getElementById('qty-malha').value,
+    observacoes:      document.getElementById('observacoes').value,
+    sig_nome:         document.getElementById('sig-nome').value,
+    sig_cargo:        document.getElementById('sig-cargo').value,
+    sig_data:         document.getElementById('canvas-sig').toDataURL('image/png'),
+  };
+}
+
+// ── Preview
+function renderPreview() {
+  const d = coletarDados();
+  const servicosHtml = d.servicos.length
+    ? d.servicos.map(s => `<li style="padding:2px 0">${s}</li>`).join('')
+    : '<li style="color:var(--muted)">Nenhum serviço marcado</li>';
+
+  const ombPlv = (d.servico_livre === false && (d.num_omb || d.num_plv))
+    ? `<div class="bdo-row">
+         <div class="bdo-field"><div class="fl">Nº OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
+         <div class="bdo-field"><div class="fl">Nº PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
+       </div>` : '';
+
+  const now = new Date().toLocaleString('pt-BR');
+  document.getElementById('bdo-preview-box').innerHTML = `
+    <div class="bdo-header-bar">
+      <img src="/static/logo.png" alt="HAGAP" onerror="this.style.display='none'">
+      <div class="bdo-header-info">
+        <h2>BOLETIM DIÁRIO DE OBRAS</h2>
+        <p>Hagap Engenharia Elétrica &nbsp;|&nbsp; Registro de campo</p>
+        <p>Gerado em: ${now}</p>
+      </div>
+      <div class="bdo-num">Nº ${d.num_projeto||'---'}</div>
+    </div>
+
+    <div class="bdo-sec">📋 IDENTIFICAÇÃO</div>
+    <div class="bdo-row">
+      <div class="bdo-field"><div class="fl">Projeto</div><div class="fv">${d.num_projeto||'—'}</div></div>
+      <div class="bdo-field"><div class="fl">Cidade</div><div class="fv">${d.cidade||'—'}</div></div>
+    </div>
+    <div class="bdo-row">
+      <div class="bdo-field"><div class="fl">Data</div><div class="fv">${d.data_bdo||'—'}</div></div>
+      <div class="bdo-field"><div class="fl">Horário</div><div class="fv">${d.hora_inicio||'--:--'} → ${d.hora_final||'--:--'}</div></div>
+    </div>
+    <div class="bdo-row">
+      <div class="bdo-field" style="grid-column:1/-1"><div class="fl">Encarregado</div><div class="fv">${d.encarregado||'—'}</div></div>
+    </div>
+    ${ombPlv}
+
+    <div class="bdo-sec">🔧 MANOBRA / ALTERAÇÕES / SERVIÇOS EXECUTADOS</div>
+    <div class="bdo-text-block">
+      <div class="bl">Registro de campo</div>
+      <p style="line-height:1.9;font-size:12px">
+        ${[d.manobra_texto, d.alteracoes_texto, ...(d.servicos.length ? d.servicos : [])].filter(Boolean).join('. ') + (d.manobra_texto||d.alteracoes_texto||d.servicos.length ? '.' : '<em style="color:var(--muted)">Não preenchido</em>')}
+      </p>
+    </div>
+
+    ${d.observacoes ? `
+    <div class="bdo-sec">📝 OBSERVAÇÕES</div>
+    <div class="bdo-text-block">${d.observacoes}</div>` : ''}
+
+    <div class="bdo-sec">✍️ ASSINATURA</div>
+    <div class="bdo-sig-area">
+      <div class="bdo-sig-cell">
+        <img src="${d.sig_data}" style="max-width:200px;max-height:65px;display:block;margin:0 auto 4px">
+        <div class="bdo-sig-line"></div>
+        <div class="bdo-sig-name">${d.sig_nome||d.encarregado||'______________________'}</div>
+        <div class="bdo-sig-role">${d.sig_cargo||'Encarregado'}</div>
+      </div>
+      <div class="bdo-sig-cell">
+        <div style="height:69px"></div>
+        <div class="bdo-sig-line"></div>
+        <div class="bdo-sig-name">______________________</div>
+        <div class="bdo-sig-role">Fiscal / Supervisor</div>
+      </div>
+    </div>
+
+    <div class="bdo-footer">Documento gerado automaticamente &nbsp;|&nbsp; BDO: ${d.num_projeto||'---'} &nbsp;|&nbsp; ${now}</div>
+  `;
+}
+
+// ── Modal
+function abrirModal() {
+  document.getElementById('modal-confirm').style.display = '';
+  document.getElementById('modal-loading').style.display = 'none';
+  document.getElementById('modal-success').style.display = 'none';
+  document.getElementById('modal-error').style.display   = 'none';
+  document.getElementById('modal-pdf').classList.add('open');
+}
+function fecharModal() { document.getElementById('modal-pdf').classList.remove('open'); }
+
+async function gerarPDF() {
+  document.getElementById('modal-confirm').style.display = 'none';
+  document.getElementById('modal-loading').style.display = '';
+  const dados = coletarDados();
+  try {
+    const res  = await fetch('http://localhost:5000/gerar-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+    const json = await res.json();
+    document.getElementById('modal-loading').style.display = 'none';
+    if (json.ok) {
+      document.getElementById('modal-success').style.display = '';
+      document.getElementById('btn-download').href = 'http://localhost:5000/files/' + json.filename;
+    } else {
+      document.getElementById('modal-error').style.display = '';
+      document.getElementById('error-msg').textContent = json.error || 'Erro desconhecido.';
+    }
+  } catch(e) {
+    document.getElementById('modal-loading').style.display = 'none';
+    document.getElementById('modal-error').style.display   = '';
+    document.getElementById('error-msg').textContent = 'Não foi possível conectar ao servidor Python. Certifique-se de que o server.py está rodando.';
+  }
+}
+
+// ── WhatsApp
+function compartilharWhatsApp() {
+  const d = coletarDados();
+  const srv = d.servicos.length ? d.servicos.join(', ') : 'nenhum';
+  const msg =
+`📋 *BDO — Boletim Diário de Obras*
+━━━━━━━━━━━━━━━━━━
+📁 Projeto: ${d.num_projeto}
+📍 Cidade: ${d.cidade}
+📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}
+👷 Equipe: ${d.equipe}
+🔑 Encarregado: ${d.encarregado}
+${d.servico_livre===false ? `📄 OMB: ${d.num_omb}  |  PLV: ${d.num_plv}\n` : ''}🔌 ${d.manobra_texto}
+📦 ${d.alteracoes_texto}
+🔧 Serviços: ${srv}
+${d.observacoes ? `📝 Obs: ${d.observacoes}` : ''}
+━━━━━━━━━━━━━━━━━━
+_HAGAP Engenharia Elétrica_`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ── Rascunho / Limpar
+async function salvarRascunho() {
+  const dados = coletarDados();
+  try {
+    await fetch('http://localhost:5000/salvar-rascunho', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dados) });
+    showToast('💾 Rascunho salvo!', 'success');
+  } catch {
+    localStorage.setItem('bdo_rascunho', JSON.stringify(dados));
+    showToast('💾 Rascunho salvo localmente!', 'success');
+  }
+}
+
+function limparFormulario() {
+  if (!confirm('Limpar todos os dados do formulário?')) return;
+  document.querySelectorAll('input:not([type=hidden]), select, textarea').forEach(e => {
+    if (e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value='';
+  });
+  document.querySelectorAll('.servico-item').forEach(i => i.classList.remove('checked'));
+  servicoLivre = null; manobraState = null; alteracoes = null;
+  ['sl-sim','sl-nao','man-sim','man-nao','alt-sim','alt-nao'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.className='toggle-opt';
+  });
+  ['man-copel','man-hagap'].forEach(id => { const el=document.getElementById(id); if(el) el.className='radio-opt'; });
+  ['campos-omb-plv','manobra-outras','manobra-auto-txt','alt-auto-txt','alt-desc-campo','malha-auto-txt']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+  limparCanvas();
+  goStep(1);
+  showToast('🔄 Formulário limpo!');
+}
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+window.onload = () => {
+  initCanvas();
+  document.getElementById('data_bdo').value = new Date().toISOString().split('T')[0];
+  updateProgress();
+};
+</script>
+</body>
+</html>
