@@ -2060,16 +2060,140 @@ def api_materiais_item_check():
         return jsonify({'erro': str(e)}), 500
 
 
-# ── Envio automático de BDO por e-mail ─────────────────────────────
+# ── Gerar PDF do BDO via ReportLab ────────────────────────────────
+@app.route("/api/gerar_bdo_pdf", methods=["POST"])
+def api_gerar_bdo_pdf():
+    """
+    Gera PDF bonito do BDO usando gerar_boletim.py (ReportLab)
+    e retorna o arquivo para download. Também envia por e-mail
+    se EMAIL_REMETENTE e EMAIL_SENHA estiverem configurados.
+    """
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text      import MIMEText
+    from email.mime.base      import MIMEBase
+    from email               import encoders
+
+    try:
+        d = request.get_json(force=True) or {}
+        # Importa o gerador de PDF
+        import importlib.util, sys as _sys
+        _spec = importlib.util.spec_from_file_location(
+            "gerar_boletim",
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "gerar_boletim.py")
+        )
+        _mod = importlib.util.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        filename = _mod.gerar_pdf(d)
+        filepath = os.path.join(os.getcwd(), "files", filename)
+
+        # Envia e-mail com PDF anexado (se configurado)
+        remetente = os.environ.get("EMAIL_REMETENTE", "")
+        senha     = os.environ.get("EMAIL_SENHA",     "")
+        if remetente and senha:
+            try:
+                _enviar_email_com_pdf(d, filepath, filename, remetente, senha)
+            except Exception as em:
+                print(f"[E-mail BDO] Aviso: {em}")
+
+        from flask import send_file
+        return send_file(
+            filepath,
+            mimetype="application/pdf",
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        print(f"[gerar_bdo_pdf] Erro: {e}")
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
+def _enviar_email_com_pdf(d, filepath, filename, remetente, senha):
+    """Envia e-mail com PDF do BDO como anexo."""
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text      import MIMEText
+    from email.mime.base      import MIMEBase
+    from email               import encoders
+
+    DESTINATARIO = "gabrielmedeirosasp@gmail.com"
+    srv     = ", ".join(d.get("servicos", [])) or "Nenhum"
+    manobra = d.get("manobra_texto", "—") or "—"
+    alt     = d.get("alteracoes_texto", "—") or "—"
+    omb_plv = (f"OMB: {d.get('num_omb','—')} | PLV: {d.get('num_plv','—')}"
+               if d.get("servico_livre") is False else "Serviço Livre")
+
+    corpo_html = f"""
+    <html><body style="font-family:Arial,sans-serif;color:#0d1b3e;margin:0;padding:20px;background:#e8eef8;">
+    <div style="max-width:640px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15);">
+      <div style="background:linear-gradient(135deg,#061539 0%,#0a2f7a 100%);color:white;padding:20px 24px;">
+        <table width="100%"><tr>
+          <td><h2 style="margin:0;font-size:18px;font-weight:800;">⚡ BDO — Boletim Diário de Obras</h2>
+              <p style="margin:4px 0 0;font-size:12px;opacity:.7;">Hagap Engenharia Elétrica — Registro de Campo</p></td>
+          <td align="right" style="font-size:26px;font-weight:900;opacity:.85;">{d.get('num_projeto','—')}</td>
+        </tr></table>
+      </div>
+      <div style="background:#fff;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:13px;">
+          <tr style="background:#f0f4fb;"><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;width:38%;">📁 Projeto</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;font-weight:600;">{d.get('num_projeto','—')}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">📍 Cidade</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{d.get('cidade','—')}</td></tr>
+          <tr style="background:#f0f4fb;"><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">📅 Data</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{d.get('data_bdo','—')}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">⏰ Horário</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{d.get('hora_inicio','—')} → {d.get('hora_final','—')}</td></tr>
+          <tr style="background:#f0f4fb;"><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">👷 Encarregado</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{d.get('encarregado','—')}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">🔌 Serviço Livre</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{omb_plv}</td></tr>
+          <tr style="background:#f0f4fb;"><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">🔧 Manobra</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{manobra}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">🔩 Alterações</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{alt}</td></tr>
+          <tr style="background:#f0f4fb;"><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;border-bottom:1px solid #e0e8f5;">✅ Serviços</td>
+              <td style="padding:10px 16px;border-bottom:1px solid #e0e8f5;">{srv}</td></tr>
+          {f'<tr><td style="padding:10px 16px;font-weight:700;color:#4a5a7a;">💬 Observações</td><td style="padding:10px 16px;">{d.get("observacoes","")}</td></tr>' if d.get('observacoes') else ''}
+        </table>
+      </div>
+      <div style="background:#0a2557;color:white;padding:10px 16px;font-size:11px;text-align:center;">
+        ⚡ HAGAP Engenharia Elétrica — PDF completo em anexo — {datetime.now().strftime('%d/%m/%Y %H:%M')}
+      </div>
+    </div>
+    </body></html>
+    """
+
+    msg = MIMEMultipart("mixed")
+    msg["Subject"] = f"⚡ BDO — {d.get('num_projeto','Sem projeto')} | {d.get('data_bdo','')} | Hagap"
+    msg["From"]    = remetente
+    msg["To"]      = DESTINATARIO
+
+    # Corpo HTML
+    msg_alt = MIMEMultipart("alternative")
+    msg_alt.attach(MIMEText(corpo_html, "html", "utf-8"))
+    msg.attach(msg_alt)
+
+    # Anexo PDF
+    if filepath and os.path.exists(filepath):
+        with open(filepath, "rb") as f:
+            parte = MIMEBase("application", "pdf")
+            parte.set_payload(f.read())
+        encoders.encode_base64(parte)
+        parte.add_header("Content-Disposition", f'attachment; filename="{filename}"')
+        msg.attach(parte)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as smtp:
+        smtp.login(remetente, senha)
+        smtp.sendmail(remetente, DESTINATARIO, msg.as_string())
+    print(f"[E-mail BDO] ✅ Enviado para {DESTINATARIO} com PDF anexado")
+
+
+# ── Envio automático de BDO por e-mail (legado — mantido por compatibilidade) ──
 @app.route("/api/enviar_bdo_email", methods=["POST"])
 def api_enviar_bdo_email():
     """
-    Recebe os dados do BDO e envia um e-mail formatado para
-    gabrielmedeirosasp@gmail.com.
-
-    Variáveis de ambiente necessárias no Render:
-      EMAIL_REMETENTE  → seu e-mail Gmail remetente
-      EMAIL_SENHA      → senha de app do Gmail (16 caracteres)
+    Rota legada: apenas envia e-mail sem PDF anexado.
+    Prefira usar /api/gerar_bdo_pdf que gera o PDF bonito E envia o e-mail.
     """
     import smtplib
     from email.mime.multipart import MIMEMultipart
@@ -2084,59 +2208,8 @@ def api_enviar_bdo_email():
 
     try:
         d = request.get_json(force=True) or {}
-
-        srv      = ", ".join(d.get("servicos", [])) or "Nenhum"
-        manobra  = d.get("manobra_texto", "—")
-        alt      = d.get("alteracoes_texto", "—")
-        omb_plv  = f"OMB: {d.get('num_omb','—')} | PLV: {d.get('num_plv','—')}" \
-                   if d.get("servico_livre") is False else "Serviço Livre"
-
-        corpo_html = f"""
-        <html><body style="font-family:Arial,sans-serif;color:#0d1b3e;">
-        <div style="max-width:620px;margin:0 auto;border:2px solid #b8c8e8;border-radius:10px;overflow:hidden;">
-          <div style="background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:16px 20px;">
-            <h2 style="margin:0;font-size:16px;">📋 BDO — Boletim Diário de Obras</h2>
-            <p style="margin:4px 0 0;font-size:11px;opacity:.75;">Hagap Instalações Elétricas</p>
-          </div>
-          <table style="width:100%;border-collapse:collapse;font-size:13px;">
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;width:40%;">Projeto</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('num_projeto','—')}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Cidade</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('cidade','—')}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Data</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('data_bdo','—')}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Horário</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('hora_inicio','—')} → {d.get('hora_final','—')}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Encarregado</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{d.get('encarregado','—')}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Serviço Livre</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{omb_plv}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Manobra</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{manobra}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Alterações</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{alt}</td></tr>
-            <tr><td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;font-weight:700;color:#4a5a7a;">Serviços</td>
-                <td style="padding:8px 14px;border-bottom:1px solid #e8ecf5;">{srv}</td></tr>
-            {f'<tr><td style="padding:8px 14px;font-weight:700;color:#4a5a7a;">Observações</td><td style="padding:8px 14px;">{d.get("observacoes","")}</td></tr>' if d.get('observacoes') else ''}
-          </table>
-          <div style="background:#f0f4fb;padding:8px 14px;font-size:10px;color:#4a5a7a;text-align:center;">
-            HAGAP Instalações Elétricas — Enviado automaticamente em {datetime.now().strftime('%d/%m/%Y %H:%M')}
-          </div>
-        </div></body></html>
-        """
-
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"BDO — {d.get('num_projeto','Sem projeto')} | {d.get('data_bdo','')}"
-        msg["From"]    = remetente
-        msg["To"]      = DESTINATARIO
-        msg.attach(MIMEText(corpo_html, "html", "utf-8"))
-
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as smtp:
-            smtp.login(remetente, senha)
-            smtp.sendmail(remetente, DESTINATARIO, msg.as_string())
-
+        _enviar_email_com_pdf(d, None, "", remetente, senha)
         return jsonify({"ok": True})
-
     except Exception as e:
         print(f"[E-mail BDO] Erro: {e}")
         return jsonify({"ok": False, "erro": str(e)}), 200

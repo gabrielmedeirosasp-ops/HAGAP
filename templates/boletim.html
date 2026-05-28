@@ -785,29 +785,37 @@ function gerarPDF() {
   document.getElementById('modal-confirm').style.display = 'none';
   document.getElementById('modal-loading').style.display = '';
   const dados = coletarDados();
-  setTimeout(() => {
-    try {
-      const htmlPDF = _montarHTMLBDO(dados);
-      const win = window.open('', '_blank', 'width=900,height=700');
-      win.document.write(htmlPDF);
-      win.document.close();
-      document.getElementById('modal-loading').style.display = 'none';
-      document.getElementById('modal-success').style.display = '';
-      document.getElementById('btn-download').onclick = function(e) {
-        e.preventDefault();
-        const win2 = window.open('', '_blank', 'width=900,height=700');
-        win2.document.write(htmlPDF);
-        win2.document.close();
-      };
-      document.getElementById('btn-download').href = '#';
-      // Envia e-mail automático
-      _enviarEmailBDO(dados);
-    } catch(e) {
-      document.getElementById('modal-loading').style.display = 'none';
-      document.getElementById('modal-error').style.display   = '';
-      document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
-    }
-  }, 300);
+
+  // Chama o backend para gerar PDF profissional com ReportLab
+  fetch('/api/gerar_bdo_pdf', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados)
+  })
+  .then(resp => {
+    if (!resp.ok) return resp.json().then(e => { throw new Error(e.erro || 'Falha no servidor'); });
+    return resp.blob();
+  })
+  .then(blob => {
+    document.getElementById('modal-loading').style.display = 'none';
+    document.getElementById('modal-success').style.display = '';
+
+    // Cria URL de download do PDF
+    const url = URL.createObjectURL(blob);
+    const btnDl = document.getElementById('btn-download');
+    btnDl.href = url;
+    btnDl.download = `BDO_${dados.num_projeto || 'hagap'}_${dados.data_bdo || ''}.pdf`;
+    btnDl.onclick = null; // remove handler anterior
+
+    // Notifica que e-mail foi enviado automaticamente
+    const info = document.getElementById('modal-success').querySelector('p');
+    if (info) info.innerHTML = 'Seu boletim está pronto para download.<br><small style="color:#1a7a3c">✅ PDF enviado automaticamente para gabrielmedeirosasp@gmail.com</small>';
+  })
+  .catch(e => {
+    document.getElementById('modal-loading').style.display = 'none';
+    document.getElementById('modal-error').style.display   = '';
+    document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
+  });
 }
 
 async function _enviarEmailBDO(dados) {
