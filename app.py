@@ -2109,14 +2109,20 @@ def api_gerar_bdo_pdf():
 
 
 def _enviar_email_com_pdf(d, filepath, filename, remetente, senha):
-    """Envia e-mail com PDF do BDO como anexo."""
+    """Envia e-mail com PDF do BDO como anexo para múltiplos destinatários."""
     import smtplib
     from email.mime.multipart import MIMEMultipart
     from email.mime.text      import MIMEText
     from email.mime.base      import MIMEBase
     from email               import encoders
 
-    DESTINATARIO = "gabrielmedeirosasp@gmail.com"
+    # ── Lista de destinatários — adicione quantos quiser ──
+    DESTINATARIOS = [
+        "gabrielmedeirosasp@gmail.com",
+        os.environ.get("EMAIL_EXTRA_1", ""),   # configure no Render em Environment Variables
+        os.environ.get("EMAIL_EXTRA_2", ""),   # configure no Render em Environment Variables
+    ]
+    DESTINATARIOS = [e for e in DESTINATARIOS if e.strip()]  # remove vazios
     srv     = ", ".join(d.get("servicos", [])) or "Nenhum"
     manobra = d.get("manobra_texto", "—") or "—"
     alt     = d.get("alteracoes_texto", "—") or "—"
@@ -2166,7 +2172,7 @@ def _enviar_email_com_pdf(d, filepath, filename, remetente, senha):
     msg = MIMEMultipart("mixed")
     msg["Subject"] = f"⚡ BDO — {d.get('num_projeto','Sem projeto')} | {d.get('data_bdo','')} | Hagap"
     msg["From"]    = remetente
-    msg["To"]      = DESTINATARIO
+    msg["To"]      = ", ".join(DESTINATARIOS)
 
     # Corpo HTML
     msg_alt = MIMEMultipart("alternative")
@@ -2184,8 +2190,8 @@ def _enviar_email_com_pdf(d, filepath, filename, remetente, senha):
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as smtp:
         smtp.login(remetente, senha)
-        smtp.sendmail(remetente, DESTINATARIO, msg.as_string())
-    print(f"[E-mail BDO] ✅ Enviado para {DESTINATARIO} com PDF anexado")
+        smtp.sendmail(remetente, DESTINATARIOS, msg.as_string())  # envia para todos
+    print(f"[E-mail BDO] ✅ Enviado para {DESTINATARIOS} com PDF anexado")
 
 
 # ── Envio automático de BDO por e-mail (legado — mantido por compatibilidade) ──
