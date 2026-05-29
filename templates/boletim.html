@@ -14,10 +14,10 @@
 
   /* TOPBAR */
   .topbar{background:linear-gradient(135deg,#061539,#0a2557);color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.35);}
-  .topbar-inner{max-width:860px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-  .topbar-logo{display:flex;align-items:center;gap:12px;}
-  .topbar-logo img{height:44px;object-fit:contain;background:white;border-radius:6px;padding:3px 6px;}
-  .topbar-logo h1{font-size:15px;font-weight:800;line-height:1.3;}
+  .topbar-inner{max-width:860px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .topbar-logo{display:flex;align-items:center;gap:16px;}
+  .topbar-logo img{height:64px;object-fit:contain;background:white;border-radius:8px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+  .topbar-logo h1{font-size:16px;font-weight:800;line-height:1.3;}
   .topbar-logo h1 span{font-size:11px;opacity:.65;font-weight:400;display:block;}
   .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   .progress-wrap{width:100%;padding:0 20px 8px;max-width:860px;margin:0 auto;}
@@ -1085,101 +1085,120 @@ window.onload=()=>{
 };
 </script>
 
-<!-- Libs para geração de PDF no cliente -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
 // ═══════════════════════════════════════════
-//  PDF GERAÇÃO CLIENTE (html2canvas + jsPDF)
+//  PDF / EMAIL / WHATSAPP — via servidor (WeasyPrint)
 // ═══════════════════════════════════════════
 
-async function _capturarPreviewComoBlob(){
+function _getPreviewHTML(){
   const el = document.getElementById('bdo-preview-box');
-  if(!el || !el.innerHTML.trim()) throw new Error('Prévia vazia — volte ao passo 8 e gere a prévia primeiro.');
-
-  // Garante que imagens cross-origin carreguem
-  const canvas = await html2canvas(el, {
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#ffffff',
-    logging: false,
-    imageTimeout: 5000
-  });
-
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  const pageW = 210, pageH = 297;
-  const imgW  = pageW;
-  const imgH  = (canvas.height * imgW) / canvas.width;
-
-  // Divide em páginas se necessário
-  let remainH = imgH, offset = 0;
-  while(remainH > 0){
-    if(offset > 0) pdf.addPage();
-    const sliceH = Math.min(pageH, remainH);
-    const srcY   = Math.round((offset / imgH) * canvas.height);
-    const srcH   = Math.round((sliceH / imgH) * canvas.height);
-
-    const tmp = document.createElement('canvas');
-    tmp.width  = canvas.width;
-    tmp.height = srcH;
-    tmp.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-
-    pdf.addImage(tmp.toDataURL('image/png'), 'PNG', 0, 0, imgW, sliceH);
-    offset   += pageH;
-    remainH  -= pageH;
-  }
-
-  return pdf.output('blob');
+  if(!el || !el.innerHTML.trim()) throw new Error('Prévia vazia — acesse o Passo 8 e verifique os dados.');
+  return el.innerHTML;
 }
 
-function gerarPDF(){
+function _getEstilosBDO(){
+  return `
+    :root{--primary:#0a2557;--accent:#1565c0;--bg:#e8eef8;--border:#b8c8e8;--text:#0d1b3e;--muted:#4a5a7a;--success:#1a7a3c;--danger:#c0392b;--warning:#d68910;--ps:#7b2ff7;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;color:#0d1b3e;background:#fff;padding:0;margin:0;}
+    @page{size:A4;margin:12mm 14mm 14mm 14mm;}
+    .bdo-preview{background:white;font-size:12px;line-height:1.6;width:100%;}
+    .bdo-hbar{background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .bdo-hbar img{height:50px;background:white;border-radius:6px;padding:3px 8px;}
+    .bdo-hinfo{flex:1;}
+    .bdo-hinfo h2{font-size:14px;font-weight:800;margin-bottom:2px;}
+    .bdo-hinfo p{font-size:10px;opacity:.75;}
+    .bdo-num{font-size:22px;font-weight:900;opacity:.9;text-align:right;white-space:nowrap;}
+    .bdo-sec{padding:5px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:white;}
+    .bdo-sec.azul{background:#0a2557;}
+    .bdo-sec.roxo{background:linear-gradient(90deg,#4a0e8f,#7b2ff7);}
+    .bdo-sec.verde{background:#1a7a3c;}
+    .bdo-sec.laranja{background:#c0390b;}
+    .bdo-sec.amarelo{background:#c07000;}
+    .bdo-row{display:grid;grid-template-columns:1fr 1fr;}
+    .bdo-field{padding:7px 14px;border-bottom:1px solid #e8ecf5;}
+    .bdo-field:nth-child(odd){border-right:1px solid #e8ecf5;}
+    .bdo-field .fl{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:2px;}
+    .bdo-field .fv{font-size:12px;font-weight:700;}
+    .bdo-block{padding:10px 14px;border-bottom:1px solid #e8ecf5;}
+    .bdo-block .bl{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:4px;}
+    .bdo-sig{display:grid;grid-template-columns:1fr 1fr;}
+    .bdo-sig-cell{padding:12px;border-right:1px solid #e8ecf5;text-align:center;}
+    .bdo-sig-cell:last-child{border-right:none;}
+    .bdo-sig-line{border-top:1.5px solid #333;margin:30px 20px 6px;}
+    .bdo-sig-name{font-size:11px;font-weight:700;}
+    .bdo-sig-role{font-size:10px;color:#4a5a7a;}
+    .bdo-footer{background:#f0f4fb;padding:6px 14px;font-size:9px;color:#4a5a7a;text-align:center;border-top:1px solid #b8c8e8;}
+    ul{margin-left:16px;margin-top:4px;}
+    li{margin-bottom:3px;}
+  `;
+}
+
+async function _gerarPDFServidor(d){
+  const htmlPreview = _getPreviewHTML();
+  const resp = await fetch('/api/gerar_bdo_pdf_html', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ html: htmlPreview, css: _getEstilosBDO(), data: d })
+  });
+  if(!resp.ok){
+    const err = await resp.json().catch(()=>({erro:'Erro desconhecido'}));
+    throw new Error(err.erro || 'Falha ao gerar PDF no servidor');
+  }
+  return resp.blob();
+}
+
+// ─── MODAL / BAIXAR PDF ───
+function abrirModal(){
+  ['modal-confirm','modal-loading','modal-success','modal-error'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = id==='modal-confirm' ? '' : 'none';
+  });
+  document.getElementById('modal-pdf').classList.add('open');
+}
+function fecharModal(){ document.getElementById('modal-pdf').classList.remove('open'); }
+
+async function gerarPDF(){
+  const d = coletarDados();
   document.getElementById('modal-confirm').style.display = 'none';
   document.getElementById('modal-loading').style.display = '';
-
-  _capturarPreviewComoBlob().then(blob=>{
+  try{
+    const blob = await _gerarPDFServidor(d);
     document.getElementById('modal-loading').style.display = 'none';
     document.getElementById('modal-success').style.display = '';
-    const d   = coletarDados();
     const url = URL.createObjectURL(blob);
     const btn = document.getElementById('btn-download');
     btn.href     = url;
-    btn.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
+    btn.download = `BDO_${d.num_projeto||'hagap'}_${(d.data_bdo||'').replace(/\//g,'-')}.pdf`;
     btn.onclick  = null;
     document.getElementById('msg-success').innerHTML =
       'Pronto para download.<br><small style="color:#1a7a3c">✅ PDF gerado com fidelidade à prévia!</small>';
-  }).catch(e=>{
+  }catch(e){
     document.getElementById('modal-loading').style.display = 'none';
     document.getElementById('modal-error').style.display   = '';
     document.getElementById('error-msg').textContent = 'Erro: ' + e.message;
-  });
+  }
 }
 
 async function enviarPorEmail(){
   showToast('📧 Gerando PDF e enviando e-mail...','');
   try{
-    const blob = await _capturarPreviewComoBlob();
-    const d    = coletarDados();
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
+    const d = coletarDados();
+    const blob = await _gerarPDFServidor(d);
+    // Download local
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
     a.href     = url;
-    a.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
+    a.download = `BDO_${d.num_projeto||'hagap'}_${(d.data_bdo||'').replace(/\//g,'-')}.pdf`;
     a.click();
-
-    // Tenta enviar via servidor (silenciosamente)
-    const resp = await fetch('/api/gerar_bdo_pdf',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    // Envia e-mail via servidor (silencioso)
+    fetch('/api/enviar_bdo_email', {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(d)
-    }).catch(()=>null);
-
-    if(resp && resp.ok){
-      showToast('✅ PDF baixado + e-mail enviado ao servidor!','success');
-    } else {
-      showToast('✅ PDF baixado! (E-mail enviado via servidor se configurado)','success');
-    }
+    }).then(r=>r.json()).then(j=>{
+      if(j.ok) showToast('✅ PDF baixado + e-mail enviado!','success');
+      else     showToast('✅ PDF baixado! (verifique e-mail)','success');
+    }).catch(()=> showToast('✅ PDF baixado!','success'));
   }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
 }
 
@@ -1188,27 +1207,18 @@ async function imprimirPDF(){
   try{
     const el = document.getElementById('bdo-preview-box');
     if(!el || !el.innerHTML.trim()) throw new Error('Gere a prévia primeiro (passo 8).');
-
-    // Abre nova janela apenas com a prévia para impressão
     const win = window.open('','_blank','width=900,height=700');
     if(!win){ showToast('⚠️ Permita pop-ups e tente novamente.','error'); return; }
-
-    // Copia estilos da página atual relevantes ao preview
-    const styles = Array.from(document.styleSheets)
-      .map(s=>{ try{ return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); }catch{return '';} })
-      .join('\n');
-
     win.document.write(`<!DOCTYPE html><html lang="pt-BR"><head>
-      <meta charset="UTF-8">
-      <title>Imprimir BDO</title>
+      <meta charset="UTF-8"><title>Imprimir BDO</title>
       <style>
-        ${styles}
-        @media print { body{margin:0;} .bdo-preview{border:none!important;box-shadow:none!important;} }
-        body{background:#fff;font-family:'Segoe UI',Arial,sans-serif;color:#0d1b3e;padding:16px;}
+        ${_getEstilosBDO()}
+        @media print{body{margin:0;}.bdo-preview{border:none!important;box-shadow:none!important;}}
+        body{background:#fff;font-family:Arial,sans-serif;color:#0d1b3e;padding:16px;}
       </style>
     </head><body>
       <div class="bdo-preview">${el.innerHTML}</div>
-      <script>window.onload=()=>{ setTimeout(()=>{ window.print(); window.close(); },400); }<\/script>
+      <scr'+'ipt>window.onload=()=>{setTimeout(()=>{window.print();window.close();},400);}<\/script>
     </body></html>`);
     win.document.close();
     showToast('🖨️ Janela de impressão aberta!','success');
@@ -1218,27 +1228,25 @@ async function imprimirPDF(){
 async function compartilharWhatsApp(){
   showToast('⏳ Gerando PDF para compartilhar...','');
   try{
-    const d   = coletarDados();
-    const st  = getStatusLabel();
+    const d = coletarDados();
+    const htmlPreview = _getPreviewHTML();
+    const st = getStatusLabel();
 
-    // Tenta gerar URL no servidor
+    // Gera PDF no servidor e obtém URL pública
     let pdfUrl = null;
     try{
       const resp = await fetch('/api/gerar_bdo_pdf_url',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(d)
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ html: htmlPreview, css: _getEstilosBDO(), data: d })
       });
       if(resp.ok){
         const json = await resp.json();
         if(json.ok) pdfUrl = json.url;
       }
-    }catch(){ /* servidor indisponível, continua sem URL */ }
+    }catch(){ /* continua sem URL */ }
 
-    // Monta mensagem
     const linhaUrl = pdfUrl ? `\n📄 *PDF do BDO:*\n${pdfUrl}` : '';
     const msg = `📋 *BDO — Boletim Diário de Obras*\n━━━━━━━━━━━━━━━━━━\n📁 Projeto: ${d.num_projeto}\n📍 Cidade: ${d.cidade}\n📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}\n🔑 Encarregado: ${d.encarregado}\n${st?st.emoji+' Status: '+st.label+'\n':''}${linhaUrl}\n━━━━━━━━━━━━━━━━━━\n_HAGAP Engenharia Elétrica_`;
-
     showToast('✅ Abrindo WhatsApp...','success');
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   }catch(e){ showToast('❌ Erro: '+e.message,'error'); }

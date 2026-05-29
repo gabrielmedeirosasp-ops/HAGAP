@@ -2120,18 +2120,67 @@ def api_gerar_bdo_pdf():
 def api_gerar_bdo_pdf_url():
     """
     Gera PDF do BDO e retorna a URL pública para compartilhar (ex: WhatsApp).
+    Aceita tanto HTML da prévia (preferencial) quanto dados para gerar via ReportLab.
     """
     try:
-        d = request.get_json(force=True) or {}
-        _mod = _carregar_mod_boletim()
-        filename = _mod.gerar_pdf(d)
-        # URL pública do PDF no próprio servidor
+        body     = request.get_json(force=True) or {}
+        html_pre = body.get("html", "")
+        css_ext  = body.get("css", "")
+        d        = body.get("data", body)
+        _mod     = _carregar_mod_boletim()
+        if html_pre:
+            filename = _mod.gerar_pdf_from_html(html_pre, css_ext, d)
+        else:
+            filename = _mod.gerar_pdf(d)
         base_url = request.host_url.rstrip("/")
         pdf_url  = f"{base_url}/files/{filename}"
         return jsonify({"ok": True, "url": pdf_url, "filename": filename})
     except Exception as e:
         print(f"[gerar_bdo_pdf_url] Erro: {e}")
         return jsonify({"ok": False, "erro": str(e)}), 500
+
+@app.route("/api/gerar_bdo_pdf_html", methods=["POST"])
+def api_gerar_bdo_pdf_html():
+    """
+    Gera PDF do BDO usando WeasyPrint a partir do HTML da prévia enviado pelo cliente.
+    O PDF é IDÊNTICO à prévia exibida na tela.
+    """
+    try:
+        body     = request.get_json(force=True) or {}
+        html_pre = body.get("html", "")
+        css_ext  = body.get("css", "")
+        d        = body.get("data", {})
+
+        if not html_pre:
+            return jsonify({"ok": False, "erro": "HTML da prévia não enviado"}), 400
+
+        _mod     = _carregar_mod_boletim()
+        filename = _mod.gerar_pdf_from_html(html_pre, css_ext, d)
+        filepath = os.path.join(os.getcwd(), "files", filename)
+
+        # Tenta enviar e-mail (silencioso)
+        remetente = os.environ.get("EMAIL_REMETENTE", "")
+        senha     = os.environ.get("EMAIL_SENHA",     "")
+        if remetente and senha:
+            try:
+                _enviar_email_com_pdf(d, filepath, filename, remetente, senha)
+            except Exception as em:
+                print(f"[E-mail BDO] Aviso: {em}")
+
+        from flask import send_file
+        return send_file(
+            filepath,
+            mimetype="application/pdf",
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        import traceback
+        print(f"[gerar_bdo_pdf_html] Erro: {e}")
+        traceback.print_exc()
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
 
 
 def _enviar_email_com_pdf(d, filepath, filename, remetente, senha):

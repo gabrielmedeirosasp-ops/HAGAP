@@ -276,3 +276,71 @@ if __name__ == "__main__":
         "sig_nome":"Carlos Eduardo Silva","sig_cargo":"Encarregado Eletrico","sig_data":"",
     }
     gerar_pdf(dados)
+
+
+def gerar_pdf_from_html(html_content, css_extra="", data=None):
+    """
+    Gera PDF usando WeasyPrint a partir do HTML da prévia (idêntico ao que aparece na tela).
+    """
+    from weasyprint import HTML as WP_HTML
+    output_dir = os.path.join(os.getcwd(), "files")
+    os.makedirs(output_dir, exist_ok=True)
+
+    d = data or {}
+    num = (d.get("num_projeto", "bdo") or "bdo").replace("/", "_").replace(" ", "_")
+    filename = f"BDO_{num}_{int(time.time())}.pdf"
+    filepath = os.path.join(output_dir, filename)
+
+    full_html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root{{--primary:#0a2557;--accent:#1565c0;--bg:#e8eef8;--border:#b8c8e8;
+        --text:#0d1b3e;--muted:#4a5a7a;--success:#1a7a3c;--danger:#c0392b;
+        --warning:#d68910;--ps:#7b2ff7;}}
+  *{{box-sizing:border-box;margin:0;padding:0;}}
+  body{{font-family:Arial,'Segoe UI',sans-serif;color:#0d1b3e;background:#fff;padding:0;margin:0;}}
+  @page{{size:A4;margin:12mm 14mm 14mm 14mm;}}
+  .bdo-preview{{background:white;font-size:12px;line-height:1.6;width:100%;}}
+  .bdo-hbar{{background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}}
+  .bdo-hbar img{{height:50px;background:white;border-radius:6px;padding:3px 8px;}}
+  .bdo-hinfo{{flex:1;}}
+  .bdo-hinfo h2{{font-size:14px;font-weight:800;margin-bottom:2px;}}
+  .bdo-hinfo p{{font-size:10px;opacity:.75;}}
+  .bdo-num{{font-size:22px;font-weight:900;opacity:.9;text-align:right;white-space:nowrap;}}
+  .bdo-sec{{padding:5px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:white;}}
+  .bdo-sec.azul{{background:#0a2557;}}
+  .bdo-sec.roxo{{background:linear-gradient(90deg,#4a0e8f,#7b2ff7);}}
+  .bdo-sec.verde{{background:#1a7a3c;}}
+  .bdo-sec.laranja{{background:#c0390b;}}
+  .bdo-sec.amarelo{{background:#c07000;}}
+  .bdo-row{{display:grid;grid-template-columns:1fr 1fr;}}
+  .bdo-field{{padding:7px 14px;border-bottom:1px solid #e8ecf5;}}
+  .bdo-field:nth-child(odd){{border-right:1px solid #e8ecf5;}}
+  .bdo-field .fl{{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:2px;}}
+  .bdo-field .fv{{font-size:12px;font-weight:700;}}
+  .bdo-block{{padding:10px 14px;border-bottom:1px solid #e8ecf5;}}
+  .bdo-block .bl{{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:4px;}}
+  .bdo-sig{{display:grid;grid-template-columns:1fr 1fr;}}
+  .bdo-sig-cell{{padding:12px;border-right:1px solid #e8ecf5;text-align:center;}}
+  .bdo-sig-cell:last-child{{border-right:none;}}
+  .bdo-sig-line{{border-top:1.5px solid #333;margin:30px 20px 6px;}}
+  .bdo-sig-name{{font-size:11px;font-weight:700;}}
+  .bdo-sig-role{{font-size:10px;color:#4a5a7a;}}
+  .bdo-footer{{background:#f0f4fb;padding:6px 14px;font-size:9px;color:#4a5a7a;text-align:center;border-top:1px solid #b8c8e8;}}
+  ul{{margin-left:16px;margin-top:4px;}}
+  li{{margin-bottom:3px;}}
+  {css_extra}
+</style>
+</head>
+<body>
+<div class="bdo-preview">
+{html_content}
+</div>
+</body>
+</html>"""
+
+    WP_HTML(string=full_html).write_pdf(filepath)
+    print(json.dumps({"type": "generated_file", "path": filepath, "name": filename}))
+    return filename
