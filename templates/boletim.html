@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/FlEs03t8MZvp2q1bMqcSCsQCy2wyPUiz/4d158e08-fdf3-43cd-ad81-f5db532f5da9/files/">
@@ -95,7 +96,6 @@
   .servico-qty{display:none;padding:0 12px 10px;}
   .servico-qty input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;width:100%;max-width:220px;}
   .servico-item.checked .servico-qty{display:block;}
-  /* Chips de postes no serviço */
   .servico-ps-area{display:none;padding:0 12px 10px;gap:6px;flex-wrap:wrap;align-items:center;}
   .servico-item.checked .servico-ps-area{display:flex;}
   .modo-postes-on .servico-ps-area{display:flex !important;}
@@ -293,7 +293,7 @@
     <div class="card">
       <div class="card-header ps-h">🏗️ Agrupamento por Poste — Opcional</div>
       <div class="card-body">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ative para organizar serviços, materiais e observações por poste (PS). Ideal para obras com múltiplos pontos.</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ative para organizar serviços, materiais e observações por poste (PS).</p>
         <div class="toggle-group">
           <div class="toggle-opt sel-std" id="ps-nao" onclick="setModoPostes(false)">
             <div class="icon">📄</div><div class="lbl" style="color:var(--muted)">PADRÃO</div><div class="desc">Sem agrupamento</div>
@@ -311,7 +311,6 @@
           <div id="postes-chips-wrap" style="display:none;margin-top:10px">
             <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Postes gerados:</div>
             <div class="postes-chips" id="postes-chips"></div>
-            <p style="font-size:11px;color:var(--muted);margin-top:8px">💡 Você pode adicionar postes extras ao vincular os itens.</p>
           </div>
         </div>
       </div>
@@ -412,8 +411,6 @@
       <div class="card-body">
         <div class="alert alert-info" id="srv-alert-n">ℹ️ Marque os serviços realizados.</div>
         <div class="alert alert-ps" id="srv-alert-ps" style="display:none">🏗️ Modo poste ativo — cada serviço pode ser vinculado a <strong>um ou mais postes</strong>.</div>
-
-        <!-- Macro para cada serviço: id, emoji, label, tipo-qty -->
         <div id="servicos-container"></div>
       </div>
     </div>
@@ -513,13 +510,17 @@
     <div id="modal-confirm">
       <div class="modal-icon">📄</div>
       <h3>Gerar BDO em PDF?</h3>
-      <p>O PDF será gerado idêntico à prévia exibida na tela, com todos os dados e agrupamentos.</p>
+      <p>O PDF será gerado idêntico à prévia exibida na tela, com todos os dados, logo e agrupamentos.</p>
       <div class="modal-actions">
         <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
         <button class="btn btn-primary" onclick="gerarPDF()">✅ Confirmar</button>
       </div>
     </div>
-    <div id="modal-loading" style="display:none"><div class="spinner"></div><h3>Gerando PDF...</h3><p>Aguarde alguns segundos.</p></div>
+    <div id="modal-loading" style="display:none">
+      <div class="spinner"></div>
+      <h3>Gerando PDF...</h3>
+      <p>Capturando a prévia. Aguarde alguns segundos.</p>
+    </div>
     <div id="modal-success" style="display:none">
       <div class="modal-icon">✅</div><h3>BDO Gerado!</h3>
       <p id="msg-success">Pronto para download.</p>
@@ -530,7 +531,7 @@
     </div>
     <div id="modal-error" style="display:none">
       <div class="modal-icon">❌</div><h3>Erro ao Gerar PDF</h3>
-      <p id="error-msg">Verifique se o servidor está rodando.</p>
+      <p id="error-msg">Verifique se a prévia foi gerada.</p>
       <div class="modal-actions"><button class="btn btn-primary" onclick="fecharModal()">Fechar</button></div>
     </div>
   </div>
@@ -546,14 +547,14 @@ let currentStep   = 1;
 let servicoLivre  = null;
 let manobraState  = null;
 let alteracoes    = null;
-let statusExec    = null;   // 'conclusao' | 'parcial' | 'cancelamento'
+let statusExec    = null;
 let modoPostes    = false;
-let listaPostes   = [];     // ['PS1','PS2',...]
-let postesExtra   = [];     // adicionados manualmente
-let psMulti       = {};     // { 'calcada': ['PS1','PS2'], 'podas':['geral'], ... }
+let listaPostes   = [];
+let postesExtra   = [];
+let psMulti       = {};
 let materiaisLista= [];
 let obsLista      = [];
-let _psCtx        = null;   // { callback }
+let _psCtx        = null;
 let _midCnt       = 0, _oidCnt = 0;
 
 const SERVICOS_DEF = [
@@ -648,7 +649,7 @@ function setStatus(val) {
   updateProgress();
 }
 function getStatusLabel() {
-  if(statusExec==='conclusao')    return { emoji:'✅', label:'Conclusão',       cor:'verde'   };
+  if(statusExec==='conclusao')    return { emoji:'✅', label:'Conclusão',        cor:'verde'   };
   if(statusExec==='parcial')      return { emoji:'🔄', label:'Execução Parcial', cor:'amarelo' };
   if(statusExec==='cancelamento') return { emoji:'❌', label:'Cancelamento',     cor:'laranja' };
   return null;
@@ -670,7 +671,6 @@ function setModoPostes(ativo) {
   document.getElementById('obs-postes').style.display   = ativo?'':'none';
   const c = document.getElementById('main-container');
   ativo ? c.classList.add('modo-postes-on') : c.classList.remove('modo-postes-on');
-  // Redesenha materiais para mostrar/ocultar badges
   renderMateriaisLista();
   if(ativo && obsLista.length===0) adicionarObs();
 }
@@ -735,7 +735,6 @@ function updateMalhaText() {
   const div=document.getElementById('malha-auto-txt');
   if(div){ if(chk&&chk.checked&&qty){ div.innerHTML=`<div class="auto-text" style="margin:0 0 8px">Feito ${qty} metros de malha de aterramento.</div>`; div.style.display=''; } else div.style.display='none'; }
 }
-
 function adicionarPsServico(servId, ps) {
   if(!psMulti[servId]) psMulti[servId]=[];
   if(!psMulti[servId].includes(ps)) psMulti[servId].push(ps);
@@ -756,7 +755,6 @@ function renderPsChipsServico(servId) {
     container.appendChild(btn);
   });
 }
-
 function getServicosCompleto() {
   return SERVICOS_DEF
     .filter(s=>document.getElementById('chk-'+s.id)?.checked)
@@ -936,7 +934,7 @@ function coletarDados(){
 }
 
 // ═══════════════════════════════════════════
-//  RENDER PREVIEW — idêntico ao PDF
+//  RENDER PREVIEW
 // ═══════════════════════════════════════════
 function renderPreview(){
   const d=coletarDados(), now=new Date().toLocaleString('pt-BR');
@@ -945,20 +943,16 @@ function renderPreview(){
         <div class="bdo-field"><div class="fl">Nº OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
         <div class="bdo-field"><div class="fl">Nº PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
       </div>`:'';
-
   const st = getStatusLabel();
   const statusHtml = st
     ? `<div class="bdo-sec ${st.cor}">${st.emoji} STATUS: ${st.label.toUpperCase()}${d.status_motivo?' — '+d.status_motivo:''}</div>`
     : '';
-
   let corpo='';
   if(d.modo_postes){
-    // Manobra/Alterações sempre como seção geral
     if(d.manobra_texto||d.alteracoes_texto){
       corpo+=`<div class="bdo-sec azul">🔌 MANOBRA / ALTERAÇÕES</div>
         <div class="bdo-block"><p>${[d.manobra_texto,d.alteracoes_texto].filter(Boolean).join(' — ')}</p></div>`;
     }
-    // Agrupa por poste
     const todosPs = ['geral',...d.postes];
     todosPs.forEach(ps=>{
       const srvs = d.servicos_completo.filter(s=>s.postes.includes(ps));
@@ -987,7 +981,6 @@ function renderPreview(){
       corpo+=`<div class="bdo-sec azul">📝 OBSERVAÇÕES</div>
         <div class="bdo-block">${d.observacoes_lista.map(o=>o.texto).join('<br>')}</div>`;
   }
-
   document.getElementById('bdo-preview-box').innerHTML=`
     <div class="bdo-hbar">
       <img src="/static/logo.png" alt="HAGAP" onerror="this.style.display='none'">
@@ -1030,7 +1023,7 @@ function renderPreview(){
 }
 
 // ═══════════════════════════════════════════
-//  MODAL / PDF / EMAIL / IMPRESSÃO
+//  MODAL
 // ═══════════════════════════════════════════
 function abrirModal(){
   ['modal-confirm','modal-loading','modal-success','modal-error'].forEach(id=>
@@ -1039,58 +1032,6 @@ function abrirModal(){
 }
 function fecharModal(){ document.getElementById('modal-pdf').classList.remove('open'); }
 
-async function _gerarBlob(){
-  const resp=await fetch('/api/gerar_bdo_pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(coletarDados())});
-  if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.erro||'Falha no servidor'); }
-  return resp.blob();
-}
-
-function gerarPDF(){
-  document.getElementById('modal-confirm').style.display='none';
-  document.getElementById('modal-loading').style.display='';
-  _gerarBlob().then(blob=>{
-    document.getElementById('modal-loading').style.display='none';
-    document.getElementById('modal-success').style.display='';
-    const d=coletarDados(), url=URL.createObjectURL(blob);
-    const btn=document.getElementById('btn-download');
-    btn.href=url; btn.download=`BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`; btn.onclick=null;
-    document.getElementById('msg-success').innerHTML='Pronto para download.<br><small style="color:#1a7a3c">✅ E-mail enviado para gabrielmedeirosasp@gmail.com</small>';
-  }).catch(e=>{ document.getElementById('modal-loading').style.display='none';
-    document.getElementById('modal-error').style.display='';
-    document.getElementById('error-msg').textContent='Erro: '+e.message; });
-}
-
-async function enviarPorEmail(){
-  showToast('📧 Gerando PDF e enviando e-mail...','');
-  try{ const blob=await _gerarBlob(), d=coletarDados(), url=URL.createObjectURL(blob);
-    const a=document.createElement('a'); a.href=url; a.download=`BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`; a.click();
-    showToast('✅ E-mail enviado com PDF anexado!','success');
-  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
-}
-
-async function imprimirPDF(){
-  showToast('⏳ Gerando PDF para impressão...','');
-  try{ const blob=await _gerarBlob(), url=URL.createObjectURL(blob);
-    const win=window.open(url,'_blank');
-    if(win){ win.onload=()=>win.print(); showToast('🖨️ PDF aberto para impressão!','success'); }
-    else showToast('⚠️ Permita pop-ups e tente novamente.','error');
-  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
-}
-
-async function compartilharWhatsApp(){
-  showToast('⏳ Gerando PDF para compartilhar...','');
-  try{
-    const d=coletarDados();
-    const resp=await fetch('/api/gerar_bdo_pdf_url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
-    const json=await resp.json();
-    if(!json.ok) throw new Error(json.erro||'Erro ao gerar PDF');
-    const st=getStatusLabel();
-    const msg=`📋 *BDO — Boletim Diário de Obras*\n━━━━━━━━━━━━━━━━━━\n📁 Projeto: ${d.num_projeto}\n📍 Cidade: ${d.cidade}\n📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}\n🔑 Encarregado: ${d.encarregado}\n${st?st.emoji+' Status: '+st.label+'\n':''}📄 *PDF do BDO:*\n${json.url}\n━━━━━━━━━━━━━━━━━━\n_HAGAP Engenharia Elétrica_`;
-    showToast('✅ PDF gerado! Abrindo WhatsApp...','success');
-    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
-}
-
 // ═══════════════════════════════════════════
 //  UTILITÁRIOS
 // ═══════════════════════════════════════════
@@ -1098,7 +1039,6 @@ async function salvarRascunho(){
   try{ await fetch('/salvar-rascunho',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(coletarDados())}); showToast('💾 Rascunho salvo!','success'); }
   catch{ localStorage.setItem('bdo_rascunho',JSON.stringify(coletarDados())); showToast('💾 Rascunho salvo localmente!','success'); }
 }
-
 function limparFormulario(){
   if(!confirm('Limpar todos os dados?')) return;
   document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(e=>{
@@ -1122,18 +1062,193 @@ function limparFormulario(){
   goStep(1);
   showToast('🔄 Formulário limpo!');
 }
-
 function showToast(msg,type=''){
   const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type;
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
 }
-
 window.onload=()=>{
   buildServicos();
   initCanvas();
   document.getElementById('data_bdo').value=new Date().toISOString().split('T')[0];
   updateProgress();
 };
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     LIBS CLIENTE: html2canvas + jsPDF (geração de PDF)
+     Carregadas por último para não bloquear o formulário
+════════════════════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════════
+//  PDF — GERAÇÃO NO CLIENTE (idêntico à prévia)
+// ═══════════════════════════════════════════
+
+async function _capturarPreviewComoBlob(){
+  const el = document.getElementById('bdo-preview-box');
+  if(!el || !el.innerHTML.trim())
+    throw new Error('Prévia vazia — vá ao Passo 8 para gerar a prévia primeiro.');
+
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    imageTimeout: 6000
+  });
+
+  const { jsPDF } = window.jspdf;
+  const pdf    = new jsPDF('p', 'mm', 'a4');
+  const pageW  = 210, pageH = 297;
+  const imgW   = pageW;
+  const imgH   = (canvas.height * imgW) / canvas.width;
+
+  // Divide em páginas se o conteúdo for mais alto que A4
+  let remainH = imgH, offset = 0;
+  while(remainH > 0){
+    if(offset > 0) pdf.addPage();
+    const sliceH = Math.min(pageH, remainH);
+    const srcY   = Math.round((offset / imgH) * canvas.height);
+    const srcH   = Math.round((sliceH / imgH) * canvas.height);
+
+    const tmp = document.createElement('canvas');
+    tmp.width  = canvas.width;
+    tmp.height = Math.max(srcH, 1);
+    tmp.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
+    pdf.addImage(tmp.toDataURL('image/png'), 'PNG', 0, 0, imgW, sliceH);
+
+    offset  += pageH;
+    remainH -= pageH;
+  }
+
+  return pdf.output('blob');
+}
+
+// ── Baixar PDF ───────────────────────────────────────────────────────
+function gerarPDF(){
+  document.getElementById('modal-confirm').style.display = 'none';
+  document.getElementById('modal-loading').style.display = '';
+
+  _capturarPreviewComoBlob().then(blob=>{
+    document.getElementById('modal-loading').style.display = 'none';
+    document.getElementById('modal-success').style.display = '';
+    const d   = coletarDados();
+    const url = URL.createObjectURL(blob);
+    const btn = document.getElementById('btn-download');
+    btn.href     = url;
+    btn.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
+    btn.onclick  = null;
+    document.getElementById('msg-success').innerHTML =
+      'Pronto para download!<br><small style="color:#1a7a3c">✅ PDF idêntico à prévia, com logo e assinatura.</small>';
+  }).catch(e=>{
+    document.getElementById('modal-loading').style.display = 'none';
+    document.getElementById('modal-error').style.display   = '';
+    document.getElementById('error-msg').textContent = 'Erro: ' + e.message;
+  });
+}
+
+// ── Enviar por E-mail ────────────────────────────────────────────────
+async function enviarPorEmail(){
+  showToast('📧 Gerando PDF...','');
+  try{
+    const blob = await _capturarPreviewComoBlob();
+    const d    = coletarDados();
+    // Baixa o PDF no dispositivo do usuário
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
+    a.click();
+
+    // Tenta também enviar via servidor (silenciosamente, não bloqueia)
+    fetch('/api/gerar_bdo_pdf',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(d)
+    }).then(r=>{ if(r.ok) showToast('✅ PDF baixado + e-mail enviado!','success');
+                 else     showToast('✅ PDF baixado! Configure EMAIL no servidor para envio automático.','success'); })
+      .catch(()=> showToast('✅ PDF baixado! (Servidor offline — configure e-mail no Render)','success'));
+  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
+}
+
+// ── Imprimir ─────────────────────────────────────────────────────────
+async function imprimirPDF(){
+  showToast('🖨️ Preparando impressão...','');
+  try{
+    const el = document.getElementById('bdo-preview-box');
+    if(!el || !el.innerHTML.trim()) throw new Error('Gere a prévia primeiro (Passo 8).');
+
+    const win = window.open('','_blank','width=900,height=700');
+    if(!win){ showToast('⚠️ Permita pop-ups e tente novamente.','error'); return; }
+
+    // Copia os estilos CSS do documento atual
+    const styles = Array.from(document.styleSheets)
+      .map(s=>{ try{ return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); }catch{return '';} })
+      .join('\n');
+
+    win.document.write(`<!DOCTYPE html><html lang="pt-BR"><head>
+      <meta charset="UTF-8">
+      <title>BDO — Impressão</title>
+      <style>
+        ${styles}
+        @page { margin: 10mm; }
+        @media print {
+          body { margin:0; background:#fff !important; }
+          .bdo-preview { border:none !important; box-shadow:none !important; }
+        }
+        body { background:#fff; font-family:'Segoe UI',Arial,sans-serif; color:#0d1b3e; padding:8px; }
+      </style>
+    </head><body>
+      <div class="bdo-preview">${el.innerHTML}</div>
+      <script>window.onload=()=>{ setTimeout(()=>{ window.print(); window.close(); }, 500); }<\/script>
+    </body></html>`);
+    win.document.close();
+    showToast('🖨️ Janela de impressão aberta!','success');
+  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
+}
+
+// ── Compartilhar WhatsApp ─────────────────────────────────────────────
+async function compartilharWhatsApp(){
+  showToast('⏳ Preparando mensagem...','');
+  try{
+    const d  = coletarDados();
+    const st = getStatusLabel();
+
+    // Tenta obter URL pública do servidor (funciona apenas se servidor OK)
+    let pdfUrl = '';
+    try{
+      const resp = await fetch('/api/gerar_bdo_pdf_url',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(d)
+      });
+      if(resp.ok){
+        const json = await resp.json();
+        if(json.ok && json.url) pdfUrl = json.url;
+      }
+    }catch(){ /* servidor offline — segue sem URL */ }
+
+    const linhaUrl = pdfUrl ? `\n📄 *PDF do BDO:*\n${pdfUrl}` : '';
+    const msg = [
+      `📋 *BDO — Boletim Diário de Obras*`,
+      `━━━━━━━━━━━━━━━━━━`,
+      `📁 Projeto: ${d.num_projeto||'—'}`,
+      `📍 Cidade: ${d.cidade||'—'}`,
+      `📅 Data: ${d.data_bdo||'—'}  ⏰ ${d.hora_inicio||'--:--'} → ${d.hora_final||'--:--'}`,
+      `🔑 Encarregado: ${d.encarregado||'—'}`,
+      st ? `${st.emoji} Status: ${st.label}` : '',
+      linhaUrl,
+      `━━━━━━━━━━━━━━━━━━`,
+      `_HAGAP Engenharia Elétrica_`
+    ].filter(l=>l!==undefined).join('\n');
+
+    showToast('✅ Abrindo WhatsApp...','success');
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
+}
 </script>
 </body>
 </html>
