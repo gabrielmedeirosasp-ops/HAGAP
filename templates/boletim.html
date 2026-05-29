@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,163 +6,214 @@
 <title>BDO — Boletim Diário de Obras</title>
 <style>
   :root {
-    --primary: #0a2557;
-    --primary2: #0d2f6e;
-    --accent: #1565c0;
-    --bg: #e8eef8;
-    --border: #b8c8e8;
-    --text: #0d1b3e;
-    --muted: #4a5a7a;
-    --success: #1a7a3c;
-    --danger: #c0392b;
-    --warning: #d68910;
-    --white: #ffffff;
+    --primary: #0a2557; --primary2: #0d2f6e; --accent: #1565c0;
+    --bg: #e8eef8; --border: #b8c8e8; --text: #0d1b3e;
+    --muted: #4a5a7a; --success: #1a7a3c; --danger: #c0392b;
+    --warning: #d68910; --white: #ffffff;
+    --ps-color: #7b2ff7;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); font-family: 'Segoe UI', Arial, sans-serif; color: var(--text); }
 
-  .topbar {
-    background: linear-gradient(135deg, #061539 0%, #0a2557 100%);
-    color: white; position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.35);
-  }
-  .topbar-inner {
-    max-width: 860px; margin: 0 auto; padding: 12px 20px;
-    display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
-  }
-  .topbar-logo { display: flex; align-items: center; gap: 12px; }
-  .topbar-logo img { height: 44px; object-fit: contain; background: white; border-radius: 6px; padding: 3px 6px; }
-  .topbar-logo h1 { font-size: 15px; font-weight: 800; line-height: 1.3; }
-  .topbar-logo h1 span { font-size: 11px; opacity: 0.65; font-weight: 400; display: block; }
-  .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .progress-wrap { width: 100%; padding: 0 20px 8px; max-width: 860px; margin: 0 auto; }
-  .progress-bar { background: rgba(255,255,255,0.15); border-radius: 20px; height: 3px; overflow: hidden; }
-  .progress-fill { background: linear-gradient(90deg, #e67e22, #f1c40f); height: 100%; border-radius: 20px; transition: width 0.4s; }
+  .topbar { background: linear-gradient(135deg,#061539 0%,#0a2557 100%); color: white; position: sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,.35); }
+  .topbar-inner { max-width:860px; margin:0 auto; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .topbar-logo { display:flex; align-items:center; gap:12px; }
+  .topbar-logo img { height:44px; object-fit:contain; background:white; border-radius:6px; padding:3px 6px; }
+  .topbar-logo h1 { font-size:15px; font-weight:800; line-height:1.3; }
+  .topbar-logo h1 span { font-size:11px; opacity:.65; font-weight:400; display:block; }
+  .topbar-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .progress-wrap { width:100%; padding:0 20px 8px; max-width:860px; margin:0 auto; }
+  .progress-bar { background:rgba(255,255,255,.15); border-radius:20px; height:3px; overflow:hidden; }
+  .progress-fill { background:linear-gradient(90deg,#e67e22,#f1c40f); height:100%; border-radius:20px; transition:width .4s; }
 
-  .btn { padding: 9px 18px; border: none; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
-  .btn-success { background: var(--success); color: white; }
-  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--border); }
-  .btn-secondary { background: #25d366; color: white; }
-  .btn-email { background: #e67e22; color: white; }
-  .btn-sm { padding: 5px 11px; font-size: 12px; }
+  .btn { padding:9px 18px; border:none; border-radius:7px; cursor:pointer; font-size:13px; font-weight:600; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.2); }
+  .btn-primary   { background:var(--accent); color:white; }
+  .btn-success   { background:var(--success); color:white; }
+  .btn-whats     { background:#25d366; color:white; }
+  .btn-email     { background:#e67e22; color:white; }
+  .btn-outline   { background:white; color:var(--primary); border:1.5px solid var(--border); }
+  .btn-secondary { background:rgba(255,255,255,.15); color:white; border:1px solid rgba(255,255,255,.3); }
+  .btn-sm { padding:5px 11px; font-size:12px; }
 
-  .container { max-width: 860px; margin: 0 auto; padding: 20px 16px 40px; }
+  .container { max-width:860px; margin:0 auto; padding:20px 16px 60px; }
 
-  .step-indicator { display: flex; gap: 0; margin-bottom: 24px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-  .step-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 10px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
-  .step-item:hover { color: var(--primary); background: var(--bg); }
-  .step-item.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f4ff; }
-  .step-item.done { color: var(--success); border-bottom-color: var(--success); }
-  .step-item .step-num { display: block; font-size: 16px; margin-bottom: 3px; }
+  .step-indicator { display:flex; margin-bottom:24px; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .step-item { flex:1; text-align:center; padding:10px 4px; font-size:10px; font-weight:700; color:var(--muted); cursor:pointer; transition:all .2s; border-bottom:3px solid transparent; }
+  .step-item:hover { color:var(--primary); background:var(--bg); }
+  .step-item.active { color:var(--primary); border-bottom-color:var(--primary); background:#f0f4ff; }
+  .step-item.done   { color:var(--success); border-bottom-color:var(--success); }
+  .step-item .step-num { display:block; font-size:16px; margin-bottom:3px; }
 
-  .step-panel { display: none; }
-  .step-panel.active { display: block; }
+  .step-panel { display:none; }
+  .step-panel.active { display:block; }
 
-  .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); margin-bottom: 14px; overflow: hidden; }
-  .card-header { background: linear-gradient(135deg, #0a2557 0%, #0d3580 100%); color: white; padding: 11px 16px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  .card-body { padding: 16px; }
+  .card { background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.07); margin-bottom:14px; overflow:hidden; }
+  .card-header { background:linear-gradient(135deg,#0a2557 0%,#0d3580 100%); color:white; padding:11px 16px; font-weight:700; font-size:13px; display:flex; align-items:center; gap:8px; }
+  .card-header.ps-header { background:linear-gradient(135deg,#4a0e8f 0%,#7b2ff7 100%); }
+  .card-body { padding:16px; }
 
-  .form-grid { display: grid; gap: 12px; }
-  .col-2 { grid-template-columns: 1fr 1fr; }
-  .col-3 { grid-template-columns: 1fr 1fr 1fr; }
-  @media(max-width:640px) { .col-2,.col-3 { grid-template-columns: 1fr; } }
+  .form-grid { display:grid; gap:12px; }
+  .col-2 { grid-template-columns:1fr 1fr; }
+  .col-3 { grid-template-columns:1fr 1fr 1fr; }
+  @media(max-width:640px){ .col-2,.col-3{ grid-template-columns:1fr; } }
 
-  .form-group label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
-  .form-group label .req { color: var(--danger); }
+  .form-group label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:5px; }
+  .form-group label .req { color:var(--danger); }
   .form-group input, .form-group select, .form-group textarea {
-    width: 100%; border: 1.5px solid var(--border); border-radius: 7px; padding: 9px 11px; font-size: 13px; color: var(--text);
-    transition: all 0.2s; background: white; font-family: inherit;
+    width:100%; border:1.5px solid var(--border); border-radius:7px; padding:9px 11px; font-size:13px; color:var(--text);
+    transition:all .2s; background:white; font-family:inherit;
   }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,52,96,0.1);
+    outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(15,52,96,.1);
   }
-  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-group textarea { resize:vertical; min-height:90px; }
 
-  .toggle-group { display: flex; gap: 10px; margin-top: 6px; }
-  .toggle-opt {
-    flex: 1; border: 2px solid var(--border); border-radius: 10px; padding: 13px 10px;
-    cursor: pointer; text-align: center; transition: all 0.2s;
+  .toggle-group { display:flex; gap:10px; margin-top:6px; }
+  .toggle-opt { flex:1; border:2px solid var(--border); border-radius:10px; padding:13px 10px; cursor:pointer; text-align:center; transition:all .2s; }
+  .toggle-opt:hover { border-color:var(--primary); background:#f5f7ff; }
+  .toggle-opt.sel-sim { border-color:var(--success); background:#f0fff4; box-shadow:0 0 0 3px rgba(39,174,96,.13); }
+  .toggle-opt.sel-nao { border-color:var(--danger);  background:#fff5f5; box-shadow:0 0 0 3px rgba(231,76,60,.13); }
+  .toggle-opt.sel-ps  { border-color:var(--ps-color);background:#f5f0ff; box-shadow:0 0 0 3px rgba(123,47,247,.13); }
+  .toggle-opt .icon { font-size:26px; margin-bottom:5px; }
+  .toggle-opt .lbl  { font-weight:800; font-size:15px; }
+  .toggle-opt .desc { font-size:11px; color:var(--muted); margin-top:3px; }
+
+  .radio-group { display:flex; gap:8px; margin-top:6px; flex-wrap:wrap; }
+  .radio-opt { border:2px solid var(--border); border-radius:8px; padding:10px 16px; cursor:pointer; text-align:center; transition:all .2s; font-size:13px; font-weight:600; }
+  .radio-opt:hover { border-color:var(--primary); background:#f5f7ff; }
+  .radio-opt.selected { border-color:var(--primary); background:#eef2ff; color:var(--primary); }
+
+  /* ── Serviço items ── */
+  .servico-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1.5px solid var(--border); border-radius:9px; margin-bottom:8px; transition:all .2s; }
+  .servico-item:hover { border-color:var(--primary); background:#f9faff; }
+  .servico-item.checked { border-color:var(--primary); background:#eef4ff; }
+  .servico-check { width:20px; height:20px; accent-color:var(--primary); cursor:pointer; margin-top:2px; flex-shrink:0; }
+  .servico-info { flex:1; }
+  .servico-label { font-weight:700; font-size:13px; cursor:pointer; }
+  .servico-qty { display:none; margin-top:8px; }
+  .servico-qty input { padding:7px 10px; border:1.5px solid var(--border); border-radius:6px; font-size:12px; font-family:inherit; width:100%; max-width:220px; }
+  .servico-item.checked .servico-qty { display:block; }
+  .servico-ps-btn { display:none; flex-shrink:0; }
+  .modo-postes-on .servico-ps-btn { display:block; }
+
+  /* ── Badge de poste ── */
+  .ps-badge {
+    border:none; border-radius:20px; padding:4px 10px; font-size:11px; font-weight:700; cursor:pointer;
+    background:#ede8ff; color:var(--ps-color); transition:all .2s; white-space:nowrap;
   }
-  .toggle-opt:hover { border-color: var(--primary); background: #f5f7ff; }
-  .toggle-opt.sel-sim { border-color: var(--success); background: #f0fff4; box-shadow: 0 0 0 3px rgba(39,174,96,0.13); }
-  .toggle-opt.sel-nao { border-color: var(--danger); background: #fff5f5; box-shadow: 0 0 0 3px rgba(231,76,60,0.13); }
-  .toggle-opt .icon { font-size: 26px; margin-bottom: 5px; }
-  .toggle-opt .lbl { font-weight: 800; font-size: 15px; }
-  .toggle-opt .desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .ps-badge:hover { background:#d4c8ff; transform:scale(1.05); }
+  .ps-badge.ps-geral { background:#e8f4fd; color:#1a5276; }
+  .ps-badge.ps-definido { background:#e8f0ff; color:#0a2557; }
 
-  .radio-group { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-  .radio-opt {
-    border: 2px solid var(--border); border-radius: 8px; padding: 10px 16px;
-    cursor: pointer; text-align: center; transition: all 0.2s; font-size: 13px; font-weight: 600;
+  /* ── Lista de materiais ── */
+  .mat-item { display:flex; align-items:center; gap:8px; padding:8px; border:1.5px solid var(--border); border-radius:8px; margin-bottom:6px; background:white; }
+  .mat-item input { border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-size:12px; font-family:inherit; }
+  .mat-item .mat-desc { flex:1; min-width:0; }
+  .mat-item .mat-qtd  { width:70px; flex-shrink:0; }
+  .mat-item .mat-del  { background:none; border:none; color:#c0392b; cursor:pointer; font-size:16px; padding:2px 4px; flex-shrink:0; }
+  .mat-item .mat-del:hover { background:#fff5f5; border-radius:4px; }
+  .mat-add-btn { border:2px dashed var(--border); background:white; border-radius:8px; padding:9px; width:100%; cursor:pointer; font-size:13px; color:var(--muted); font-weight:600; transition:all .2s; margin-top:4px; }
+  .mat-add-btn:hover { border-color:var(--primary); color:var(--primary); background:#f5f7ff; }
+
+  /* ── Lista de observações ── */
+  .obs-item { border:1.5px solid var(--border); border-radius:9px; padding:10px; margin-bottom:8px; background:white; }
+  .obs-item-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .obs-item-header span { flex:1; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+  .obs-item textarea { width:100%; border:1.5px solid var(--border); border-radius:7px; padding:8px 10px; font-size:13px; font-family:inherit; resize:vertical; min-height:70px; }
+  .obs-item textarea:focus { outline:none; border-color:var(--primary); }
+  .obs-del { background:none; border:none; color:#c0392b; cursor:pointer; font-size:16px; padding:2px 6px; }
+
+  /* ── Picker de poste (bottom sheet) ── */
+  .ps-picker-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300; }
+  .ps-picker-overlay.open { display:block; }
+  .ps-picker {
+    position:fixed; bottom:0; left:0; right:0; z-index:301;
+    background:white; border-radius:20px 20px 0 0;
+    padding:20px 16px 32px; box-shadow:0 -4px 30px rgba(0,0,0,.2);
+    transform:translateY(100%); transition:transform .3s ease;
+    max-height:75vh; overflow-y:auto;
   }
-  .radio-opt:hover { border-color: var(--primary); background: #f5f7ff; }
-  .radio-opt.selected { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+  .ps-picker.open { transform:translateY(0); }
+  .ps-picker-handle { width:40px; height:4px; background:#ddd; border-radius:4px; margin:0 auto 16px; }
+  .ps-picker-title { font-size:15px; font-weight:800; color:var(--primary); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; }
+  .ps-picker-title button { background:none; border:none; font-size:20px; cursor:pointer; color:var(--muted); }
+  .ps-picker-btns { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .ps-picker-btn {
+    border:2px solid var(--border); border-radius:10px; padding:10px 16px;
+    cursor:pointer; font-size:13px; font-weight:700; background:white; transition:all .2s;
+  }
+  .ps-picker-btn:hover { border-color:var(--ps-color); background:#f5f0ff; }
+  .ps-picker-btn.ps-btn-geral { border-color:#b8d9f7; color:#1a5276; background:#e8f4fd; }
+  .ps-picker-custom { display:flex; gap:8px; margin-top:8px; }
+  .ps-picker-custom input { flex:1; border:1.5px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13px; font-family:inherit; }
+  .ps-picker-custom button { border:none; border-radius:8px; padding:9px 16px; background:var(--ps-color); color:white; font-weight:700; cursor:pointer; }
 
-  .servico-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 9px; margin-bottom: 8px; transition: all 0.2s; }
-  .servico-item:hover { border-color: var(--primary); background: #f9faff; }
-  .servico-item.checked { border-color: var(--primary); background: #eef4ff; }
-  .servico-check { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; margin-top: 1px; flex-shrink: 0; }
-  .servico-info { flex: 1; }
-  .servico-label { font-weight: 700; font-size: 13px; cursor: pointer; }
-  .servico-qty { display: none; margin-top: 8px; }
-  .servico-qty input { padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit; width: 100%; max-width: 220px; }
-  .servico-item.checked .servico-qty { display: block; }
+  /* ── Agrupamento por poste no preview ── */
+  .ps-group { border:2px solid #d4c8ff; border-radius:10px; margin-bottom:10px; overflow:hidden; }
+  .ps-group-header { background:linear-gradient(135deg,#4a0e8f,#7b2ff7); color:white; padding:8px 14px; font-weight:800; font-size:12px; display:flex; align-items:center; gap:8px; }
+  .ps-group-header.geral { background:linear-gradient(135deg,#0a2557,#1565c0); }
+  .ps-group-body { padding:8px 14px; font-size:12px; }
+  .ps-group-section { margin-bottom:6px; }
+  .ps-group-section .lbl { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
 
-  .auto-text { background: linear-gradient(135deg, #eef4ff, #f5f7ff); border: 1.5px solid #c5d5f8; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--primary); font-style: italic; display: flex; align-items: center; gap: 8px; }
-  .auto-text::before { content: '🤖'; font-size: 16px; flex-shrink: 0; }
+  /* ── Config de postes ── */
+  .postes-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .poste-chip { background:#ede8ff; color:var(--ps-color); border:2px solid #d4c8ff; border-radius:20px; padding:5px 14px; font-size:13px; font-weight:700; }
 
-  .sig-wrapper { border: 2px dashed var(--border); border-radius: 10px; background: #fafbff; padding: 10px; }
-  .sig-canvas { display: block; width: 100%; height: 130px; border-radius: 6px; background: white; border: 1px solid var(--border); cursor: crosshair; touch-action: none; }
-  .sig-controls { display: flex; gap: 8px; margin-top: 6px; align-items: center; }
+  /* ── Outros ── */
+  .auto-text { background:linear-gradient(135deg,#eef4ff,#f5f7ff); border:1.5px solid #c5d5f8; border-radius:8px; padding:10px 14px; font-size:12px; color:var(--primary); font-style:italic; display:flex; align-items:center; gap:8px; }
+  .auto-text::before { content:'🤖'; font-size:16px; flex-shrink:0; }
+  .sig-wrapper { border:2px dashed var(--border); border-radius:10px; background:#fafbff; padding:10px; }
+  .sig-canvas { display:block; width:100%; height:130px; border-radius:6px; background:white; border:1px solid var(--border); cursor:crosshair; touch-action:none; }
+  .sig-controls { display:flex; gap:8px; margin-top:6px; align-items:center; }
+  .nav-buttons { display:flex; justify-content:space-between; margin-top:20px; gap:10px; }
+  .nav-buttons .btn { min-width:120px; justify-content:center; }
+  .divider { height:1px; background:var(--border); margin:14px 0; }
+  .alert { border-radius:8px; padding:11px 14px; margin-bottom:12px; font-size:12px; display:flex; align-items:center; gap:9px; }
+  .alert-info { background:#e8f4fd; border:1px solid #b8d9f7; color:#1a5276; }
+  .alert-ps   { background:#f5f0ff; border:1px solid #d4c8ff; color:#4a0e8f; }
 
-  .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
-  .nav-buttons .btn { min-width: 120px; justify-content: center; }
+  /* ── Preview BDO ── */
+  .bdo-preview { background:white; border-radius:10px; border:2px solid var(--border); overflow:hidden; font-size:12px; line-height:1.6; }
+  .bdo-header-bar { background:linear-gradient(135deg,#061539,#0a2f7a); color:white; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .bdo-header-bar img { height:50px; background:white; border-radius:6px; padding:3px 8px; }
+  .bdo-header-info { flex:1; }
+  .bdo-header-info h2 { font-size:14px; font-weight:800; margin-bottom:2px; }
+  .bdo-header-info p  { font-size:10px; opacity:.75; }
+  .bdo-num { font-size:22px; font-weight:900; opacity:.9; text-align:right; white-space:nowrap; }
+  .bdo-sec { background:#0a2557; color:white; padding:5px 14px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+  .bdo-sec.ps-sec { background:linear-gradient(90deg,#4a0e8f,#7b2ff7); }
+  .bdo-row { display:grid; grid-template-columns:1fr 1fr; }
+  .bdo-field { padding:7px 14px; border-bottom:1px solid #e8ecf5; }
+  .bdo-field:nth-child(odd){ border-right:1px solid #e8ecf5; }
+  .bdo-field .fl { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:2px; }
+  .bdo-field .fv { font-size:12px; font-weight:700; color:var(--text); }
+  .bdo-text-block { padding:10px 14px; border-bottom:1px solid #e8ecf5; font-size:12px; }
+  .bdo-text-block .bl { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
+  .bdo-sig-area { display:grid; grid-template-columns:1fr 1fr; }
+  .bdo-sig-cell { padding:12px; border-right:1px solid #e8ecf5; text-align:center; }
+  .bdo-sig-cell:last-child{ border-right:none; }
+  .bdo-sig-line { border-top:1.5px solid #333; margin:30px 20px 6px; }
+  .bdo-sig-name { font-size:11px; font-weight:700; }
+  .bdo-sig-role { font-size:10px; color:var(--muted); }
+  .bdo-footer { background:#f0f4fb; padding:6px 14px; font-size:9px; color:var(--muted); text-align:center; border-top:1px solid var(--border); }
 
-  /* ── PREVIEW BDO ── */
-  .bdo-preview { background: white; border-radius: 10px; border: 2px solid var(--border); overflow: hidden; font-size: 12px; line-height: 1.6; }
-  .bdo-header-bar { background: linear-gradient(135deg, #061539, #0a2f7a); color: white; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .bdo-header-bar img { height: 50px; background: white; border-radius: 6px; padding: 3px 8px; }
-  .bdo-header-info { flex: 1; }
-  .bdo-header-info h2 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
-  .bdo-header-info p { font-size: 10px; opacity: 0.75; }
-  .bdo-num { font-size: 22px; font-weight: 900; opacity: 0.9; text-align: right; white-space: nowrap; }
-  .bdo-sec { background: #0a2557; color: white; padding: 5px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-  .bdo-row { display: grid; grid-template-columns: 1fr 1fr; }
-  .bdo-field { padding: 7px 14px; border-bottom: 1px solid #e8ecf5; }
-  .bdo-field:nth-child(odd) { border-right: 1px solid #e8ecf5; }
-  .bdo-field .fl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
-  .bdo-field .fv { font-size: 12px; font-weight: 700; color: var(--text); }
-  .bdo-text-block { padding: 10px 14px; border-bottom: 1px solid #e8ecf5; font-size: 12px; }
-  .bdo-text-block .bl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-  .bdo-sig-area { display: grid; grid-template-columns: 1fr 1fr; }
-  .bdo-sig-cell { padding: 12px; border-right: 1px solid #e8ecf5; text-align: center; }
-  .bdo-sig-cell:last-child { border-right: none; }
-  .bdo-sig-line { border-top: 1.5px solid #333; margin: 30px 20px 6px; }
-  .bdo-sig-name { font-size: 11px; font-weight: 700; }
-  .bdo-sig-role { font-size: 10px; color: var(--muted); }
-  .bdo-footer { background: #f0f4fb; padding: 6px 14px; font-size: 9px; color: var(--muted); text-align: center; border-top: 1px solid var(--border); }
+  /* ── Modal PDF ── */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:white; border-radius:14px; padding:28px; max-width:440px; width:90%; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.3); }
+  .modal-icon { font-size:46px; margin-bottom:12px; }
+  .modal-box h3 { font-size:18px; margin-bottom:8px; }
+  .modal-box p  { color:var(--muted); font-size:13px; margin-bottom:20px; line-height:1.5; }
+  .modal-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .spinner { width:34px; height:34px; border:4px solid #eee; border-top-color:var(--primary); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 14px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-  .divider { height: 1px; background: var(--border); margin: 14px 0; }
-  .alert { border-radius: 8px; padding: 11px 14px; margin-bottom: 12px; font-size: 12px; display: flex; align-items: center; gap: 9px; }
-  .alert-info { background: #e8f4fd; border: 1px solid #b8d9f7; color: #1a5276; }
-
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal-box { background: white; border-radius: 14px; padding: 28px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-  .modal-icon { font-size: 46px; margin-bottom: 12px; }
-  .modal-box h3 { font-size: 18px; margin-bottom: 8px; }
-  .modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
-  .modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .spinner { width: 34px; height: 34px; border: 4px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: white; padding: 13px 22px; border-radius: 9px; z-index: 999; font-size: 13px; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,0.3); transform: translateY(80px); opacity: 0; transition: all 0.3s; }
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast.success { background: #1e8449; }
-  .toast.error { background: #c0392b; }
+  .toast { position:fixed; bottom:24px; right:24px; background:#1a1a2e; color:white; padding:13px 22px; border-radius:9px; z-index:999; font-size:13px; font-weight:600; box-shadow:0 4px 16px rgba(0,0,0,.3); transform:translateY(80px); opacity:0; transition:all .3s; }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast.success { background:#1e8449; }
+  .toast.error   { background:#c0392b; }
 </style>
 </head>
 <body>
@@ -173,9 +223,7 @@
   <div class="topbar-inner">
     <div class="topbar-logo">
       <img src="/static/logo.png" alt="HAGAP" onerror="this.style.display='none'">
-      <h1>BDO — Boletim Diário de Obras
-        <span>Hagap Instalações Elétricas</span>
-      </h1>
+      <h1>BDO — Boletim Diário de Obras<span>Hagap Instalações Elétricas</span></h1>
     </div>
     <div class="topbar-actions">
       <button class="btn btn-secondary btn-sm" onclick="limparFormulario()">🔄 Limpar</button>
@@ -188,7 +236,7 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container" id="main-container">
 
   <!-- STEP INDICATOR -->
   <div class="step-indicator">
@@ -202,7 +250,9 @@
     <div class="step-item" id="si-8" onclick="goStep(8)"><span class="step-num">📤</span>Exportar</div>
   </div>
 
-  <!-- STEP 1 — CABEÇALHO -->
+  <!-- ══════════════════════════════════════════════
+       STEP 1 — CABEÇALHO + CONFIGURAÇÃO DE POSTES
+  ══════════════════════════════════════════════ -->
   <div class="step-panel active" id="step-1">
     <div class="card">
       <div class="card-header">📋 1. Identificação do BDO</div>
@@ -222,10 +272,46 @@
         <input type="hidden" id="equipe" value="">
       </div>
     </div>
+
+    <!-- ── CONFIGURAÇÃO DE POSTES (opcional) ── -->
+    <div class="card">
+      <div class="card-header ps-header">🏗️ Agrupamento por Poste — Opcional</div>
+      <div class="card-body">
+        <p style="font-size:13px;margin-bottom:12px;color:var(--muted)">Ative para organizar serviços, materiais e observações por poste (PS). Ideal para obras com múltiplos pontos.</p>
+        <div class="toggle-group">
+          <div class="toggle-opt" id="ps-nao" onclick="setModoPostes(false)">
+            <div class="icon">📄</div>
+            <div class="lbl" style="color:var(--muted)">PADRÃO</div>
+            <div class="desc">Sem agrupamento</div>
+          </div>
+          <div class="toggle-opt" id="ps-sim" onclick="setModoPostes(true)">
+            <div class="icon">🏗️</div>
+            <div class="lbl" style="color:var(--ps-color)">POR POSTE</div>
+            <div class="desc">Agrupar por PS</div>
+          </div>
+        </div>
+        <div id="postes-config" style="display:none;margin-top:16px">
+          <div class="form-grid col-2">
+            <div class="form-group">
+              <label>Quantidade de postes</label>
+              <input type="number" id="qtd_postes" min="1" max="50" placeholder="Ex: 3" oninput="gerarListaPostes()">
+            </div>
+          </div>
+          <div id="postes-chips-wrap" style="margin-top:10px;display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Postes gerados:</div>
+            <div class="postes-chips" id="postes-chips"></div>
+            <p style="font-size:11px;color:var(--muted);margin-top:8px">💡 Você poderá adicionar postes extras manualmente durante o preenchimento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="goStep(2)">Próximo →</button></div>
   </div>
 
-  <!-- STEP 2 — SERVIÇO LIVRE -->
+  <!-- ══════════════════════════════════════════════
+       STEP 2 — SERVIÇO LIVRE
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-2">
     <div class="card">
       <div class="card-header">🔑 2. Serviço Livre</div>
@@ -233,14 +319,10 @@
         <p style="font-size:13px;margin-bottom:12px;font-weight:600">Trata-se de serviço livre? <span class="req">*</span></p>
         <div class="toggle-group">
           <div class="toggle-opt" id="sl-sim" onclick="setServicoLivre(true)">
-            <div class="icon">✅</div>
-            <div class="lbl" style="color:var(--success)">SIM</div>
-            <div class="desc">Serviço livre</div>
+            <div class="icon">✅</div><div class="lbl" style="color:var(--success)">SIM</div><div class="desc">Serviço livre</div>
           </div>
           <div class="toggle-opt" id="sl-nao" onclick="setServicoLivre(false)">
-            <div class="icon">📋</div>
-            <div class="lbl" style="color:var(--primary)">NÃO</div>
-            <div class="desc">Preencher OMB / PLV</div>
+            <div class="icon">📋</div><div class="lbl" style="color:var(--primary)">NÃO</div><div class="desc">Preencher OMB / PLV</div>
           </div>
         </div>
         <div id="campos-omb-plv" style="display:none;margin-top:16px">
@@ -257,31 +339,20 @@
     </div>
   </div>
 
-  <!-- STEP 3 — MANOBRA -->
+  <!-- ══════════════════════════════════════════════
+       STEP 3 — MANOBRA
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-3">
     <div class="card">
       <div class="card-header">🔌 3. Manobra</div>
       <div class="card-body">
         <p style="font-size:13px;margin-bottom:12px;font-weight:600">Manobra executada pela equipe? <span class="req">*</span></p>
         <div class="toggle-group">
-          <div class="toggle-opt" id="man-sim" onclick="setManobra('equipe')">
-            <div class="icon">👷</div>
-            <div class="lbl" style="color:var(--success)">SIM</div>
-            <div class="desc">Pela equipe executora</div>
-          </div>
-          <div class="toggle-opt" id="man-nao" onclick="setManobra('outras')">
-            <div class="icon">🔄</div>
-            <div class="lbl" style="color:var(--primary)">NÃO</div>
-            <div class="desc">Outra equipe</div>
-          </div>
-          <div class="toggle-opt" id="man-sem" onclick="setManobra('sem')">
-            <div class="icon">⛔</div>
-            <div class="lbl" style="color:var(--warning)">SEM</div>
-            <div class="desc">Sem manobra</div>
-          </div>
+          <div class="toggle-opt" id="man-sim" onclick="setManobra('equipe')"><div class="icon">👷</div><div class="lbl" style="color:var(--success)">SIM</div><div class="desc">Pela equipe executora</div></div>
+          <div class="toggle-opt" id="man-nao" onclick="setManobra('outras')"><div class="icon">🔄</div><div class="lbl" style="color:var(--primary)">NÃO</div><div class="desc">Outra equipe</div></div>
+          <div class="toggle-opt" id="man-sem" onclick="setManobra('sem')"><div class="icon">⛔</div><div class="lbl" style="color:var(--warning)">SEM</div><div class="desc">Sem manobra</div></div>
         </div>
         <div id="manobra-outras" style="display:none;margin-top:16px">
-          <p style="font-size:12px;margin-bottom:8px;font-weight:600;color:var(--muted)">Selecione quem executou a manobra:</p>
           <div class="radio-group">
             <div class="radio-opt" id="man-copel" onclick="setManobraExt('copel')">🏢 Agência COPEL</div>
             <div class="radio-opt" id="man-hagap" onclick="setManobraExt('hagap')">⚡ Linha Viva HAGAP</div>
@@ -296,54 +367,63 @@
     </div>
   </div>
 
-  <!-- STEP 4 — ALTERAÇÕES / MATERIAL -->
+  <!-- ══════════════════════════════════════════════
+       STEP 4 — ALTERAÇÕES + MATERIAIS
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-4">
     <div class="card">
-      <div class="card-header">📦 4. Alterações / Materiais Adicionais</div>
+      <div class="card-header">🔩 4. Alterações</div>
       <div class="card-body">
-        <p style="font-size:13px;margin-bottom:12px;font-weight:600">Houve alterações ou materiais adicionais? <span class="req">*</span></p>
+        <p style="font-size:13px;margin-bottom:12px;font-weight:600">Houve alterações? <span class="req">*</span></p>
         <div class="toggle-group">
-          <div class="toggle-opt" id="alt-nao" onclick="setAlteracoes(false)">
-            <div class="icon">✅</div>
-            <div class="lbl" style="color:var(--success)">NÃO</div>
-            <div class="desc">Conforme projeto</div>
-          </div>
-          <div class="toggle-opt" id="alt-sim" onclick="setAlteracoes(true)">
-            <div class="icon">📝</div>
-            <div class="lbl" style="color:var(--warning)">SIM</div>
-            <div class="desc">Descrever alterações</div>
-          </div>
+          <div class="toggle-opt" id="alt-nao" onclick="setAlteracoes(false)"><div class="icon">✅</div><div class="lbl" style="color:var(--success)">NÃO</div><div class="desc">Conforme projeto</div></div>
+          <div class="toggle-opt" id="alt-sim" onclick="setAlteracoes(true)"><div class="icon">📝</div><div class="lbl" style="color:var(--warning)">SIM</div><div class="desc">Descrever</div></div>
         </div>
-        <div id="alt-auto-txt" style="display:none;margin-top:14px">
-          <div class="auto-text">Executado conforme projeto.</div>
-        </div>
+        <div id="alt-auto-txt" style="display:none;margin-top:14px"><div class="auto-text">Executado conforme projeto.</div></div>
         <div id="alt-desc-campo" style="display:none;margin-top:14px">
           <div class="form-group">
-            <label>Descreva as alterações ou materiais adicionais</label>
-            <textarea id="alt_descricao" placeholder="Descreva as alterações realizadas, materiais diferentes utilizados, quantidades alteradas..."></textarea>
+            <label>Descreva as alterações</label>
+            <textarea id="alt_descricao" placeholder="Descreva as alterações realizadas..."></textarea>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ── Materiais Utilizados ── -->
+    <div class="card">
+      <div class="card-header">📦 Materiais Utilizados</div>
+      <div class="card-body">
+        <div class="alert alert-info" id="mat-alert-normal">ℹ️ Adicione os materiais utilizados na obra.</div>
+        <div class="alert alert-ps" id="mat-alert-ps" style="display:none">🏗️ Modo poste ativo — vincule cada material ao poste correspondente ou deixe como <strong>Geral</strong>.</div>
+        <div id="materiais-lista"></div>
+        <button class="mat-add-btn" onclick="adicionarMaterial()">＋ Adicionar Material</button>
+      </div>
+    </div>
+
     <div class="nav-buttons">
       <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
       <button class="btn btn-primary" onclick="goStep(5)">Próximo →</button>
     </div>
   </div>
 
-  <!-- STEP 5 — SERVIÇOS EXECUTADOS -->
+  <!-- ══════════════════════════════════════════════
+       STEP 5 — SERVIÇOS EXECUTADOS
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-5">
     <div class="card">
       <div class="card-header">🔧 5. Serviços Executados</div>
       <div class="card-body">
-        <div class="alert alert-info">ℹ️ Marque os serviços realizados e informe a quantidade quando necessário.</div>
+        <div class="alert alert-info" id="srv-alert-normal">ℹ️ Marque os serviços realizados e informe a quantidade quando necessário.</div>
+        <div class="alert alert-ps" id="srv-alert-ps" style="display:none">🏗️ Modo poste ativo — toque no badge <strong>🌐 Geral</strong> para vincular o serviço a um poste específico.</div>
 
+        <!-- Cada servico-item tem botão de poste na direita -->
         <div class="servico-item" id="si-calcada">
           <input type="checkbox" class="servico-check" id="chk-calcada" onchange="toggleServico('si-calcada','chk-calcada')">
           <div class="servico-info">
             <label class="servico-label" for="chk-calcada">🏗️ Reforma de calçada</label>
             <div class="servico-qty"><input type="text" id="qty-calcada" placeholder="Quantidade / descrição (opcional)"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-calcada" onclick="abrirPostePicker('calcada')">🌐 Geral</button></div>
         </div>
 
         <div class="servico-item" id="si-podas">
@@ -352,6 +432,7 @@
             <label class="servico-label" for="chk-podas">🌳 Podas</label>
             <div class="servico-qty"><input type="text" id="qty-podas" placeholder="Quantidade / descrição (opcional)"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-podas" onclick="abrirPostePicker('podas')">🌐 Geral</button></div>
         </div>
 
         <div class="servico-item" id="si-luminarias">
@@ -360,6 +441,7 @@
             <label class="servico-label" for="chk-luminarias">💡 Reinstalação de luminárias</label>
             <div class="servico-qty"><input type="text" id="qty-luminarias" placeholder="Quantidade (opcional)"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-luminarias" onclick="abrirPostePicker('luminarias')">🌐 Geral</button></div>
         </div>
 
         <div class="servico-item" id="si-fibra">
@@ -368,16 +450,18 @@
             <label class="servico-label" for="chk-fibra">🔗 Amarração de fibra óptica</label>
             <div class="servico-qty"><input type="text" id="qty-fibra" placeholder="Quantidade (opcional)"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-fibra" onclick="abrirPostePicker('fibra')">🌐 Geral</button></div>
         </div>
 
         <div class="servico-item" id="si-malha">
-          <input type="checkbox" class="servico-check" id="chk-malha" onchange="toggleServico('si-malha','chk-malha'); updateMalhaText()">
+          <input type="checkbox" class="servico-check" id="chk-malha" onchange="toggleServico('si-malha','chk-malha');updateMalhaText()">
           <div class="servico-info">
             <label class="servico-label" for="chk-malha">⚡ Malha de aterramento</label>
             <div class="servico-qty"><input type="number" id="qty-malha" placeholder="Metros executados" min="0" oninput="updateMalhaText()"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-malha" onclick="abrirPostePicker('malha')">🌐 Geral</button></div>
         </div>
-        <div id="malha-auto-txt" style="display:none;margin-top:6px;margin-bottom:8px"></div>
+        <div id="malha-auto-txt" style="display:none;margin-bottom:8px"></div>
 
         <div class="servico-item" id="si-estai">
           <input type="checkbox" class="servico-check" id="chk-estai" onchange="toggleServico('si-estai','chk-estai')">
@@ -385,6 +469,7 @@
             <label class="servico-label" for="chk-estai">🪝 Estai prov.</label>
             <div class="servico-qty"><input type="text" id="qty-estai" placeholder="Quantidade / descrição (opcional)"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-estai" onclick="abrirPostePicker('estai')">🌐 Geral</button></div>
         </div>
 
         <div class="servico-item" id="si-ramal">
@@ -393,6 +478,7 @@
             <label class="servico-label" for="chk-ramal">🔌 Reinstalação de ramal</label>
             <div class="servico-qty"><input type="text" id="qty-ramal" placeholder="Quantidade / descrição (opcional)"></div>
           </div>
+          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-ramal" onclick="abrirPostePicker('ramal')">🌐 Geral</button></div>
         </div>
       </div>
     </div>
@@ -402,14 +488,25 @@
     </div>
   </div>
 
-  <!-- STEP 6 — OBSERVAÇÕES -->
+  <!-- ══════════════════════════════════════════════
+       STEP 6 — OBSERVAÇÕES
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-6">
     <div class="card">
       <div class="card-header">📝 6. Observações Adicionais</div>
       <div class="card-body">
-        <div class="form-group">
-          <label>Observações (campo livre)</label>
-          <textarea id="observacoes" rows="6" placeholder="Intercorrências, condições climáticas, horários especiais, pendências..."></textarea>
+        <!-- Modo normal -->
+        <div id="obs-normal">
+          <div class="form-group">
+            <label>Observações (campo livre)</label>
+            <textarea id="observacoes" rows="6" placeholder="Intercorrências, condições climáticas, horários especiais, pendências..."></textarea>
+          </div>
+        </div>
+        <!-- Modo postes -->
+        <div id="obs-postes" style="display:none">
+          <div class="alert alert-ps" style="margin-bottom:12px">🏗️ Modo poste ativo — vincule cada observação ao poste correspondente ou deixe como <strong>Geral</strong>.</div>
+          <div id="obs-lista"></div>
+          <button class="mat-add-btn" onclick="adicionarObs()">＋ Adicionar Observação</button>
         </div>
       </div>
     </div>
@@ -419,14 +516,16 @@
     </div>
   </div>
 
-  <!-- STEP 7 — ASSINATURA -->
+  <!-- ══════════════════════════════════════════════
+       STEP 7 — ASSINATURA
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-7">
     <div class="card">
       <div class="card-header">✍️ 7. Assinatura do Encarregado</div>
       <div class="card-body">
         <div class="form-grid col-2">
-          <div class="form-group"><label>Nome <span class="req">*</span></label><input type="text" id="sig-nome" placeholder="Nome completo do encarregado"></div>
-          <div class="form-group"><label>Cargo / Função</label><input type="text" id="sig-cargo" placeholder="Ex: Encarregado Elétrico" value="Encarregado Elétrico"></div>
+          <div class="form-group"><label>Nome <span class="req">*</span></label><input type="text" id="sig-nome" placeholder="Nome completo"></div>
+          <div class="form-group"><label>Cargo / Função</label><input type="text" id="sig-cargo" value="Encarregado Elétrico" placeholder="Ex: Encarregado Elétrico"></div>
         </div>
         <div class="sig-wrapper" style="margin-top:12px">
           <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:block">✍️ Desenhe a assinatura abaixo</label>
@@ -444,30 +543,48 @@
     </div>
   </div>
 
-  <!-- STEP 8 — EXPORTAR -->
+  <!-- ══════════════════════════════════════════════
+       STEP 8 — EXPORTAR
+  ══════════════════════════════════════════════ -->
   <div class="step-panel" id="step-8">
     <div class="card">
       <div class="card-header">📤 8. Prévia e Exportar BDO</div>
       <div class="card-body">
         <div class="bdo-preview" id="bdo-preview-box"></div>
         <div class="divider"></div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px">
-          <button class="btn btn-primary" style="font-size:14px;padding:12px 28px" onclick="abrirModal()">📄 Baixar PDF</button>
-          <button class="btn btn-success" style="font-size:14px;padding:12px 28px" onclick="enviarPorEmail()">📧 Enviar por E-mail</button>
-          <button class="btn btn-secondary" style="font-size:14px;padding:12px 28px" onclick="compartilharWhatsApp()">💬 WhatsApp</button>
-          <button class="btn btn-outline" style="font-size:14px;padding:12px 28px" onclick="imprimirPDF()">🖨️ Imprimir</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+          <button class="btn btn-primary"  style="font-size:14px;padding:12px 24px" onclick="abrirModal()">📄 Baixar PDF</button>
+          <button class="btn btn-success"  style="font-size:14px;padding:12px 24px" onclick="enviarPorEmail()">📧 Enviar E-mail</button>
+          <button class="btn btn-whats"    style="font-size:14px;padding:12px 24px" onclick="compartilharWhatsApp()">💬 WhatsApp</button>
+          <button class="btn btn-outline"  style="font-size:14px;padding:12px 24px" onclick="imprimirPDF()">🖨️ Imprimir</button>
         </div>
       </div>
     </div>
-    <div class="nav-buttons">
-      <button class="btn btn-outline" onclick="goStep(7)">← Voltar</button>
-      <div></div>
-    </div>
+    <div class="nav-buttons"><button class="btn btn-outline" onclick="goStep(7)">← Voltar</button><div></div></div>
   </div>
 
+</div><!-- /container -->
+
+<!-- ══════════════════════════════════════════════
+     PICKER DE POSTE — Bottom Sheet
+══════════════════════════════════════════════ -->
+<div class="ps-picker-overlay" id="ps-picker-overlay" onclick="fecharPostePicker()"></div>
+<div class="ps-picker" id="ps-picker">
+  <div class="ps-picker-handle"></div>
+  <div class="ps-picker-title">
+    <span>📍 Vincular a qual poste?</span>
+    <button onclick="fecharPostePicker()">✕</button>
+  </div>
+  <div class="ps-picker-btns" id="ps-picker-btns"></div>
+  <div class="ps-picker-custom">
+    <input type="text" id="ps-custom-input" placeholder="Digitar poste manualmente (ex: PS4)">
+    <button onclick="confirmarPosteCustom()">✓ OK</button>
+  </div>
 </div>
 
-<!-- MODAL -->
+<!-- ══════════════════════════════════════════════
+     MODAL PDF
+══════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modal-pdf">
   <div class="modal-box">
     <div id="modal-confirm">
@@ -481,25 +598,22 @@
     </div>
     <div id="modal-loading" style="display:none">
       <div class="spinner"></div>
-      <h3>Gerando PDF...</h3>
-      <p>Aguarde alguns segundos.</p>
+      <h3>Gerando PDF...</h3><p>Aguarde alguns segundos.</p>
     </div>
     <div id="modal-success" style="display:none">
       <div class="modal-icon">✅</div>
       <h3>BDO Gerado com Sucesso!</h3>
-      <p>Seu boletim está pronto para download.</p>
+      <p id="modal-success-msg">Seu boletim está pronto para download.</p>
       <div class="modal-actions">
         <button class="btn btn-outline" onclick="fecharModal()">Fechar</button>
-        <a class="btn btn-success" id="btn-download" href="#" target="_blank">⬇️ Baixar PDF</a>
+        <a class="btn btn-success" id="btn-download" href="#">⬇️ Baixar PDF</a>
       </div>
     </div>
     <div id="modal-error" style="display:none">
       <div class="modal-icon">❌</div>
       <h3>Erro ao Gerar PDF</h3>
-      <p id="error-msg">Verifique se o servidor Python está rodando.</p>
-      <div class="modal-actions">
-        <button class="btn btn-primary" onclick="fecharModal()">Fechar</button>
-      </div>
+      <p id="error-msg">Verifique se o servidor está rodando.</p>
+      <div class="modal-actions"><button class="btn btn-primary" onclick="fecharModal()">Fechar</button></div>
     </div>
   </div>
 </div>
@@ -507,38 +621,264 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let currentStep = 1;
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+let currentStep  = 1;
 let servicoLivre = null;
 let manobraState = null;
 let alteracoes   = null;
 
+// ── Sistema de Postes ──
+let modoPostes       = false;
+let listaPosotes     = [];          // ['PS1','PS2','PS3'...]
+let postesExtra      = [];          // postes adicionados manualmente
+let psAssignments    = {};          // { 'calcada':'PS1', 'podas':'geral', ... }
+let materiaisLista   = [];          // [{ id, descricao, qtd, poste }]
+let obsLista         = [];          // [{ id, texto, poste }]
+let _psPickerCtx     = null;        // { itemId, callback }
+let _matIdCounter    = 0;
+let _obsIdCounter    = 0;
+
+// ══════════════════════════════════════════════════════════
+//  NAVEGAÇÃO
+// ══════════════════════════════════════════════════════════
 function goStep(n) {
-  document.getElementById('step-' + currentStep).classList.remove('active');
-  document.getElementById('si-'   + currentStep).classList.remove('active');
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  document.getElementById('si-'+currentStep).classList.remove('active');
   currentStep = n;
-  document.getElementById('step-' + currentStep).classList.add('active');
-  document.getElementById('si-'   + currentStep).classList.add('active');
-  window.scrollTo({top: 0, behavior:'smooth'});
+  document.getElementById('step-'+currentStep).classList.add('active');
+  document.getElementById('si-'+currentStep).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
   updateProgress();
   if (n === 8) renderPreview();
 }
-
 function irParaExportar() { goStep(8); }
 
 function updateProgress() {
-  let filled = 0;
-  if (document.getElementById('num_projeto').value) filled++;
-  if (document.getElementById('cidade').value)      filled++;
-  if (document.getElementById('data_bdo').value)    filled++;
-  // equipe removido do cabeçalho
-  if (document.getElementById('encarregado').value) filled++;
-  if (servicoLivre !== null) filled++;
-  if (manobraState)          filled++;
-  if (alteracoes !== null)   filled++;
-  document.getElementById('mainProgress').style.width = Math.round(filled / 8 * 100) + '%';
+  let f = 0;
+  if (document.getElementById('num_projeto').value) f++;
+  if (document.getElementById('cidade').value)      f++;
+  if (document.getElementById('data_bdo').value)    f++;
+  if (document.getElementById('encarregado').value) f++;
+  if (servicoLivre !== null) f++;
+  if (manobraState)          f++;
+  if (alteracoes !== null)   f++;
+  document.getElementById('mainProgress').style.width = Math.round(f/8*100)+'%';
 }
 
-// ── Serviço Livre
+// ══════════════════════════════════════════════════════════
+//  MODO POSTES
+// ══════════════════════════════════════════════════════════
+function setModoPostes(ativo) {
+  modoPostes = ativo;
+  document.getElementById('ps-sim').className = 'toggle-opt' + (ativo  ? ' sel-ps'  : '');
+  document.getElementById('ps-nao').className = 'toggle-opt' + (!ativo ? ' sel-nao' : '');
+  document.getElementById('postes-config').style.display = ativo ? '' : 'none';
+
+  // Alterna alertas e modos nos steps
+  document.getElementById('srv-alert-normal').style.display = ativo ? 'none' : '';
+  document.getElementById('srv-alert-ps').style.display     = ativo ? '' : 'none';
+  document.getElementById('mat-alert-normal').style.display = ativo ? 'none' : '';
+  document.getElementById('mat-alert-ps').style.display     = ativo ? '' : 'none';
+  document.getElementById('obs-normal').style.display       = ativo ? 'none' : '';
+  document.getElementById('obs-postes').style.display       = ativo ? '' : 'none';
+
+  // Mostra/oculta badges de poste nos serviços
+  const container = document.getElementById('main-container');
+  if (ativo) container.classList.add('modo-postes-on');
+  else       container.classList.remove('modo-postes-on');
+
+  // Inicializa obs se ainda não tiver nenhuma
+  if (ativo && obsLista.length === 0) adicionarObs();
+}
+
+function gerarListaPostes() {
+  const qtd = parseInt(document.getElementById('qtd_postes').value) || 0;
+  listaPosotes = [];
+  for (let i = 1; i <= qtd; i++) listaPosotes.push('PS' + i);
+  const wrap = document.getElementById('postes-chips-wrap');
+  if (qtd > 0) {
+    wrap.style.display = '';
+    document.getElementById('postes-chips').innerHTML =
+      listaPosotes.map(p => `<span class="poste-chip">${p}</span>`).join('') +
+      postesExtra.map(p => `<span class="poste-chip" style="background:#d4c8ff">${p}</span>`).join('');
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function getTodosPostes() {
+  return ['geral', ...listaPosotes, ...postesExtra];
+}
+
+// ══════════════════════════════════════════════════════════
+//  PICKER DE POSTE
+// ══════════════════════════════════════════════════════════
+function abrirPostePicker(itemId, callback) {
+  _psPickerCtx = { itemId, callback };
+  document.getElementById('ps-custom-input').value = '';
+
+  const btns = document.getElementById('ps-picker-btns');
+  btns.innerHTML = '';
+
+  // Botão Geral
+  const bg = document.createElement('button');
+  bg.className = 'ps-picker-btn ps-btn-geral';
+  bg.textContent = '🌐 Geral do Projeto';
+  bg.onclick = () => selecionarPoste('geral');
+  btns.appendChild(bg);
+
+  // Botões dos postes
+  [...listaPosotes, ...postesExtra].forEach(ps => {
+    const b = document.createElement('button');
+    b.className = 'ps-picker-btn';
+    b.textContent = '🏗️ ' + ps;
+    b.onclick = () => selecionarPoste(ps);
+    btns.appendChild(b);
+  });
+
+  document.getElementById('ps-picker-overlay').classList.add('open');
+  document.getElementById('ps-picker').classList.add('open');
+}
+
+function fecharPostePicker() {
+  document.getElementById('ps-picker-overlay').classList.remove('open');
+  document.getElementById('ps-picker').classList.remove('open');
+  _psPickerCtx = null;
+}
+
+function selecionarPoste(ps) {
+  if (!_psPickerCtx) return;
+  const { itemId, callback } = _psPickerCtx;
+  fecharPostePicker();
+  if (callback) { callback(ps); return; }
+  // Atualiza badge do serviço
+  psAssignments[itemId] = ps;
+  atualizarBadgeServico(itemId, ps);
+}
+
+function confirmarPosteCustom() {
+  const val = document.getElementById('ps-custom-input').value.trim().toUpperCase();
+  if (!val) return;
+  if (!listaPosotes.includes(val) && !postesExtra.includes(val)) {
+    postesExtra.push(val);
+    gerarListaPostes();
+  }
+  selecionarPoste(val);
+}
+
+function atualizarBadgeServico(itemId, ps) {
+  const badge = document.getElementById('psbadge-' + itemId);
+  if (!badge) return;
+  if (ps === 'geral') {
+    badge.textContent = '🌐 Geral';
+    badge.className = 'ps-badge ps-geral';
+  } else {
+    badge.textContent = '🏗️ ' + ps;
+    badge.className = 'ps-badge ps-definido';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  MATERIAIS
+// ══════════════════════════════════════════════════════════
+function adicionarMaterial(descricao='', qtd='', poste='geral') {
+  const id = 'mat-' + (++_matIdCounter);
+  materiaisLista.push({ id, descricao, qtd, poste });
+  renderMateriaisLista();
+}
+
+function removerMaterial(id) {
+  materiaisLista = materiaisLista.filter(m => m.id !== id);
+  renderMateriaisLista();
+}
+
+function renderMateriaisLista() {
+  const el = document.getElementById('materiais-lista');
+  el.innerHTML = '';
+  materiaisLista.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'mat-item';
+    div.id = 'matrow-' + m.id;
+
+    const psLabel = m.poste === 'geral' ? '🌐 Geral' : '🏗️ ' + m.poste;
+    const psCls   = m.poste === 'geral' ? 'ps-badge ps-geral' : 'ps-badge ps-definido';
+
+    div.innerHTML = `
+      <input class="mat-desc" type="text" placeholder="Descrição do material" value="${m.descricao}"
+             oninput="atualizarMat('${m.id}','descricao',this.value)">
+      <input class="mat-qtd" type="text" placeholder="Qtd" value="${m.qtd}"
+             oninput="atualizarMat('${m.id}','qtd',this.value)">
+      ${modoPostes ? `<button class="${psCls}" id="matbadge-${m.id}"
+             onclick="abrirPostePickerMat('${m.id}')">${psLabel}</button>` : ''}
+      <button class="mat-del" onclick="removerMaterial('${m.id}')">🗑️</button>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function atualizarMat(id, campo, val) {
+  const m = materiaisLista.find(x => x.id === id);
+  if (m) m[campo] = val;
+}
+
+function abrirPostePickerMat(matId) {
+  abrirPostePicker(null, (ps) => {
+    const m = materiaisLista.find(x => x.id === matId);
+    if (m) { m.poste = ps; renderMateriaisLista(); }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  OBSERVAÇÕES (modo postes)
+// ══════════════════════════════════════════════════════════
+function adicionarObs(texto='', poste='geral') {
+  const id = 'obs-' + (++_obsIdCounter);
+  obsLista.push({ id, texto, poste });
+  renderObsLista();
+}
+
+function removerObs(id) {
+  obsLista = obsLista.filter(o => o.id !== id);
+  renderObsLista();
+}
+
+function renderObsLista() {
+  const el = document.getElementById('obs-lista');
+  el.innerHTML = '';
+  obsLista.forEach((o, i) => {
+    const div = document.createElement('div');
+    div.className = 'obs-item';
+    const psLabel = o.poste === 'geral' ? '🌐 Geral' : '🏗️ ' + o.poste;
+    const psCls   = o.poste === 'geral' ? 'ps-badge ps-geral' : 'ps-badge ps-definido';
+    div.innerHTML = `
+      <div class="obs-item-header">
+        <span>Observação ${i+1}</span>
+        <button class="${psCls}" id="obsbadge-${o.id}" onclick="abrirPostePickerObs('${o.id}')">${psLabel}</button>
+        ${obsLista.length > 1 ? `<button class="obs-del" onclick="removerObs('${o.id}')">🗑️</button>` : ''}
+      </div>
+      <textarea placeholder="Descreva a observação..." oninput="atualizarObs('${o.id}',this.value)">${o.texto}</textarea>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function atualizarObs(id, val) {
+  const o = obsLista.find(x => x.id === id);
+  if (o) o.texto = val;
+}
+
+function abrirPostePickerObs(obsId) {
+  abrirPostePicker(null, (ps) => {
+    const o = obsLista.find(x => x.id === obsId);
+    if (o) { o.poste = ps; renderObsLista(); }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  SERVIÇO LIVRE / MANOBRA / ALTERAÇÕES
+// ══════════════════════════════════════════════════════════
 function setServicoLivre(sim) {
   servicoLivre = sim;
   document.getElementById('sl-sim').className = 'toggle-opt' + (sim  ? ' sel-sim' : '');
@@ -547,141 +887,124 @@ function setServicoLivre(sim) {
   updateProgress();
 }
 
-// ── Manobra
 function setManobra(val) {
   manobraState = val;
   document.getElementById('man-sim').className = 'toggle-opt' + (val==='equipe' ? ' sel-sim' : '');
   document.getElementById('man-nao').className = 'toggle-opt' + (val==='outras'  ? ' sel-nao' : '');
   document.getElementById('man-sem').className = 'toggle-opt' + (val==='sem'     ? ' sel-nao' : '');
-  const mostrarOutras = (val === 'outras');
-  document.getElementById('manobra-outras').style.display = mostrarOutras ? '' : 'none';
-  if (mostrarOutras) {
+  document.getElementById('manobra-outras').style.display = val==='outras' ? '' : 'none';
+  if (val !== 'outras') showManobraAutoText();
+  else {
     document.getElementById('man-copel').className = 'radio-opt';
     document.getElementById('man-hagap').className = 'radio-opt';
     document.getElementById('manobra-auto-txt').style.display = 'none';
-  } else {
-    showManobraAutoText();
   }
   updateProgress();
 }
-
 function setManobraExt(tipo) {
   manobraState = tipo;
-  document.getElementById('man-copel').className = 'radio-opt' + (tipo==='copel' ? ' selected' : '');
-  document.getElementById('man-hagap').className = 'radio-opt' + (tipo==='hagap' ? ' selected' : '');
-  showManobraAutoText();
-  updateProgress();
+  document.getElementById('man-copel').className = 'radio-opt'+(tipo==='copel'?' selected':'');
+  document.getElementById('man-hagap').className = 'radio-opt'+(tipo==='hagap'?' selected':'');
+  showManobraAutoText(); updateProgress();
 }
-
 function showManobraAutoText() {
   const div = document.getElementById('manobra-auto-txt');
   const txt = getManobraText();
-  if (txt) { div.innerHTML = `<div class="auto-text">${txt}</div>`; div.style.display = ''; }
-  else div.style.display = 'none';
+  if (txt){ div.innerHTML=`<div class="auto-text">${txt}</div>`; div.style.display=''; }
+  else div.style.display='none';
 }
-
 function getManobraText() {
-  if (manobraState === 'equipe') return 'Feito abertura e fechamento de chaves e glv, porta fusíveis retirados e reinstalados.';
-  if (manobraState === 'copel')  return 'Manobra executada pela Agência COPEL.';
-  if (manobraState === 'hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
-  if (manobraState === 'sem')    return 'Sem manobra realizada.';
+  if (manobraState==='equipe') return 'Feito abertura e fechamento de chaves e glv, porta fusíveis retirados e reinstalados.';
+  if (manobraState==='copel')  return 'Manobra executada pela Agência COPEL.';
+  if (manobraState==='hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
+  if (manobraState==='sem')    return 'Sem manobra realizada.';
   return '';
 }
-
-
-// ── Alterações
 function setAlteracoes(sim) {
   alteracoes = sim;
-  document.getElementById('alt-sim').className = 'toggle-opt' + (sim  ? ' sel-sim' : '');
-  document.getElementById('alt-nao').className = 'toggle-opt' + (!sim ? ' sel-nao' : '');
+  document.getElementById('alt-sim').className = 'toggle-opt'+(sim  ?' sel-sim':'');
+  document.getElementById('alt-nao').className = 'toggle-opt'+(!sim ?' sel-nao':'');
   document.getElementById('alt-auto-txt').style.display   = !sim ? '' : 'none';
   document.getElementById('alt-desc-campo').style.display = sim  ? '' : 'none';
   updateProgress();
 }
-
 function getAlteracoesText() {
-  if (alteracoes === false) return 'Executado conforme projeto.';
-  if (alteracoes === true)  return document.getElementById('alt_descricao').value || '';
+  if (alteracoes===false) return 'Executado conforme projeto.';
+  if (alteracoes===true)  return document.getElementById('alt_descricao').value||'';
   return '';
 }
 
-// ── Serviços
+// ══════════════════════════════════════════════════════════
+//  SERVIÇOS
+// ══════════════════════════════════════════════════════════
 function toggleServico(itemId, chkId) {
   const item = document.getElementById(itemId);
   const chk  = document.getElementById(chkId);
   if (chk.checked) item.classList.add('checked');
   else             item.classList.remove('checked');
 }
-
 function updateMalhaText() {
   const chk = document.getElementById('chk-malha');
   const qty = document.getElementById('qty-malha').value;
   const div = document.getElementById('malha-auto-txt');
-  if (chk.checked && qty) {
-    div.innerHTML = `<div class="auto-text">Feito ${qty} metros de malha de aterramento.</div>`;
-    div.style.display = '';
-  } else { div.style.display = 'none'; }
+  if (chk.checked && qty){ div.innerHTML=`<div class="auto-text">Feito ${qty} metros de malha de aterramento.</div>`; div.style.display=''; }
+  else div.style.display='none';
 }
 
-function getServicosText() {
+// Retorna lista de serviços com poste associado
+function getServicosCompleto() {
+  const map = [
+    ['calcada',   '🏗️ Reforma de calçada', 'qty-calcada'],
+    ['podas',     '🌳 Podas',               'qty-podas'],
+    ['luminarias','💡 Reinstalação de luminárias','qty-luminarias'],
+    ['fibra',     '🔗 Amarração de fibra óptica','qty-fibra'],
+    ['malha',     '⚡ Malha de aterramento', 'qty-malha'],
+    ['estai',     '🪝 Estai prov.',          'qty-estai'],
+    ['ramal',     '🔌 Reinstalação de ramal','qty-ramal'],
+  ];
   const list = [];
-  if (document.getElementById('chk-calcada').checked) {
-    const q = document.getElementById('qty-calcada').value;
-    list.push('Reforma de calçada' + (q ? ` (${q})` : ''));
-  }
-  if (document.getElementById('chk-podas').checked) {
-    const q = document.getElementById('qty-podas').value;
-    list.push('Podas' + (q ? ` (${q})` : ''));
-  }
-  if (document.getElementById('chk-luminarias').checked) {
-    const q = document.getElementById('qty-luminarias').value;
-    list.push('Reinstalação de luminárias' + (q ? ` — ${q} un.` : ''));
-  }
-  if (document.getElementById('chk-fibra').checked) {
-    const q = document.getElementById('qty-fibra').value;
-    list.push('Amarração de fibra óptica' + (q ? ` (${q})` : ''));
-  }
-  if (document.getElementById('chk-malha').checked) {
-    const q = document.getElementById('qty-malha').value;
-    list.push('Malha de aterramento' + (q ? ` — ${q} metros` : ''));
-  }
-  if (document.getElementById('chk-estai').checked) {
-    const q = document.getElementById('qty-estai').value;
-    list.push('Estai prov.' + (q ? ` (${q})` : ''));
-  }
-  if (document.getElementById('chk-ramal').checked) {
-    const q = document.getElementById('qty-ramal').value;
-    list.push('Reinstalação de ramal' + (q ? ` (${q})` : ''));
-  }
+  map.forEach(([id, nome, qtyId]) => {
+    if (!document.getElementById('chk-'+id).checked) return;
+    const q  = document.getElementById(qtyId).value;
+    const ps = psAssignments[id] || 'geral';
+    const label = nome + (q ? ` (${q})` : '');
+    list.push({ nome: label, poste: ps });
+  });
   return list;
 }
 
-// ── Canvas
+function getServicosText() {
+  return getServicosCompleto().map(s => s.nome);
+}
+
+// ══════════════════════════════════════════════════════════
+//  CANVAS ASSINATURA
+// ══════════════════════════════════════════════════════════
 function initCanvas() {
   const c = document.getElementById('canvas-sig');
   const ctx = c.getContext('2d');
-  let drawing = false, lx = 0, ly = 0;
+  let drawing=false, lx=0, ly=0;
   function pos(e) {
-    const r = c.getBoundingClientRect(), sx = c.width/r.width, sy = c.height/r.height;
-    return e.touches
-      ? [(e.touches[0].clientX-r.left)*sx, (e.touches[0].clientY-r.top)*sy]
-      : [(e.clientX-r.left)*sx, (e.clientY-r.top)*sy];
+    const r=c.getBoundingClientRect(), sx=c.width/r.width, sy=c.height/r.height;
+    return e.touches?[(e.touches[0].clientX-r.left)*sx,(e.touches[0].clientY-r.top)*sy]:[(e.clientX-r.left)*sx,(e.clientY-r.top)*sy];
   }
-  c.addEventListener('mousedown',  e => { drawing=true; [lx,ly]=pos(e); });
-  c.addEventListener('mousemove',  e => { if(!drawing) return; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.strokeStyle='#1a1a2e'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.stroke(); [lx,ly]=[x,y]; });
-  c.addEventListener('mouseup',    () => drawing=false);
-  c.addEventListener('mouseleave', () => drawing=false);
-  c.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; [lx,ly]=pos(e); }, {passive:false});
-  c.addEventListener('touchmove',  e => { e.preventDefault(); if(!drawing) return; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.strokeStyle='#1a1a2e'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.stroke(); [lx,ly]=[x,y]; }, {passive:false});
-  c.addEventListener('touchend',   () => drawing=false);
+  c.addEventListener('mousedown',  e=>{drawing=true;[lx,ly]=pos(e);});
+  c.addEventListener('mousemove',  e=>{if(!drawing)return;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();[lx,ly]=[x,y];});
+  c.addEventListener('mouseup',    ()=>drawing=false);
+  c.addEventListener('mouseleave', ()=>drawing=false);
+  c.addEventListener('touchstart', e=>{e.preventDefault();drawing=true;[lx,ly]=pos(e);},{passive:false});
+  c.addEventListener('touchmove',  e=>{e.preventDefault();if(!drawing)return;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();[lx,ly]=[x,y];},{passive:false});
+  c.addEventListener('touchend',   ()=>drawing=false);
 }
-function limparCanvas() { document.getElementById('canvas-sig').getContext('2d').clearRect(0,0,800,130); }
+function limparCanvas(){ document.getElementById('canvas-sig').getContext('2d').clearRect(0,0,800,130); }
 
-// ── Coletar dados
-function fmtData(v) { if(!v) return ''; const [y,m,d]=v.split('-'); return `${d}/${m}/${y}`; }
+// ══════════════════════════════════════════════════════════
+//  COLETAR DADOS
+// ══════════════════════════════════════════════════════════
+function fmtData(v){ if(!v)return''; const[y,m,d]=v.split('-'); return`${d}/${m}/${y}`; }
 
 function coletarDados() {
-  return {
+  const d = {
     num_projeto:      document.getElementById('num_projeto').value,
     cidade:           document.getElementById('cidade').value,
     data_bdo:         fmtData(document.getElementById('data_bdo').value),
@@ -696,27 +1019,94 @@ function coletarDados() {
     alteracoes_texto: getAlteracoesText(),
     servicos:         getServicosText(),
     malha_metros:     document.getElementById('qty-malha').value,
-    observacoes:      document.getElementById('observacoes').value,
+    observacoes:      modoPostes ? '' : document.getElementById('observacoes').value,
     sig_nome:         document.getElementById('sig-nome').value,
     sig_cargo:        document.getElementById('sig-cargo').value,
     sig_data:         document.getElementById('canvas-sig').toDataURL('image/png'),
+    // ── Dados de postes ──
+    modo_postes:      modoPostes,
+    postes:           [...listaPosotes, ...postesExtra],
+    servicos_completo: getServicosCompleto(),
+    materiais:        materiaisLista.filter(m => m.descricao.trim()),
+    observacoes_lista: modoPostes
+      ? obsLista.filter(o => o.texto.trim())
+      : (document.getElementById('observacoes').value ? [{ texto: document.getElementById('observacoes').value, poste: 'geral' }] : []),
   };
+  return d;
 }
 
-// ── Preview
+// ══════════════════════════════════════════════════════════
+//  RENDER PREVIEW
+// ══════════════════════════════════════════════════════════
 function renderPreview() {
-  const d = coletarDados();
-  const servicosHtml = d.servicos.length
-    ? d.servicos.map(s => `<li style="padding:2px 0">${s}</li>`).join('')
-    : '<li style="color:var(--muted)">Nenhum serviço marcado</li>';
-
-  const ombPlv = (d.servico_livre === false && (d.num_omb || d.num_plv))
+  const d   = coletarDados();
+  const now = new Date().toLocaleString('pt-BR');
+  const ombPlv = (d.servico_livre===false && (d.num_omb||d.num_plv))
     ? `<div class="bdo-row">
          <div class="bdo-field"><div class="fl">Nº OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
          <div class="bdo-field"><div class="fl">Nº PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
        </div>` : '';
 
-  const now = new Date().toLocaleString('pt-BR');
+  let corpoHtml = '';
+
+  if (d.modo_postes) {
+    // ── Agrupado por poste ──
+    const todosPostes = ['geral', ...d.postes];
+    todosPostes.forEach(ps => {
+      const srvs = d.servicos_completo.filter(s => s.poste === ps);
+      const mats = d.materiais.filter(m => m.poste === ps);
+      const obss = d.observacoes_lista.filter(o => o.poste === ps);
+      if (!srvs.length && !mats.length && !obss.length) return;
+
+      const isGeral = ps === 'geral';
+      corpoHtml += `
+        <div class="bdo-sec ${isGeral?'':'ps-sec'}">
+          ${isGeral ? '🌐 GERAL DO PROJETO' : '🏗️ ' + ps}
+        </div>
+        <div style="padding:10px 14px;border-bottom:1px solid #e8ecf5;">`;
+
+      if (srvs.length) {
+        corpoHtml += `<div style="margin-bottom:8px"><div class="bdo-text-block" style="padding:0;border:none"><div class="bl">🔧 Serviços</div>
+          <ul style="margin-left:16px;margin-top:4px">${srvs.map(s=>`<li>${s.nome}</li>`).join('')}</ul></div></div>`;
+      }
+      if (mats.length) {
+        corpoHtml += `<div style="margin-bottom:8px"><div class="bdo-text-block" style="padding:0;border:none"><div class="bl">📦 Materiais</div>
+          <ul style="margin-left:16px;margin-top:4px">${mats.map(m=>`<li>${m.descricao}${m.qtd?' — '+m.qtd:''}</li>`).join('')}</ul></div></div>`;
+      }
+      if (obss.length) {
+        corpoHtml += `<div><div class="bdo-text-block" style="padding:0;border:none"><div class="bl">📝 Observações</div>
+          <ul style="margin-left:16px;margin-top:4px">${obss.map(o=>`<li>${o.texto}</li>`).join('')}</ul></div></div>`;
+      }
+      corpoHtml += `</div>`;
+    });
+
+    // Manobra e alterações sempre no geral
+    if (d.manobra_texto || d.alteracoes_texto) {
+      corpoHtml = `
+        <div class="bdo-sec">🔌 MANOBRA / ALTERAÇÕES</div>
+        <div class="bdo-text-block">${[d.manobra_texto,d.alteracoes_texto].filter(Boolean).join(' — ')}</div>
+      ` + corpoHtml;
+    }
+  } else {
+    // ── Layout normal ──
+    const linhas = [d.manobra_texto, d.alteracoes_texto, ...d.servicos].filter(Boolean).join('. ');
+    corpoHtml = `
+      <div class="bdo-sec">🔧 MANOBRA / ALTERAÇÕES / SERVIÇOS</div>
+      <div class="bdo-text-block">
+        <p style="line-height:1.9">${linhas||'<em style="color:var(--muted)">Não preenchido</em>'}</p>
+      </div>`;
+    if (d.materiais.length) {
+      corpoHtml += `<div class="bdo-sec">📦 MATERIAIS</div>
+        <div class="bdo-text-block"><ul style="margin-left:16px">
+          ${d.materiais.map(m=>`<li>${m.descricao}${m.qtd?' — '+m.qtd:''}</li>`).join('')}
+        </ul></div>`;
+    }
+    if (d.observacoes_lista.length) {
+      corpoHtml += `<div class="bdo-sec">📝 OBSERVAÇÕES</div>
+        <div class="bdo-text-block">${d.observacoes_lista.map(o=>o.texto).join('<br>')}</div>`;
+    }
+  }
+
   document.getElementById('bdo-preview-box').innerHTML = `
     <div class="bdo-header-bar">
       <img src="/static/logo.png" alt="HAGAP" onerror="this.style.display='none'">
@@ -727,7 +1117,6 @@ function renderPreview() {
       </div>
       <div class="bdo-num">Nº ${d.num_projeto||'---'}</div>
     </div>
-
     <div class="bdo-sec">📋 IDENTIFICAÇÃO</div>
     <div class="bdo-row">
       <div class="bdo-field"><div class="fl">Projeto</div><div class="fv">${d.num_projeto||'—'}</div></div>
@@ -741,19 +1130,7 @@ function renderPreview() {
       <div class="bdo-field" style="grid-column:1/-1"><div class="fl">Encarregado</div><div class="fv">${d.encarregado||'—'}</div></div>
     </div>
     ${ombPlv}
-
-    <div class="bdo-sec">🔧 MANOBRA / ALTERAÇÕES / SERVIÇOS EXECUTADOS</div>
-    <div class="bdo-text-block">
-      <div class="bl">Registro de campo</div>
-      <p style="line-height:1.9;font-size:12px">
-        ${[d.manobra_texto, d.alteracoes_texto, ...(d.servicos.length ? d.servicos : [])].filter(Boolean).join('. ') + (d.manobra_texto||d.alteracoes_texto||d.servicos.length ? '.' : '<em style="color:var(--muted)">Não preenchido</em>')}
-      </p>
-    </div>
-
-    ${d.observacoes ? `
-    <div class="bdo-sec">📝 OBSERVAÇÕES</div>
-    <div class="bdo-text-block">${d.observacoes}</div>` : ''}
-
+    ${corpoHtml}
     <div class="bdo-sec">✍️ ASSINATURA</div>
     <div class="bdo-sig-area">
       <div class="bdo-sig-cell">
@@ -769,244 +1146,151 @@ function renderPreview() {
         <div class="bdo-sig-role">Fiscal / Supervisor</div>
       </div>
     </div>
-
     <div class="bdo-footer">Documento gerado automaticamente &nbsp;|&nbsp; BDO: ${d.num_projeto||'---'} &nbsp;|&nbsp; ${now}</div>
   `;
 }
 
-// ── Modal
+// ══════════════════════════════════════════════════════════
+//  MODAL PDF
+// ══════════════════════════════════════════════════════════
 function abrirModal() {
-  document.getElementById('modal-confirm').style.display = '';
-  document.getElementById('modal-loading').style.display = 'none';
-  document.getElementById('modal-success').style.display = 'none';
-  document.getElementById('modal-error').style.display   = 'none';
+  ['modal-confirm','modal-loading','modal-success','modal-error'].forEach(id=>{
+    document.getElementById(id).style.display = id==='modal-confirm' ? '' : 'none';
+  });
   document.getElementById('modal-pdf').classList.add('open');
 }
-function fecharModal() { document.getElementById('modal-pdf').classList.remove('open'); }
+function fecharModal(){ document.getElementById('modal-pdf').classList.remove('open'); }
+
+async function _chamarBackendPDF(retornarBlob=true) {
+  const dados = coletarDados();
+  const resp  = await fetch('/api/gerar_bdo_pdf', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados)
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(()=>({}));
+    throw new Error(err.erro || 'Falha no servidor');
+  }
+  return retornarBlob ? resp.blob() : resp;
+}
 
 function gerarPDF() {
   document.getElementById('modal-confirm').style.display = 'none';
   document.getElementById('modal-loading').style.display = '';
-  const dados = coletarDados();
-
-  // Chama o backend para gerar PDF profissional com ReportLab
-  fetch('/api/gerar_bdo_pdf', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados)
-  })
-  .then(resp => {
-    if (!resp.ok) return resp.json().then(e => { throw new Error(e.erro || 'Falha no servidor'); });
-    return resp.blob();
-  })
-  .then(blob => {
-    document.getElementById('modal-loading').style.display = 'none';
-    document.getElementById('modal-success').style.display = '';
-
-    // Cria URL de download do PDF
-    const url = URL.createObjectURL(blob);
-    const btnDl = document.getElementById('btn-download');
-    btnDl.href = url;
-    btnDl.download = `BDO_${dados.num_projeto || 'hagap'}_${dados.data_bdo || ''}.pdf`;
-    btnDl.onclick = null; // remove handler anterior
-
-    // Notifica que e-mail foi enviado automaticamente
-    const info = document.getElementById('modal-success').querySelector('p');
-    if (info) info.innerHTML = 'Seu boletim está pronto para download.<br><small style="color:#1a7a3c">✅ PDF enviado automaticamente para gabrielmedeirosasp@gmail.com</small>';
-  })
-  .catch(e => {
-    document.getElementById('modal-loading').style.display = 'none';
-    document.getElementById('modal-error').style.display   = '';
-    document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
-  });
+  _chamarBackendPDF()
+    .then(blob => {
+      document.getElementById('modal-loading').style.display = 'none';
+      document.getElementById('modal-success').style.display = '';
+      const url = URL.createObjectURL(blob);
+      const btn = document.getElementById('btn-download');
+      const d   = coletarDados();
+      btn.href     = url;
+      btn.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
+      btn.onclick  = null;
+      document.getElementById('modal-success-msg').innerHTML =
+        'Seu boletim está pronto para download.<br><small style="color:#1a7a3c">✅ PDF enviado automaticamente para gabrielmedeirosasp@gmail.com</small>';
+    })
+    .catch(e => {
+      document.getElementById('modal-loading').style.display = 'none';
+      document.getElementById('modal-error').style.display   = '';
+      document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
+    });
 }
 
-// ── Enviar por e-mail (com PDF anexado)
 async function enviarPorEmail() {
-  const dados = coletarDados();
   showToast('📧 Gerando PDF e enviando e-mail...', '');
   try {
-    const resp = await fetch('/api/gerar_bdo_pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
-    });
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      showToast('❌ Erro: ' + (err.erro || 'falha no servidor'), 'error');
-      return;
-    }
-    // Download automático + e-mail já foi disparado pelo backend
-    const blob = await resp.blob();
+    const blob = await _chamarBackendPDF();
+    const d    = coletarDados();
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href = url;
-    a.download = `BDO_${dados.num_projeto||'hagap'}_${dados.data_bdo||''}.pdf`;
+    a.href = url; a.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
     a.click();
-    showToast('✅ E-mail enviado para gabrielmedeirosasp@gmail.com com PDF anexado!', 'success');
-  } catch(e) {
-    showToast('❌ Erro ao enviar: ' + e.message, 'error');
-  }
+    showToast('✅ E-mail enviado com PDF anexado!', 'success');
+  } catch(e) { showToast('❌ Erro: ' + e.message, 'error'); }
 }
 
-// ── Imprimir via PDF do backend (bonito, com logo e cores)
 async function imprimirPDF() {
-  const dados = coletarDados();
   showToast('⏳ Gerando PDF para impressão...', '');
   try {
-    const resp = await fetch('/api/gerar_bdo_pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
-    });
-    if (!resp.ok) throw new Error('Falha no servidor');
-    const blob = await resp.blob();
+    const blob = await _chamarBackendPDF();
     const url  = URL.createObjectURL(blob);
-    // Abre PDF em nova aba — o browser imprime o PDF bonito
-    const win = window.open(url, '_blank');
-    if (win) {
-      win.onload = () => win.print();
-      showToast('🖨️ PDF aberto para impressão!', 'success');
-    } else {
-      showToast('⚠️ Permita pop-ups e tente novamente.', 'error');
-    }
-  } catch(e) {
-    showToast('❌ Erro: ' + e.message, 'error');
-  }
+    const win  = window.open(url, '_blank');
+    if (win) { win.onload = ()=>win.print(); showToast('🖨️ PDF aberto para impressão!','success'); }
+    else showToast('⚠️ Permita pop-ups e tente novamente.','error');
+  } catch(e) { showToast('❌ Erro: ' + e.message,'error'); }
 }
 
-async function _enviarEmailBDO(dados) {
-  try {
-    const r = await fetch('/api/enviar_bdo_email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
-    });
-    const res = await r.json();
-    if (res.ok) console.log('✅ E-mail BDO enviado para gabriel');
-    else console.warn('⚠️ E-mail BDO: ' + (res.erro||'falha'));
-  } catch(e) { console.warn('⚠️ E-mail BDO não enviado:', e.message); }
-}
-
-function _montarHTMLBDO(d) {
-  const srv = d.servicos.length ? d.servicos.join('; ') : 'Nenhum';
-  const linhasServico = [d.manobra_texto, d.alteracoes_texto, ...(d.servicos||[])].filter(Boolean).join('. ');
-  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/>
-  <title>BDO — ${d.num_projeto||'HAGAP'}</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:Arial,sans-serif;color:#0d1b3e;padding:24px 32px;font-size:12px;}
-    .header{background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:14px 20px;border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:0;}
-    .header h2{font-size:15px;font-weight:800;}
-    .header p{font-size:10px;opacity:.75;}
-    .header .num{font-size:22px;font-weight:900;opacity:.9;}
-    .sec{background:#0a2557;color:white;padding:4px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-    .row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e8ecf5;}
-    .field{padding:7px 14px;border-right:1px solid #e8ecf5;}
-    .field:last-child{border-right:none;}
-    .fl{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:2px;}
-    .fv{font-size:12px;font-weight:700;color:#0d1b3e;}
-    .block{padding:10px 14px;border-bottom:1px solid #e8ecf5;}
-    .bl{font-size:9px;font-weight:700;color:#4a5a7a;text-transform:uppercase;margin-bottom:4px;}
-    .sig-row{display:grid;grid-template-columns:1fr 1fr;}
-    .sig-cell{padding:12px;text-align:center;border-right:1px solid #e8ecf5;}
-    .sig-cell:last-child{border-right:none;}
-    .sig-line{border-top:1.5px solid #333;margin:30px 20px 6px;}
-    .footer{background:#f0f4fb;padding:6px 14px;font-size:9px;color:#4a5a7a;text-align:center;}
-    @media print{body{padding:10px 16px;}}
-  </style></head><body>
-  <div style="border:2px solid #b8c8e8;border-radius:8px;overflow:hidden;">
-    <div class="header">
-      <div><h2>BDO — Boletim Diário de Obras</h2><p>Hagap Instalações Elétricas</p></div>
-      <div class="num">${d.num_projeto||'—'}</div>
-    </div>
-    <div class="sec">Identificação</div>
-    <div class="row">
-      <div class="field"><div class="fl">Projeto</div><div class="fv">${d.num_projeto||'—'}</div></div>
-      <div class="field"><div class="fl">Cidade</div><div class="fv">${d.cidade||'—'}</div></div>
-    </div>
-    <div class="row">
-      <div class="field"><div class="fl">Data</div><div class="fv">${d.data_bdo||'—'}</div></div>
-      <div class="field"><div class="fl">Horário</div><div class="fv">${d.hora_inicio||'—'} → ${d.hora_final||'—'}</div></div>
-    </div>
-    <div class="row">
-      <div class="field"><div class="fl">Encarregado</div><div class="fv">${d.encarregado||'—'}</div></div>
-      <div class="field"><div class="fl">Serviço Livre</div><div class="fv">${d.servico_livre===true?'Sim':d.servico_livre===false?'Não (OMB/PLV)':'—'}</div></div>
-    </div>
-    ${d.servico_livre===false?`<div class="row">
-      <div class="field"><div class="fl">OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
-      <div class="field"><div class="fl">PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
-    </div>`:''}
-    <div class="sec">Execução</div>
-    <div class="block"><div class="bl">Manobra / Serviços</div><div>${linhasServico||'<em style="color:#94a3b8">Não preenchido</em>'}</div></div>
-    ${d.observacoes?`<div class="block"><div class="bl">Observações</div><div>${d.observacoes}</div></div>`:''}
-    <div class="sec">Assinaturas</div>
-    <div class="sig-row">
-      <div class="sig-cell">${d.assinatura_enc?`<img src="${d.assinatura_enc}" style="max-height:60px;"/>`:''}<div class="sig-line"></div><div style="font-size:11px;font-weight:700;">${d.encarregado||'Encarregado'}</div><div style="font-size:10px;color:#4a5a7a;">Encarregado</div></div>
-      <div class="sig-cell"><div class="sig-line"></div><div style="font-size:11px;font-weight:700;">Cliente / Representante</div><div style="font-size:10px;color:#4a5a7a;">Aprovação</div></div>
-    </div>
-    <div class="footer">HAGAP Instalações Elétricas — Gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
-  </div>
-  <script>window.onload=()=>{window.print();}<\/script>
-  </body></html>`;
-}
-
-// ── WhatsApp
+// ══════════════════════════════════════════════════════════
+//  WHATSAPP
+// ══════════════════════════════════════════════════════════
 function compartilharWhatsApp() {
-  const d = coletarDados();
+  const d   = coletarDados();
   const srv = d.servicos.length ? d.servicos.join(', ') : 'nenhum';
+  let psInfo = '';
+  if (d.modo_postes && d.postes.length) {
+    psInfo = `\n🏗️ Postes: ${d.postes.join(', ')}`;
+  }
   const msg =
 `📋 *BDO — Boletim Diário de Obras*
 ━━━━━━━━━━━━━━━━━━
 📁 Projeto: ${d.num_projeto}
 📍 Cidade: ${d.cidade}
 📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}
-👷 Equipe: ${d.equipe}
 🔑 Encarregado: ${d.encarregado}
-${d.servico_livre===false ? `📄 OMB: ${d.num_omb}  |  PLV: ${d.num_plv}\n` : ''}🔌 ${d.manobra_texto}
+${d.servico_livre===false?`📄 OMB: ${d.num_omb}  |  PLV: ${d.num_plv}\n`:''}🔌 ${d.manobra_texto}
 📦 ${d.alteracoes_texto}
-🔧 Serviços: ${srv}
-${d.observacoes ? `📝 Obs: ${d.observacoes}` : ''}
+🔧 Serviços: ${srv}${psInfo}
+${d.observacoes_lista.length?`📝 Obs: ${d.observacoes_lista.map(o=>o.texto).join(' | ')}`:''}
 ━━━━━━━━━━━━━━━━━━
 _HAGAP Engenharia Elétrica_`;
-  // Abre PDF para salvar/compartilhar e depois WhatsApp
-  const htmlPDF = _montarHTMLBDO(d);
-  const pdfWin = window.open('', '_blank', 'width=900,height=700');
-  if (pdfWin) {
-    pdfWin.document.write(htmlPDF);
-    pdfWin.document.close();
-    showToast('📄 PDF aberto! Salve como PDF e compartilhe via WhatsApp.', 'success');
-  }
-  setTimeout(() => {
-    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-  }, 800);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
-// ── Rascunho / Limpar
+// ══════════════════════════════════════════════════════════
+//  UTILITÁRIOS
+// ══════════════════════════════════════════════════════════
 async function salvarRascunho() {
   const dados = coletarDados();
   try {
-    await fetch('http://localhost:5000/salvar-rascunho', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dados) });
-    showToast('💾 Rascunho salvo!', 'success');
+    await fetch('/salvar-rascunho',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados)});
+    showToast('💾 Rascunho salvo!','success');
   } catch {
     localStorage.setItem('bdo_rascunho', JSON.stringify(dados));
-    showToast('💾 Rascunho salvo localmente!', 'success');
+    showToast('💾 Rascunho salvo localmente!','success');
   }
 }
 
 function limparFormulario() {
-  if (!confirm('Limpar todos os dados do formulário?')) return;
-  document.querySelectorAll('input:not([type=hidden]), select, textarea').forEach(e => {
+  if (!confirm('Limpar todos os dados?')) return;
+  document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(e=>{
     if (e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value='';
   });
-  document.querySelectorAll('.servico-item').forEach(i => i.classList.remove('checked'));
-  servicoLivre = null; manobraState = null; alteracoes = null;
-  ['sl-sim','sl-nao','man-sim','man-nao','man-sem','alt-sim','alt-nao'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.className='toggle-opt';
+  document.querySelectorAll('.servico-item').forEach(i=>i.classList.remove('checked'));
+  servicoLivre=null; manobraState=null; alteracoes=null;
+  // Reset postes
+  modoPostes=false; listaPosotes=[]; postesExtra=[]; psAssignments={};
+  materiaisLista=[]; obsLista=[]; _matIdCounter=0; _obsIdCounter=0;
+  document.getElementById('main-container').classList.remove('modo-postes-on');
+  document.getElementById('postes-config').style.display='none';
+  document.getElementById('postes-chips-wrap').style.display='none';
+  document.getElementById('materiais-lista').innerHTML='';
+  document.getElementById('obs-lista').innerHTML='';
+  document.getElementById('obs-normal').style.display='';
+  document.getElementById('obs-postes').style.display='none';
+  ['ps-sim','ps-nao','sl-sim','sl-nao','man-sim','man-nao','man-sem','alt-sim','alt-nao'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.className='toggle-opt';
   });
-  ['man-copel','man-hagap'].forEach(id => { const el=document.getElementById(id); if(el) el.className='radio-opt'; });
-  ['campos-omb-plv','manobra-outras','manobra-auto-txt','alt-auto-txt','alt-desc-campo','malha-auto-txt']
-    .forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+  ['man-copel','man-hagap'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='radio-opt';});
+  ['campos-omb-plv','manobra-outras','manobra-auto-txt','alt-auto-txt','alt-desc-campo','malha-auto-txt'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  // Reset badges serviços
+  ['calcada','podas','luminarias','fibra','malha','estai','ramal'].forEach(id=>{
+    const b=document.getElementById('psbadge-'+id);
+    if(b){b.textContent='🌐 Geral';b.className='ps-badge ps-geral';}
+  });
   limparCanvas();
   goStep(1);
   showToast('🔄 Formulário limpo!');
@@ -1014,15 +1298,21 @@ function limparFormulario() {
 
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast ' + type;
+  t.textContent=msg; t.className='toast '+type;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
 window.onload = () => {
   initCanvas();
   document.getElementById('data_bdo').value = new Date().toISOString().split('T')[0];
   updateProgress();
+  // Inicializa alertas
+  document.getElementById('srv-alert-ps').style.display = 'none';
+  document.getElementById('mat-alert-ps').style.display = 'none';
 };
 </script>
 </body>
