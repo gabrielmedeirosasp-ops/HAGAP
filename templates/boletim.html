@@ -1,224 +1,212 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/FlEs03t8MZvp2q1bMqcSCsQCy2wyPUiz/4d158e08-fdf3-43cd-ad81-f5db532f5da9/files/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BDO — Boletim Diário de Obras</title>
 <style>
   :root {
-    --primary: #0a2557; --primary2: #0d2f6e; --accent: #1565c0;
-    --bg: #e8eef8; --border: #b8c8e8; --text: #0d1b3e;
-    --muted: #4a5a7a; --success: #1a7a3c; --danger: #c0392b;
-    --warning: #d68910; --white: #ffffff;
-    --ps-color: #7b2ff7;
+    --primary:#0a2557;--accent:#1565c0;--bg:#e8eef8;--border:#b8c8e8;
+    --text:#0d1b3e;--muted:#4a5a7a;--success:#1a7a3c;--danger:#c0392b;
+    --warning:#d68910;--ps:#7b2ff7;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); font-family: 'Segoe UI', Arial, sans-serif; color: var(--text); }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--text);}
 
-  .topbar { background: linear-gradient(135deg,#061539 0%,#0a2557 100%); color: white; position: sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,.35); }
-  .topbar-inner { max-width:860px; margin:0 auto; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
-  .topbar-logo { display:flex; align-items:center; gap:12px; }
-  .topbar-logo img { height:44px; object-fit:contain; background:white; border-radius:6px; padding:3px 6px; }
-  .topbar-logo h1 { font-size:15px; font-weight:800; line-height:1.3; }
-  .topbar-logo h1 span { font-size:11px; opacity:.65; font-weight:400; display:block; }
-  .topbar-actions { display:flex; gap:8px; flex-wrap:wrap; }
-  .progress-wrap { width:100%; padding:0 20px 8px; max-width:860px; margin:0 auto; }
-  .progress-bar { background:rgba(255,255,255,.15); border-radius:20px; height:3px; overflow:hidden; }
-  .progress-fill { background:linear-gradient(90deg,#e67e22,#f1c40f); height:100%; border-radius:20px; transition:width .4s; }
+  /* TOPBAR */
+  .topbar{background:linear-gradient(135deg,#061539,#0a2557);color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.35);}
+  .topbar-inner{max-width:860px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .topbar-logo{display:flex;align-items:center;gap:12px;}
+  .topbar-logo img{height:44px;object-fit:contain;background:white;border-radius:6px;padding:3px 6px;}
+  .topbar-logo h1{font-size:15px;font-weight:800;line-height:1.3;}
+  .topbar-logo h1 span{font-size:11px;opacity:.65;font-weight:400;display:block;}
+  .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .progress-wrap{width:100%;padding:0 20px 8px;max-width:860px;margin:0 auto;}
+  .progress-bar{background:rgba(255,255,255,.15);border-radius:20px;height:3px;overflow:hidden;}
+  .progress-fill{background:linear-gradient(90deg,#e67e22,#f1c40f);height:100%;border-radius:20px;transition:width .4s;}
 
-  .btn { padding:9px 18px; border:none; border-radius:7px; cursor:pointer; font-size:13px; font-weight:600; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
-  .btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.2); }
-  .btn-primary   { background:var(--accent); color:white; }
-  .btn-success   { background:var(--success); color:white; }
-  .btn-whats     { background:#25d366; color:white; }
-  .btn-email     { background:#e67e22; color:white; }
-  .btn-outline   { background:white; color:var(--primary); border:1.5px solid var(--border); }
-  .btn-secondary { background:rgba(255,255,255,.15); color:white; border:1px solid rgba(255,255,255,.3); }
-  .btn-sm { padding:5px 11px; font-size:12px; }
+  /* BOTÕES */
+  .btn{padding:9px 18px;border:none;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2);}
+  .btn-primary{background:var(--accent);color:white;}
+  .btn-success{background:var(--success);color:white;}
+  .btn-whats{background:#25d366;color:white;}
+  .btn-outline{background:white;color:var(--primary);border:1.5px solid var(--border);}
+  .btn-secondary{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);}
+  .btn-sm{padding:5px 11px;font-size:12px;}
 
-  .container { max-width:860px; margin:0 auto; padding:20px 16px 60px; }
+  /* LAYOUT */
+  .container{max-width:860px;margin:0 auto;padding:20px 16px 80px;}
+  .step-indicator{display:flex;margin-bottom:24px;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+  .step-item{flex:1;text-align:center;padding:10px 4px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;}
+  .step-item:hover{color:var(--primary);background:var(--bg);}
+  .step-item.active{color:var(--primary);border-bottom-color:var(--primary);background:#f0f4ff;}
+  .step-item.done{color:var(--success);border-bottom-color:var(--success);}
+  .step-item .step-num{display:block;font-size:16px;margin-bottom:3px;}
+  .step-panel{display:none;}.step-panel.active{display:block;}
 
-  .step-indicator { display:flex; margin-bottom:24px; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07); }
-  .step-item { flex:1; text-align:center; padding:10px 4px; font-size:10px; font-weight:700; color:var(--muted); cursor:pointer; transition:all .2s; border-bottom:3px solid transparent; }
-  .step-item:hover { color:var(--primary); background:var(--bg); }
-  .step-item.active { color:var(--primary); border-bottom-color:var(--primary); background:#f0f4ff; }
-  .step-item.done   { color:var(--success); border-bottom-color:var(--success); }
-  .step-item .step-num { display:block; font-size:16px; margin-bottom:3px; }
+  /* CARDS */
+  .card{background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px;overflow:hidden;}
+  .card-header{background:linear-gradient(135deg,#0a2557,#0d3580);color:white;padding:11px 16px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;}
+  .card-header.ps-h{background:linear-gradient(135deg,#4a0e8f,var(--ps));}
+  .card-header.status-h{background:linear-gradient(135deg,#1a5276,#1565c0);}
+  .card-body{padding:16px;}
 
-  .step-panel { display:none; }
-  .step-panel.active { display:block; }
+  /* FORMS */
+  .form-grid{display:grid;gap:12px;}
+  .col-2{grid-template-columns:1fr 1fr;}.col-3{grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:640px){.col-2,.col-3{grid-template-columns:1fr;}}
+  .form-group label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px;}
+  .form-group label .req{color:var(--danger);}
+  .form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:9px 11px;font-size:13px;color:var(--text);transition:all .2s;background:white;font-family:inherit;}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,52,96,.1);}
+  .form-group textarea{resize:vertical;min-height:90px;}
 
-  .card { background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.07); margin-bottom:14px; overflow:hidden; }
-  .card-header { background:linear-gradient(135deg,#0a2557 0%,#0d3580 100%); color:white; padding:11px 16px; font-weight:700; font-size:13px; display:flex; align-items:center; gap:8px; }
-  .card-header.ps-header { background:linear-gradient(135deg,#4a0e8f 0%,#7b2ff7 100%); }
-  .card-body { padding:16px; }
+  /* TOGGLES */
+  .toggle-group{display:flex;gap:10px;margin-top:6px;}
+  .toggle-opt{flex:1;border:2px solid var(--border);border-radius:10px;padding:13px 10px;cursor:pointer;text-align:center;transition:all .2s;}
+  .toggle-opt:hover{border-color:var(--primary);background:#f5f7ff;}
+  .toggle-opt.sel-ok{border-color:var(--success);background:#f0fff4;box-shadow:0 0 0 3px rgba(26,122,60,.13);}
+  .toggle-opt.sel-warn{border-color:var(--warning);background:#fffbf0;box-shadow:0 0 0 3px rgba(214,137,16,.13);}
+  .toggle-opt.sel-danger{border-color:var(--danger);background:#fff5f5;box-shadow:0 0 0 3px rgba(192,57,43,.13);}
+  .toggle-opt.sel-ps{border-color:var(--ps);background:#f5f0ff;box-shadow:0 0 0 3px rgba(123,47,247,.13);}
+  .toggle-opt.sel-std{border-color:var(--muted);background:#f8f8f8;box-shadow:0 0 0 3px rgba(74,90,122,.13);}
+  .toggle-opt .icon{font-size:26px;margin-bottom:5px;}
+  .toggle-opt .lbl{font-weight:800;font-size:15px;}
+  .toggle-opt .desc{font-size:11px;color:var(--muted);margin-top:3px;}
+  .radio-group{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+  .radio-opt{border:2px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;text-align:center;transition:all .2s;font-size:13px;font-weight:600;}
+  .radio-opt:hover{border-color:var(--primary);background:#f5f7ff;}
+  .radio-opt.selected{border-color:var(--primary);background:#eef2ff;color:var(--primary);}
 
-  .form-grid { display:grid; gap:12px; }
-  .col-2 { grid-template-columns:1fr 1fr; }
-  .col-3 { grid-template-columns:1fr 1fr 1fr; }
-  @media(max-width:640px){ .col-2,.col-3{ grid-template-columns:1fr; } }
+  /* STATUS BANNER */
+  .status-banner{border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .status-conclusao{background:#e8fff0;border:2px solid #27ae60;color:#1a7a3c;}
+  .status-parcial{background:#fffbe8;border:2px solid #f39c12;color:#a04000;}
+  .status-cancelamento{background:#fff5f5;border:2px solid #c0392b;color:#c0392b;}
 
-  .form-group label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:5px; }
-  .form-group label .req { color:var(--danger); }
-  .form-group input, .form-group select, .form-group textarea {
-    width:100%; border:1.5px solid var(--border); border-radius:7px; padding:9px 11px; font-size:13px; color:var(--text);
-    transition:all .2s; background:white; font-family:inherit;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(15,52,96,.1);
-  }
-  .form-group textarea { resize:vertical; min-height:90px; }
+  /* SERVIÇOS */
+  .servico-item{border:1.5px solid var(--border);border-radius:9px;margin-bottom:8px;transition:all .2s;overflow:hidden;}
+  .servico-item:hover{border-color:var(--primary);}
+  .servico-item.checked{border-color:var(--primary);background:#eef4ff;}
+  .servico-top{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+  .servico-check{width:20px;height:20px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;}
+  .servico-label{flex:1;font-weight:700;font-size:13px;cursor:pointer;}
+  .servico-qty{display:none;padding:0 12px 10px;}
+  .servico-qty input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;width:100%;max-width:220px;}
+  .servico-item.checked .servico-qty{display:block;}
+  /* Chips de postes no serviço */
+  .servico-ps-area{display:none;padding:0 12px 10px;gap:6px;flex-wrap:wrap;align-items:center;}
+  .servico-item.checked .servico-ps-area{display:flex;}
+  .modo-postes-on .servico-ps-area{display:flex !important;}
+  .ps-chip{border:none;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;background:#ede8ff;color:var(--ps);transition:all .2s;}
+  .ps-chip:hover{background:#d4c8ff;}
+  .ps-chip.geral{background:#e8f4fd;color:#1a5276;}
+  .ps-chip .ps-rm{font-size:13px;line-height:1;opacity:.7;}
+  .ps-chip .ps-rm:hover{opacity:1;}
+  .ps-add-btn{border:1.5px dashed var(--border);background:white;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);}
+  .ps-add-btn:hover{border-color:var(--ps);color:var(--ps);background:#f5f0ff;}
 
-  .toggle-group { display:flex; gap:10px; margin-top:6px; }
-  .toggle-opt { flex:1; border:2px solid var(--border); border-radius:10px; padding:13px 10px; cursor:pointer; text-align:center; transition:all .2s; }
-  .toggle-opt:hover { border-color:var(--primary); background:#f5f7ff; }
-  .toggle-opt.sel-sim { border-color:var(--success); background:#f0fff4; box-shadow:0 0 0 3px rgba(39,174,96,.13); }
-  .toggle-opt.sel-nao { border-color:var(--danger);  background:#fff5f5; box-shadow:0 0 0 3px rgba(231,76,60,.13); }
-  .toggle-opt.sel-ps  { border-color:var(--ps-color);background:#f5f0ff; box-shadow:0 0 0 3px rgba(123,47,247,.13); }
-  .toggle-opt .icon { font-size:26px; margin-bottom:5px; }
-  .toggle-opt .lbl  { font-weight:800; font-size:15px; }
-  .toggle-opt .desc { font-size:11px; color:var(--muted); margin-top:3px; }
+  /* MATERIAIS */
+  .mat-item{display:flex;align-items:center;gap:8px;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin-bottom:6px;background:white;}
+  .mat-item input{border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;}
+  .mat-desc{flex:1;min-width:0;}
+  .mat-qtd{width:70px;flex-shrink:0;}
+  .mat-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;padding:2px 4px;flex-shrink:0;}
+  .mat-add-btn{border:2px dashed var(--border);background:white;border-radius:8px;padding:9px;width:100%;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;transition:all .2s;margin-top:4px;}
+  .mat-add-btn:hover{border-color:var(--primary);color:var(--primary);background:#f5f7ff;}
 
-  .radio-group { display:flex; gap:8px; margin-top:6px; flex-wrap:wrap; }
-  .radio-opt { border:2px solid var(--border); border-radius:8px; padding:10px 16px; cursor:pointer; text-align:center; transition:all .2s; font-size:13px; font-weight:600; }
-  .radio-opt:hover { border-color:var(--primary); background:#f5f7ff; }
-  .radio-opt.selected { border-color:var(--primary); background:#eef2ff; color:var(--primary); }
+  /* OBSERVAÇÕES */
+  .obs-item{border:1.5px solid var(--border);border-radius:9px;padding:10px;margin-bottom:8px;background:white;}
+  .obs-item-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .obs-item-header span{flex:1;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;}
+  .obs-item textarea{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;min-height:70px;}
+  .obs-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;padding:2px 6px;}
 
-  /* ── Serviço items ── */
-  .servico-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1.5px solid var(--border); border-radius:9px; margin-bottom:8px; transition:all .2s; }
-  .servico-item:hover { border-color:var(--primary); background:#f9faff; }
-  .servico-item.checked { border-color:var(--primary); background:#eef4ff; }
-  .servico-check { width:20px; height:20px; accent-color:var(--primary); cursor:pointer; margin-top:2px; flex-shrink:0; }
-  .servico-info { flex:1; }
-  .servico-label { font-weight:700; font-size:13px; cursor:pointer; }
-  .servico-qty { display:none; margin-top:8px; }
-  .servico-qty input { padding:7px 10px; border:1.5px solid var(--border); border-radius:6px; font-size:12px; font-family:inherit; width:100%; max-width:220px; }
-  .servico-item.checked .servico-qty { display:block; }
-  .servico-ps-btn { display:none; flex-shrink:0; }
-  .modo-postes-on .servico-ps-btn { display:block; }
+  /* PICKER POSTE — bottom sheet */
+  .ps-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;}
+  .ps-overlay.open{display:block;}
+  .ps-picker{position:fixed;bottom:0;left:0;right:0;z-index:301;background:white;border-radius:20px 20px 0 0;padding:20px 16px 36px;box-shadow:0 -4px 30px rgba(0,0,0,.2);transform:translateY(100%);transition:transform .3s ease;max-height:75vh;overflow-y:auto;}
+  .ps-picker.open{transform:translateY(0);}
+  .ps-handle{width:40px;height:4px;background:#ddd;border-radius:4px;margin:0 auto 14px;}
+  .ps-title{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+  .ps-title button{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+  .ps-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .ps-btn{border:2px solid var(--border);border-radius:10px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700;background:white;transition:all .2s;}
+  .ps-btn:hover{border-color:var(--ps);background:#f5f0ff;}
+  .ps-btn-geral{border-color:#b8d9f7;color:#1a5276;background:#e8f4fd;}
+  .ps-custom{display:flex;gap:8px;margin-top:8px;}
+  .ps-custom input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;}
+  .ps-custom button{border:none;border-radius:8px;padding:9px 16px;background:var(--ps);color:white;font-weight:700;cursor:pointer;}
 
-  /* ── Badge de poste ── */
-  .ps-badge {
-    border:none; border-radius:20px; padding:4px 10px; font-size:11px; font-weight:700; cursor:pointer;
-    background:#ede8ff; color:var(--ps-color); transition:all .2s; white-space:nowrap;
-  }
-  .ps-badge:hover { background:#d4c8ff; transform:scale(1.05); }
-  .ps-badge.ps-geral { background:#e8f4fd; color:#1a5276; }
-  .ps-badge.ps-definido { background:#e8f0ff; color:#0a2557; }
+  /* POSTES CHIPS CONFIG */
+  .postes-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .poste-chip{background:#ede8ff;color:var(--ps);border:2px solid #d4c8ff;border-radius:20px;padding:5px 14px;font-size:13px;font-weight:700;}
 
-  /* ── Lista de materiais ── */
-  .mat-item { display:flex; align-items:center; gap:8px; padding:8px; border:1.5px solid var(--border); border-radius:8px; margin-bottom:6px; background:white; }
-  .mat-item input { border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-size:12px; font-family:inherit; }
-  .mat-item .mat-desc { flex:1; min-width:0; }
-  .mat-item .mat-qtd  { width:70px; flex-shrink:0; }
-  .mat-item .mat-del  { background:none; border:none; color:#c0392b; cursor:pointer; font-size:16px; padding:2px 4px; flex-shrink:0; }
-  .mat-item .mat-del:hover { background:#fff5f5; border-radius:4px; }
-  .mat-add-btn { border:2px dashed var(--border); background:white; border-radius:8px; padding:9px; width:100%; cursor:pointer; font-size:13px; color:var(--muted); font-weight:600; transition:all .2s; margin-top:4px; }
-  .mat-add-btn:hover { border-color:var(--primary); color:var(--primary); background:#f5f7ff; }
+  /* AUTO-TEXT */
+  .auto-text{background:linear-gradient(135deg,#eef4ff,#f5f7ff);border:1.5px solid #c5d5f8;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--primary);font-style:italic;display:flex;align-items:center;gap:8px;}
+  .auto-text::before{content:'🤖';font-size:16px;flex-shrink:0;}
 
-  /* ── Lista de observações ── */
-  .obs-item { border:1.5px solid var(--border); border-radius:9px; padding:10px; margin-bottom:8px; background:white; }
-  .obs-item-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .obs-item-header span { flex:1; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; }
-  .obs-item textarea { width:100%; border:1.5px solid var(--border); border-radius:7px; padding:8px 10px; font-size:13px; font-family:inherit; resize:vertical; min-height:70px; }
-  .obs-item textarea:focus { outline:none; border-color:var(--primary); }
-  .obs-del { background:none; border:none; color:#c0392b; cursor:pointer; font-size:16px; padding:2px 6px; }
+  /* ASSINATURA */
+  .sig-wrapper{border:2px dashed var(--border);border-radius:10px;background:#fafbff;padding:10px;}
+  .sig-canvas{display:block;width:100%;height:130px;border-radius:6px;background:white;border:1px solid var(--border);cursor:crosshair;touch-action:none;}
+  .sig-controls{display:flex;gap:8px;margin-top:6px;align-items:center;}
 
-  /* ── Picker de poste (bottom sheet) ── */
-  .ps-picker-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300; }
-  .ps-picker-overlay.open { display:block; }
-  .ps-picker {
-    position:fixed; bottom:0; left:0; right:0; z-index:301;
-    background:white; border-radius:20px 20px 0 0;
-    padding:20px 16px 32px; box-shadow:0 -4px 30px rgba(0,0,0,.2);
-    transform:translateY(100%); transition:transform .3s ease;
-    max-height:75vh; overflow-y:auto;
-  }
-  .ps-picker.open { transform:translateY(0); }
-  .ps-picker-handle { width:40px; height:4px; background:#ddd; border-radius:4px; margin:0 auto 16px; }
-  .ps-picker-title { font-size:15px; font-weight:800; color:var(--primary); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; }
-  .ps-picker-title button { background:none; border:none; font-size:20px; cursor:pointer; color:var(--muted); }
-  .ps-picker-btns { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
-  .ps-picker-btn {
-    border:2px solid var(--border); border-radius:10px; padding:10px 16px;
-    cursor:pointer; font-size:13px; font-weight:700; background:white; transition:all .2s;
-  }
-  .ps-picker-btn:hover { border-color:var(--ps-color); background:#f5f0ff; }
-  .ps-picker-btn.ps-btn-geral { border-color:#b8d9f7; color:#1a5276; background:#e8f4fd; }
-  .ps-picker-custom { display:flex; gap:8px; margin-top:8px; }
-  .ps-picker-custom input { flex:1; border:1.5px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13px; font-family:inherit; }
-  .ps-picker-custom button { border:none; border-radius:8px; padding:9px 16px; background:var(--ps-color); color:white; font-weight:700; cursor:pointer; }
+  /* NAV */
+  .nav-buttons{display:flex;justify-content:space-between;margin-top:20px;gap:10px;}
+  .nav-buttons .btn{min-width:120px;justify-content:center;}
+  .divider{height:1px;background:var(--border);margin:14px 0;}
+  .alert{border-radius:8px;padding:11px 14px;margin-bottom:12px;font-size:12px;display:flex;align-items:center;gap:9px;}
+  .alert-info{background:#e8f4fd;border:1px solid #b8d9f7;color:#1a5276;}
+  .alert-ps{background:#f5f0ff;border:1px solid #d4c8ff;color:#4a0e8f;}
 
-  /* ── Agrupamento por poste no preview ── */
-  .ps-group { border:2px solid #d4c8ff; border-radius:10px; margin-bottom:10px; overflow:hidden; }
-  .ps-group-header { background:linear-gradient(135deg,#4a0e8f,#7b2ff7); color:white; padding:8px 14px; font-weight:800; font-size:12px; display:flex; align-items:center; gap:8px; }
-  .ps-group-header.geral { background:linear-gradient(135deg,#0a2557,#1565c0); }
-  .ps-group-body { padding:8px 14px; font-size:12px; }
-  .ps-group-section { margin-bottom:6px; }
-  .ps-group-section .lbl { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
+  /* PREVIEW BDO */
+  .bdo-preview{background:white;border-radius:10px;border:2px solid var(--border);overflow:hidden;font-size:12px;line-height:1.6;}
+  .bdo-hbar{background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .bdo-hbar img{height:50px;background:white;border-radius:6px;padding:3px 8px;}
+  .bdo-hinfo{flex:1;}
+  .bdo-hinfo h2{font-size:14px;font-weight:800;margin-bottom:2px;}
+  .bdo-hinfo p{font-size:10px;opacity:.75;}
+  .bdo-num{font-size:22px;font-weight:900;opacity:.9;text-align:right;white-space:nowrap;}
+  .bdo-sec{padding:5px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:white;}
+  .bdo-sec.azul{background:#0a2557;}
+  .bdo-sec.roxo{background:linear-gradient(90deg,#4a0e8f,var(--ps));}
+  .bdo-sec.verde{background:#1a7a3c;}
+  .bdo-sec.laranja{background:#c0390b;}
+  .bdo-sec.amarelo{background:#c07000;}
+  .bdo-row{display:grid;grid-template-columns:1fr 1fr;}
+  .bdo-field{padding:7px 14px;border-bottom:1px solid #e8ecf5;}
+  .bdo-field:nth-child(odd){border-right:1px solid #e8ecf5;}
+  .bdo-field .fl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:2px;}
+  .bdo-field .fv{font-size:12px;font-weight:700;}
+  .bdo-block{padding:10px 14px;border-bottom:1px solid #e8ecf5;}
+  .bdo-block .bl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+  .bdo-sig{display:grid;grid-template-columns:1fr 1fr;}
+  .bdo-sig-cell{padding:12px;border-right:1px solid #e8ecf5;text-align:center;}
+  .bdo-sig-cell:last-child{border-right:none;}
+  .bdo-sig-line{border-top:1.5px solid #333;margin:30px 20px 6px;}
+  .bdo-sig-name{font-size:11px;font-weight:700;}
+  .bdo-sig-role{font-size:10px;color:var(--muted);}
+  .bdo-footer{background:#f0f4fb;padding:6px 14px;font-size:9px;color:var(--muted);text-align:center;border-top:1px solid var(--border);}
 
-  /* ── Config de postes ── */
-  .postes-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-  .poste-chip { background:#ede8ff; color:var(--ps-color); border:2px solid #d4c8ff; border-radius:20px; padding:5px 14px; font-size:13px; font-weight:700; }
-
-  /* ── Outros ── */
-  .auto-text { background:linear-gradient(135deg,#eef4ff,#f5f7ff); border:1.5px solid #c5d5f8; border-radius:8px; padding:10px 14px; font-size:12px; color:var(--primary); font-style:italic; display:flex; align-items:center; gap:8px; }
-  .auto-text::before { content:'🤖'; font-size:16px; flex-shrink:0; }
-  .sig-wrapper { border:2px dashed var(--border); border-radius:10px; background:#fafbff; padding:10px; }
-  .sig-canvas { display:block; width:100%; height:130px; border-radius:6px; background:white; border:1px solid var(--border); cursor:crosshair; touch-action:none; }
-  .sig-controls { display:flex; gap:8px; margin-top:6px; align-items:center; }
-  .nav-buttons { display:flex; justify-content:space-between; margin-top:20px; gap:10px; }
-  .nav-buttons .btn { min-width:120px; justify-content:center; }
-  .divider { height:1px; background:var(--border); margin:14px 0; }
-  .alert { border-radius:8px; padding:11px 14px; margin-bottom:12px; font-size:12px; display:flex; align-items:center; gap:9px; }
-  .alert-info { background:#e8f4fd; border:1px solid #b8d9f7; color:#1a5276; }
-  .alert-ps   { background:#f5f0ff; border:1px solid #d4c8ff; color:#4a0e8f; }
-
-  /* ── Preview BDO ── */
-  .bdo-preview { background:white; border-radius:10px; border:2px solid var(--border); overflow:hidden; font-size:12px; line-height:1.6; }
-  .bdo-header-bar { background:linear-gradient(135deg,#061539,#0a2f7a); color:white; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-  .bdo-header-bar img { height:50px; background:white; border-radius:6px; padding:3px 8px; }
-  .bdo-header-info { flex:1; }
-  .bdo-header-info h2 { font-size:14px; font-weight:800; margin-bottom:2px; }
-  .bdo-header-info p  { font-size:10px; opacity:.75; }
-  .bdo-num { font-size:22px; font-weight:900; opacity:.9; text-align:right; white-space:nowrap; }
-  .bdo-sec { background:#0a2557; color:white; padding:5px 14px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
-  .bdo-sec.ps-sec { background:linear-gradient(90deg,#4a0e8f,#7b2ff7); }
-  .bdo-row { display:grid; grid-template-columns:1fr 1fr; }
-  .bdo-field { padding:7px 14px; border-bottom:1px solid #e8ecf5; }
-  .bdo-field:nth-child(odd){ border-right:1px solid #e8ecf5; }
-  .bdo-field .fl { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:2px; }
-  .bdo-field .fv { font-size:12px; font-weight:700; color:var(--text); }
-  .bdo-text-block { padding:10px 14px; border-bottom:1px solid #e8ecf5; font-size:12px; }
-  .bdo-text-block .bl { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
-  .bdo-sig-area { display:grid; grid-template-columns:1fr 1fr; }
-  .bdo-sig-cell { padding:12px; border-right:1px solid #e8ecf5; text-align:center; }
-  .bdo-sig-cell:last-child{ border-right:none; }
-  .bdo-sig-line { border-top:1.5px solid #333; margin:30px 20px 6px; }
-  .bdo-sig-name { font-size:11px; font-weight:700; }
-  .bdo-sig-role { font-size:10px; color:var(--muted); }
-  .bdo-footer { background:#f0f4fb; padding:6px 14px; font-size:9px; color:var(--muted); text-align:center; border-top:1px solid var(--border); }
-
-  /* ── Modal PDF ── */
-  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:200; align-items:center; justify-content:center; }
-  .modal-overlay.open { display:flex; }
-  .modal-box { background:white; border-radius:14px; padding:28px; max-width:440px; width:90%; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.3); }
-  .modal-icon { font-size:46px; margin-bottom:12px; }
-  .modal-box h3 { font-size:18px; margin-bottom:8px; }
-  .modal-box p  { color:var(--muted); font-size:13px; margin-bottom:20px; line-height:1.5; }
-  .modal-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-  .spinner { width:34px; height:34px; border:4px solid #eee; border-top-color:var(--primary); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 14px; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-
-  .toast { position:fixed; bottom:24px; right:24px; background:#1a1a2e; color:white; padding:13px 22px; border-radius:9px; z-index:999; font-size:13px; font-weight:600; box-shadow:0 4px 16px rgba(0,0,0,.3); transform:translateY(80px); opacity:0; transition:all .3s; }
-  .toast.show { transform:translateY(0); opacity:1; }
-  .toast.success { background:#1e8449; }
-  .toast.error   { background:#c0392b; }
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:white;border-radius:14px;padding:28px;max-width:440px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3);}
+  .modal-icon{font-size:46px;margin-bottom:12px;}
+  .modal-box h3{font-size:18px;margin-bottom:8px;}
+  .modal-box p{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.5;}
+  .modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .spinner{width:34px;height:34px;border:4px solid #eee;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .toast{position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:white;padding:13px 22px;border-radius:9px;z-index:999;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.3);transform:translateY(80px);opacity:0;transition:all .3s;}
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.success{background:#1e8449;}
+  .toast.error{background:#c0392b;}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-inner">
     <div class="topbar-logo">
@@ -238,7 +226,6 @@
 
 <div class="container" id="main-container">
 
-  <!-- STEP INDICATOR -->
   <div class="step-indicator">
     <div class="step-item active" id="si-1" onclick="goStep(1)"><span class="step-num">📋</span>Cabeçalho</div>
     <div class="step-item" id="si-2" onclick="goStep(2)"><span class="step-num">🔑</span>Serviço</div>
@@ -250,9 +237,7 @@
     <div class="step-item" id="si-8" onclick="goStep(8)"><span class="step-num">📤</span>Exportar</div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 1 — CABEÇALHO + CONFIGURAÇÃO DE POSTES
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 1 — CABEÇALHO ══ -->
   <div class="step-panel active" id="step-1">
     <div class="card">
       <div class="card-header">📋 1. Identificação do BDO</div>
@@ -273,34 +258,60 @@
       </div>
     </div>
 
-    <!-- ── CONFIGURAÇÃO DE POSTES (opcional) ── -->
+    <!-- STATUS DE EXECUÇÃO -->
     <div class="card">
-      <div class="card-header ps-header">🏗️ Agrupamento por Poste — Opcional</div>
+      <div class="card-header status-h">📊 Status da Execução <span class="req">*</span></div>
       <div class="card-body">
-        <p style="font-size:13px;margin-bottom:12px;color:var(--muted)">Ative para organizar serviços, materiais e observações por poste (PS). Ideal para obras com múltiplos pontos.</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Qual é o resultado desta jornada de trabalho?</p>
         <div class="toggle-group">
-          <div class="toggle-opt" id="ps-nao" onclick="setModoPostes(false)">
-            <div class="icon">📄</div>
-            <div class="lbl" style="color:var(--muted)">PADRÃO</div>
-            <div class="desc">Sem agrupamento</div>
+          <div class="toggle-opt" id="st-conclusao" onclick="setStatus('conclusao')">
+            <div class="icon">✅</div>
+            <div class="lbl" style="color:var(--success)">CONCLUSÃO</div>
+            <div class="desc">Serviço concluído</div>
+          </div>
+          <div class="toggle-opt" id="st-parcial" onclick="setStatus('parcial')">
+            <div class="icon">🔄</div>
+            <div class="lbl" style="color:var(--warning)">PARCIAL</div>
+            <div class="desc">Execução parcial</div>
+          </div>
+          <div class="toggle-opt" id="st-cancelamento" onclick="setStatus('cancelamento')">
+            <div class="icon">❌</div>
+            <div class="lbl" style="color:var(--danger)">CANCELAMENTO</div>
+            <div class="desc">Serviço cancelado</div>
+          </div>
+        </div>
+        <div id="status-motivo" style="display:none;margin-top:14px">
+          <div class="form-group">
+            <label id="status-motivo-label">Motivo</label>
+            <textarea id="status_motivo_txt" placeholder="Descreva o motivo..." rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGRUPAMENTO POR POSTE -->
+    <div class="card">
+      <div class="card-header ps-h">🏗️ Agrupamento por Poste — Opcional</div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ative para organizar serviços, materiais e observações por poste (PS). Ideal para obras com múltiplos pontos.</p>
+        <div class="toggle-group">
+          <div class="toggle-opt sel-std" id="ps-nao" onclick="setModoPostes(false)">
+            <div class="icon">📄</div><div class="lbl" style="color:var(--muted)">PADRÃO</div><div class="desc">Sem agrupamento</div>
           </div>
           <div class="toggle-opt" id="ps-sim" onclick="setModoPostes(true)">
-            <div class="icon">🏗️</div>
-            <div class="lbl" style="color:var(--ps-color)">POR POSTE</div>
-            <div class="desc">Agrupar por PS</div>
+            <div class="icon">🏗️</div><div class="lbl" style="color:var(--ps)">POR POSTE</div><div class="desc">Agrupar por PS</div>
           </div>
         </div>
         <div id="postes-config" style="display:none;margin-top:16px">
           <div class="form-grid col-2">
-            <div class="form-group">
-              <label>Quantidade de postes</label>
+            <div class="form-group"><label>Quantidade de postes</label>
               <input type="number" id="qtd_postes" min="1" max="50" placeholder="Ex: 3" oninput="gerarListaPostes()">
             </div>
           </div>
-          <div id="postes-chips-wrap" style="margin-top:10px;display:none">
+          <div id="postes-chips-wrap" style="display:none;margin-top:10px">
             <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Postes gerados:</div>
             <div class="postes-chips" id="postes-chips"></div>
-            <p style="font-size:11px;color:var(--muted);margin-top:8px">💡 Você poderá adicionar postes extras manualmente durante o preenchimento.</p>
+            <p style="font-size:11px;color:var(--muted);margin-top:8px">💡 Você pode adicionar postes extras ao vincular os itens.</p>
           </div>
         </div>
       </div>
@@ -309,21 +320,15 @@
     <div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="goStep(2)">Próximo →</button></div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 2 — SERVIÇO LIVRE
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 2 — SERVIÇO LIVRE ══ -->
   <div class="step-panel" id="step-2">
     <div class="card">
       <div class="card-header">🔑 2. Serviço Livre</div>
       <div class="card-body">
         <p style="font-size:13px;margin-bottom:12px;font-weight:600">Trata-se de serviço livre? <span class="req">*</span></p>
         <div class="toggle-group">
-          <div class="toggle-opt" id="sl-sim" onclick="setServicoLivre(true)">
-            <div class="icon">✅</div><div class="lbl" style="color:var(--success)">SIM</div><div class="desc">Serviço livre</div>
-          </div>
-          <div class="toggle-opt" id="sl-nao" onclick="setServicoLivre(false)">
-            <div class="icon">📋</div><div class="lbl" style="color:var(--primary)">NÃO</div><div class="desc">Preencher OMB / PLV</div>
-          </div>
+          <div class="toggle-opt" id="sl-sim" onclick="setServicoLivre(true)"><div class="icon">✅</div><div class="lbl" style="color:var(--success)">SIM</div><div class="desc">Serviço livre</div></div>
+          <div class="toggle-opt" id="sl-nao" onclick="setServicoLivre(false)"><div class="icon">📋</div><div class="lbl" style="color:var(--primary)">NÃO</div><div class="desc">Preencher OMB / PLV</div></div>
         </div>
         <div id="campos-omb-plv" style="display:none;margin-top:16px">
           <div class="form-grid col-2">
@@ -339,16 +344,14 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 3 — MANOBRA
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 3 — MANOBRA ══ -->
   <div class="step-panel" id="step-3">
     <div class="card">
       <div class="card-header">🔌 3. Manobra</div>
       <div class="card-body">
         <p style="font-size:13px;margin-bottom:12px;font-weight:600">Manobra executada pela equipe? <span class="req">*</span></p>
         <div class="toggle-group">
-          <div class="toggle-opt" id="man-sim" onclick="setManobra('equipe')"><div class="icon">👷</div><div class="lbl" style="color:var(--success)">SIM</div><div class="desc">Pela equipe executora</div></div>
+          <div class="toggle-opt" id="man-sim" onclick="setManobra('equipe')"><div class="icon">👷</div><div class="lbl" style="color:var(--success)">SIM</div><div class="desc">Pela equipe</div></div>
           <div class="toggle-opt" id="man-nao" onclick="setManobra('outras')"><div class="icon">🔄</div><div class="lbl" style="color:var(--primary)">NÃO</div><div class="desc">Outra equipe</div></div>
           <div class="toggle-opt" id="man-sem" onclick="setManobra('sem')"><div class="icon">⛔</div><div class="lbl" style="color:var(--warning)">SEM</div><div class="desc">Sem manobra</div></div>
         </div>
@@ -367,14 +370,11 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 4 — ALTERAÇÕES + MATERIAIS
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 4 — ALTERAÇÕES + MATERIAIS ══ -->
   <div class="step-panel" id="step-4">
     <div class="card">
       <div class="card-header">🔩 4. Alterações</div>
       <div class="card-body">
-        <p style="font-size:13px;margin-bottom:12px;font-weight:600">Houve alterações? <span class="req">*</span></p>
         <div class="toggle-group">
           <div class="toggle-opt" id="alt-nao" onclick="setAlteracoes(false)"><div class="icon">✅</div><div class="lbl" style="color:var(--success)">NÃO</div><div class="desc">Conforme projeto</div></div>
           <div class="toggle-opt" id="alt-sim" onclick="setAlteracoes(true)"><div class="icon">📝</div><div class="lbl" style="color:var(--warning)">SIM</div><div class="desc">Descrever</div></div>
@@ -389,12 +389,11 @@
       </div>
     </div>
 
-    <!-- ── Materiais Utilizados ── -->
     <div class="card">
       <div class="card-header">📦 Materiais Utilizados</div>
       <div class="card-body">
-        <div class="alert alert-info" id="mat-alert-normal">ℹ️ Adicione os materiais utilizados na obra.</div>
-        <div class="alert alert-ps" id="mat-alert-ps" style="display:none">🏗️ Modo poste ativo — vincule cada material ao poste correspondente ou deixe como <strong>Geral</strong>.</div>
+        <div class="alert alert-info" id="mat-alert-n">ℹ️ Adicione os materiais utilizados na obra.</div>
+        <div class="alert alert-ps" id="mat-alert-ps" style="display:none">🏗️ Vincule cada material ao poste ou deixe como <strong>Geral</strong>.</div>
         <div id="materiais-lista"></div>
         <button class="mat-add-btn" onclick="adicionarMaterial()">＋ Adicionar Material</button>
       </div>
@@ -406,80 +405,16 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 5 — SERVIÇOS EXECUTADOS
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 5 — SERVIÇOS ══ -->
   <div class="step-panel" id="step-5">
     <div class="card">
       <div class="card-header">🔧 5. Serviços Executados</div>
       <div class="card-body">
-        <div class="alert alert-info" id="srv-alert-normal">ℹ️ Marque os serviços realizados e informe a quantidade quando necessário.</div>
-        <div class="alert alert-ps" id="srv-alert-ps" style="display:none">🏗️ Modo poste ativo — toque no badge <strong>🌐 Geral</strong> para vincular o serviço a um poste específico.</div>
+        <div class="alert alert-info" id="srv-alert-n">ℹ️ Marque os serviços realizados.</div>
+        <div class="alert alert-ps" id="srv-alert-ps" style="display:none">🏗️ Modo poste ativo — cada serviço pode ser vinculado a <strong>um ou mais postes</strong>.</div>
 
-        <!-- Cada servico-item tem botão de poste na direita -->
-        <div class="servico-item" id="si-calcada">
-          <input type="checkbox" class="servico-check" id="chk-calcada" onchange="toggleServico('si-calcada','chk-calcada')">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-calcada">🏗️ Reforma de calçada</label>
-            <div class="servico-qty"><input type="text" id="qty-calcada" placeholder="Quantidade / descrição (opcional)"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-calcada" onclick="abrirPostePicker('calcada')">🌐 Geral</button></div>
-        </div>
-
-        <div class="servico-item" id="si-podas">
-          <input type="checkbox" class="servico-check" id="chk-podas" onchange="toggleServico('si-podas','chk-podas')">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-podas">🌳 Podas</label>
-            <div class="servico-qty"><input type="text" id="qty-podas" placeholder="Quantidade / descrição (opcional)"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-podas" onclick="abrirPostePicker('podas')">🌐 Geral</button></div>
-        </div>
-
-        <div class="servico-item" id="si-luminarias">
-          <input type="checkbox" class="servico-check" id="chk-luminarias" onchange="toggleServico('si-luminarias','chk-luminarias')">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-luminarias">💡 Reinstalação de luminárias</label>
-            <div class="servico-qty"><input type="text" id="qty-luminarias" placeholder="Quantidade (opcional)"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-luminarias" onclick="abrirPostePicker('luminarias')">🌐 Geral</button></div>
-        </div>
-
-        <div class="servico-item" id="si-fibra">
-          <input type="checkbox" class="servico-check" id="chk-fibra" onchange="toggleServico('si-fibra','chk-fibra')">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-fibra">🔗 Amarração de fibra óptica</label>
-            <div class="servico-qty"><input type="text" id="qty-fibra" placeholder="Quantidade (opcional)"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-fibra" onclick="abrirPostePicker('fibra')">🌐 Geral</button></div>
-        </div>
-
-        <div class="servico-item" id="si-malha">
-          <input type="checkbox" class="servico-check" id="chk-malha" onchange="toggleServico('si-malha','chk-malha');updateMalhaText()">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-malha">⚡ Malha de aterramento</label>
-            <div class="servico-qty"><input type="number" id="qty-malha" placeholder="Metros executados" min="0" oninput="updateMalhaText()"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-malha" onclick="abrirPostePicker('malha')">🌐 Geral</button></div>
-        </div>
-        <div id="malha-auto-txt" style="display:none;margin-bottom:8px"></div>
-
-        <div class="servico-item" id="si-estai">
-          <input type="checkbox" class="servico-check" id="chk-estai" onchange="toggleServico('si-estai','chk-estai')">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-estai">🪝 Estai prov.</label>
-            <div class="servico-qty"><input type="text" id="qty-estai" placeholder="Quantidade / descrição (opcional)"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-estai" onclick="abrirPostePicker('estai')">🌐 Geral</button></div>
-        </div>
-
-        <div class="servico-item" id="si-ramal">
-          <input type="checkbox" class="servico-check" id="chk-ramal" onchange="toggleServico('si-ramal','chk-ramal')">
-          <div class="servico-info">
-            <label class="servico-label" for="chk-ramal">🔌 Reinstalação de ramal</label>
-            <div class="servico-qty"><input type="text" id="qty-ramal" placeholder="Quantidade / descrição (opcional)"></div>
-          </div>
-          <div class="servico-ps-btn"><button class="ps-badge ps-geral" id="psbadge-ramal" onclick="abrirPostePicker('ramal')">🌐 Geral</button></div>
-        </div>
+        <!-- Macro para cada serviço: id, emoji, label, tipo-qty -->
+        <div id="servicos-container"></div>
       </div>
     </div>
     <div class="nav-buttons">
@@ -488,23 +423,19 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 6 — OBSERVAÇÕES
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 6 — OBSERVAÇÕES ══ -->
   <div class="step-panel" id="step-6">
     <div class="card">
       <div class="card-header">📝 6. Observações Adicionais</div>
       <div class="card-body">
-        <!-- Modo normal -->
         <div id="obs-normal">
           <div class="form-group">
             <label>Observações (campo livre)</label>
             <textarea id="observacoes" rows="6" placeholder="Intercorrências, condições climáticas, horários especiais, pendências..."></textarea>
           </div>
         </div>
-        <!-- Modo postes -->
         <div id="obs-postes" style="display:none">
-          <div class="alert alert-ps" style="margin-bottom:12px">🏗️ Modo poste ativo — vincule cada observação ao poste correspondente ou deixe como <strong>Geral</strong>.</div>
+          <div class="alert alert-ps" style="margin-bottom:12px">🏗️ Vincule cada observação ao poste ou deixe como <strong>Geral</strong>.</div>
           <div id="obs-lista"></div>
           <button class="mat-add-btn" onclick="adicionarObs()">＋ Adicionar Observação</button>
         </div>
@@ -516,16 +447,14 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 7 — ASSINATURA
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 7 — ASSINATURA ══ -->
   <div class="step-panel" id="step-7">
     <div class="card">
       <div class="card-header">✍️ 7. Assinatura do Encarregado</div>
       <div class="card-body">
         <div class="form-grid col-2">
           <div class="form-group"><label>Nome <span class="req">*</span></label><input type="text" id="sig-nome" placeholder="Nome completo"></div>
-          <div class="form-group"><label>Cargo / Função</label><input type="text" id="sig-cargo" value="Encarregado Elétrico" placeholder="Ex: Encarregado Elétrico"></div>
+          <div class="form-group"><label>Cargo / Função</label><input type="text" id="sig-cargo" value="Encarregado Elétrico"></div>
         </div>
         <div class="sig-wrapper" style="margin-top:12px">
           <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:block">✍️ Desenhe a assinatura abaixo</label>
@@ -543,9 +472,7 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       STEP 8 — EXPORTAR
-  ══════════════════════════════════════════════ -->
+  <!-- ══ STEP 8 — EXPORTAR ══ -->
   <div class="step-panel" id="step-8">
     <div class="card">
       <div class="card-header">📤 8. Prévia e Exportar BDO</div>
@@ -553,10 +480,10 @@
         <div class="bdo-preview" id="bdo-preview-box"></div>
         <div class="divider"></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-          <button class="btn btn-primary"  style="font-size:14px;padding:12px 24px" onclick="abrirModal()">📄 Baixar PDF</button>
-          <button class="btn btn-success"  style="font-size:14px;padding:12px 24px" onclick="enviarPorEmail()">📧 Enviar E-mail</button>
-          <button class="btn btn-whats"    style="font-size:14px;padding:12px 24px" onclick="compartilharWhatsApp()">💬 WhatsApp</button>
-          <button class="btn btn-outline"  style="font-size:14px;padding:12px 24px" onclick="imprimirPDF()">🖨️ Imprimir</button>
+          <button class="btn btn-primary" style="font-size:14px;padding:12px 24px" onclick="abrirModal()">📄 Baixar PDF</button>
+          <button class="btn btn-success" style="font-size:14px;padding:12px 24px" onclick="enviarPorEmail()">📧 Enviar E-mail</button>
+          <button class="btn btn-whats"  style="font-size:14px;padding:12px 24px" onclick="compartilharWhatsApp()">💬 WhatsApp</button>
+          <button class="btn btn-outline" style="font-size:14px;padding:12px 24px" onclick="imprimirPDF()">🖨️ Imprimir</button>
         </div>
       </div>
     </div>
@@ -565,53 +492,44 @@
 
 </div><!-- /container -->
 
-<!-- ══════════════════════════════════════════════
-     PICKER DE POSTE — Bottom Sheet
-══════════════════════════════════════════════ -->
-<div class="ps-picker-overlay" id="ps-picker-overlay" onclick="fecharPostePicker()"></div>
+<!-- PICKER POSTE -->
+<div class="ps-overlay" id="ps-overlay" onclick="fecharPS()"></div>
 <div class="ps-picker" id="ps-picker">
-  <div class="ps-picker-handle"></div>
-  <div class="ps-picker-title">
+  <div class="ps-handle"></div>
+  <div class="ps-title">
     <span>📍 Vincular a qual poste?</span>
-    <button onclick="fecharPostePicker()">✕</button>
+    <button onclick="fecharPS()">✕</button>
   </div>
-  <div class="ps-picker-btns" id="ps-picker-btns"></div>
-  <div class="ps-picker-custom">
-    <input type="text" id="ps-custom-input" placeholder="Digitar poste manualmente (ex: PS4)">
-    <button onclick="confirmarPosteCustom()">✓ OK</button>
+  <div class="ps-btns" id="ps-btns"></div>
+  <div class="ps-custom">
+    <input type="text" id="ps-custom-inp" placeholder="Digitar poste manualmente (ex: PS4-A)">
+    <button onclick="confirmarPsCustom()">✓ OK</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     MODAL PDF
-══════════════════════════════════════════════ -->
+<!-- MODAL PDF -->
 <div class="modal-overlay" id="modal-pdf">
   <div class="modal-box">
     <div id="modal-confirm">
       <div class="modal-icon">📄</div>
       <h3>Gerar BDO em PDF?</h3>
-      <p>O boletim será gerado com todos os dados preenchidos e a logo da empresa.</p>
+      <p>O PDF será gerado idêntico à prévia exibida na tela, com todos os dados e agrupamentos.</p>
       <div class="modal-actions">
         <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
         <button class="btn btn-primary" onclick="gerarPDF()">✅ Confirmar</button>
       </div>
     </div>
-    <div id="modal-loading" style="display:none">
-      <div class="spinner"></div>
-      <h3>Gerando PDF...</h3><p>Aguarde alguns segundos.</p>
-    </div>
+    <div id="modal-loading" style="display:none"><div class="spinner"></div><h3>Gerando PDF...</h3><p>Aguarde alguns segundos.</p></div>
     <div id="modal-success" style="display:none">
-      <div class="modal-icon">✅</div>
-      <h3>BDO Gerado com Sucesso!</h3>
-      <p id="modal-success-msg">Seu boletim está pronto para download.</p>
+      <div class="modal-icon">✅</div><h3>BDO Gerado!</h3>
+      <p id="msg-success">Pronto para download.</p>
       <div class="modal-actions">
         <button class="btn btn-outline" onclick="fecharModal()">Fechar</button>
         <a class="btn btn-success" id="btn-download" href="#">⬇️ Baixar PDF</a>
       </div>
     </div>
     <div id="modal-error" style="display:none">
-      <div class="modal-icon">❌</div>
-      <h3>Erro ao Gerar PDF</h3>
+      <div class="modal-icon">❌</div><h3>Erro ao Gerar PDF</h3>
       <p id="error-msg">Verifique se o servidor está rodando.</p>
       <div class="modal-actions"><button class="btn btn-primary" onclick="fecharModal()">Fechar</button></div>
     </div>
@@ -621,28 +539,69 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 //  STATE
-// ══════════════════════════════════════════════════════════
-let currentStep  = 1;
-let servicoLivre = null;
-let manobraState = null;
-let alteracoes   = null;
+// ═══════════════════════════════════════════
+let currentStep   = 1;
+let servicoLivre  = null;
+let manobraState  = null;
+let alteracoes    = null;
+let statusExec    = null;   // 'conclusao' | 'parcial' | 'cancelamento'
+let modoPostes    = false;
+let listaPostes   = [];     // ['PS1','PS2',...]
+let postesExtra   = [];     // adicionados manualmente
+let psMulti       = {};     // { 'calcada': ['PS1','PS2'], 'podas':['geral'], ... }
+let materiaisLista= [];
+let obsLista      = [];
+let _psCtx        = null;   // { callback }
+let _midCnt       = 0, _oidCnt = 0;
 
-// ── Sistema de Postes ──
-let modoPostes       = false;
-let listaPosotes     = [];          // ['PS1','PS2','PS3'...]
-let postesExtra      = [];          // postes adicionados manualmente
-let psAssignments    = {};          // { 'calcada':'PS1', 'podas':'geral', ... }
-let materiaisLista   = [];          // [{ id, descricao, qtd, poste }]
-let obsLista         = [];          // [{ id, texto, poste }]
-let _psPickerCtx     = null;        // { itemId, callback }
-let _matIdCounter    = 0;
-let _obsIdCounter    = 0;
+const SERVICOS_DEF = [
+  { id:'calcada',    emoji:'🏗️', label:'Reforma de calçada',        qty:'text',   ph:'Quantidade / descrição (opcional)' },
+  { id:'podas',      emoji:'🌳', label:'Podas',                     qty:'text',   ph:'Quantidade / descrição (opcional)' },
+  { id:'luminarias', emoji:'💡', label:'Reinstalação de luminárias', qty:'text',   ph:'Quantidade (opcional)' },
+  { id:'fibra',      emoji:'🔗', label:'Amarração de fibra óptica',  qty:'text',   ph:'Quantidade (opcional)' },
+  { id:'malha',      emoji:'⚡', label:'Malha de aterramento',       qty:'number', ph:'Metros executados' },
+  { id:'estai',      emoji:'🪝', label:'Estai prov.',                qty:'text',   ph:'Quantidade / descrição (opcional)' },
+  { id:'ramal',      emoji:'🔌', label:'Reinstalação de ramal',      qty:'text',   ph:'Quantidade / descrição (opcional)' },
+];
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+//  INIT SERVIÇOS
+// ═══════════════════════════════════════════
+function buildServicos() {
+  const c = document.getElementById('servicos-container');
+  c.innerHTML = '';
+  SERVICOS_DEF.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'servico-item';
+    div.id = 'si-'+s.id;
+    div.innerHTML = `
+      <div class="servico-top">
+        <input type="checkbox" class="servico-check" id="chk-${s.id}" onchange="toggleServico('${s.id}')">
+        <label class="servico-label" for="chk-${s.id}">${s.emoji} ${s.label}</label>
+      </div>
+      <div class="servico-qty">
+        <input type="${s.qty}" id="qty-${s.id}" placeholder="${s.ph}"
+          ${s.id==='malha'?'oninput="updateMalhaText()"':''}>
+      </div>
+      <div class="servico-ps-area" id="psarea-${s.id}">
+        <span style="font-size:11px;font-weight:700;color:var(--muted)">Postes:</span>
+        <div id="pschips-${s.id}" style="display:contents"></div>
+        <button class="ps-add-btn" onclick="abrirPS(null,ps=>adicionarPsServico('${s.id}',ps))">＋ Poste</button>
+      </div>`;
+    c.appendChild(div);
+    psMulti[s.id] = [];
+  });
+  const malhaDiv = document.createElement('div');
+  malhaDiv.id = 'malha-auto-txt';
+  malhaDiv.style.display = 'none';
+  c.appendChild(malhaDiv);
+}
+
+// ═══════════════════════════════════════════
 //  NAVEGAÇÃO
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 function goStep(n) {
   document.getElementById('step-'+currentStep).classList.remove('active');
   document.getElementById('si-'+currentStep).classList.remove('active');
@@ -651,473 +610,393 @@ function goStep(n) {
   document.getElementById('si-'+currentStep).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   updateProgress();
-  if (n === 8) renderPreview();
+  if (n===8) renderPreview();
 }
-function irParaExportar() { goStep(8); }
-
+function irParaExportar(){ goStep(8); }
 function updateProgress() {
-  let f = 0;
-  if (document.getElementById('num_projeto').value) f++;
-  if (document.getElementById('cidade').value)      f++;
-  if (document.getElementById('data_bdo').value)    f++;
-  if (document.getElementById('encarregado').value) f++;
-  if (servicoLivre !== null) f++;
-  if (manobraState)          f++;
-  if (alteracoes !== null)   f++;
-  document.getElementById('mainProgress').style.width = Math.round(f/8*100)+'%';
+  let f=0;
+  if(document.getElementById('num_projeto').value) f++;
+  if(document.getElementById('cidade').value)      f++;
+  if(document.getElementById('data_bdo').value)    f++;
+  if(document.getElementById('encarregado').value) f++;
+  if(servicoLivre!==null) f++;
+  if(manobraState)        f++;
+  if(alteracoes!==null)   f++;
+  if(statusExec)          f++;
+  document.getElementById('mainProgress').style.width=Math.round(f/8*100)+'%';
 }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+//  STATUS DE EXECUÇÃO
+// ═══════════════════════════════════════════
+function setStatus(val) {
+  statusExec = val;
+  ['conclusao','parcial','cancelamento'].forEach(s=>{
+    const el = document.getElementById('st-'+s);
+    const cls = s==='conclusao'?'sel-ok':s==='parcial'?'sel-warn':'sel-danger';
+    el.className = 'toggle-opt' + (val===s?' '+cls:'');
+  });
+  const motivo = document.getElementById('status-motivo');
+  const lbl    = document.getElementById('status-motivo-label');
+  if(val==='parcial'){
+    motivo.style.display=''; lbl.textContent='Motivo / pendências da execução parcial';
+  } else if(val==='cancelamento'){
+    motivo.style.display=''; lbl.textContent='Motivo do cancelamento';
+  } else {
+    motivo.style.display='none';
+  }
+  updateProgress();
+}
+function getStatusLabel() {
+  if(statusExec==='conclusao')    return { emoji:'✅', label:'Conclusão',       cor:'verde'   };
+  if(statusExec==='parcial')      return { emoji:'🔄', label:'Execução Parcial', cor:'amarelo' };
+  if(statusExec==='cancelamento') return { emoji:'❌', label:'Cancelamento',     cor:'laranja' };
+  return null;
+}
+
+// ═══════════════════════════════════════════
 //  MODO POSTES
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 function setModoPostes(ativo) {
   modoPostes = ativo;
-  document.getElementById('ps-sim').className = 'toggle-opt' + (ativo  ? ' sel-ps'  : '');
-  document.getElementById('ps-nao').className = 'toggle-opt' + (!ativo ? ' sel-nao' : '');
-  document.getElementById('postes-config').style.display = ativo ? '' : 'none';
-
-  // Alterna alertas e modos nos steps
-  document.getElementById('srv-alert-normal').style.display = ativo ? 'none' : '';
-  document.getElementById('srv-alert-ps').style.display     = ativo ? '' : 'none';
-  document.getElementById('mat-alert-normal').style.display = ativo ? 'none' : '';
-  document.getElementById('mat-alert-ps').style.display     = ativo ? '' : 'none';
-  document.getElementById('obs-normal').style.display       = ativo ? 'none' : '';
-  document.getElementById('obs-postes').style.display       = ativo ? '' : 'none';
-
-  // Mostra/oculta badges de poste nos serviços
-  const container = document.getElementById('main-container');
-  if (ativo) container.classList.add('modo-postes-on');
-  else       container.classList.remove('modo-postes-on');
-
-  // Inicializa obs se ainda não tiver nenhuma
-  if (ativo && obsLista.length === 0) adicionarObs();
+  document.getElementById('ps-sim').className = 'toggle-opt'+(ativo?' sel-ps':'');
+  document.getElementById('ps-nao').className = 'toggle-opt'+(ativo?'':' sel-std');
+  document.getElementById('postes-config').style.display = ativo?'':'none';
+  document.getElementById('srv-alert-n').style.display  = ativo?'none':'';
+  document.getElementById('srv-alert-ps').style.display = ativo?'':'none';
+  document.getElementById('mat-alert-n').style.display  = ativo?'none':'';
+  document.getElementById('mat-alert-ps').style.display = ativo?'':'none';
+  document.getElementById('obs-normal').style.display   = ativo?'none':'';
+  document.getElementById('obs-postes').style.display   = ativo?'':'none';
+  const c = document.getElementById('main-container');
+  ativo ? c.classList.add('modo-postes-on') : c.classList.remove('modo-postes-on');
+  // Redesenha materiais para mostrar/ocultar badges
+  renderMateriaisLista();
+  if(ativo && obsLista.length===0) adicionarObs();
 }
-
 function gerarListaPostes() {
-  const qtd = parseInt(document.getElementById('qtd_postes').value) || 0;
-  listaPosotes = [];
-  for (let i = 1; i <= qtd; i++) listaPosotes.push('PS' + i);
+  const qtd = parseInt(document.getElementById('qtd_postes').value)||0;
+  listaPostes = Array.from({length:qtd},(_,i)=>'PS'+(i+1));
   const wrap = document.getElementById('postes-chips-wrap');
-  if (qtd > 0) {
-    wrap.style.display = '';
+  if(qtd>0){
+    wrap.style.display='';
     document.getElementById('postes-chips').innerHTML =
-      listaPosotes.map(p => `<span class="poste-chip">${p}</span>`).join('') +
-      postesExtra.map(p => `<span class="poste-chip" style="background:#d4c8ff">${p}</span>`).join('');
-  } else {
-    wrap.style.display = 'none';
-  }
+      [...listaPostes,...postesExtra].map(p=>`<span class="poste-chip">${p}</span>`).join('');
+  } else wrap.style.display='none';
 }
+function getTodosPostes(){ return [...listaPostes,...postesExtra]; }
 
-function getTodosPostes() {
-  return ['geral', ...listaPosotes, ...postesExtra];
-}
-
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 //  PICKER DE POSTE
-// ══════════════════════════════════════════════════════════
-function abrirPostePicker(itemId, callback) {
-  _psPickerCtx = { itemId, callback };
-  document.getElementById('ps-custom-input').value = '';
-
-  const btns = document.getElementById('ps-picker-btns');
-  btns.innerHTML = '';
-
-  // Botão Geral
-  const bg = document.createElement('button');
-  bg.className = 'ps-picker-btn ps-btn-geral';
-  bg.textContent = '🌐 Geral do Projeto';
-  bg.onclick = () => selecionarPoste('geral');
-  btns.appendChild(bg);
-
-  // Botões dos postes
-  [...listaPosotes, ...postesExtra].forEach(ps => {
-    const b = document.createElement('button');
-    b.className = 'ps-picker-btn';
-    b.textContent = '🏗️ ' + ps;
-    b.onclick = () => selecionarPoste(ps);
-    btns.appendChild(b);
+// ═══════════════════════════════════════════
+function abrirPS(_, cb) {
+  _psCtx = { cb };
+  document.getElementById('ps-custom-inp').value='';
+  const btns = document.getElementById('ps-btns');
+  btns.innerHTML='';
+  const bg=document.createElement('button');
+  bg.className='ps-btn ps-btn-geral'; bg.textContent='🌐 Geral do Projeto';
+  bg.onclick=()=>_selPS('geral'); btns.appendChild(bg);
+  getTodosPostes().forEach(ps=>{
+    const b=document.createElement('button'); b.className='ps-btn';
+    b.textContent='🏗️ '+ps; b.onclick=()=>_selPS(ps); btns.appendChild(b);
   });
-
-  document.getElementById('ps-picker-overlay').classList.add('open');
+  document.getElementById('ps-overlay').classList.add('open');
   document.getElementById('ps-picker').classList.add('open');
 }
-
-function fecharPostePicker() {
-  document.getElementById('ps-picker-overlay').classList.remove('open');
+function fecharPS(){
+  document.getElementById('ps-overlay').classList.remove('open');
   document.getElementById('ps-picker').classList.remove('open');
-  _psPickerCtx = null;
+  _psCtx=null;
 }
-
-function selecionarPoste(ps) {
-  if (!_psPickerCtx) return;
-  const { itemId, callback } = _psPickerCtx;
-  fecharPostePicker();
-  if (callback) { callback(ps); return; }
-  // Atualiza badge do serviço
-  psAssignments[itemId] = ps;
-  atualizarBadgeServico(itemId, ps);
-}
-
-function confirmarPosteCustom() {
-  const val = document.getElementById('ps-custom-input').value.trim().toUpperCase();
-  if (!val) return;
-  if (!listaPosotes.includes(val) && !postesExtra.includes(val)) {
-    postesExtra.push(val);
+function _selPS(ps){ if(!_psCtx) return; const cb=_psCtx.cb; fecharPS(); cb(ps); }
+function confirmarPsCustom(){
+  const v=document.getElementById('ps-custom-inp').value.trim().toUpperCase();
+  if(!v) return;
+  if(!listaPostes.includes(v)&&!postesExtra.includes(v)){
+    postesExtra.push(v);
     gerarListaPostes();
   }
-  selecionarPoste(val);
+  _selPS(v);
 }
 
-function atualizarBadgeServico(itemId, ps) {
-  const badge = document.getElementById('psbadge-' + itemId);
-  if (!badge) return;
-  if (ps === 'geral') {
-    badge.textContent = '🌐 Geral';
-    badge.className = 'ps-badge ps-geral';
-  } else {
-    badge.textContent = '🏗️ ' + ps;
-    badge.className = 'ps-badge ps-definido';
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-//  MATERIAIS
-// ══════════════════════════════════════════════════════════
-function adicionarMaterial(descricao='', qtd='', poste='geral') {
-  const id = 'mat-' + (++_matIdCounter);
-  materiaisLista.push({ id, descricao, qtd, poste });
-  renderMateriaisLista();
-}
-
-function removerMaterial(id) {
-  materiaisLista = materiaisLista.filter(m => m.id !== id);
-  renderMateriaisLista();
-}
-
-function renderMateriaisLista() {
-  const el = document.getElementById('materiais-lista');
-  el.innerHTML = '';
-  materiaisLista.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'mat-item';
-    div.id = 'matrow-' + m.id;
-
-    const psLabel = m.poste === 'geral' ? '🌐 Geral' : '🏗️ ' + m.poste;
-    const psCls   = m.poste === 'geral' ? 'ps-badge ps-geral' : 'ps-badge ps-definido';
-
-    div.innerHTML = `
-      <input class="mat-desc" type="text" placeholder="Descrição do material" value="${m.descricao}"
-             oninput="atualizarMat('${m.id}','descricao',this.value)">
-      <input class="mat-qtd" type="text" placeholder="Qtd" value="${m.qtd}"
-             oninput="atualizarMat('${m.id}','qtd',this.value)">
-      ${modoPostes ? `<button class="${psCls}" id="matbadge-${m.id}"
-             onclick="abrirPostePickerMat('${m.id}')">${psLabel}</button>` : ''}
-      <button class="mat-del" onclick="removerMaterial('${m.id}')">🗑️</button>
-    `;
-    el.appendChild(div);
-  });
-}
-
-function atualizarMat(id, campo, val) {
-  const m = materiaisLista.find(x => x.id === id);
-  if (m) m[campo] = val;
-}
-
-function abrirPostePickerMat(matId) {
-  abrirPostePicker(null, (ps) => {
-    const m = materiaisLista.find(x => x.id === matId);
-    if (m) { m.poste = ps; renderMateriaisLista(); }
-  });
-}
-
-// ══════════════════════════════════════════════════════════
-//  OBSERVAÇÕES (modo postes)
-// ══════════════════════════════════════════════════════════
-function adicionarObs(texto='', poste='geral') {
-  const id = 'obs-' + (++_obsIdCounter);
-  obsLista.push({ id, texto, poste });
-  renderObsLista();
-}
-
-function removerObs(id) {
-  obsLista = obsLista.filter(o => o.id !== id);
-  renderObsLista();
-}
-
-function renderObsLista() {
-  const el = document.getElementById('obs-lista');
-  el.innerHTML = '';
-  obsLista.forEach((o, i) => {
-    const div = document.createElement('div');
-    div.className = 'obs-item';
-    const psLabel = o.poste === 'geral' ? '🌐 Geral' : '🏗️ ' + o.poste;
-    const psCls   = o.poste === 'geral' ? 'ps-badge ps-geral' : 'ps-badge ps-definido';
-    div.innerHTML = `
-      <div class="obs-item-header">
-        <span>Observação ${i+1}</span>
-        <button class="${psCls}" id="obsbadge-${o.id}" onclick="abrirPostePickerObs('${o.id}')">${psLabel}</button>
-        ${obsLista.length > 1 ? `<button class="obs-del" onclick="removerObs('${o.id}')">🗑️</button>` : ''}
-      </div>
-      <textarea placeholder="Descreva a observação..." oninput="atualizarObs('${o.id}',this.value)">${o.texto}</textarea>
-    `;
-    el.appendChild(div);
-  });
-}
-
-function atualizarObs(id, val) {
-  const o = obsLista.find(x => x.id === id);
-  if (o) o.texto = val;
-}
-
-function abrirPostePickerObs(obsId) {
-  abrirPostePicker(null, (ps) => {
-    const o = obsLista.find(x => x.id === obsId);
-    if (o) { o.poste = ps; renderObsLista(); }
-  });
-}
-
-// ══════════════════════════════════════════════════════════
-//  SERVIÇO LIVRE / MANOBRA / ALTERAÇÕES
-// ══════════════════════════════════════════════════════════
-function setServicoLivre(sim) {
-  servicoLivre = sim;
-  document.getElementById('sl-sim').className = 'toggle-opt' + (sim  ? ' sel-sim' : '');
-  document.getElementById('sl-nao').className = 'toggle-opt' + (!sim ? ' sel-nao' : '');
-  document.getElementById('campos-omb-plv').style.display = sim ? 'none' : '';
-  updateProgress();
-}
-
-function setManobra(val) {
-  manobraState = val;
-  document.getElementById('man-sim').className = 'toggle-opt' + (val==='equipe' ? ' sel-sim' : '');
-  document.getElementById('man-nao').className = 'toggle-opt' + (val==='outras'  ? ' sel-nao' : '');
-  document.getElementById('man-sem').className = 'toggle-opt' + (val==='sem'     ? ' sel-nao' : '');
-  document.getElementById('manobra-outras').style.display = val==='outras' ? '' : 'none';
-  if (val !== 'outras') showManobraAutoText();
-  else {
-    document.getElementById('man-copel').className = 'radio-opt';
-    document.getElementById('man-hagap').className = 'radio-opt';
-    document.getElementById('manobra-auto-txt').style.display = 'none';
-  }
-  updateProgress();
-}
-function setManobraExt(tipo) {
-  manobraState = tipo;
-  document.getElementById('man-copel').className = 'radio-opt'+(tipo==='copel'?' selected':'');
-  document.getElementById('man-hagap').className = 'radio-opt'+(tipo==='hagap'?' selected':'');
-  showManobraAutoText(); updateProgress();
-}
-function showManobraAutoText() {
-  const div = document.getElementById('manobra-auto-txt');
-  const txt = getManobraText();
-  if (txt){ div.innerHTML=`<div class="auto-text">${txt}</div>`; div.style.display=''; }
-  else div.style.display='none';
-}
-function getManobraText() {
-  if (manobraState==='equipe') return 'Feito abertura e fechamento de chaves e glv, porta fusíveis retirados e reinstalados.';
-  if (manobraState==='copel')  return 'Manobra executada pela Agência COPEL.';
-  if (manobraState==='hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
-  if (manobraState==='sem')    return 'Sem manobra realizada.';
-  return '';
-}
-function setAlteracoes(sim) {
-  alteracoes = sim;
-  document.getElementById('alt-sim').className = 'toggle-opt'+(sim  ?' sel-sim':'');
-  document.getElementById('alt-nao').className = 'toggle-opt'+(!sim ?' sel-nao':'');
-  document.getElementById('alt-auto-txt').style.display   = !sim ? '' : 'none';
-  document.getElementById('alt-desc-campo').style.display = sim  ? '' : 'none';
-  updateProgress();
-}
-function getAlteracoesText() {
-  if (alteracoes===false) return 'Executado conforme projeto.';
-  if (alteracoes===true)  return document.getElementById('alt_descricao').value||'';
-  return '';
-}
-
-// ══════════════════════════════════════════════════════════
-//  SERVIÇOS
-// ══════════════════════════════════════════════════════════
-function toggleServico(itemId, chkId) {
-  const item = document.getElementById(itemId);
-  const chk  = document.getElementById(chkId);
-  if (chk.checked) item.classList.add('checked');
-  else             item.classList.remove('checked');
+// ═══════════════════════════════════════════
+//  SERVIÇOS — multi-poste
+// ═══════════════════════════════════════════
+function toggleServico(id) {
+  const chk  = document.getElementById('chk-'+id);
+  const item = document.getElementById('si-'+id);
+  chk.checked ? item.classList.add('checked') : item.classList.remove('checked');
+  if(id==='malha') updateMalhaText();
 }
 function updateMalhaText() {
-  const chk = document.getElementById('chk-malha');
-  const qty = document.getElementById('qty-malha').value;
-  const div = document.getElementById('malha-auto-txt');
-  if (chk.checked && qty){ div.innerHTML=`<div class="auto-text">Feito ${qty} metros de malha de aterramento.</div>`; div.style.display=''; }
-  else div.style.display='none';
+  const chk=document.getElementById('chk-malha');
+  const qty=document.getElementById('qty-malha')?.value;
+  const div=document.getElementById('malha-auto-txt');
+  if(div){ if(chk&&chk.checked&&qty){ div.innerHTML=`<div class="auto-text" style="margin:0 0 8px">Feito ${qty} metros de malha de aterramento.</div>`; div.style.display=''; } else div.style.display='none'; }
 }
 
-// Retorna lista de serviços com poste associado
-function getServicosCompleto() {
-  const map = [
-    ['calcada',   '🏗️ Reforma de calçada', 'qty-calcada'],
-    ['podas',     '🌳 Podas',               'qty-podas'],
-    ['luminarias','💡 Reinstalação de luminárias','qty-luminarias'],
-    ['fibra',     '🔗 Amarração de fibra óptica','qty-fibra'],
-    ['malha',     '⚡ Malha de aterramento', 'qty-malha'],
-    ['estai',     '🪝 Estai prov.',          'qty-estai'],
-    ['ramal',     '🔌 Reinstalação de ramal','qty-ramal'],
-  ];
-  const list = [];
-  map.forEach(([id, nome, qtyId]) => {
-    if (!document.getElementById('chk-'+id).checked) return;
-    const q  = document.getElementById(qtyId).value;
-    const ps = psAssignments[id] || 'geral';
-    const label = nome + (q ? ` (${q})` : '');
-    list.push({ nome: label, poste: ps });
+function adicionarPsServico(servId, ps) {
+  if(!psMulti[servId]) psMulti[servId]=[];
+  if(!psMulti[servId].includes(ps)) psMulti[servId].push(ps);
+  renderPsChipsServico(servId);
+}
+function removerPsServico(servId, ps) {
+  psMulti[servId] = (psMulti[servId]||[]).filter(p=>p!==ps);
+  renderPsChipsServico(servId);
+}
+function renderPsChipsServico(servId) {
+  const container = document.getElementById('pschips-'+servId);
+  if(!container) return;
+  container.innerHTML='';
+  (psMulti[servId]||[]).forEach(ps=>{
+    const btn = document.createElement('button');
+    btn.className = 'ps-chip'+(ps==='geral'?' geral':'');
+    btn.innerHTML = `${ps==='geral'?'🌐 Geral':'🏗️ '+ps} <span class="ps-rm" onclick="removerPsServico('${servId}','${ps}');event.stopPropagation()">✕</span>`;
+    container.appendChild(btn);
   });
-  return list;
 }
 
+function getServicosCompleto() {
+  return SERVICOS_DEF
+    .filter(s=>document.getElementById('chk-'+s.id)?.checked)
+    .map(s=>{
+      const q  = document.getElementById('qty-'+s.id)?.value||'';
+      const ps = (psMulti[s.id]||[]);
+      const postes = modoPostes && ps.length>0 ? ps : ['geral'];
+      return { nome: s.emoji+' '+s.label+(q?' ('+q+')':''), postes };
+    });
+}
 function getServicosText() {
-  return getServicosCompleto().map(s => s.nome);
+  return getServicosCompleto().map(s=>s.nome);
 }
 
-// ══════════════════════════════════════════════════════════
-//  CANVAS ASSINATURA
-// ══════════════════════════════════════════════════════════
-function initCanvas() {
-  const c = document.getElementById('canvas-sig');
-  const ctx = c.getContext('2d');
-  let drawing=false, lx=0, ly=0;
-  function pos(e) {
-    const r=c.getBoundingClientRect(), sx=c.width/r.width, sy=c.height/r.height;
-    return e.touches?[(e.touches[0].clientX-r.left)*sx,(e.touches[0].clientY-r.top)*sy]:[(e.clientX-r.left)*sx,(e.clientY-r.top)*sy];
-  }
-  c.addEventListener('mousedown',  e=>{drawing=true;[lx,ly]=pos(e);});
-  c.addEventListener('mousemove',  e=>{if(!drawing)return;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();[lx,ly]=[x,y];});
-  c.addEventListener('mouseup',    ()=>drawing=false);
-  c.addEventListener('mouseleave', ()=>drawing=false);
-  c.addEventListener('touchstart', e=>{e.preventDefault();drawing=true;[lx,ly]=pos(e);},{passive:false});
-  c.addEventListener('touchmove',  e=>{e.preventDefault();if(!drawing)return;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();[lx,ly]=[x,y];},{passive:false});
-  c.addEventListener('touchend',   ()=>drawing=false);
+// ═══════════════════════════════════════════
+//  MATERIAIS
+// ═══════════════════════════════════════════
+function adicionarMaterial(desc='',qtd='',poste='geral'){
+  const id='mat-'+(++_midCnt);
+  materiaisLista.push({id,descricao:desc,qtd,poste});
+  renderMateriaisLista();
+}
+function removerMaterial(id){
+  materiaisLista=materiaisLista.filter(m=>m.id!==id);
+  renderMateriaisLista();
+}
+function renderMateriaisLista(){
+  const el=document.getElementById('materiais-lista');
+  el.innerHTML='';
+  materiaisLista.forEach(m=>{
+    const div=document.createElement('div'); div.className='mat-item';
+    const psLbl = m.poste==='geral'?'🌐 Geral':'🏗️ '+m.poste;
+    const psCls = 'ps-chip'+(m.poste==='geral'?' geral':'');
+    div.innerHTML=`
+      <input class="mat-desc" type="text" placeholder="Descrição do material" value="${m.descricao}"
+             oninput="updMat('${m.id}','descricao',this.value)">
+      <input class="mat-qtd" type="text" placeholder="Qtd" value="${m.qtd}"
+             oninput="updMat('${m.id}','qtd',this.value)">
+      ${modoPostes?`<button class="${psCls}" onclick="abrirPS(null,ps=>{updMat('${m.id}','poste',ps);renderMateriaisLista();})">${psLbl}</button>`:''}
+      <button class="mat-del" onclick="removerMaterial('${m.id}')">🗑️</button>`;
+    el.appendChild(div);
+  });
+}
+function updMat(id,campo,val){ const m=materiaisLista.find(x=>x.id===id); if(m) m[campo]=val; }
+
+// ═══════════════════════════════════════════
+//  OBSERVAÇÕES
+// ═══════════════════════════════════════════
+function adicionarObs(txt='',poste='geral'){
+  const id='obs-'+(++_oidCnt);
+  obsLista.push({id,texto:txt,poste});
+  renderObsLista();
+}
+function removerObs(id){ obsLista=obsLista.filter(o=>o.id!==id); renderObsLista(); }
+function renderObsLista(){
+  const el=document.getElementById('obs-lista'); el.innerHTML='';
+  obsLista.forEach((o,i)=>{
+    const div=document.createElement('div'); div.className='obs-item';
+    const psLbl=o.poste==='geral'?'🌐 Geral':'🏗️ '+o.poste;
+    const psCls='ps-chip'+(o.poste==='geral'?' geral':'');
+    div.innerHTML=`
+      <div class="obs-item-header">
+        <span>Observação ${i+1}</span>
+        <button class="${psCls}" onclick="abrirPS(null,ps=>{updObs('${o.id}','poste',ps);renderObsLista();})">${psLbl}</button>
+        ${obsLista.length>1?`<button class="obs-del" onclick="removerObs('${o.id}')">🗑️</button>`:''}
+      </div>
+      <textarea placeholder="Descreva a observação..." oninput="updObs('${o.id}','texto',this.value)">${o.texto}</textarea>`;
+    el.appendChild(div);
+  });
+}
+function updObs(id,campo,val){ const o=obsLista.find(x=>x.id===id); if(o) o[campo]=val; }
+
+// ═══════════════════════════════════════════
+//  SERVIÇO LIVRE / MANOBRA / ALTERAÇÕES
+// ═══════════════════════════════════════════
+function setServicoLivre(sim){
+  servicoLivre=sim;
+  document.getElementById('sl-sim').className='toggle-opt'+(sim?' sel-ok':'');
+  document.getElementById('sl-nao').className='toggle-opt'+(!sim?' sel-ok':'');
+  document.getElementById('campos-omb-plv').style.display=sim?'none':'';
+  updateProgress();
+}
+function setManobra(val){
+  manobraState=val;
+  document.getElementById('man-sim').className='toggle-opt'+(val==='equipe'?' sel-ok':'');
+  document.getElementById('man-nao').className='toggle-opt'+(val==='outras'?' sel-ok':'');
+  document.getElementById('man-sem').className='toggle-opt'+(val==='sem'?' sel-warn':'');
+  document.getElementById('manobra-outras').style.display=val==='outras'?'':'none';
+  if(val!=='outras') showManobraAutoText();
+  else{ ['man-copel','man-hagap'].forEach(id=>document.getElementById(id).className='radio-opt'); document.getElementById('manobra-auto-txt').style.display='none'; }
+  updateProgress();
+}
+function setManobraExt(t){
+  manobraState=t;
+  document.getElementById('man-copel').className='radio-opt'+(t==='copel'?' selected':'');
+  document.getElementById('man-hagap').className='radio-opt'+(t==='hagap'?' selected':'');
+  showManobraAutoText(); updateProgress();
+}
+function showManobraAutoText(){
+  const div=document.getElementById('manobra-auto-txt'), txt=getManobraText();
+  if(txt){div.innerHTML=`<div class="auto-text">${txt}</div>`;div.style.display='';}else div.style.display='none';
+}
+function getManobraText(){
+  if(manobraState==='equipe') return 'Feito abertura e fechamento de chaves e glv, porta fusíveis retirados e reinstalados.';
+  if(manobraState==='copel')  return 'Manobra executada pela Agência COPEL.';
+  if(manobraState==='hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
+  if(manobraState==='sem')    return 'Sem manobra realizada.';
+  return '';
+}
+function setAlteracoes(sim){
+  alteracoes=sim;
+  document.getElementById('alt-sim').className='toggle-opt'+(sim?' sel-warn':'');
+  document.getElementById('alt-nao').className='toggle-opt'+(!sim?' sel-ok':'');
+  document.getElementById('alt-auto-txt').style.display=!sim?'':'none';
+  document.getElementById('alt-desc-campo').style.display=sim?'':'none';
+  updateProgress();
+}
+function getAlteracoesText(){
+  if(alteracoes===false) return 'Executado conforme projeto.';
+  if(alteracoes===true)  return document.getElementById('alt_descricao').value||'';
+  return '';
+}
+
+// ═══════════════════════════════════════════
+//  CANVAS
+// ═══════════════════════════════════════════
+function initCanvas(){
+  const c=document.getElementById('canvas-sig'), ctx=c.getContext('2d');
+  let drawing=false,lx=0,ly=0;
+  function pos(e){ const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height;
+    return e.touches?[(e.touches[0].clientX-r.left)*sx,(e.touches[0].clientY-r.top)*sy]:[(e.clientX-r.left)*sx,(e.clientY-r.top)*sy]; }
+  c.addEventListener('mousedown',e=>{drawing=true;[lx,ly]=pos(e);});
+  c.addEventListener('mousemove',e=>{if(!drawing)return;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();[lx,ly]=[x,y];});
+  c.addEventListener('mouseup',()=>drawing=false);
+  c.addEventListener('mouseleave',()=>drawing=false);
+  c.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;[lx,ly]=pos(e);},{passive:false});
+  c.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();[lx,ly]=[x,y];},{passive:false});
+  c.addEventListener('touchend',()=>drawing=false);
 }
 function limparCanvas(){ document.getElementById('canvas-sig').getContext('2d').clearRect(0,0,800,130); }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 //  COLETAR DADOS
-// ══════════════════════════════════════════════════════════
-function fmtData(v){ if(!v)return''; const[y,m,d]=v.split('-'); return`${d}/${m}/${y}`; }
-
-function coletarDados() {
-  const d = {
+// ═══════════════════════════════════════════
+function fmtData(v){ if(!v) return''; const[y,m,d]=v.split('-'); return`${d}/${m}/${y}`; }
+function coletarDados(){
+  return {
     num_projeto:      document.getElementById('num_projeto').value,
     cidade:           document.getElementById('cidade').value,
     data_bdo:         fmtData(document.getElementById('data_bdo').value),
     hora_inicio:      document.getElementById('hora_inicio').value,
     hora_final:       document.getElementById('hora_final').value,
-    equipe:           document.getElementById('equipe').value,
     encarregado:      document.getElementById('encarregado').value,
+    equipe:           document.getElementById('equipe').value,
     servico_livre:    servicoLivre,
     num_omb:          document.getElementById('num_omb').value,
     num_plv:          document.getElementById('num_plv').value,
     manobra_texto:    getManobraText(),
     alteracoes_texto: getAlteracoesText(),
+    status_execucao:  statusExec,
+    status_motivo:    document.getElementById('status_motivo_txt').value,
     servicos:         getServicosText(),
-    malha_metros:     document.getElementById('qty-malha').value,
-    observacoes:      modoPostes ? '' : document.getElementById('observacoes').value,
+    servicos_completo: getServicosCompleto(),
+    materiais:        materiaisLista.filter(m=>m.descricao.trim()),
+    observacoes:      modoPostes?'':document.getElementById('observacoes').value,
+    observacoes_lista: modoPostes
+      ? obsLista.filter(o=>o.texto.trim())
+      : (document.getElementById('observacoes').value
+          ? [{texto:document.getElementById('observacoes').value,poste:'geral'}]
+          : []),
+    modo_postes:      modoPostes,
+    postes:           getTodosPostes(),
     sig_nome:         document.getElementById('sig-nome').value,
     sig_cargo:        document.getElementById('sig-cargo').value,
     sig_data:         document.getElementById('canvas-sig').toDataURL('image/png'),
-    // ── Dados de postes ──
-    modo_postes:      modoPostes,
-    postes:           [...listaPosotes, ...postesExtra],
-    servicos_completo: getServicosCompleto(),
-    materiais:        materiaisLista.filter(m => m.descricao.trim()),
-    observacoes_lista: modoPostes
-      ? obsLista.filter(o => o.texto.trim())
-      : (document.getElementById('observacoes').value ? [{ texto: document.getElementById('observacoes').value, poste: 'geral' }] : []),
   };
-  return d;
 }
 
-// ══════════════════════════════════════════════════════════
-//  RENDER PREVIEW
-// ══════════════════════════════════════════════════════════
-function renderPreview() {
-  const d   = coletarDados();
-  const now = new Date().toLocaleString('pt-BR');
-  const ombPlv = (d.servico_livre===false && (d.num_omb||d.num_plv))
-    ? `<div class="bdo-row">
-         <div class="bdo-field"><div class="fl">Nº OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
-         <div class="bdo-field"><div class="fl">Nº PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
-       </div>` : '';
+// ═══════════════════════════════════════════
+//  RENDER PREVIEW — idêntico ao PDF
+// ═══════════════════════════════════════════
+function renderPreview(){
+  const d=coletarDados(), now=new Date().toLocaleString('pt-BR');
+  const ombPlv=(d.servico_livre===false&&(d.num_omb||d.num_plv))
+    ?`<div class="bdo-row">
+        <div class="bdo-field"><div class="fl">Nº OMB</div><div class="fv">${d.num_omb||'—'}</div></div>
+        <div class="bdo-field"><div class="fl">Nº PLV</div><div class="fv">${d.num_plv||'—'}</div></div>
+      </div>`:'';
 
-  let corpoHtml = '';
+  const st = getStatusLabel();
+  const statusHtml = st
+    ? `<div class="bdo-sec ${st.cor}">${st.emoji} STATUS: ${st.label.toUpperCase()}${d.status_motivo?' — '+d.status_motivo:''}</div>`
+    : '';
 
-  if (d.modo_postes) {
-    // ── Agrupado por poste ──
-    const todosPostes = ['geral', ...d.postes];
-    todosPostes.forEach(ps => {
-      const srvs = d.servicos_completo.filter(s => s.poste === ps);
-      const mats = d.materiais.filter(m => m.poste === ps);
-      const obss = d.observacoes_lista.filter(o => o.poste === ps);
-      if (!srvs.length && !mats.length && !obss.length) return;
-
-      const isGeral = ps === 'geral';
-      corpoHtml += `
-        <div class="bdo-sec ${isGeral?'':'ps-sec'}">
-          ${isGeral ? '🌐 GERAL DO PROJETO' : '🏗️ ' + ps}
-        </div>
-        <div style="padding:10px 14px;border-bottom:1px solid #e8ecf5;">`;
-
-      if (srvs.length) {
-        corpoHtml += `<div style="margin-bottom:8px"><div class="bdo-text-block" style="padding:0;border:none"><div class="bl">🔧 Serviços</div>
-          <ul style="margin-left:16px;margin-top:4px">${srvs.map(s=>`<li>${s.nome}</li>`).join('')}</ul></div></div>`;
-      }
-      if (mats.length) {
-        corpoHtml += `<div style="margin-bottom:8px"><div class="bdo-text-block" style="padding:0;border:none"><div class="bl">📦 Materiais</div>
-          <ul style="margin-left:16px;margin-top:4px">${mats.map(m=>`<li>${m.descricao}${m.qtd?' — '+m.qtd:''}</li>`).join('')}</ul></div></div>`;
-      }
-      if (obss.length) {
-        corpoHtml += `<div><div class="bdo-text-block" style="padding:0;border:none"><div class="bl">📝 Observações</div>
-          <ul style="margin-left:16px;margin-top:4px">${obss.map(o=>`<li>${o.texto}</li>`).join('')}</ul></div></div>`;
-      }
-      corpoHtml += `</div>`;
+  let corpo='';
+  if(d.modo_postes){
+    // Manobra/Alterações sempre como seção geral
+    if(d.manobra_texto||d.alteracoes_texto){
+      corpo+=`<div class="bdo-sec azul">🔌 MANOBRA / ALTERAÇÕES</div>
+        <div class="bdo-block"><p>${[d.manobra_texto,d.alteracoes_texto].filter(Boolean).join(' — ')}</p></div>`;
+    }
+    // Agrupa por poste
+    const todosPs = ['geral',...d.postes];
+    todosPs.forEach(ps=>{
+      const srvs = d.servicos_completo.filter(s=>s.postes.includes(ps));
+      const mats = d.materiais.filter(m=>m.poste===ps);
+      const obss = d.observacoes_lista.filter(o=>o.poste===ps);
+      if(!srvs.length&&!mats.length&&!obss.length) return;
+      const isGeral = ps==='geral';
+      corpo+=`<div class="bdo-sec ${isGeral?'azul':'roxo'}">${isGeral?'🌐 GERAL DO PROJETO':'🏗️ '+ps}</div>
+        <div class="bdo-block">`;
+      if(srvs.length) corpo+=`<div class="bdo-block" style="padding:4px 0;border:none"><div class="bl">🔧 Serviços</div>
+        <ul style="margin-left:16px;margin-top:4px">${srvs.map(s=>`<li>${s.nome}</li>`).join('')}</ul></div>`;
+      if(mats.length) corpo+=`<div class="bdo-block" style="padding:4px 0;border:none"><div class="bl">📦 Materiais</div>
+        <ul style="margin-left:16px;margin-top:4px">${mats.map(m=>`<li>${m.descricao}${m.qtd?' — '+m.qtd:''}</li>`).join('')}</ul></div>`;
+      if(obss.length) corpo+=`<div class="bdo-block" style="padding:4px 0;border:none"><div class="bl">📝 Observações</div>
+        <ul style="margin-left:16px;margin-top:4px">${obss.map(o=>`<li>${o.texto}</li>`).join('')}</ul></div>`;
+      corpo+=`</div>`;
     });
-
-    // Manobra e alterações sempre no geral
-    if (d.manobra_texto || d.alteracoes_texto) {
-      corpoHtml = `
-        <div class="bdo-sec">🔌 MANOBRA / ALTERAÇÕES</div>
-        <div class="bdo-text-block">${[d.manobra_texto,d.alteracoes_texto].filter(Boolean).join(' — ')}</div>
-      ` + corpoHtml;
-    }
   } else {
-    // ── Layout normal ──
-    const linhas = [d.manobra_texto, d.alteracoes_texto, ...d.servicos].filter(Boolean).join('. ');
-    corpoHtml = `
-      <div class="bdo-sec">🔧 MANOBRA / ALTERAÇÕES / SERVIÇOS</div>
-      <div class="bdo-text-block">
-        <p style="line-height:1.9">${linhas||'<em style="color:var(--muted)">Não preenchido</em>'}</p>
-      </div>`;
-    if (d.materiais.length) {
-      corpoHtml += `<div class="bdo-sec">📦 MATERIAIS</div>
-        <div class="bdo-text-block"><ul style="margin-left:16px">
-          ${d.materiais.map(m=>`<li>${m.descricao}${m.qtd?' — '+m.qtd:''}</li>`).join('')}
-        </ul></div>`;
-    }
-    if (d.observacoes_lista.length) {
-      corpoHtml += `<div class="bdo-sec">📝 OBSERVAÇÕES</div>
-        <div class="bdo-text-block">${d.observacoes_lista.map(o=>o.texto).join('<br>')}</div>`;
-    }
+    const linhas=[d.manobra_texto,d.alteracoes_texto,...d.servicos].filter(Boolean).join('. ');
+    corpo+=`<div class="bdo-sec azul">🔧 MANOBRA / ALTERAÇÕES / SERVIÇOS</div>
+      <div class="bdo-block"><p style="line-height:1.9">${linhas||'<em style="color:var(--muted)">Não preenchido</em>'}</p></div>`;
+    if(d.materiais.length)
+      corpo+=`<div class="bdo-sec azul">📦 MATERIAIS</div>
+        <div class="bdo-block"><ul style="margin-left:16px">${d.materiais.map(m=>`<li>${m.descricao}${m.qtd?' — '+m.qtd:''}</li>`).join('')}</ul></div>`;
+    if(d.observacoes_lista.length)
+      corpo+=`<div class="bdo-sec azul">📝 OBSERVAÇÕES</div>
+        <div class="bdo-block">${d.observacoes_lista.map(o=>o.texto).join('<br>')}</div>`;
   }
 
-  document.getElementById('bdo-preview-box').innerHTML = `
-    <div class="bdo-header-bar">
+  document.getElementById('bdo-preview-box').innerHTML=`
+    <div class="bdo-hbar">
       <img src="/static/logo.png" alt="HAGAP" onerror="this.style.display='none'">
-      <div class="bdo-header-info">
-        <h2>BOLETIM DIÁRIO DE OBRAS</h2>
+      <div class="bdo-hinfo"><h2>BOLETIM DIÁRIO DE OBRAS</h2>
         <p>Hagap Engenharia Elétrica &nbsp;|&nbsp; Registro de campo</p>
-        <p>Gerado em: ${now}</p>
-      </div>
+        <p>Gerado em: ${now}</p></div>
       <div class="bdo-num">Nº ${d.num_projeto||'---'}</div>
     </div>
-    <div class="bdo-sec">📋 IDENTIFICAÇÃO</div>
+    <div class="bdo-sec azul">📋 IDENTIFICAÇÃO</div>
     <div class="bdo-row">
       <div class="bdo-field"><div class="fl">Projeto</div><div class="fv">${d.num_projeto||'—'}</div></div>
       <div class="bdo-field"><div class="fl">Cidade</div><div class="fv">${d.cidade||'—'}</div></div>
@@ -1130,9 +1009,10 @@ function renderPreview() {
       <div class="bdo-field" style="grid-column:1/-1"><div class="fl">Encarregado</div><div class="fv">${d.encarregado||'—'}</div></div>
     </div>
     ${ombPlv}
-    ${corpoHtml}
-    <div class="bdo-sec">✍️ ASSINATURA</div>
-    <div class="bdo-sig-area">
+    ${statusHtml}
+    ${corpo}
+    <div class="bdo-sec azul">✍️ ASSINATURA</div>
+    <div class="bdo-sig">
       <div class="bdo-sig-cell">
         <img src="${d.sig_data}" style="max-width:200px;max-height:65px;display:block;margin:0 auto 4px">
         <div class="bdo-sig-line"></div>
@@ -1146,173 +1026,106 @@ function renderPreview() {
         <div class="bdo-sig-role">Fiscal / Supervisor</div>
       </div>
     </div>
-    <div class="bdo-footer">Documento gerado automaticamente &nbsp;|&nbsp; BDO: ${d.num_projeto||'---'} &nbsp;|&nbsp; ${now}</div>
-  `;
+    <div class="bdo-footer">Documento gerado automaticamente &nbsp;|&nbsp; BDO: ${d.num_projeto||'---'} &nbsp;|&nbsp; ${now}</div>`;
 }
 
-// ══════════════════════════════════════════════════════════
-//  MODAL PDF
-// ══════════════════════════════════════════════════════════
-function abrirModal() {
-  ['modal-confirm','modal-loading','modal-success','modal-error'].forEach(id=>{
-    document.getElementById(id).style.display = id==='modal-confirm' ? '' : 'none';
-  });
+// ═══════════════════════════════════════════
+//  MODAL / PDF / EMAIL / IMPRESSÃO
+// ═══════════════════════════════════════════
+function abrirModal(){
+  ['modal-confirm','modal-loading','modal-success','modal-error'].forEach(id=>
+    document.getElementById(id).style.display=id==='modal-confirm'?'':'none');
   document.getElementById('modal-pdf').classList.add('open');
 }
 function fecharModal(){ document.getElementById('modal-pdf').classList.remove('open'); }
 
-async function _chamarBackendPDF(retornarBlob=true) {
-  const dados = coletarDados();
-  const resp  = await fetch('/api/gerar_bdo_pdf', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados)
-  });
-  if (!resp.ok) {
-    const err = await resp.json().catch(()=>({}));
-    throw new Error(err.erro || 'Falha no servidor');
-  }
-  return retornarBlob ? resp.blob() : resp;
+async function _gerarBlob(){
+  const resp=await fetch('/api/gerar_bdo_pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(coletarDados())});
+  if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.erro||'Falha no servidor'); }
+  return resp.blob();
 }
 
-function gerarPDF() {
-  document.getElementById('modal-confirm').style.display = 'none';
-  document.getElementById('modal-loading').style.display = '';
-  _chamarBackendPDF()
-    .then(blob => {
-      document.getElementById('modal-loading').style.display = 'none';
-      document.getElementById('modal-success').style.display = '';
-      const url = URL.createObjectURL(blob);
-      const btn = document.getElementById('btn-download');
-      const d   = coletarDados();
-      btn.href     = url;
-      btn.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
-      btn.onclick  = null;
-      document.getElementById('modal-success-msg').innerHTML =
-        'Seu boletim está pronto para download.<br><small style="color:#1a7a3c">✅ PDF enviado automaticamente para gabrielmedeirosasp@gmail.com</small>';
-    })
-    .catch(e => {
-      document.getElementById('modal-loading').style.display = 'none';
-      document.getElementById('modal-error').style.display   = '';
-      document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
-    });
+function gerarPDF(){
+  document.getElementById('modal-confirm').style.display='none';
+  document.getElementById('modal-loading').style.display='';
+  _gerarBlob().then(blob=>{
+    document.getElementById('modal-loading').style.display='none';
+    document.getElementById('modal-success').style.display='';
+    const d=coletarDados(), url=URL.createObjectURL(blob);
+    const btn=document.getElementById('btn-download');
+    btn.href=url; btn.download=`BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`; btn.onclick=null;
+    document.getElementById('msg-success').innerHTML='Pronto para download.<br><small style="color:#1a7a3c">✅ E-mail enviado para gabrielmedeirosasp@gmail.com</small>';
+  }).catch(e=>{ document.getElementById('modal-loading').style.display='none';
+    document.getElementById('modal-error').style.display='';
+    document.getElementById('error-msg').textContent='Erro: '+e.message; });
 }
 
-async function enviarPorEmail() {
-  showToast('📧 Gerando PDF e enviando e-mail...', '');
-  try {
-    const blob = await _chamarBackendPDF();
-    const d    = coletarDados();
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = `BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`;
-    a.click();
-    showToast('✅ E-mail enviado com PDF anexado!', 'success');
-  } catch(e) { showToast('❌ Erro: ' + e.message, 'error'); }
+async function enviarPorEmail(){
+  showToast('📧 Gerando PDF e enviando e-mail...','');
+  try{ const blob=await _gerarBlob(), d=coletarDados(), url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=`BDO_${d.num_projeto||'hagap'}_${d.data_bdo||''}.pdf`; a.click();
+    showToast('✅ E-mail enviado com PDF anexado!','success');
+  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
 }
 
-async function imprimirPDF() {
-  showToast('⏳ Gerando PDF para impressão...', '');
-  try {
-    const blob = await _chamarBackendPDF();
-    const url  = URL.createObjectURL(blob);
-    const win  = window.open(url, '_blank');
-    if (win) { win.onload = ()=>win.print(); showToast('🖨️ PDF aberto para impressão!','success'); }
+async function imprimirPDF(){
+  showToast('⏳ Gerando PDF para impressão...','');
+  try{ const blob=await _gerarBlob(), url=URL.createObjectURL(blob);
+    const win=window.open(url,'_blank');
+    if(win){ win.onload=()=>win.print(); showToast('🖨️ PDF aberto para impressão!','success'); }
     else showToast('⚠️ Permita pop-ups e tente novamente.','error');
-  } catch(e) { showToast('❌ Erro: ' + e.message,'error'); }
+  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
 }
 
-// ══════════════════════════════════════════════════════════
-//  WHATSAPP
-// ══════════════════════════════════════════════════════════
-function compartilharWhatsApp() {
-  const d   = coletarDados();
-  const srv = d.servicos.length ? d.servicos.join(', ') : 'nenhum';
-  let psInfo = '';
-  if (d.modo_postes && d.postes.length) {
-    psInfo = `\n🏗️ Postes: ${d.postes.join(', ')}`;
-  }
-  const msg =
-`📋 *BDO — Boletim Diário de Obras*
-━━━━━━━━━━━━━━━━━━
-📁 Projeto: ${d.num_projeto}
-📍 Cidade: ${d.cidade}
-📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}
-🔑 Encarregado: ${d.encarregado}
-${d.servico_livre===false?`📄 OMB: ${d.num_omb}  |  PLV: ${d.num_plv}\n`:''}🔌 ${d.manobra_texto}
-📦 ${d.alteracoes_texto}
-🔧 Serviços: ${srv}${psInfo}
-${d.observacoes_lista.length?`📝 Obs: ${d.observacoes_lista.map(o=>o.texto).join(' | ')}`:''}
-━━━━━━━━━━━━━━━━━━
-_HAGAP Engenharia Elétrica_`;
+function compartilharWhatsApp(){
+  const d=coletarDados();
+  const st=getStatusLabel();
+  const msg=`📋 *BDO — Boletim Diário de Obras*\n━━━━━━━━━━━━━━━━━━\n📁 Projeto: ${d.num_projeto}\n📍 Cidade: ${d.cidade}\n📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}\n🔑 Encarregado: ${d.encarregado}\n${st?st.emoji+' Status: '+st.label+'\n':''}${d.servico_livre===false?`📄 OMB: ${d.num_omb} | PLV: ${d.num_plv}\n`:''}🔌 ${d.manobra_texto||'-'}\n🔧 Serviços: ${d.servicos.join(', ')||'nenhum'}\n${d.observacoes_lista.length?'📝 Obs: '+d.observacoes_lista.map(o=>o.texto).join(' | '):''}\n━━━━━━━━━━━━━━━━━━\n_HAGAP Engenharia Elétrica_`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 //  UTILITÁRIOS
-// ══════════════════════════════════════════════════════════
-async function salvarRascunho() {
-  const dados = coletarDados();
-  try {
-    await fetch('/salvar-rascunho',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados)});
-    showToast('💾 Rascunho salvo!','success');
-  } catch {
-    localStorage.setItem('bdo_rascunho', JSON.stringify(dados));
-    showToast('💾 Rascunho salvo localmente!','success');
-  }
+// ═══════════════════════════════════════════
+async function salvarRascunho(){
+  try{ await fetch('/salvar-rascunho',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(coletarDados())}); showToast('💾 Rascunho salvo!','success'); }
+  catch{ localStorage.setItem('bdo_rascunho',JSON.stringify(coletarDados())); showToast('💾 Rascunho salvo localmente!','success'); }
 }
 
-function limparFormulario() {
-  if (!confirm('Limpar todos os dados?')) return;
+function limparFormulario(){
+  if(!confirm('Limpar todos os dados?')) return;
   document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(e=>{
-    if (e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value='';
+    if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value='';
   });
-  document.querySelectorAll('.servico-item').forEach(i=>i.classList.remove('checked'));
-  servicoLivre=null; manobraState=null; alteracoes=null;
-  // Reset postes
-  modoPostes=false; listaPosotes=[]; postesExtra=[]; psAssignments={};
-  materiaisLista=[]; obsLista=[]; _matIdCounter=0; _obsIdCounter=0;
+  servicoLivre=null;manobraState=null;alteracoes=null;statusExec=null;
+  modoPostes=false;listaPostes=[];postesExtra=[];psMulti={};
+  materiaisLista=[];obsLista=[];_midCnt=0;_oidCnt=0;
+  SERVICOS_DEF.forEach(s=>{ psMulti[s.id]=[]; const el=document.getElementById('si-'+s.id); if(el) el.classList.remove('checked'); });
   document.getElementById('main-container').classList.remove('modo-postes-on');
-  document.getElementById('postes-config').style.display='none';
-  document.getElementById('postes-chips-wrap').style.display='none';
+  ['postes-config','status-motivo','obs-postes','mat-alert-ps','srv-alert-ps'].forEach(id=>{ const el=document.getElementById(id);if(el)el.style.display='none'; });
+  document.getElementById('obs-normal').style.display='';
+  document.getElementById('mat-alert-n').style.display='';
+  document.getElementById('srv-alert-n').style.display='';
   document.getElementById('materiais-lista').innerHTML='';
   document.getElementById('obs-lista').innerHTML='';
-  document.getElementById('obs-normal').style.display='';
-  document.getElementById('obs-postes').style.display='none';
-  ['ps-sim','ps-nao','sl-sim','sl-nao','man-sim','man-nao','man-sem','alt-sim','alt-nao'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.className='toggle-opt';
-  });
-  ['man-copel','man-hagap'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='radio-opt';});
-  ['campos-omb-plv','manobra-outras','manobra-auto-txt','alt-auto-txt','alt-desc-campo','malha-auto-txt'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.style.display='none';
-  });
-  // Reset badges serviços
-  ['calcada','podas','luminarias','fibra','malha','estai','ramal'].forEach(id=>{
-    const b=document.getElementById('psbadge-'+id);
-    if(b){b.textContent='🌐 Geral';b.className='ps-badge ps-geral';}
-  });
+  ['st-conclusao','st-parcial','st-cancelamento','ps-sim','ps-nao','sl-sim','sl-nao','man-sim','man-nao','man-sem','alt-sim','alt-nao'].forEach(id=>{ const el=document.getElementById(id);if(el) el.className='toggle-opt'; });
+  document.getElementById('ps-nao').className='toggle-opt sel-std';
+  buildServicos();
   limparCanvas();
   goStep(1);
   showToast('🔄 Formulário limpo!');
 }
 
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+type;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3000);
+function showToast(msg,type=''){
+  const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-// ══════════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════════
-window.onload = () => {
+window.onload=()=>{
+  buildServicos();
   initCanvas();
-  document.getElementById('data_bdo').value = new Date().toISOString().split('T')[0];
+  document.getElementById('data_bdo').value=new Date().toISOString().split('T')[0];
   updateProgress();
-  // Inicializa alertas
-  document.getElementById('srv-alert-ps').style.display = 'none';
-  document.getElementById('mat-alert-ps').style.display = 'none';
 };
 </script>
 </body>
