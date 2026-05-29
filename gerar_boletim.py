@@ -17,6 +17,29 @@ from reportlab.platypus import (
 )
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 
+import re as _re
+
+def _strip_emoji(text):
+    """Remove emojis e caracteres Unicode especiais que o ReportLab nao sabe renderizar."""
+    if not text:
+        return text
+    # Emojis acima do BMP (U+10000+)
+    text = _re.sub(r'[\U00010000-\U0010FFFF]', '', text)
+    # Blocos de emojis no BMP
+    text = _re.sub(r'[\U0001F000-\U0001FFFF]', '', text)
+    text = _re.sub(r'[\u2600-\u27BF\u2300-\u23FF\u2B50-\u2B55\u231A-\u231B]', '', text)
+    # Modificadores de variacao de emoji (U+FE00-U+FE0F)
+    text = _re.sub(r'[\uFE00-\uFE0F]', '', text)
+    # Zero Width Joiner e combinadores
+    text = _re.sub(r'[\u200D\u200B\u200C\u200E\u200F\uFEFF]', '', text)
+    return text.strip()
+
+def _clean(v):
+    """Limpa emojis de qualquer valor antes de enviar ao ReportLab."""
+    if isinstance(v, str):
+        return _strip_emoji(v)
+    return v
+
 AZUL_ESC = colors.HexColor("#061539")
 AZUL     = colors.HexColor("#0a2557")
 ROXO_ESC = colors.HexColor("#4a0e8f")
@@ -42,7 +65,7 @@ def _sp(n=6):
     return Spacer(1, n)
 
 def _barra(txt, cor=AZUL):
-    t = Table([[Paragraph(txt, _st("s", fontName="Helvetica-Bold", fontSize=8, textColor=BRANCO))]], colWidths=[CW])
+    t = Table([[Paragraph(_clean(txt), _st("s", fontName="Helvetica-Bold", fontSize=8, textColor=BRANCO))]], colWidths=[CW])
     t.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,-1),cor),("ROWPADDING",(0,0),(-1,-1),7)]))
     return t
 
@@ -53,8 +76,8 @@ def _campos(*pares, widths=None):
     flat = []
     for lbl, val in pares:
         flat += [
-            Paragraph(str(lbl), _st("l", fontName="Helvetica-Bold", fontSize=7, textColor=CINZA_T)),
-            Paragraph(str(val or "—"), _st("v", fontName="Helvetica-Bold", fontSize=9, textColor=PRETO)),
+            Paragraph(_clean(str(lbl)), _st("l", fontName="Helvetica-Bold", fontSize=7, textColor=CINZA_T)),
+            Paragraph(_clean(str(val or "—")), _st("v", fontName="Helvetica-Bold", fontSize=9, textColor=PRETO)),
         ]
     t = Table([flat], colWidths=widths)
     t.setStyle(TableStyle([
@@ -69,7 +92,7 @@ def _lista(itens):
     if not itens:
         data = [[Paragraph("—", _st("li0", fontSize=9, textColor=CINZA_T))]]
     else:
-        data = [[Paragraph(f"• {i}", _st("li", fontSize=9, textColor=PRETO, leading=14, leftIndent=10))] for i in itens]
+        data = [[Paragraph(f"• {_clean(str(i))}", _st("li", fontSize=9, textColor=PRETO, leading=14, leftIndent=10))] for i in itens]
     t = Table(data, colWidths=[CW])
     t.setStyle(TableStyle([
         ("BACKGROUND",(0,0),(-1,-1),BRANCO),
@@ -80,7 +103,7 @@ def _lista(itens):
     return t
 
 def _bloco(txt):
-    t = Table([[Paragraph(str(txt or "—"), _st("b", fontSize=9, textColor=PRETO, leading=14))]], colWidths=[CW])
+    t = Table([[Paragraph(_clean(str(txt or "—")), _st("b", fontSize=9, textColor=PRETO, leading=14))]], colWidths=[CW])
     t.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,-1),BRANCO),("GRID",(0,0),(-1,-1),0.3,CINZA_BD),("ROWPADDING",(0,0),(-1,-1),8)]))
     return t
 

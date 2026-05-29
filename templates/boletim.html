@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BDO — Boletim Diário de Obras | HAGAP</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{
   --navy:#061539;--navy2:#0a2557;--blue:#1565c0;
@@ -284,9 +284,8 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     <div class="step-item" id="si-8" onclick="goStep(8)"><span class="sn">📤</span>Exportar</div>
   </div>
 
-  <!-- ══════════ STEP 1 — CABEÇALHO ══════════ -->
+  <!-- ══════════ STEP 1 ══════════ -->
   <div class="step-panel active" id="step-1">
-
     <div class="card">
       <div class="card-header azul">📋 1. Identificação do BDO <span class="badge">Obrigatório</span></div>
       <div class="card-body">
@@ -330,7 +329,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     <div class="card">
       <div class="card-header roxo">🏗️ Agrupamento por Poste <span class="badge" style="background:rgba(255,255,255,.2);color:white">Opcional</span></div>
       <div class="card-body">
-        <p class="section-tip">Ative para organizar serviços, materiais e observações por poste (PS). Ideal para obras com múltiplos pontos.</p>
+        <p class="section-tip">Ative para organizar serviços, materiais e observações por poste (PS).</p>
         <div class="tg-group">
           <div class="tg-opt sel-std" id="ps-nao" onclick="setModoPostes(false)">
             <div class="ti">📄</div><div class="tl" style="color:var(--muted)">PADRÃO</div><div class="td">Sem agrupamento</div>
@@ -353,11 +352,10 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
         </div>
       </div>
     </div>
-
     <div class="nav-btns"><div></div><button class="btn btn-primary" onclick="goStep(2)">Próximo →</button></div>
   </div>
 
-  <!-- ══════════ STEP 2 — SERVIÇO LIVRE ══════════ -->
+  <!-- ══════════ STEP 2 ══════════ -->
   <div class="step-panel" id="step-2">
     <div class="card">
       <div class="card-header azul">🔑 2. Serviço Livre</div>
@@ -381,7 +379,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     </div>
   </div>
 
-  <!-- ══════════ STEP 3 — MANOBRA ══════════ -->
+  <!-- ══════════ STEP 3 ══════════ -->
   <div class="step-panel" id="step-3">
     <div class="card">
       <div class="card-header azul">🔌 3. Manobra</div>
@@ -407,7 +405,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     </div>
   </div>
 
-  <!-- ══════════ STEP 4 — ALTERAÇÕES + MATERIAIS ══════════ -->
+  <!-- ══════════ STEP 4 ══════════ -->
   <div class="step-panel" id="step-4">
     <div class="card">
       <div class="card-header azul">🔩 4. Alterações de Projeto</div>
@@ -425,7 +423,6 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
         </div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-header amarelo">📦 Materiais Utilizados</div>
       <div class="card-body">
@@ -435,14 +432,13 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
         <button class="mat-add-btn" onclick="adicionarMaterial()">＋ Adicionar Material</button>
       </div>
     </div>
-
     <div class="nav-btns">
       <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
       <button class="btn btn-primary" onclick="goStep(5)">Próximo →</button>
     </div>
   </div>
 
-  <!-- ══════════ STEP 5 — SERVIÇOS ══════════ -->
+  <!-- ══════════ STEP 5 ══════════ -->
   <div class="step-panel" id="step-5">
     <div class="card">
       <div class="card-header azul">🔧 5. Serviços Executados</div>
@@ -458,7 +454,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     </div>
   </div>
 
-  <!-- ══════════ STEP 6 — OBSERVAÇÕES ══════════ -->
+  <!-- ══════════ STEP 6 ══════════ -->
   <div class="step-panel" id="step-6">
     <div class="card">
       <div class="card-header azul">📝 6. Observações Adicionais</div>
@@ -482,7 +478,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     </div>
   </div>
 
-  <!-- ══════════ STEP 7 — ASSINATURA ══════════ -->
+  <!-- ══════════ STEP 7 ══════════ -->
   <div class="step-panel" id="step-7">
     <div class="card">
       <div class="card-header verde">✍️ 7. Assinatura do Encarregado</div>
@@ -507,16 +503,14 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     </div>
   </div>
 
-  <!-- ══════════ STEP 8 — EXPORTAR ══════════ -->
+  <!-- ══════════ STEP 8 ══════════ -->
   <div class="step-panel" id="step-8">
-
     <div class="card">
       <div class="card-header azul">👁️ Prévia do BDO</div>
       <div class="card-body" style="padding:0">
         <div class="bdo-preview" id="bdo-preview-box" style="border:none;border-radius:0"></div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-header amarelo">📤 Exportar &amp; Compartilhar</div>
       <div class="card-body">
@@ -547,7 +541,6 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
         </div>
       </div>
     </div>
-
     <div class="nav-btns"><button class="btn btn-outline" onclick="goStep(7)">← Voltar</button><div></div></div>
   </div>
 
@@ -574,7 +567,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
     <div id="modal-confirm">
       <div class="modal-icon">📄</div>
       <h3>Gerar BDO em PDF?</h3>
-      <p>O PDF será gerado idêntico à prévia, com todos os dados e formatação.</p>
+      <p>O PDF será gerado pelo servidor, idêntico ao enviado por e-mail.</p>
       <div class="modal-acts">
         <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
         <button class="btn btn-yellow" onclick="gerarPDF()">⬇️ Gerar e Baixar</button>
@@ -707,7 +700,7 @@ function setStatus(val) {
   });
   const motivo = document.getElementById('status-motivo');
   const lbl    = document.getElementById('status-motivo-label');
-  if (val === 'parcial')      { motivo.style.display = ''; lbl.textContent = 'Motivo / pendências da execução parcial'; }
+  if (val === 'parcial')           { motivo.style.display = ''; lbl.textContent = 'Motivo / pendências da execução parcial'; }
   else if (val === 'cancelamento') { motivo.style.display = ''; lbl.textContent = 'Motivo do cancelamento'; }
   else motivo.style.display = 'none';
   updateProgress();
@@ -1053,8 +1046,8 @@ function renderPreview() {
     : '';
 
   let corpo = '';
-  const manobra   = d.manobra_texto;
-  const alteracoes= d.alteracoes_texto;
+  const manobra    = d.manobra_texto;
+  const alteracoes = d.alteracoes_texto;
 
   if (d.modo_postes) {
     if (manobra || alteracoes) {
@@ -1217,7 +1210,7 @@ function abrirModal() {
 function fecharModal() { document.getElementById('modal-pdf').classList.remove('open'); }
 
 // ═══════════════════════════════════════════════════
-//  PDF — client-side via html2pdf.js (= IDÊNTICO À PRÉVIA)
+//  PDF — via servidor (ReportLab, idêntico ao e-mail, sem corte de página)
 // ═══════════════════════════════════════════════════
 async function gerarPDF() {
   const el = document.getElementById('bdo-preview-box');
@@ -1233,37 +1226,35 @@ async function gerarPDF() {
   const d = coletarDados();
   const nomePDF = `BDO_${(d.num_projeto||'hagap').replace(/[\/\s]/g,'_')}_${(d.data_bdo||'').replace(/\//g,'-')}.pdf`;
 
-  // Clona o elemento para PDF sem alterar a tela
-  const clone = el.cloneNode(true);
-  clone.style.cssText = 'width:794px;background:white;font-family:Arial,sans-serif;font-size:12px;line-height:1.6;';
-  document.body.appendChild(clone);
-
-  const opt = {
-    margin:     [10, 14, 14, 14],
-    filename:   nomePDF,
-    image:      { type: 'jpeg', quality: 0.97 },
-    html2canvas:{ scale: 2, useCORS: true, allowTaint: true, logging: false },
-    jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-
   try {
-    const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
-    document.body.removeChild(clone);
+    // Usa o mesmo endpoint do e-mail: ReportLab no servidor, sem corte de página
+    const resp = await fetch('/api/gerar_bdo_pdf', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(d)
+    });
+
+    if (!resp.ok) {
+      const errJson = await resp.json().catch(() => ({ erro: 'Erro ' + resp.status }));
+      throw new Error(errJson.erro || 'Falha na geração');
+    }
+
+    const blob = await resp.blob();
+    const url  = URL.createObjectURL(blob);
 
     document.getElementById('modal-loading').style.display = 'none';
     document.getElementById('modal-success').style.display = '';
 
-    const url = URL.createObjectURL(pdfBlob);
     const btn = document.getElementById('btn-download');
     btn.href     = url;
     btn.download = nomePDF;
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
 
     document.getElementById('msg-success').innerHTML =
-      'PDF gerado com <strong>fidelidade à prévia</strong>! Clique em Baixar.<br>' +
-      '<small style="color:#1a7a3c">✅ Tamanho A4 · Pronto para envio</small>';
+      'PDF gerado pelo servidor com <strong>layout completo</strong>! Clique em Baixar.<br>' +
+      '<small style="color:#1a7a3c">✅ Tamanho A4 · Sem corte · Ícones corretos</small>';
 
   } catch(err) {
-    try { document.body.removeChild(clone); } catch {}
     document.getElementById('modal-loading').style.display = 'none';
     document.getElementById('modal-error').style.display   = '';
     document.getElementById('error-msg').textContent = 'Erro: ' + err.message;
@@ -1327,7 +1318,6 @@ async function compartilharWhatsApp() {
   const st = getStatusLabel();
   let pdfUrl = null;
 
-  // Tenta gerar URL pública do PDF
   try {
     const resp = await fetch('/api/gerar_bdo_pdf_url', {
       method:  'POST',
