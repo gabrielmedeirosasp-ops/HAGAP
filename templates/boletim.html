@@ -46,6 +46,8 @@
   .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
   .btn-success { background: var(--success); color: white; }
   .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--border); }
+  .btn-secondary { background: #25d366; color: white; }
+  .btn-email { background: #e67e22; color: white; }
   .btn-sm { padding: 5px 11px; font-size: 12px; }
 
   .container { max-width: 860px; margin: 0 auto; padding: 20px 16px 40px; }
@@ -450,9 +452,10 @@
         <div class="bdo-preview" id="bdo-preview-box"></div>
         <div class="divider"></div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px">
-          <button class="btn btn-primary" style="font-size:14px;padding:12px 28px" onclick="abrirModal()">📄 Exportar PDF</button>
-          <button class="btn btn-success" style="font-size:14px;padding:12px 28px" onclick="compartilharWhatsApp()">💬 Enviar WhatsApp</button>
-          <button class="btn btn-outline" style="font-size:14px;padding:12px 28px" onclick="window.print()">🖨️ Imprimir</button>
+          <button class="btn btn-primary" style="font-size:14px;padding:12px 28px" onclick="abrirModal()">📄 Baixar PDF</button>
+          <button class="btn btn-success" style="font-size:14px;padding:12px 28px" onclick="enviarPorEmail()">📧 Enviar por E-mail</button>
+          <button class="btn btn-secondary" style="font-size:14px;padding:12px 28px" onclick="compartilharWhatsApp()">💬 WhatsApp</button>
+          <button class="btn btn-outline" style="font-size:14px;padding:12px 28px" onclick="imprimirPDF()">🖨️ Imprimir</button>
         </div>
       </div>
     </div>
@@ -816,6 +819,60 @@ function gerarPDF() {
     document.getElementById('modal-error').style.display   = '';
     document.getElementById('error-msg').textContent = 'Erro ao gerar PDF: ' + e.message;
   });
+}
+
+// ── Enviar por e-mail (com PDF anexado)
+async function enviarPorEmail() {
+  const dados = coletarDados();
+  showToast('📧 Gerando PDF e enviando e-mail...', '');
+  try {
+    const resp = await fetch('/api/gerar_bdo_pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      showToast('❌ Erro: ' + (err.erro || 'falha no servidor'), 'error');
+      return;
+    }
+    // Download automático + e-mail já foi disparado pelo backend
+    const blob = await resp.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `BDO_${dados.num_projeto||'hagap'}_${dados.data_bdo||''}.pdf`;
+    a.click();
+    showToast('✅ E-mail enviado para gabrielmedeirosasp@gmail.com com PDF anexado!', 'success');
+  } catch(e) {
+    showToast('❌ Erro ao enviar: ' + e.message, 'error');
+  }
+}
+
+// ── Imprimir via PDF do backend (bonito, com logo e cores)
+async function imprimirPDF() {
+  const dados = coletarDados();
+  showToast('⏳ Gerando PDF para impressão...', '');
+  try {
+    const resp = await fetch('/api/gerar_bdo_pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+    if (!resp.ok) throw new Error('Falha no servidor');
+    const blob = await resp.blob();
+    const url  = URL.createObjectURL(blob);
+    // Abre PDF em nova aba — o browser imprime o PDF bonito
+    const win = window.open(url, '_blank');
+    if (win) {
+      win.onload = () => win.print();
+      showToast('🖨️ PDF aberto para impressão!', 'success');
+    } else {
+      showToast('⚠️ Permita pop-ups e tente novamente.', 'error');
+    }
+  } catch(e) {
+    showToast('❌ Erro: ' + e.message, 'error');
+  }
 }
 
 async function _enviarEmailBDO(dados) {
