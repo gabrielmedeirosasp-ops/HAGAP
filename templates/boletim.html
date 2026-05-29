@@ -1077,11 +1077,18 @@ async function imprimirPDF(){
   }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
 }
 
-function compartilharWhatsApp(){
-  const d=coletarDados();
-  const st=getStatusLabel();
-  const msg=`📋 *BDO — Boletim Diário de Obras*\n━━━━━━━━━━━━━━━━━━\n📁 Projeto: ${d.num_projeto}\n📍 Cidade: ${d.cidade}\n📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}\n🔑 Encarregado: ${d.encarregado}\n${st?st.emoji+' Status: '+st.label+'\n':''}${d.servico_livre===false?`📄 OMB: ${d.num_omb} | PLV: ${d.num_plv}\n`:''}🔌 ${d.manobra_texto||'-'}\n🔧 Serviços: ${d.servicos.join(', ')||'nenhum'}\n${d.observacoes_lista.length?'📝 Obs: '+d.observacoes_lista.map(o=>o.texto).join(' | '):''}\n━━━━━━━━━━━━━━━━━━\n_HAGAP Engenharia Elétrica_`;
-  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+async function compartilharWhatsApp(){
+  showToast('⏳ Gerando PDF para compartilhar...','');
+  try{
+    const d=coletarDados();
+    const resp=await fetch('/api/gerar_bdo_pdf_url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+    const json=await resp.json();
+    if(!json.ok) throw new Error(json.erro||'Erro ao gerar PDF');
+    const st=getStatusLabel();
+    const msg=`📋 *BDO — Boletim Diário de Obras*\n━━━━━━━━━━━━━━━━━━\n📁 Projeto: ${d.num_projeto}\n📍 Cidade: ${d.cidade}\n📅 Data: ${d.data_bdo}  ⏰ ${d.hora_inicio} → ${d.hora_final}\n🔑 Encarregado: ${d.encarregado}\n${st?st.emoji+' Status: '+st.label+'\n':''}📄 *PDF do BDO:*\n${json.url}\n━━━━━━━━━━━━━━━━━━\n_HAGAP Engenharia Elétrica_`;
+    showToast('✅ PDF gerado! Abrindo WhatsApp...','success');
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  }catch(e){ showToast('❌ Erro: '+e.message,'error'); }
 }
 
 // ═══════════════════════════════════════════

@@ -2061,29 +2061,37 @@ def api_materiais_item_check():
 
 
 # ── Gerar PDF do BDO via ReportLab ────────────────────────────────
+def _carregar_mod_boletim():
+    import importlib.util
+    _spec = importlib.util.spec_from_file_location(
+        "gerar_boletim",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "gerar_boletim.py")
+    )
+    _mod = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    return _mod
+
+
+@app.route("/files/<path:filename>")
+def servir_files(filename):
+    """Serve arquivos gerados (PDFs do BDO, etc.) da pasta files/."""
+    from flask import send_file as _sf
+    filepath = os.path.join(os.getcwd(), "files", filename)
+    if os.path.exists(filepath):
+        return _sf(filepath, mimetype="application/pdf")
+    return jsonify({"erro": "Arquivo não encontrado"}), 404
+
+
 @app.route("/api/gerar_bdo_pdf", methods=["POST"])
 def api_gerar_bdo_pdf():
     """
-    Gera PDF bonito do BDO usando gerar_boletim.py (ReportLab)
+    Gera PDF do BDO usando WeasyPrint (idêntico à prévia HTML)
     e retorna o arquivo para download. Também envia por e-mail
     se EMAIL_REMETENTE e EMAIL_SENHA estiverem configurados.
     """
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text      import MIMEText
-    from email.mime.base      import MIMEBase
-    from email               import encoders
-
     try:
         d = request.get_json(force=True) or {}
-        # Importa o gerador de PDF
-        import importlib.util, sys as _sys
-        _spec = importlib.util.spec_from_file_location(
-            "gerar_boletim",
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "gerar_boletim.py")
-        )
-        _mod = importlib.util.module_from_spec(_spec)
-        _spec.loader.exec_module(_mod)
+        _mod = _carregar_mod_boletim()
         filename = _mod.gerar_pdf(d)
         filepath = os.path.join(os.getcwd(), "files", filename)
 
@@ -2105,6 +2113,24 @@ def api_gerar_bdo_pdf():
         )
     except Exception as e:
         print(f"[gerar_bdo_pdf] Erro: {e}")
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
+@app.route("/api/gerar_bdo_pdf_url", methods=["POST"])
+def api_gerar_bdo_pdf_url():
+    """
+    Gera PDF do BDO e retorna a URL pública para compartilhar (ex: WhatsApp).
+    """
+    try:
+        d = request.get_json(force=True) or {}
+        _mod = _carregar_mod_boletim()
+        filename = _mod.gerar_pdf(d)
+        # URL pública do PDF no próprio servidor
+        base_url = request.host_url.rstrip("/")
+        pdf_url  = f"{base_url}/files/{filename}"
+        return jsonify({"ok": True, "url": pdf_url, "filename": filename})
+    except Exception as e:
+        print(f"[gerar_bdo_pdf_url] Erro: {e}")
         return jsonify({"ok": False, "erro": str(e)}), 500
 
 
