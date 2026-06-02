@@ -192,7 +192,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-sec:first-child{margin-top:0}
 
 .pdf-drawing{text-align:center;margin-bottom:4px}
-.pdf-drawing img{max-width:100%;width:100%;height:280px;object-fit:contain;border:1px solid #d0dff5;border-radius:8px;display:block}
+.pdf-drawing img{max-width:100%;width:100%;height:auto;max-height:340px;object-fit:contain;border:1px solid #d0dff5;border-radius:8px;display:block;background:#fff}
 .pdf-drawing-caption{font-size:.65rem;color:#5577aa;margin-top:4px;text-align:center}
 
 .pdf-trafo{background:#fff8f5;border:1px solid #ffccbc;border-radius:8px;padding:10px 14px;margin-bottom:4px}
@@ -849,16 +849,28 @@ function render(forPrint=false){
     cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.stroke();
     cx.setLineDash([]);cx.shadowBlur=0;
 
-    // Distance pill on cable
-    const mx=(x1+x2)/2,my=(y1+y2)/2;
-    const pw=CELL*.7,ph=CELL*.3;
-    cx.fillStyle=fp?'rgba(13,71,161,.12)':'rgba(0,20,40,.85)';
-    rr(cx,mx-pw/2,my-ph/2,pw,ph,ph/2);cx.fill();
-    if(!fp){cx.strokeStyle='rgba(0,230,118,.35)';cx.lineWidth=1;rr(cx,mx-pw/2,my-ph/2,pw,ph,ph/2);cx.stroke();}
-    cx.fillStyle=fp?'#0d47a1':'#00E676';
-    cx.font=`bold ${Math.max(8,CELL*.19)}px 'Segoe UI',sans-serif`;
+    // Distance pill on cable — offset perpendicularly so it doesn't overlap the line
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    const dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy)||1;
+    // perpendicular unit vector
+    const nx=-dy/len, ny=dx/len;
+    const offset=CELL*0.38; // deslocamento perpendicular à linha
+    const lx=mx+nx*offset, ly=my+ny*offset;
+    const pw=Math.max(CELL*.72,36), ph=Math.max(CELL*.32,16);
+    // Fundo sólido e visível
+    cx.fillStyle=fp?'#e3f2fd':'#003020';
+    rr(cx,lx-pw/2,ly-ph/2,pw,ph,ph/2);cx.fill();
+    // Borda colorida
+    cx.strokeStyle=fp?'#1565C0':'#00E676';
+    cx.lineWidth=fp?1.5:1.5;
+    rr(cx,lx-pw/2,ly-ph/2,pw,ph,ph/2);cx.stroke();
+    // Texto legível
+    cx.fillStyle=fp?'#0d47a1':'#00FF88';
+    cx.font=`bold ${Math.max(10,CELL*.22)}px 'Segoe UI',sans-serif`;
     cx.textAlign='center';cx.textBaseline='middle';
-    cx.fillText(G_SPACING+'m',mx,my);
+    if(!fp){cx.shadowColor='rgba(0,0,0,0.8)';cx.shadowBlur=3;}
+    cx.fillText(G_SPACING+'m',lx,ly);
+    cx.shadowBlur=0;
   });
   cx.lineCap='butt';
 
@@ -1125,7 +1137,7 @@ async function doPrint(){
   CV.width = PDF_SIZE; CV.height = PDF_SIZE; CELL = PDF_SIZE / GRID;
   // Render com fundo branco para PDF
   render(true);
-  const snapPDF = CV.toDataURL('image/png', 1.0);
+  const snapPDF = getCroppedSnapshot();
   // Restaura tamanho original
   CV.width = origW || window.innerWidth; CV.height = origH || Math.min(window.innerWidth, 440); CELL = origCELL;
   render(false); // restaura versão escura
@@ -1187,13 +1199,13 @@ async function doPrint(){
   try {
     toast('⏳ Gerando PDF…','ok');
     const cnv = await html2canvas(pdfEl, {
-      scale: 2,
+      scale: 3,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
       logging: false,
       width: 1122,
-      windowWidth: 1122
+      windowWidth: 1200
     });
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -1218,6 +1230,34 @@ async function doPrint(){
 }
 
 // ══════════════════════════════════════════════════
+// CROPPED SNAPSHOT — remove espaço branco ao redor do desenho
+// ══════════════════════════════════════════════════
+function getCroppedSnapshot(){
+  if(G.nodes.size===0) return CV.toDataURL('image/png',1.0);
+  let minC=GRID,maxC=0,minR=GRID,maxR=0;
+  G.nodes.forEach(node=>{
+    if(node.c<minC) minC=node.c;
+    if(node.c>maxC) maxC=node.c;
+    if(node.r<minR) minR=node.r;
+    if(node.r>maxR) maxR=node.r;
+  });
+  const PAD=2;
+  let x1=Math.max(0,(minC-PAD)*CELL);
+  let y1=Math.max(0,(minR-PAD)*CELL);
+  let x2=Math.min(CV.width,(maxC+1+PAD)*CELL);
+  let y2=Math.min(CV.height,(maxR+1+PAD)*CELL);
+  // Se rede ativa, manter toda a largura/altura
+  if(REDE_DIR==='H'||REDE_DIR==='HV'){x1=0;x2=CV.width;}
+  if(REDE_DIR==='V'||REDE_DIR==='HV'){y1=0;y2=CV.height;}
+  const w=Math.round(x2-x1), h=Math.round(y2-y1);
+  if(w<=0||h<=0) return CV.toDataURL('image/png',1.0);
+  const tmp=document.createElement('canvas');
+  tmp.width=w; tmp.height=h;
+  tmp.getContext('2d').drawImage(CV,x1,y1,w,h,0,0,w,h);
+  return tmp.toDataURL('image/png',1.0);
+}
+
+// ══════════════════════════════════════════════════
 // SEND EMAIL
 // ══════════════════════════════════════════════════
 async function doSendEmail(){
@@ -1229,7 +1269,7 @@ async function doSendEmail(){
     const _oW=CV.width,_oH=CV.height,_oC=CELL;
     CV.width=900;CV.height=900;CELL=900/GRID;
     render(true);
-    const canvasImg=CV.toDataURL('image/png',1.0);
+    const canvasImg=getCroppedSnapshot();
     CV.width=_oW;CV.height=_oH;CELL=_oC;render(false);
     const scEl=document.getElementById('sc');
     const sigImg=scEl?scEl.toDataURL():'';
