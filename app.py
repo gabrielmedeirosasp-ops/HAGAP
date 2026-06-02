@@ -487,143 +487,284 @@ def malha_terra():
 
 def _malha_gerar_pdf_reportlab(dados):
     """
-    Gera PDF da malha de aterramento usando ReportLab (sem WeasyPrint).
-    Aceita canvas_img em base64 enviado pelo cliente.
-    Retorna caminho do arquivo PDF gerado.
+    Gera PDF da malha de aterramento usando ReportLab.
+    Layout A4 landscape: cabeçalho, faixa info, 2 colunas (desenho | materiais+assinatura), rodapé.
     """
-    import tempfile, base64
+    import tempfile, base64, os
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.units import mm
     from reportlab.pdfgen import canvas as rl_canvas
-    from reportlab.lib import colors
     from io import BytesIO
     from PIL import Image as PILImage
+    from datetime import datetime as _dt
 
-    W, H = landscape(A4)
+    W, H = landscape(A4)   # 841.89 x 595.28 pts (~297mm x 210mm)
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
     tmp.close()
     c = rl_canvas.Canvas(tmp.name, pagesize=(W, H))
 
     poste   = dados.get("num_poste", "—")
-    titulo  = dados.get("titulo", f"Malha de Aterramento — Poste {poste}")
     fiscal  = dados.get("cliente", "—")
     enc     = dados.get("encarregado", "—")
     cidade  = dados.get("cidade", "—")
     data_f  = dados.get("data", "") or ""
     resist  = dados.get("resistencia", "—")
     summary = dados.get("summary", {})
-    canvas_b64 = dados.get("canvas_img", "")
-    sig_b64    = dados.get("sig_img", "")
+    canvas_b64  = dados.get("canvas_img", "")
+    sig_b64     = dados.get("sig_img", "")
+    rede_dir    = dados.get("rede_dir", "none")
+    espacamento = dados.get("espacamento", 10)
 
-    # ── Cabeçalho azul ──
+    # ─────────────────────────────────────────
+    # 1. CABEÇALHO (azul, altura 26mm)
+    # ─────────────────────────────────────────
+    hdr_h = 26 * mm
     c.setFillColorRGB(0.05, 0.28, 0.63)
-    c.rect(0, H - 40*mm, W, 40*mm, fill=1, stroke=0)
-    c.setFillColorRGB(1, 1, 1)
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(15*mm, H - 18*mm, titulo)
-    c.setFont("Helvetica", 9)
-    c.drawString(15*mm, H - 27*mm, "HAGAP Instalações Elétricas — Relatório de Campo")
-    c.setFont("Helvetica-Bold", 22)
-    c.drawRightString(W - 15*mm, H - 22*mm, poste)
+    c.rect(0, H - hdr_h, W, hdr_h, fill=1, stroke=0)
 
-    # ── Faixa de informações ──
-    iy = H - 55*mm
-    c.setFillColorRGB(0.94, 0.97, 1.0)
-    c.rect(0, iy, W, 14*mm, fill=1, stroke=0)
+    # Logo (tenta carregar static/logo.png)
+    logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "logo.png")
+    logo_x = 8 * mm
+    if os.path.exists(logo_path):
+        try:
+            c.drawImage(logo_path, logo_x, H - hdr_h + 3*mm,
+                        width=22*mm, height=20*mm,
+                        preserveAspectRatio=True, mask='auto')
+        except Exception:
+            pass
+        txt_x = logo_x + 25*mm
+    else:
+        txt_x = logo_x
+
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica-Bold", 13)
+    c.drawString(txt_x, H - 12*mm, "Relatório de Malha de Aterramento")
+    c.setFont("Helvetica", 8)
+    c.drawString(txt_x, H - 19*mm, "HACAP Instalações Elétricas — Vistoria de Campo COPEL")
+
+    # Nº do Poste no canto direito
+    c.setFont("Helvetica-Bold", 20)
+    c.drawRightString(W - 8*mm, H - 14*mm, str(poste))
+    c.setFont("Helvetica", 6)
+    c.drawRightString(W - 8*mm, H - 20*mm, "Nº DO POSTE")
+
+    # ─────────────────────────────────────────
+    # 2. FAIXA DE INFORMAÇÕES (6 células, 12mm)
+    # ─────────────────────────────────────────
+    info_h = 12 * mm
+    iy = H - hdr_h - info_h
+
+    c.setFillColorRGB(0.93, 0.96, 1.0)
+    c.rect(0, iy, W, info_h, fill=1, stroke=0)
+    # Linha inferior da faixa
+    c.setStrokeColorRGB(0.05, 0.28, 0.63)
+    c.setLineWidth(1.5)
+    c.line(0, iy, W, iy)
+
     info_items = [
-        ("Cidade", cidade), ("Nº Poste", poste), ("Encarregado", enc),
-        ("Fiscal", fiscal), ("Data", data_f), ("Resistência", f"{resist} Ω"),
+        ("Encarregado", str(enc)[:20]),
+        ("Fiscal",      str(fiscal)[:20]),
+        ("Cidade",      str(cidade)[:18]),
+        ("Nº do Poste", str(poste)),
+        ("Data",        str(data_f)),
+        ("Resistência",  f"{resist} Ω"),
     ]
     col_w = W / len(info_items)
     for i, (lbl, val) in enumerate(info_items):
-        x = i * col_w + 8*mm
-        c.setFillColorRGB(0.33, 0.42, 0.58)
-        c.setFont("Helvetica", 6.5)
-        c.drawString(x, iy + 9*mm, lbl.upper())
-        c.setFillColorRGB(0.05, 0.1, 0.18)
-        c.setFont("Helvetica-Bold", 9)
-        c.drawString(x, iy + 4*mm, str(val))
+        x = i * col_w + 3*mm
+        if i > 0:
+            c.setStrokeColorRGB(0.78, 0.86, 0.96)
+            c.setLineWidth(0.5)
+            c.line(i * col_w, iy + 1*mm, i * col_w, iy + info_h - 1*mm)
+        c.setFillColorRGB(0.35, 0.47, 0.65)
+        c.setFont("Helvetica", 5.5)
+        c.drawString(x, iy + info_h - 4.5*mm, lbl.upper())
+        c.setFillColorRGB(0.05, 0.10, 0.20)
+        c.setFont("Helvetica-Bold", 8.5)
+        c.drawString(x, iy + 2.5*mm, val)
 
-    # ── Imagem do canvas (desenho da malha) ──
-    draw_y = iy - 2*mm
+    # ─────────────────────────────────────────
+    # 3. CORPO: 2 colunas
+    # Col. esquerda: 60% (desenho)
+    # Col. direita:  40% (materiais + assinatura)
+    # ─────────────────────────────────────────
+    body_top    = iy - 3*mm
+    body_bottom = 12*mm          # espaço do rodapé
+    body_h      = body_top - body_bottom
+
+    col_left_w  = W * 0.60
+    col_right_x = col_left_w + 5*mm
+    col_right_w = W - col_right_x - 8*mm
+
+    # ── 3a. DESENHO DA MALHA (coluna esquerda) ──
     if canvas_b64 and "," in canvas_b64:
         try:
             img_data = base64.b64decode(canvas_b64.split(",")[1])
             img = PILImage.open(BytesIO(img_data))
+
+            avail_w = col_left_w - 10*mm
+            avail_h = body_h - 10*mm
+            scale   = min(avail_w / img.width, avail_h / img.height)
+            draw_w  = img.width  * scale
+            draw_h  = img.height * scale
+
+            draw_x = 5*mm + (avail_w - draw_w) / 2
+            draw_y = body_bottom + (body_h - draw_h) / 2
+
             img_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
             img.save(img_path)
-            img_w = W * 0.52
-            img_h = img_w * img.height / img.width
-            if img_h > draw_y - 30*mm:
-                img_h = draw_y - 30*mm
-                img_w = img_h * img.width / img.height
-            c.drawImage(img_path, 10*mm, draw_y - img_h, width=img_w, height=img_h,
+
+            # Borda arredondada ao redor do desenho
+            c.setStrokeColorRGB(0.75, 0.85, 0.96)
+            c.setLineWidth(1)
+            c.roundRect(draw_x - 2, draw_y - 2, draw_w + 4, draw_h + 4, 4, fill=0, stroke=1)
+
+            c.drawImage(img_path, draw_x, draw_y, width=draw_w, height=draw_h,
                         preserveAspectRatio=True, mask='auto')
-            draw_x_right = 10*mm + img_w + 6*mm
+
+            # Título acima do desenho
+            c.setFillColorRGB(0.05, 0.28, 0.63)
+            c.setFont("Helvetica-Bold", 7.5)
+            c.drawString(5*mm, draw_y + draw_h + 3*mm, "🗺 Esquema da Malha de Aterramento")
+
+            # Legenda abaixo do desenho
+            leg_y = draw_y - 6*mm
+            leg_items = [
+                ((0.08, 0.35, 0.76), "Poste"),
+                ((0.18, 0.49, 0.20), "Haste"),
+                ((0.05, 0.29, 0.05), "Cabo Cu (malha)"),
+            ]
+            if rede_dir != 'none':
+                leg_items.append(((0.96, 0.63, 0.10), f"Rede ({rede_dir})"))
+            lx = 5*mm
+            for (r_, g_, b_), label in leg_items:
+                c.setFillColorRGB(r_, g_, b_)
+                c.circle(lx + 2.5*mm, leg_y + 1.5*mm, 2.5, fill=1, stroke=0)
+                c.setFillColorRGB(0.1, 0.1, 0.2)
+                c.setFont("Helvetica", 6.5)
+                c.drawString(lx + 6.5*mm, leg_y + 0.8*mm, label)
+                lx += 30*mm
         except Exception as ex:
             print(f"[malha_pdf] Erro imagem canvas: {ex}")
-            draw_x_right = 10*mm
-    else:
-        draw_x_right = 10*mm
 
-    # ── Materiais (tabela à direita) ──
+    # ── 3b. SEPARADOR VERTICAL ──
+    c.setStrokeColorRGB(0.82, 0.90, 0.97)
+    c.setLineWidth(0.8)
+    c.line(col_left_w, body_bottom, col_left_w, body_top)
+
+    # ── 3c. MATERIAIS (coluna direita) ──
     total  = summary.get("hastes", 0)
     metros = summary.get("metros_cabo", 0)
     mat_rows = [
         ("Haste de Aterramento", f"{total}"),
         ("Conector Fio-Haste",   f"{total}"),
-        ("Conector Fio-Fio",    "1"),
-        ("Cabo de Cobre",       f"{metros}m"),
+        ("Conector Fio-Fio",     "1"),
+        ("Cabo de Cobre",        f"{metros}m"),
     ]
-    tx = draw_x_right
-    ty = iy - 5*mm
-    c.setFont("Helvetica-Bold", 8)
+
+    ty = body_top
+
+    # Título materiais
     c.setFillColorRGB(0.05, 0.28, 0.63)
-    c.drawString(tx, ty, "MATERIAIS NECESSÁRIOS")
-    ty -= 5*mm
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawString(col_right_x, ty - 1*mm, "🔧 MATERIAIS NECESSÁRIOS")
+    c.setLineWidth(1)
+    c.line(col_right_x, ty - 2.5*mm, col_right_x + col_right_w, ty - 2.5*mm)
+    ty -= 8*mm
+
+    # Cabeçalho da tabela
     c.setFillColorRGB(0.05, 0.28, 0.63)
-    c.rect(tx, ty - 1*mm, W - tx - 10*mm, 6*mm, fill=1, stroke=0)
+    c.rect(col_right_x, ty - 1*mm, col_right_w, 6*mm, fill=1, stroke=0)
     c.setFillColorRGB(1, 1, 1)
     c.setFont("Helvetica-Bold", 7)
-    c.drawString(tx + 2*mm, ty + 1*mm, "Material")
-    c.drawRightString(W - 12*mm, ty + 1*mm, "Qtd")
+    c.drawString(col_right_x + 2*mm, ty + 1.5*mm, "Material")
+    c.drawRightString(col_right_x + col_right_w - 2*mm, ty + 1.5*mm, "Qtd")
     ty -= 6*mm
+
     for i, (mat, qtd) in enumerate(mat_rows):
-        bg = (0.95, 0.97, 1.0) if i % 2 == 0 else (1, 1, 1)
+        bg = (0.94, 0.97, 1.0) if i % 2 == 0 else (1.0, 1.0, 1.0)
         c.setFillColorRGB(*bg)
-        c.rect(tx, ty - 1*mm, W - tx - 10*mm, 5.5*mm, fill=1, stroke=0)
-        c.setFillColorRGB(0.05, 0.1, 0.18)
+        c.rect(col_right_x, ty - 1.5*mm, col_right_w, 5.5*mm, fill=1, stroke=0)
+        c.setStrokeColorRGB(0.85, 0.91, 0.98)
+        c.setLineWidth(0.4)
+        c.rect(col_right_x, ty - 1.5*mm, col_right_w, 5.5*mm, fill=0, stroke=1)
+        c.setFillColorRGB(0.05, 0.10, 0.18)
         c.setFont("Helvetica", 7.5)
-        c.drawString(tx + 2*mm, ty + 1*mm, mat)
+        c.drawString(col_right_x + 2*mm, ty + 0.8*mm, mat)
         c.setFont("Helvetica-Bold", 8)
-        c.drawRightString(W - 12*mm, ty + 1*mm, qtd)
+        c.setFillColorRGB(0.05, 0.40, 0.12)
+        c.drawRightString(col_right_x + col_right_w - 2*mm, ty + 0.8*mm, qtd)
         ty -= 5.5*mm
 
-    # ── Assinatura ──
+    # ── 3d. ASSINATURA (coluna direita, abaixo dos materiais) ──
+    ty -= 6*mm
+    c.setFillColorRGB(0.05, 0.28, 0.63)
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawString(col_right_x, ty, "✍ ASSINATURA DO ENCARREGADO")
+    c.setLineWidth(1)
+    c.line(col_right_x, ty - 1.5*mm, col_right_x + col_right_w, ty - 1.5*mm)
+    ty -= 3*mm
+
     if sig_b64 and "," in sig_b64:
         try:
             sig_data = base64.b64decode(sig_b64.split(",")[1])
             sig = PILImage.open(BytesIO(sig_data))
+            sig_h_max = 22*mm
+            sig_w_calc = min(col_right_w - 4*mm, sig_h_max * sig.width / sig.height)
+            sig_h_calc = sig_w_calc * sig.height / sig.width
+
             sig_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
             sig.save(sig_path)
-            sig_w = 55*mm; sig_h = sig_w * sig.height / sig.width
-            sig_y = 18*mm
-            c.drawImage(sig_path, tx, sig_y, width=sig_w, height=sig_h,
+
+            sig_y = ty - sig_h_calc
+            # Fundo branco para assinatura
+            c.setFillColorRGB(1, 1, 1)
+            c.setStrokeColorRGB(0.80, 0.88, 0.96)
+            c.setLineWidth(0.5)
+            c.roundRect(col_right_x, sig_y - 2*mm,
+                        col_right_w, sig_h_calc + 4*mm, 3, fill=1, stroke=1)
+
+            c.drawImage(sig_path, col_right_x + 2*mm, sig_y,
+                        width=sig_w_calc, height=sig_h_calc,
                         preserveAspectRatio=True, mask='auto')
-            c.setFont("Helvetica", 7)
-            c.setFillColorRGB(0.3, 0.3, 0.3)
-            c.drawString(tx, 14*mm, f"Encarregado: {enc} — {data_f}")
+            ty = sig_y - 4*mm
         except Exception as ex:
             print(f"[malha_pdf] Erro assinatura: {ex}")
+            ty -= 24*mm
+    else:
+        # Linha em branco para assinatura manual
+        c.setStrokeColorRGB(0.4, 0.4, 0.4)
+        c.setLineWidth(0.7)
+        c.line(col_right_x, ty - 18*mm, col_right_x + col_right_w, ty - 18*mm)
+        ty -= 20*mm
 
-    # ── Rodapé ──
+    # Nome do encarregado
+    c.setFont("Helvetica", 6.5)
+    c.setFillColorRGB(0.3, 0.3, 0.3)
+    c.drawString(col_right_x, ty - 1*mm,
+                 f"Encarregado: {enc}")
+    c.drawString(col_right_x, ty - 4.5*mm, f"Data: {data_f}")
+
+    # Linha fiscal (direita)
+    ty2 = body_bottom + 5*mm
+    c.setStrokeColorRGB(0.4, 0.4, 0.4)
+    c.setLineWidth(0.7)
+    sig_right_x = col_right_x + col_right_w * 0.52
+    c.line(sig_right_x, ty2, col_right_x + col_right_w, ty2)
+    c.setFont("Helvetica", 6.5)
+    c.drawString(sig_right_x, ty2 - 3.5*mm, f"Fiscal: {fiscal} — COPEL")
+
+    # ─────────────────────────────────────────
+    # 4. RODAPÉ
+    # ─────────────────────────────────────────
+    ftr_h = 10 * mm
     c.setFillColorRGB(0.05, 0.28, 0.63)
-    c.rect(0, 0, W, 10*mm, fill=1, stroke=0)
+    c.rect(0, 0, W, ftr_h, fill=1, stroke=0)
     c.setFillColorRGB(1, 1, 1)
-    c.setFont("Helvetica", 7)
-    from datetime import datetime as _dt
-    c.drawString(10*mm, 3.5*mm, f"HAGAP Instalações Elétricas — Emitido em {_dt.now().strftime('%d/%m/%Y %H:%M')}")
-    c.drawRightString(W - 10*mm, 3.5*mm, "Relatório de Malha de Aterramento")
+    c.setFont("Helvetica", 6.5)
+    c.drawString(8*mm, 3.5*mm,
+                 f"HACAP Instalações Elétricas — Emitido em {_dt.now().strftime('%d/%m/%Y %H:%M')}")
+    c.drawRightString(W - 8*mm, 3.5*mm, "Relatório de Malha de Aterramento")
 
     c.save()
     return tmp.name

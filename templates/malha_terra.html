@@ -150,9 +150,21 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
    ██ PRINT / PDF ██
 ═══════════════════════════════════ */
 #pdfPage{display:none}
+@page {
+  size: A4 landscape;
+  margin: 8mm;
+}
 @media print{
+  html,body{height:auto;overflow:visible}
   body > *:not(#pdfPage){ display:none!important }
-  #pdfPage{ display:block!important; margin:0; padding:0; }
+  #pdfPage{
+    display:block!important;
+    margin:0; padding:0;
+    width:100%;
+    page-break-after:avoid;
+    break-after:avoid;
+  }
+  * { print-color-adjust:exact; -webkit-print-color-adjust:exact; color-adjust:exact; }
 }
 
 /* — PDF Page — */
@@ -167,18 +179,20 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-hdr-stamp .stamp-num{font-size:1rem;font-weight:800;color:#fff}
 .pdf-hdr-stamp .stamp-lbl{font-size:.6rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px}
 
-.pdf-info{display:grid;grid-template-columns:repeat(3,1fr);background:#f0f6ff;border-bottom:2px solid #1565C0}
-.pdf-info-cell{padding:9px 14px;border-right:1px solid #d0dff5}
+.pdf-info{display:grid;grid-template-columns:repeat(6,1fr);background:#f0f6ff;border-bottom:2px solid #1565C0}
+.pdf-info-cell{padding:7px 10px;border-right:1px solid #d0dff5}
 .pdf-info-cell:last-child{border-right:none}
-.pdf-info-label{font-size:.58rem;color:#5577aa;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:2px}
-.pdf-info-val{font-size:.85rem;font-weight:800;color:#0d1a2a}
+.pdf-info-label{font-size:.52rem;color:#5577aa;text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-bottom:2px}
+.pdf-info-val{font-size:.78rem;font-weight:800;color:#0d1a2a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.pdf-body{padding:14px 20px}
-.pdf-sec{font-size:.67rem;font-weight:800;color:#1565C0;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;padding-bottom:4px;border-bottom:2px solid #e3f2fd;display:flex;align-items:center;gap:6px}
+#pdfPage{width:1122px;box-sizing:border-box;background:#fff}
+.pdf-body{padding:6px 12px 8px}
+.pdf-cols{display:grid;grid-template-columns:60% 40%;gap:12px;align-items:start}
+.pdf-sec{font-size:.60rem;font-weight:800;color:#1565C0;text-transform:uppercase;letter-spacing:.8px;margin:7px 0 4px;padding-bottom:3px;border-bottom:2px solid #e3f2fd;display:flex;align-items:center;gap:6px}
 .pdf-sec:first-child{margin-top:0}
 
 .pdf-drawing{text-align:center;margin-bottom:4px}
-.pdf-drawing img{max-width:100%;width:100%;min-height:200px;border:1px solid #d0dff5;border-radius:8px;display:block}
+.pdf-drawing img{max-width:100%;width:100%;height:280px;object-fit:contain;border:1px solid #d0dff5;border-radius:8px;display:block}
 .pdf-drawing-caption{font-size:.65rem;color:#5577aa;margin-top:4px;text-align:center}
 
 .pdf-trafo{background:#fff8f5;border:1px solid #ffccbc;border-radius:8px;padding:10px 14px;margin-bottom:4px}
@@ -193,7 +207,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-mat td:last-child{text-align:right}
 .pdf-qty{background:#e8f5e9;color:#2E7D32;padding:2px 12px;border-radius:20px;font-weight:800;border:1px solid #c8e6c9}
 
-.pdf-sig-area{display:flex;gap:24px;align-items:flex-end;margin-top:6px}
+.pdf-sig-area{display:flex;gap:24px;align-items:flex-end;margin-top:4px}
 .pdf-sig-box{flex:1;text-align:center}
 .pdf-sig-img{border:1px solid #ccc;border-radius:6px;background:#fff;padding:4px;max-width:260px;height:70px;object-fit:contain}
 .pdf-sig-line{border-top:1px solid #333;margin-top:6px;padding-top:4px;font-size:.68rem;color:#555}
@@ -203,7 +217,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .pdf-leg-line{width:18px;height:0;border-top:2px dashed;flex-shrink:0}
 
-.pdf-footer{background:#f0f6ff;border-top:2px solid #1565C0;padding:7px 20px;display:flex;justify-content:space-between;align-items:center;font-size:.62rem;color:#5577aa;margin-top:14px}
+.pdf-footer{background:#f0f6ff;border-top:2px solid #1565C0;padding:5px 14px;display:flex;justify-content:space-between;align-items:center;font-size:.62rem;color:#5577aa;margin-top:8px}
 </style>
 </head>
 <body>
@@ -404,47 +418,54 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
     <div class="pdf-info-cell"><div class="pdf-info-label">Resistência</div><div class="pdf-info-val" id="pResist">—</div></div>
   </div>
 
-  <!-- BODY -->
+  <!-- BODY — two-column layout -->
   <div class="pdf-body">
+  <div class="pdf-cols">
 
-    <!-- Drawing -->
-    <div class="pdf-sec">🗺️ Esquema da Malha de Aterramento</div>
-    <div class="pdf-drawing">
-      <img id="pdfSnap" alt="Malha">
-      <div class="pdf-drawing-caption" id="pdfDrawingCaption"></div>
-    </div>
-    <div class="pdf-legend">
-      <div class="pdf-leg-item"><div class="pdf-leg-dot" style="background:#1565C0"></div>Poste</div>
-      <div class="pdf-leg-item"><div class="pdf-leg-dot" style="background:#2E7D32"></div>Haste de aterramento</div>
-      <div class="pdf-leg-item" id="pdfLegTrafo" style="display:none"><div class="pdf-leg-dot" style="background:#E65100"></div>Transformador</div>
-      <div class="pdf-leg-item"><div class="pdf-leg-line" style="border-color:#0d47a1"></div>Cabo de cobre (malha)</div>
-      <div class="pdf-leg-item" id="pdfLegRede" style="display:none"><div class="pdf-leg-line" style="border-color:#f57f17"></div>Rede elétrica</div>
-    </div>
-
-    <!-- Trafo -->
-    <div id="pdfTrafoSection" style="display:none">
-      <div class="pdf-sec">⚡ Dados do Transformador</div>
-      <div class="pdf-trafo">
-        <div class="pdf-trafo-grid" id="pdfTrafoGrid"></div>
+    <!-- LEFT COLUMN: Drawing -->
+    <div>
+      <div class="pdf-sec">🗺️ Esquema da Malha de Aterramento</div>
+      <div class="pdf-drawing">
+        <img id="pdfSnap" alt="Malha">
+      </div>
+      <div class="pdf-drawing-caption" id="pdfDrawingCaption" style="font-size:.6rem;color:#5577aa;margin-top:4px;text-align:center"></div>
+      <div class="pdf-legend" style="margin-top:6px">
+        <div class="pdf-leg-item"><div class="pdf-leg-dot" style="background:#1565C0"></div>Poste</div>
+        <div class="pdf-leg-item"><div class="pdf-leg-dot" style="background:#2E7D32"></div>Haste de Aterramento</div>
+        <div class="pdf-leg-item" id="pdfLegTrafo" style="display:none"><div class="pdf-leg-dot" style="background:#E65100"></div>Transformador</div>
+        <div class="pdf-leg-item"><div class="pdf-leg-line" style="border-color:#0d47a1"></div>Cabo de Cobre</div>
+        <div class="pdf-leg-item" id="pdfLegRede" style="display:none"><div class="pdf-leg-line" style="border-color:#f57f17"></div>Rede Elétrica</div>
       </div>
     </div>
 
-    <!-- Materials -->
-    <div class="pdf-sec">🔧 Materiais Utilizados</div>
-    <table class="pdf-mat" id="pdfMat"></table>
-
-    <!-- Signature -->
-    <div class="pdf-sec">✍️ Assinatura do Encarregado</div>
-    <div class="pdf-sig-area">
-      <div class="pdf-sig-box">
-        <img class="pdf-sig-img" id="pdfSigImg" alt="Assinatura">
-        <div class="pdf-sig-line" id="pdfSigName"></div>
+    <!-- RIGHT COLUMN: Trafo + Materials + Signature -->
+    <div>
+      <!-- Trafo -->
+      <div id="pdfTrafoSection" style="display:none">
+        <div class="pdf-sec">⚡ Dados do Transformador</div>
+        <div class="pdf-trafo">
+          <div class="pdf-trafo-grid" id="pdfTrafoGrid"></div>
+        </div>
       </div>
-      <div style="flex:1"></div>
-      <div style="text-align:center;flex:1">
-        <div style="border-top:1px solid #333;margin-top:70px;padding-top:4px;font-size:.68rem;color:#555">Fiscal: <span id="pdfFiscalSig"></span> — COPEL</div>
+
+      <!-- Materials -->
+      <div class="pdf-sec">🔧 Materiais Utilizados</div>
+      <table class="pdf-mat" id="pdfMat"></table>
+
+      <!-- Signature -->
+      <div class="pdf-sec" style="margin-top:10px">✍️ Assinatura do Encarregado</div>
+      <div class="pdf-sig-area" style="gap:12px;flex-direction:column">
+        <div class="pdf-sig-box" style="width:100%">
+          <img class="pdf-sig-img" id="pdfSigImg" alt="Assinatura" style="width:100%;max-width:280px;height:65px;display:block">
+          <div class="pdf-sig-line" id="pdfSigName" style="margin-top:4px"></div>
+        </div>
+        <div style="width:100%;text-align:center">
+          <div style="border-top:1px solid #333;padding-top:4px;font-size:.68rem;color:#555">Fiscal: <span id="pdfFiscalSig"></span> — COPEL</div>
+        </div>
       </div>
     </div>
+
+  </div>
   </div>
 
   <!-- FOOTER -->
@@ -1096,7 +1117,7 @@ function clrSig(){if(sigCtx)sigCtx.clearRect(0,0,sc.width,sc.height);}
 // ══════════════════════════════════════════════════
 // PRINT / PDF
 // ══════════════════════════════════════════════════
-function doPrint(){
+async function doPrint(){
   // Salva tamanho original do canvas
   const origW = CV.width, origH = CV.height, origCELL = CELL;
   // Forçar canvas de alta resolução para PDF (900×900)
@@ -1158,16 +1179,42 @@ function doPrint(){
 
   document.getElementById('pdfFooterDate').textContent='Emitido em '+new Date().toLocaleDateString('pt-BR');
 
-  // Aguarda o browser renderizar a imagem base64 antes de imprimir
-  const snapEl = document.getElementById('pdfSnap');
-  const sigEl  = document.getElementById('pdfSigImg');
-  let loaded = 0;
-  const tryPrint = () => { if(++loaded >= 2) setTimeout(() => window.print(), 150); };
-  snapEl.onload = tryPrint;
-  sigEl.onload  = tryPrint;
-  // fallback: se já estiver carregada (complete)
-  if(snapEl.complete) tryPrint();
-  if(sigEl.complete)  tryPrint();
+  // Aguarda imagens carregarem e usa html2canvas + jsPDF (cores preservadas, 1 página)
+  const pdfEl = document.getElementById('pdfPage');
+  pdfEl.style.display = 'block';
+  await new Promise(r => setTimeout(r, 600)); // aguarda renders
+
+  try {
+    toast('⏳ Gerando PDF…','ok');
+    const cnv = await html2canvas(pdfEl, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width: 1122,
+      windowWidth: 1122
+    });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pW = pdf.internal.pageSize.getWidth();
+    const pH = pdf.internal.pageSize.getHeight();
+    const ratio = cnv.height / cnv.width;
+    const imgH = pW * ratio;
+    if (imgH <= pH) {
+      pdf.addImage(cnv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pW, imgH);
+    } else {
+      // Centraliza verticalmente se sobrar espaço
+      pdf.addImage(cnv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pW, pH);
+    }
+    const nome = `malha_aterramento_${fv('poste').replace(/[^a-zA-Z0-9]/g,'_')}_${fv('data')}.pdf`;
+    pdf.save(nome);
+    toast('✅ PDF gerado com sucesso!','ok');
+  } catch(e) {
+    toast('❌ Erro ao gerar PDF: '+e.message,'err');
+  } finally {
+    pdfEl.style.display = 'none';
+  }
 }
 
 // ══════════════════════════════════════════════════
