@@ -515,13 +515,16 @@ def malha_exportar_pdf():
 @app.route("/malha/enviar_email", methods=["POST"])
 def malha_enviar_email():
     """Gera PDF da malha de aterramento e envia por e-mail (mesmas variaveis do boletim)."""
-    import smtplib, tempfile
-    from weasyprint import HTML as WeasyprintHTML
-    from jinja2 import Template
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    from email.mime.base import MIMEBase
-    from email import encoders
+    try:
+        import smtplib, tempfile
+        from weasyprint import HTML as WeasyprintHTML
+        from jinja2 import Template
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.mime.base import MIMEBase
+        from email import encoders
+    except ImportError as e:
+        return jsonify({"erro": f"Dependencia ausente no servidor: {e}"}), 500
 
     dados = request.get_json()
     if not dados:
@@ -539,22 +542,31 @@ def malha_enviar_email():
     ]
     DESTINATARIOS = [e for e in DESTINATARIOS if e.strip()]
 
-    template_str = open(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "pdf_report.html"),
-        "r", encoding="utf-8"
-    ).read()
-    html_content = Template(template_str).render(
-        titulo=dados.get("titulo", "Malha de Aterramento"),
-        cliente=dados.get("cliente", ""),
-        local=dados.get("local", ""),
-        cidade=dados.get("cidade", ""),
-        num_poste=dados.get("num_poste", ""),
-        points=dados.get("points", []),
-        summary=dados.get("summary", {})
-    )
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-        WeasyprintHTML(string=html_content).write_pdf(tmp.name)
-        tmp_path = tmp.name
+    try:
+        template_str = open(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "pdf_report.html"),
+            "r", encoding="utf-8"
+        ).read()
+    except FileNotFoundError:
+        return jsonify({"erro": "Template pdf_report.html nao encontrado no servidor."}), 500
+
+    try:
+        html_content = Template(template_str).render(
+            titulo=dados.get("titulo", "Malha de Aterramento"),
+            cliente=dados.get("cliente", ""),
+            local=dados.get("local", ""),
+            cidade=dados.get("cidade", ""),
+            num_poste=dados.get("num_poste", ""),
+            points=dados.get("points", []),
+            summary=dados.get("summary", {})
+        )
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+            WeasyprintHTML(string=html_content).write_pdf(tmp.name)
+            tmp_path = tmp.name
+    except Exception as e:
+        import traceback
+        print(f"[malha_email] Erro ao gerar PDF: {traceback.format_exc()}")
+        return jsonify({"erro": f"Falha ao gerar PDF: {str(e)}"}), 500
 
     poste   = dados.get("num_poste", "—")
     fiscal  = dados.get("cliente", "—")
@@ -612,8 +624,11 @@ def malha_enviar_email():
             smtp.sendmail(remetente, DESTINATARIOS, msg.as_string())
         print(f"[malha_email] Enviado para {DESTINATARIOS}")
         return jsonify({"ok": True, "destinatarios": DESTINATARIOS})
+    except smtplib.SMTPAuthenticationError:
+        return jsonify({"erro": "Autenticacao SMTP falhou. Verifique EMAIL_REMETENTE e EMAIL_SENHA (use senha de app do Gmail)."}), 500
     except Exception as e:
-        print(f"[malha_email] Erro SMTP: {e}")
+        import traceback
+        print(f"[malha_email] Erro SMTP: {traceback.format_exc()}")
         return jsonify({"erro": str(e)}), 500
 
 # ─────────────────────────────────────────────────────────────────────

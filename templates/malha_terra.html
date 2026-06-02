@@ -163,7 +163,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   .pdf-hdr-body p{font-size:.6rem}
   .pdf-body{padding:7px 14px}
   .pdf-sec{margin:7px 0 4px;font-size:.62rem}
-  .pdf-drawing img{max-height:195px!important;width:auto!important;max-width:100%!important;display:block;margin:0 auto}
+  .pdf-drawing img{max-height:340px!important;width:100%!important;max-width:100%!important;display:block;margin:0 auto;object-fit:contain}
   .pdf-drawing-caption{font-size:.58rem}
   .pdf-legend{margin-bottom:2px;gap:10px}
   .pdf-leg-item{font-size:.58rem}
@@ -1122,13 +1122,16 @@ function clrSig(){if(sigCtx)sigCtx.clearRect(0,0,sc.width,sc.height);}
 // PRINT / PDF
 // ══════════════════════════════════════════════════
 function doPrint(){
-  // Garante que o canvas tem tamanho mesmo se a página 2 estiver oculta
-  if(!CV.width || CV.width < 100){
-    CV.width = 440; CV.height = 440; CELL = 440/GRID;
-  }
+  // Salva tamanho original do canvas
+  const origW = CV.width, origH = CV.height, origCELL = CELL;
+  // Forçar canvas de alta resolução para PDF (900×900)
+  const PDF_SIZE = 900;
+  CV.width = PDF_SIZE; CV.height = PDF_SIZE; CELL = PDF_SIZE / GRID;
   // Render com fundo branco para PDF
   render(true);
   const snapPDF = CV.toDataURL('image/png', 1.0);
+  // Restaura tamanho original
+  CV.width = origW || window.innerWidth; CV.height = origH || window.innerWidth; CELL = origCELL;
   render(false); // restaura versão escura
 
   // Fill PDF data
@@ -1227,6 +1230,11 @@ async function doSendEmail(){
       summary:{ pontos: allNodes.length, hastes: total, metros_cabo: metros }
     };
     const res=await fetch('/malha/enviar_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const ct=res.headers.get('content-type')||'';
+    if(!ct.includes('application/json')){
+      const txt=await res.text();
+      throw new Error('Servidor retornou status '+res.status+'. Verifique as variáveis EMAIL_REMETENTE e EMAIL_SENHA no Render.');
+    }
     const json=await res.json();
     if(res.ok) toast('✅ E-mail enviado com sucesso!','ok');
     else toast('❌ Erro: '+(json.erro||'Falha no envio'),'err');
