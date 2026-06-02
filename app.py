@@ -485,46 +485,171 @@ def boletim():
 def malha_terra():
     return send_from_directory("templates", "malha_terra.html")
 
+def _malha_gerar_pdf_reportlab(dados):
+    """
+    Gera PDF da malha de aterramento usando ReportLab (sem WeasyPrint).
+    Aceita canvas_img em base64 enviado pelo cliente.
+    Retorna caminho do arquivo PDF gerado.
+    """
+    import tempfile, base64
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.units import mm
+    from reportlab.pdfgen import canvas as rl_canvas
+    from reportlab.lib import colors
+    from io import BytesIO
+    from PIL import Image as PILImage
+
+    W, H = landscape(A4)
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    tmp.close()
+    c = rl_canvas.Canvas(tmp.name, pagesize=(W, H))
+
+    poste   = dados.get("num_poste", "—")
+    titulo  = dados.get("titulo", f"Malha de Aterramento — Poste {poste}")
+    fiscal  = dados.get("cliente", "—")
+    enc     = dados.get("encarregado", "—")
+    cidade  = dados.get("cidade", "—")
+    data_f  = dados.get("data", "") or ""
+    resist  = dados.get("resistencia", "—")
+    summary = dados.get("summary", {})
+    canvas_b64 = dados.get("canvas_img", "")
+    sig_b64    = dados.get("sig_img", "")
+
+    # ── Cabeçalho azul ──
+    c.setFillColorRGB(0.05, 0.28, 0.63)
+    c.rect(0, H - 40*mm, W, 40*mm, fill=1, stroke=0)
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(15*mm, H - 18*mm, titulo)
+    c.setFont("Helvetica", 9)
+    c.drawString(15*mm, H - 27*mm, "HAGAP Instalações Elétricas — Relatório de Campo")
+    c.setFont("Helvetica-Bold", 22)
+    c.drawRightString(W - 15*mm, H - 22*mm, poste)
+
+    # ── Faixa de informações ──
+    iy = H - 55*mm
+    c.setFillColorRGB(0.94, 0.97, 1.0)
+    c.rect(0, iy, W, 14*mm, fill=1, stroke=0)
+    info_items = [
+        ("Cidade", cidade), ("Nº Poste", poste), ("Encarregado", enc),
+        ("Fiscal", fiscal), ("Data", data_f), ("Resistência", f"{resist} Ω"),
+    ]
+    col_w = W / len(info_items)
+    for i, (lbl, val) in enumerate(info_items):
+        x = i * col_w + 8*mm
+        c.setFillColorRGB(0.33, 0.42, 0.58)
+        c.setFont("Helvetica", 6.5)
+        c.drawString(x, iy + 9*mm, lbl.upper())
+        c.setFillColorRGB(0.05, 0.1, 0.18)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(x, iy + 4*mm, str(val))
+
+    # ── Imagem do canvas (desenho da malha) ──
+    draw_y = iy - 2*mm
+    if canvas_b64 and "," in canvas_b64:
+        try:
+            img_data = base64.b64decode(canvas_b64.split(",")[1])
+            img = PILImage.open(BytesIO(img_data))
+            img_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
+            img.save(img_path)
+            img_w = W * 0.52
+            img_h = img_w * img.height / img.width
+            if img_h > draw_y - 30*mm:
+                img_h = draw_y - 30*mm
+                img_w = img_h * img.width / img.height
+            c.drawImage(img_path, 10*mm, draw_y - img_h, width=img_w, height=img_h,
+                        preserveAspectRatio=True, mask='auto')
+            draw_x_right = 10*mm + img_w + 6*mm
+        except Exception as ex:
+            print(f"[malha_pdf] Erro imagem canvas: {ex}")
+            draw_x_right = 10*mm
+    else:
+        draw_x_right = 10*mm
+
+    # ── Materiais (tabela à direita) ──
+    total  = summary.get("hastes", 0)
+    metros = summary.get("metros_cabo", 0)
+    mat_rows = [
+        ("Haste de Aterramento", f"{total}"),
+        ("Conector Fio-Haste",   f"{total}"),
+        ("Conector Fio-Fio",    "1"),
+        ("Cabo de Cobre",       f"{metros}m"),
+    ]
+    tx = draw_x_right
+    ty = iy - 5*mm
+    c.setFont("Helvetica-Bold", 8)
+    c.setFillColorRGB(0.05, 0.28, 0.63)
+    c.drawString(tx, ty, "MATERIAIS NECESSÁRIOS")
+    ty -= 5*mm
+    c.setFillColorRGB(0.05, 0.28, 0.63)
+    c.rect(tx, ty - 1*mm, W - tx - 10*mm, 6*mm, fill=1, stroke=0)
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica-Bold", 7)
+    c.drawString(tx + 2*mm, ty + 1*mm, "Material")
+    c.drawRightString(W - 12*mm, ty + 1*mm, "Qtd")
+    ty -= 6*mm
+    for i, (mat, qtd) in enumerate(mat_rows):
+        bg = (0.95, 0.97, 1.0) if i % 2 == 0 else (1, 1, 1)
+        c.setFillColorRGB(*bg)
+        c.rect(tx, ty - 1*mm, W - tx - 10*mm, 5.5*mm, fill=1, stroke=0)
+        c.setFillColorRGB(0.05, 0.1, 0.18)
+        c.setFont("Helvetica", 7.5)
+        c.drawString(tx + 2*mm, ty + 1*mm, mat)
+        c.setFont("Helvetica-Bold", 8)
+        c.drawRightString(W - 12*mm, ty + 1*mm, qtd)
+        ty -= 5.5*mm
+
+    # ── Assinatura ──
+    if sig_b64 and "," in sig_b64:
+        try:
+            sig_data = base64.b64decode(sig_b64.split(",")[1])
+            sig = PILImage.open(BytesIO(sig_data))
+            sig_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
+            sig.save(sig_path)
+            sig_w = 55*mm; sig_h = sig_w * sig.height / sig.width
+            sig_y = 18*mm
+            c.drawImage(sig_path, tx, sig_y, width=sig_w, height=sig_h,
+                        preserveAspectRatio=True, mask='auto')
+            c.setFont("Helvetica", 7)
+            c.setFillColorRGB(0.3, 0.3, 0.3)
+            c.drawString(tx, 14*mm, f"Encarregado: {enc} — {data_f}")
+        except Exception as ex:
+            print(f"[malha_pdf] Erro assinatura: {ex}")
+
+    # ── Rodapé ──
+    c.setFillColorRGB(0.05, 0.28, 0.63)
+    c.rect(0, 0, W, 10*mm, fill=1, stroke=0)
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica", 7)
+    from datetime import datetime as _dt
+    c.drawString(10*mm, 3.5*mm, f"HAGAP Instalações Elétricas — Emitido em {_dt.now().strftime('%d/%m/%Y %H:%M')}")
+    c.drawRightString(W - 10*mm, 3.5*mm, "Relatório de Malha de Aterramento")
+
+    c.save()
+    return tmp.name
+
+
 @app.route("/malha/exportar", methods=["POST"])
 def malha_exportar_pdf():
-    from weasyprint import HTML as WeasyprintHTML
-    from jinja2 import Template
-    import tempfile
     dados = request.get_json()
     if not dados:
         return jsonify({"erro": "Nenhum dado recebido"}), 400
-    template_str = open(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "pdf_report.html"),
-        "r", encoding="utf-8"
-    ).read()
-    html_content = Template(template_str).render(
-        titulo=dados.get("titulo", "Projeto sem nome"),
-        cliente=dados.get("cliente", ""),
-        local=dados.get("local", ""),
-        cidade=dados.get("cidade", ""),
-        num_poste=dados.get("num_poste", ""),
-        points=dados.get("points", []),
-        summary=dados.get("summary", {})
-    )
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-        WeasyprintHTML(string=html_content).write_pdf(tmp.name)
-        tmp_path = tmp.name
-    return send_file(tmp_path, mimetype="application/pdf", as_attachment=True,
-                     download_name="relatorio_malha_terra.pdf")
+    try:
+        tmp_path = _malha_gerar_pdf_reportlab(dados)
+        return send_file(tmp_path, mimetype="application/pdf", as_attachment=True,
+                         download_name="relatorio_malha_terra.pdf")
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"erro": str(e)}), 500
 
 @app.route("/malha/enviar_email", methods=["POST"])
 def malha_enviar_email():
-    """Gera PDF da malha de aterramento e envia por e-mail (mesmas variaveis do boletim)."""
-    try:
-        import smtplib, tempfile
-        from weasyprint import HTML as WeasyprintHTML
-        from jinja2 import Template
-        from email.mime.multipart import MIMEMultipart
-        from email.mime.text import MIMEText
-        from email.mime.base import MIMEBase
-        from email import encoders
-    except ImportError as e:
-        return jsonify({"erro": f"Dependencia ausente no servidor: {e}"}), 500
+    """Gera PDF da malha de aterramento com ReportLab e envia por e-mail."""
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.mime.base import MIMEBase
+    from email import encoders
 
     dados = request.get_json()
     if not dados:
@@ -542,27 +667,9 @@ def malha_enviar_email():
     ]
     DESTINATARIOS = [e for e in DESTINATARIOS if e.strip()]
 
+    # Gera PDF com ReportLab (sem WeasyPrint)
     try:
-        template_str = open(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "pdf_report.html"),
-            "r", encoding="utf-8"
-        ).read()
-    except FileNotFoundError:
-        return jsonify({"erro": "Template pdf_report.html nao encontrado no servidor."}), 500
-
-    try:
-        html_content = Template(template_str).render(
-            titulo=dados.get("titulo", "Malha de Aterramento"),
-            cliente=dados.get("cliente", ""),
-            local=dados.get("local", ""),
-            cidade=dados.get("cidade", ""),
-            num_poste=dados.get("num_poste", ""),
-            points=dados.get("points", []),
-            summary=dados.get("summary", {})
-        )
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-            WeasyprintHTML(string=html_content).write_pdf(tmp.name)
-            tmp_path = tmp.name
+        tmp_path = _malha_gerar_pdf_reportlab(dados)
     except Exception as e:
         import traceback
         print(f"[malha_email] Erro ao gerar PDF: {traceback.format_exc()}")

@@ -150,7 +150,10 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
    ██ PRINT / PDF ██
 ═══════════════════════════════════ */
 #pdfPage{display:none}
-@media print{ body{display:none!important} }
+@media print{
+  body > *:not(#pdfPage){ display:none!important }
+  #pdfPage{ display:block!important; margin:0; padding:0; }
+}
 
 /* — PDF Page — */
 #pdfPage{font-family:'Segoe UI',system-ui,sans-serif;background:#fff;color:#0d1a2a}
@@ -497,7 +500,7 @@ const cx=CV.getContext('2d');
 
 function resize(){
   const w=CV.parentElement.clientWidth;
-  CV.width=w; CV.height=w;
+  CV.width=w; CV.height=Math.min(w, 440);
   CELL=w/GRID;
   render();
 }
@@ -1103,7 +1106,7 @@ function doPrint(){
   render(true);
   const snapPDF = CV.toDataURL('image/png', 1.0);
   // Restaura tamanho original
-  CV.width = origW || window.innerWidth; CV.height = origH || window.innerWidth; CELL = origCELL;
+  CV.width = origW || window.innerWidth; CV.height = origH || Math.min(window.innerWidth, 440); CELL = origCELL;
   render(false); // restaura versão escura
 
   // Fill PDF data
@@ -1175,7 +1178,14 @@ async function doSendEmail(){
   const btn=document.getElementById('btnEmail');
   btn.disabled=true;btn.textContent='⏳ Enviando…';
   try{
-    // Monta payload igual ao exportar
+    /* Captura canvas em alta resolução (fundo branco) para PDF no servidor */
+    const _oW=CV.width,_oH=CV.height,_oC=CELL;
+    CV.width=900;CV.height=900;CELL=900/GRID;
+    render(true);
+    const canvasImg=CV.toDataURL('image/png',1.0);
+    CV.width=_oW;CV.height=_oH;CELL=_oC;render(false);
+    const scEl=document.getElementById('sc');
+    const sigImg=scEl?scEl.toDataURL():'';
     const allNodes=[...G.nodes.values()];
     const hastes=allNodes.filter(n=>n.type==='haste').length;
     const total=hastes+(G.hasPoste?1:0);
@@ -1199,7 +1209,9 @@ async function doSendEmail(){
       rede_dir: REDE_DIR,
       espacamento: G_SPACING,
       points,
-      summary:{ pontos: allNodes.length, hastes: total, metros_cabo: metros }
+      summary:{ pontos: allNodes.length, hastes: total, metros_cabo: metros },
+      canvas_img: canvasImg,
+      sig_img: sigImg
     };
     const res=await fetch('/malha/enviar_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const ct=res.headers.get('content-type')||'';
