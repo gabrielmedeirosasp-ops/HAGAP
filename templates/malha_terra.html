@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/GQM6AHbcGQ02UO9V9o56RCEoLLZhafhw/b3bde930-e0a3-4017-9580-71e835a6070d/files/">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Malha de Aterramento — HACAP</title>
@@ -218,7 +218,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 <!-- HEADER -->
 <div class="hdr no-print">
   <div class="logo-box">
-    <img src="static/logo.png" id="headerLogo" alt="Logo"
+    <img src="/static/logo.png" id="headerLogo" alt="Logo"
          onerror="this.style.display='none';document.getElementById('logoPlaceholder').style.display='block'">
     <div class="logo-placeholder" id="logoPlaceholder" style="display:none">HACAP<br>logo</div>
   </div>
@@ -427,7 +427,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 <div id="pdfPage">
   <div class="pdf-hdr">
     <div class="pdf-hdr-logo">
-      <img src="static/logo.png" alt="HACAP"
+      <img src="/static/logo.png" alt="HACAP"
            onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#fff;font-size:.7rem;font-weight:800\'>HACAP</span>'">
     </div>
     <div class="pdf-hdr-body">
@@ -1448,16 +1448,22 @@ async function doSendEmail(){
       points,summary:{pontos:allNodes.length,hastes:total,metros_cabo:metros},
       canvas_img:canvasImg,sig_img:sigImg
     };
-    const res=await fetch('/malha/enviar_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    let res;
+    try{
+      res=await fetch('/malha/enviar_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }catch(netErr){
+      // Falha de rede / CORS / rota inexistente
+      throw new Error('Não foi possível conectar ao servidor. Verifique se a rota /malha/enviar_email existe no backend do Render e se as variáveis EMAIL_REMETENTE e EMAIL_SENHA estão configuradas nas Environment Variables.');
+    }
     const ct=res.headers.get('content-type')||'';
     if(!ct.includes('application/json')){
       const txt=await res.text();
-      throw new Error('Servidor retornou status '+res.status+'. Verifique as variáveis EMAIL_REMETENTE e EMAIL_SENHA no Render.');
+      throw new Error(`Servidor retornou HTTP ${res.status}. Resposta: ${txt.substring(0,120)}… — Verifique as variáveis EMAIL_REMETENTE e EMAIL_SENHA no Render.`);
     }
     const json=await res.json();
     if(res.ok) toast('✅ E-mail enviado com sucesso!','ok');
-    else toast('❌ Erro: '+(json.erro||'Falha no envio'),'err');
-  }catch(e){toast('❌ Erro de conexão: '+e.message,'err');}
+    else toast('❌ Erro: '+(json.erro||json.error||'Falha no envio'),'err');
+  }catch(e){toast('❌ '+e.message,'err');console.error('[enviarEmail]',e);}
   finally{btn.disabled=false;btn.textContent='📧 Enviar E-mail';}
 }
 
