@@ -233,6 +233,18 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
 .spinner{width:32px;height:32px;border:3px solid #eee;border-top-color:var(--navy2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* ── MODAL MAT ── */
+.mat-modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;}
+.mat-modal-ov.open{display:flex;}
+.mat-modal-wrap{background:#fff;border-radius:16px;width:95vw;max-width:1100px;height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;}
+.mat-modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(135deg,#1b5e20,#2E7D32);color:#fff;flex-shrink:0;}
+.mat-modal-header h3{margin:0;font-size:15px;display:flex;align-items:center;gap:8px;}
+.mat-modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.mat-modal-close:hover{background:rgba(255,255,255,.35);}
+.mat-modal-iframe{flex:1;border:none;width:100%;}
+.btn-mat{background:#1b5e20;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;margin-left:8px;display:inline-flex;align-items:center;gap:4px;transition:background .2s;}
+.btn-mat:hover{background:#2E7D32;}
+
 /* ── TOAST ── */
 .toast{position:fixed;bottom:22px;right:20px;padding:12px 20px;border-radius:9px;z-index:999;font-size:12.5px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .28s;max-width:320px;}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -263,6 +275,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
       <button class="btn btn-ghost btn-sm" onclick="limparFormulario()">🔄 Limpar</button>
       <button class="btn btn-ghost btn-sm" onclick="salvarRascunho()">💾 Rascunho</button>
       <button class="btn btn-yellow btn-sm" onclick="irParaExportar()">📄 Exportar BDO</button>
+      <button class="btn btn-success btn-sm" onclick="abrirModalMAT()">⚡ MAT</button>
     </div>
   </div>
   <div class="prog-wrap">
@@ -598,6 +611,17 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
   </div>
 </div>
 
+<!-- ── MODAL MAT ── -->
+<div class="mat-modal-ov" id="modal-mat">
+  <div class="mat-modal-wrap">
+    <div class="mat-modal-header">
+      <h3>⚡ MAT — Malha de Aterramento</h3>
+      <button class="mat-modal-close" onclick="fecharModalMAT()">✕</button>
+    </div>
+    <iframe class="mat-modal-iframe" id="mat-iframe" src="" title="MAT - Malha de Aterramento"></iframe>
+  </div>
+</div>
+
 <div class="toast info" id="toast"></div>
 
 <script>
@@ -642,6 +666,7 @@ function buildServicos() {
       <div class="srv-top">
         <input type="checkbox" class="srv-chk" id="chk-${s.id}" onchange="toggleServico('${s.id}')">
         <label class="srv-lbl" for="chk-${s.id}">${s.emoji} ${s.label}</label>
+        ${s.id==='malha' ? '<button class="btn-mat" onclick="abrirModalMAT()">🗺️ Abrir MAT</button>' : ''}
       </div>
       <div class="srv-qty">
         <input type="${s.qty}" id="qty-${s.id}" placeholder="${s.ph}"
@@ -1354,6 +1379,29 @@ async function compartilharWhatsApp() {
 // ═══════════════════════════════════════════════════
 //  IMPRIMIR
 // ═══════════════════════════════════════════════════
+// ── MODAL MAT ──
+function abrirModalMAT() {
+  const modal = document.getElementById('modal-mat');
+  const iframe = document.getElementById('mat-iframe');
+  if (!iframe.src || iframe.src === window.location.href) {
+    iframe.src = '/malha';
+  }
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function fecharModalMAT() {
+  document.getElementById('modal-mat').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Fechar com ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') fecharModalMAT();
+});
+// Fechar clicando fora
+document.getElementById('modal-mat')?.addEventListener('click', function(e){
+  if(e.target === this) fecharModalMAT();
+});
+
 function imprimirBDO() {
   const el = document.getElementById('bdo-preview-box');
   if (!el || !el.innerHTML.trim()) {

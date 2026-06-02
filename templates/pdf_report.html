@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 20mm 15mm;
+        }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            color: #1a1a2e;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2E7D32;
+        }
+        .header h1 {
+            color: #1b5e20;
+            font-size: 22px;
+            margin: 0 0 6px;
+        }
+        .header p {
+            color: #555;
+            font-size: 12px;
+            margin: 2px 0;
+        }
+        .info-grid {
+            display: flex;
+            justify-content: space-between;
+            background: #f5f5f5;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+        .info-grid div { text-align: center; flex: 1; }
+        .info-grid strong { display: block; color: #1b5e20; font-size: 13px; }
+
+        .diagram {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .diagram svg {
+            max-width: 100%;
+            height: auto;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 12px;
+        }
+        th {
+            background: #2E7D32;
+            color: #fff;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+        }
+        .badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2E7D32;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Relatório de Malha de Terra</h1>
+        <p>{{ titulo }}</p>
+    </div>
+
+    <div class="info-grid">
+        <div>
+            <strong>{{ cliente if cliente else '—' }}</strong>
+            Fiscal / Responsável
+        </div>
+        <div>
+            <strong>{{ local if local else '—' }}</strong>
+            Local / Poste
+        </div>
+        <div>
+            <strong>{{ cidade if cidade else '—' }}</strong>
+            Cidade
+        </div>
+        <div>
+            <strong>{{ num_poste if num_poste else '—' }}</strong>
+            Nº do Poste
+        </div>
+    </div>
+
+    <div class="diagram">
+        <svg viewBox="0 0 800 500" width="800" height="500">
+            {% if points|length > 0 %}
+                {% for p in points %}
+                    {% set r = 18 if p.tipo == 'Poste' else 14 %}
+                    {% set fill = '#1565C0' if p.tipo == 'Poste' else '#2E7D32' %}
+                    {% set stroke = '#42A5F5' if p.tipo == 'Poste' else '#66BB6A' %}
+
+                    <!-- Glow -->
+                    <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="{{ r + 10 }}" fill="{{ fill }}" opacity="0.12"/>
+
+                    <!-- Circle -->
+                    <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="{{ r }}" fill="{{ fill }}" stroke="{{ stroke }}" stroke-width="2"/>
+
+                    <!-- ID -->
+                    <text x="{{ p.cx }}" y="{{ p.cy }}" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" dominant-baseline="central">{{ p.id }}</text>
+
+                    <!-- Resistance -->
+                    {% if p.resistencia is not none %}
+                    <text x="{{ p.cx }}" y="{{ p.cy + r + 14 }}" fill="#c62828" font-size="10" text-anchor="middle">{{ p.resistencia }} Ω</text>
+                    {% endif %}
+                {% endfor %}
+
+                {% for i in range(1, points|length) %}
+                    {% set a = points[i-1] %}
+                    {% set b = points[i] %}
+                    <line x1="{{ a.cx }}" y1="{{ a.cy }}" x2="{{ b.cx }}" y2="{{ b.cy }}" stroke="#4CAF50" stroke-width="3" stroke-dasharray="8,6"/>
+                    <text x="{{ (a.cx + b.cx) / 2 }}" y="{{ (a.cy + b.cy) / 2 - 6 }}" fill="#888" font-size="10" text-anchor="middle">10m</text>
+                {% endfor %}
+            {% else %}
+                <text x="400" y="250" fill="#aaa" font-size="16" text-anchor="middle">Nenhum ponto adicionado</text>
+            {% endif %}
+        </svg>
+    </div>
+
+    {% if points %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Resistência (Ω)</th>
+            <th>Distância do Anterior</th>
+        </tr>
+        {% for p in points %}
+        <tr>
+            <td><strong>{{ p.id }}</strong></td>
+            <td><span class="badge">{{ p.tipo }}</span></td>
+            <td>{% if p.resistencia is not none %}{{ p.resistencia }}{% else %}—{% endif %}</td>
+            <td>{% if loop.index > 1 %}10m{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <div class="footer">
+        <p>
+            📍 {{ summary.pontos }} ponto(s) &nbsp;·&nbsp;
+            🔩 {{ summary.hastes }} haste(s) &nbsp;·&nbsp;
+            📏 {{ summary.metros_cabo }}m de cabo
+        </p>
+        <p>Relatório gerado automaticamente — Ground Grid Designer</p>
+    </div>
+</body>
+</html>

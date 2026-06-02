@@ -477,6 +477,40 @@ def index():
 @app.route("/boletim")
 def boletim():
     return send_from_directory("templates", "boletim.html")
+
+# ───────────────────────────────────────────────────────────────────
+#  MAT — Malha de Aterramento
+# ───────────────────────────────────────────────────────────────────
+@app.route("/malha")
+def malha_terra():
+    return send_from_directory("templates", "malha_terra.html")
+
+@app.route("/malha/exportar", methods=["POST"])
+def malha_exportar_pdf():
+    from weasyprint import HTML as WeasyprintHTML
+    from jinja2 import Template
+    import tempfile
+    dados = request.get_json()
+    if not dados:
+        return jsonify({"erro": "Nenhum dado recebido"}), 400
+    template_str = open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "pdf_report.html"),
+        "r", encoding="utf-8"
+    ).read()
+    html_content = Template(template_str).render(
+        titulo=dados.get("titulo", "Projeto sem nome"),
+        cliente=dados.get("cliente", ""),
+        local=dados.get("local", ""),
+        cidade=dados.get("cidade", ""),
+        num_poste=dados.get("num_poste", ""),
+        points=dados.get("points", []),
+        summary=dados.get("summary", {})
+    )
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        WeasyprintHTML(string=html_content).write_pdf(tmp.name)
+        tmp_path = tmp.name
+    return send_file(tmp_path, mimetype="application/pdf", as_attachment=True,
+                     download_name="relatorio_malha_terra.pdf")
 # ─────────────────────────────────────────────────────────────────────
 #  API: dados
 # ─────────────────────────────────────────────────────────────────────
