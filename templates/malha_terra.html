@@ -155,6 +155,29 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   .no-print,.hdr,.wbar,.btn-nav,.c-toolbar,.c-status,.c-legend,.stats-bar,.sig-wrap .sig-clr{display:none!important}
   .page{display:none!important}
   #pdfPage{display:block!important}
+  /* ── Cabe em uma folha A4 ── */
+  @page{size:A4 portrait;margin:7mm}
+  #pdfPage{font-size:.78rem}
+  .pdf-hdr{padding:0}
+  .pdf-hdr-body h1{font-size:.9rem}
+  .pdf-hdr-body p{font-size:.6rem}
+  .pdf-body{padding:7px 14px}
+  .pdf-sec{margin:7px 0 4px;font-size:.62rem}
+  .pdf-drawing img{max-height:195px!important;width:auto!important;max-width:100%!important;display:block;margin:0 auto}
+  .pdf-drawing-caption{font-size:.58rem}
+  .pdf-legend{margin-bottom:2px;gap:10px}
+  .pdf-leg-item{font-size:.58rem}
+  .pdf-mat th,.pdf-mat td{padding:4px 8px!important;font-size:.72rem}
+  .pdf-trafo-grid{gap:5px}
+  .pdf-trafo-item .tv{font-size:.72rem}
+  .pdf-sig-area{margin-top:4px}
+  .pdf-sig-img{height:48px!important}
+  .pdf-sig-line{font-size:.6rem}
+  .pdf-info{grid-template-columns:repeat(3,1fr)!important}
+  .pdf-info-cell{padding:6px 10px}
+  .pdf-info-label{font-size:.52rem}
+  .pdf-info-val{font-size:.78rem}
+  .pdf-footer{padding:5px 14px;font-size:.55rem;margin-top:8px}
 }
 
 /* — PDF Page — */
@@ -169,7 +192,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-hdr-stamp .stamp-num{font-size:1rem;font-weight:800;color:#fff}
 .pdf-hdr-stamp .stamp-lbl{font-size:.6rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px}
 
-.pdf-info{display:grid;grid-template-columns:repeat(4,1fr);background:#f0f6ff;border-bottom:2px solid #1565C0}
+.pdf-info{display:grid;grid-template-columns:repeat(3,1fr);background:#f0f6ff;border-bottom:2px solid #1565C0}
 .pdf-info-cell{padding:9px 14px;border-right:1px solid #d0dff5}
 .pdf-info-cell:last-child{border-right:none}
 .pdf-info-label{font-size:.58rem;color:#5577aa;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:2px}
@@ -237,6 +260,10 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
     <div class="ctitle">📋 Identificação do Serviço</div>
     <div class="r2">
       <div class="field"><label>Encarregado ★</label><input id="enc" placeholder="Nome completo" autocomplete="name"></div>
+      <div class="field"><label>Fiscal ★</label><input id="fiscal" placeholder="Nome do fiscal" autocomplete="name"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Cidade ★</label><input id="cidade" placeholder="Ex: Curitiba"></div>
       <div class="field"><label>Data ★</label><input id="data" type="date"></div>
     </div>
     <div class="r2">
@@ -366,6 +393,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   <div class="btn-nav no-print">
     <button class="btn btn-s" onclick="goStep(2)">← Voltar</button>
     <button class="btn btn-p" onclick="doPrint()">🖨️ Gerar PDF</button>
+    <button class="btn btn-bl" onclick="doSendEmail()" id="btnEmail">📧 Enviar E-mail</button>
     <button class="btn btn-s" style="flex:0;white-space:nowrap" onclick="resetAll()">🔄 Nova</button>
   </div>
 </div>
@@ -394,6 +422,8 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   <!-- INFO STRIP -->
   <div class="pdf-info">
     <div class="pdf-info-cell"><div class="pdf-info-label">Encarregado</div><div class="pdf-info-val" id="pEnc">—</div></div>
+    <div class="pdf-info-cell"><div class="pdf-info-label">Fiscal</div><div class="pdf-info-val" id="pFiscal">—</div></div>
+    <div class="pdf-info-cell"><div class="pdf-info-label">Cidade</div><div class="pdf-info-val" id="pCidade">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Nº do Poste</div><div class="pdf-info-val" id="pPoste">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Data</div><div class="pdf-info-val" id="pData">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Resistência</div><div class="pdf-info-val" id="pResist">—</div></div>
@@ -437,7 +467,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
       </div>
       <div style="flex:1"></div>
       <div style="text-align:center;flex:1">
-        <div style="border-top:1px solid #333;margin-top:70px;padding-top:4px;font-size:.68rem;color:#555">Fiscalização / COPEL</div>
+        <div style="border-top:1px solid #333;margin-top:70px;padding-top:4px;font-size:.68rem;color:#555">Fiscal: <span id="pdfFiscalSig"></span> — COPEL</div>
       </div>
     </div>
   </div>
@@ -1010,7 +1040,7 @@ function goStep(n){
 }
 
 function toStep2(){
-  if(!fv('enc')||!fv('data')||!fv('poste')||!fv('resist')){
+  if(!fv('enc')||!fv('fiscal')||!fv('cidade')||!fv('data')||!fv('poste')||!fv('resist')){
     toast('Preencha todos os campos obrigatórios ★','err');return;
   }
   const hasT=document.getElementById('togTrafo').checked;
@@ -1027,6 +1057,8 @@ function toStep3(){
   // Chips
   document.getElementById('chips3').innerHTML=`
     <div class="chip"><div class="chip-l">Encarregado</div><div class="chip-v">${fv('enc')}</div></div>
+    <div class="chip"><div class="chip-l">Fiscal</div><div class="chip-v">${fv('fiscal')}</div></div>
+    <div class="chip"><div class="chip-l">Cidade</div><div class="chip-v">${fv('cidade')}</div></div>
     <div class="chip"><div class="chip-l">Data</div><div class="chip-v">${fmtD(fv('data'))}</div></div>
     <div class="chip"><div class="chip-l">Poste</div><div class="chip-v">${fv('poste')}</div></div>
     <div class="chip"><div class="chip-l">Resistência</div><div class="chip-v">${fv('resist')} Ω</div></div>
@@ -1101,10 +1133,13 @@ function doPrint(){
 
   // Fill PDF data
   document.getElementById('pEnc').textContent=fv('enc');
+  document.getElementById('pFiscal').textContent=fv('fiscal');
+  document.getElementById('pCidade').textContent=fv('cidade');
   document.getElementById('pPoste').textContent=fv('poste');
   document.getElementById('pData').textContent=fmtD(fv('data'));
   document.getElementById('pResist').textContent=fv('resist')+' Ω';
   document.getElementById('pdfPosteTag').textContent=fv('poste')||'—';
+  document.getElementById('pdfFiscalSig').textContent=fv('fiscal')||'—';
   document.getElementById('pdfSnap').src=snapPDF;
 
   // Drawing caption
@@ -1143,7 +1178,7 @@ function doPrint(){
   document.getElementById('pdfSigImg').src=sc.toDataURL();
   document.getElementById('pdfSigName').textContent=`Encarregado: ${fv('enc')} — ${fmtD(fv('data'))}`;
 
-  document.getElementById('pdfFooterDate').textContent='Emitido em '+fmtD(fv('data'));
+  document.getElementById('pdfFooterDate').textContent='Emitido em '+new Date().toLocaleDateString('pt-BR');
 
   // Aguarda o browser renderizar a imagem base64 antes de imprimir
   const snapEl = document.getElementById('pdfSnap');
@@ -1158,13 +1193,58 @@ function doPrint(){
 }
 
 // ══════════════════════════════════════════════════
+// SEND EMAIL
+// ══════════════════════════════════════════════════
+async function doSendEmail(){
+  if(!G.hasPoste){toast('Posicione o poste no desenho primeiro','err');return;}
+  const btn=document.getElementById('btnEmail');
+  btn.disabled=true;btn.textContent='⏳ Enviando…';
+  try{
+    // Monta payload igual ao exportar
+    const allNodes=[...G.nodes.values()];
+    const hastes=allNodes.filter(n=>n.type==='haste').length;
+    const total=hastes+(G.hasPoste?1:0);
+    const metros=G.edges.length*G_SPACING;
+    const points=allNodes.map((n,i)=>({
+      id: n.type==='poste'?'P':(n.type==='trafo'?'TR':'H'+(i)),
+      tipo: n.type==='poste'?'Poste':(n.type==='trafo'?'Trafo':'Haste'),
+      cx: Math.round((n.c+0.5)*80),
+      cy: Math.round((n.r+0.5)*80),
+      resistencia: n.type==='poste'?parseFloat(fv('resist'))||null:null
+    }));
+    const payload={
+      titulo: `Malha de Aterramento — Poste ${fv('poste')} — ${fmtD(fv('data'))}`,
+      cliente: fv('fiscal'),
+      local: fv('poste'),
+      cidade: fv('cidade'),
+      num_poste: fv('poste'),
+      encarregado: fv('enc'),
+      data: fv('data'),
+      resistencia: fv('resist'),
+      rede_dir: REDE_DIR,
+      espacamento: G_SPACING,
+      points,
+      summary:{ pontos: allNodes.length, hastes: total, metros_cabo: metros }
+    };
+    const res=await fetch('/malha/enviar_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const json=await res.json();
+    if(res.ok) toast('✅ E-mail enviado com sucesso!','ok');
+    else toast('❌ Erro: '+(json.erro||'Falha no envio'),'err');
+  } catch(e){
+    toast('❌ Erro de conexão: '+e.message,'err');
+  } finally{
+    btn.disabled=false;btn.textContent='📧 Enviar E-mail';
+  }
+}
+
+// ══════════════════════════════════════════════════
 // RESET
 // ══════════════════════════════════════════════════
 function resetAll(){
   if(!confirm('Iniciar nova malha? Os dados serão perdidos.')) return;
   G.nodes.clear();G.edges=[];G.hist=[];G.hasPoste=false;
   REDE_DIR='none';G_SPACING=10;
-  document.querySelectorAll('input').forEach(i=>{if(i.type!=='checkbox')i.value='';});
+  document.querySelectorAll('input[type!=checkbox]').forEach(i=>i.value='');
   document.getElementById('togTrafo').checked=false;
   document.getElementById('trafoBox').style.display='none';
   document.getElementById('data').value=new Date().toISOString().split('T')[0];

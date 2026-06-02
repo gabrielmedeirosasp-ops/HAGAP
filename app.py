@@ -511,6 +511,111 @@ def malha_exportar_pdf():
         tmp_path = tmp.name
     return send_file(tmp_path, mimetype="application/pdf", as_attachment=True,
                      download_name="relatorio_malha_terra.pdf")
+
+@app.route("/malha/enviar_email", methods=["POST"])
+def malha_enviar_email():
+    """Gera PDF da malha de aterramento e envia por e-mail (mesmas variaveis do boletim)."""
+    import smtplib, tempfile
+    from weasyprint import HTML as WeasyprintHTML
+    from jinja2 import Template
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.mime.base import MIMEBase
+    from email import encoders
+
+    dados = request.get_json()
+    if not dados:
+        return jsonify({"erro": "Nenhum dado recebido"}), 400
+
+    remetente = os.environ.get("EMAIL_REMETENTE", "")
+    senha     = os.environ.get("EMAIL_SENHA", "")
+    if not remetente or not senha:
+        return jsonify({"erro": "Variaveis EMAIL_REMETENTE e EMAIL_SENHA nao configuradas no Render"}), 500
+
+    DESTINATARIOS = [
+        "gabrielmedeirosasp@gmail.com",
+        os.environ.get("EMAIL_EXTRA_1", ""),
+        os.environ.get("EMAIL_EXTRA_2", ""),
+    ]
+    DESTINATARIOS = [e for e in DESTINATARIOS if e.strip()]
+
+    template_str = open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "pdf_report.html"),
+        "r", encoding="utf-8"
+    ).read()
+    html_content = Template(template_str).render(
+        titulo=dados.get("titulo", "Malha de Aterramento"),
+        cliente=dados.get("cliente", ""),
+        local=dados.get("local", ""),
+        cidade=dados.get("cidade", ""),
+        num_poste=dados.get("num_poste", ""),
+        points=dados.get("points", []),
+        summary=dados.get("summary", {})
+    )
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        WeasyprintHTML(string=html_content).write_pdf(tmp.name)
+        tmp_path = tmp.name
+
+    poste   = dados.get("num_poste", "—")
+    fiscal  = dados.get("cliente", "—")
+    enc     = dados.get("encarregado", "—")
+    cidade  = dados.get("cidade", "—")
+    data_f  = dados.get("data", "") or ""
+    resist  = dados.get("resistencia", "—")
+    summary = dados.get("summary", {})
+
+    corpo_html = f"""
+    <html><body style="font-family:Arial,sans-serif;color:#0d1b3e;margin:0;padding:20px;background:#e8f5e9;">
+    <div style="max-width:640px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15);">
+      <div style="background:linear-gradient(135deg,#1b5e20 0%,#2e7d32 100%);color:white;padding:20px 24px;">
+        <h2 style="margin:0;font-size:18px;font-weight:800;">&#x26A1; Malha de Aterramento &mdash; Vistoria de Campo</h2>
+        <p style="margin:4px 0 0;font-size:12px;opacity:.7;">HAGAP Instalacoes Eletricas &mdash; Registro de Campo</p>
+      </div>
+      <div style="background:#fff;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:13px;">
+          <tr style="background:#f1f8e9;"><td style="padding:10px 16px;font-weight:700;color:#33691e;border-bottom:1px solid #dcedc8;width:38%;">&#x1F4CD; Cidade</td><td style="padding:10px 16px;border-bottom:1px solid #dcedc8;font-weight:600;">{cidade}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#33691e;border-bottom:1px solid #dcedc8;">&#x1F4CC; No do Poste</td><td style="padding:10px 16px;border-bottom:1px solid #dcedc8;">{poste}</td></tr>
+          <tr style="background:#f1f8e9;"><td style="padding:10px 16px;font-weight:700;color:#33691e;border-bottom:1px solid #dcedc8;">&#x1F477; Encarregado</td><td style="padding:10px 16px;border-bottom:1px solid #dcedc8;">{enc}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#33691e;border-bottom:1px solid #dcedc8;">&#x1F4CB; Fiscal</td><td style="padding:10px 16px;border-bottom:1px solid #dcedc8;">{fiscal}</td></tr>
+          <tr style="background:#f1f8e9;"><td style="padding:10px 16px;font-weight:700;color:#33691e;border-bottom:1px solid #dcedc8;">&#x1F4C5; Data</td><td style="padding:10px 16px;border-bottom:1px solid #dcedc8;">{data_f}</td></tr>
+          <tr><td style="padding:10px 16px;font-weight:700;color:#33691e;border-bottom:1px solid #dcedc8;">Resistencia</td><td style="padding:10px 16px;border-bottom:1px solid #dcedc8;">{resist} Ohm</td></tr>
+          <tr style="background:#f1f8e9;"><td style="padding:10px 16px;font-weight:700;color:#33691e;">&#x1F527; Materiais</td><td style="padding:10px 16px;">{summary.get('hastes',0)} haste(s) &nbsp;&middot;&nbsp; {summary.get('metros_cabo',0)}m de cabo</td></tr>
+        </table>
+      </div>
+      <div style="background:#1b5e20;color:white;padding:10px 16px;font-size:11px;text-align:center;">
+        &#x26A1; HAGAP Instalacoes Eletricas &mdash; PDF completo em anexo &mdash; {datetime.now().strftime('%d/%m/%Y %H:%M')}
+      </div>
+    </div>
+    </body></html>
+    """
+
+    filename = f"malha_aterramento_{poste}_{data_f}.pdf"
+    msg = MIMEMultipart("mixed")
+    msg["Subject"] = f"Malha de Aterramento - Poste {poste} - {cidade} | HAGAP"
+    msg["From"]    = remetente
+    msg["To"]      = ", ".join(DESTINATARIOS)
+
+    msg_alt = MIMEMultipart("alternative")
+    msg_alt.attach(MIMEText(corpo_html, "html", "utf-8"))
+    msg.attach(msg_alt)
+
+    with open(tmp_path, "rb") as f:
+        parte = MIMEBase("application", "pdf")
+        parte.set_payload(f.read())
+    encoders.encode_base64(parte)
+    parte.add_header("Content-Disposition", f'attachment; filename="{filename}"')
+    msg.attach(parte)
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as smtp:
+            smtp.login(remetente, senha)
+            smtp.sendmail(remetente, DESTINATARIOS, msg.as_string())
+        print(f"[malha_email] Enviado para {DESTINATARIOS}")
+        return jsonify({"ok": True, "destinatarios": DESTINATARIOS})
+    except Exception as e:
+        print(f"[malha_email] Erro SMTP: {e}")
+        return jsonify({"erro": str(e)}), 500
+
 # ─────────────────────────────────────────────────────────────────────
 #  API: dados
 # ─────────────────────────────────────────────────────────────────────
