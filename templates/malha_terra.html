@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/GQM6AHbcGQ02UO9V9o56RCEoLLZhafhw/b3bde930-e0a3-4017-9580-71e835a6070d/files/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Malha de Aterramento — HACAP</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-/* ═══════════════════════════════════ BASE ═══════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#0d1621;--navy2:#111d2e;--navy3:#162236;
@@ -15,21 +14,14 @@
   --green:#2E7D32;--green2:#43A047;--green3:#66BB6A;--green4:#A5D6A7;
   --orange:#E65100;--orange2:#FF8A65;
   --gold:#FFD54F;--gold2:#F9A825;
+  --purple:#7B1FA2;--purple2:#AB47BC;
   --bord:rgba(255,255,255,.10);--bord2:rgba(255,255,255,.06);
   --txt:#e8f0fe;--mut:#8899bb;
   --rad:14px;
 }
 html,body{background:var(--navy);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;min-height:100%;overflow-x:hidden}
 
-/* ═══ HEADER ═══ */
-.hdr{
-  background:linear-gradient(135deg,#0a1628 0%,#0f2040 100%);
-  border-bottom:1px solid var(--bord);
-  padding:10px 16px;
-  display:flex;align-items:center;gap:12px;
-  position:sticky;top:0;z-index:200;
-  box-shadow:0 2px 20px rgba(0,0,0,.5);
-}
+.hdr{background:linear-gradient(135deg,#0a1628 0%,#0f2040 100%);border-bottom:1px solid var(--bord);padding:10px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.5);}
 .logo-box{height:38px;width:100px;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .logo-box img{max-height:36px;max-width:96px;object-fit:contain}
 .logo-placeholder{font-size:.58rem;color:var(--mut);text-align:center;line-height:1.3;padding:2px}
@@ -39,30 +31,26 @@ html,body{background:var(--navy);color:var(--txt);font-family:'Segoe UI',system-
 .hdr-title p{font-size:.65rem;color:var(--mut);margin-top:1px}
 .hdr-badge{font-size:.68rem;color:var(--blue3);background:rgba(66,165,245,.12);border:1px solid rgba(66,165,245,.25);padding:4px 10px;border-radius:20px;white-space:nowrap}
 
-/* ═══ WIZARD BAR ═══ */
 .wbar{display:flex;background:rgba(255,255,255,.03);border-bottom:1px solid var(--bord);backdrop-filter:blur(8px)}
 .wt{flex:1;padding:9px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.6rem;color:var(--mut);border-bottom:2px solid transparent;transition:.25s}
 .wt .wn{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.7rem}
 .wt.done{color:var(--green3)}.wt.done .wn{background:var(--green);border-color:var(--green);color:#fff}
 .wt.active{color:var(--blue3);border-bottom-color:var(--blue3)}.wt.active .wn{border-color:var(--blue3);color:var(--blue3)}
 
-/* ═══ PAGES ═══ */
 .page{display:none;padding:14px 14px 30px;max-width:700px;margin:0 auto}
 .page.on{display:block}
 
-/* ═══ CARD ═══ */
 .card{background:linear-gradient(135deg,rgba(255,255,255,.055) 0%,rgba(255,255,255,.03) 100%);border:1px solid var(--bord);border-radius:var(--rad);padding:14px;margin-bottom:12px;backdrop-filter:blur(4px)}
 .ctitle{font-size:.8rem;font-weight:700;color:var(--blue4);margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
 
-/* ═══ FIELDS ═══ */
 .field{margin-bottom:10px}
 .field label{display:block;font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:600}
-.field input,.field select{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 13px;color:var(--txt);font-size:.9rem;outline:none;transition:border .2s,box-shadow .2s;-webkit-appearance:none}
-.field input:focus,.field select:focus{border-color:var(--blue3);box-shadow:0 0 0 3px rgba(66,165,245,.15)}
-.field input::placeholder{color:var(--mut)}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 13px;color:var(--txt);font-size:.9rem;outline:none;transition:border .2s,box-shadow .2s;-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue3);box-shadow:0 0 0 3px rgba(66,165,245,.15)}
+.field input::placeholder,.field textarea::placeholder{color:var(--mut)}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 
-/* ═══ TOGGLE ═══ */
 .tog-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.04);border:1px solid var(--bord);border-radius:12px;padding:13px 14px;cursor:pointer;margin-bottom:10px;gap:12px}
 .tog-label{font-size:.88rem;font-weight:600;flex:1}
 .tog-sub{font-size:.7rem;color:var(--mut);margin-top:2px}
@@ -73,7 +61,6 @@ html,body{background:var(--navy);color:var(--txt);font-family:'Segoe UI',system-
 .sw input:checked+.sw-t{background:var(--green)}
 .sw input:checked+.sw-t:before{transform:translateX(21px)}
 
-/* ═══ BUTTONS ═══ */
 .btn{padding:11px 18px;border:none;border-radius:9px;font-size:.86rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.18s;letter-spacing:.2px}
 .btn-p{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 2px 12px rgba(21,101,192,.4)}
 .btn-p:active{transform:scale(.97)}
@@ -85,16 +72,16 @@ html,body{background:var(--navy);color:var(--txt);font-family:'Segoe UI',system-
 .btn-or.on{background:var(--orange);color:#fff}
 .btn-gold{background:rgba(249,168,37,.12);color:var(--gold);border:1px solid rgba(249,168,37,.25)}
 .btn-gold.on{background:var(--gold2);color:#000}
+.btn-purple{background:rgba(123,31,162,.12);color:var(--purple2);border:1px solid rgba(171,71,188,.25)}
+.btn-purple.on{background:var(--purple);color:#fff}
 .btn-red{background:rgba(244,67,54,.1);color:#ef5350;border:1px solid rgba(244,67,54,.2)}
 .btn-sm{padding:7px 13px;font-size:.76rem}
 .btn-nav{display:flex;gap:8px;margin-top:16px}
 .btn-nav .btn{flex:1;justify-content:center}
 
-/* ═══ CANVAS AREA ═══ */
 .canvas-shell{background:linear-gradient(135deg,rgba(255,255,255,.055) 0%,rgba(255,255,255,.025) 100%);border:1px solid var(--bord);border-radius:var(--rad);overflow:hidden;margin-bottom:12px}
 .c-toolbar{display:flex;gap:5px;padding:8px 10px;flex-wrap:wrap;border-bottom:1px solid var(--bord2);background:rgba(0,0,0,.2);align-items:center}
 .toolbar-sep{width:1px;height:26px;background:var(--bord);margin:0 2px;flex-shrink:0}
-.spacing-grp{display:flex;align-items:center;gap:4px;font-size:.68rem;color:var(--mut)}
 .rede-grp{display:flex;align-items:center;gap:4px;font-size:.68rem;color:var(--mut)}
 .c-wrap{position:relative;background:var(--navy2)}
 canvas#gc{display:block;width:100%;touch-action:none;cursor:crosshair}
@@ -106,20 +93,30 @@ canvas#gc{display:block;width:100%;touch-action:none;cursor:crosshair}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .leg-line{width:16px;height:3px;border-top:2px dashed;flex-shrink:0}
 
-/* ═══ STATS BAR ═══ */
+/* ══ POLE EDITOR PANEL ══ */
+#poleEditor{display:none;background:linear-gradient(135deg,rgba(123,31,162,.12),rgba(171,71,188,.06));border:1px solid rgba(171,71,188,.35);border-radius:var(--rad);padding:14px;margin-bottom:12px}
+#poleEditor .ped-title{font-size:.8rem;font-weight:700;color:var(--purple2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+#poleEditor .ped-title span{display:flex;align-items:center;gap:6px}
+#poleEditor .ped-close{background:none;border:none;color:var(--mut);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px}
+#poleEditor .ped-close:hover{background:rgba(255,255,255,.08);color:var(--txt)}
+.rede-option-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.rede-opt{padding:6px 11px;border:1px solid var(--bord);border-radius:8px;background:rgba(255,255,255,.04);font-size:.76rem;font-weight:600;cursor:pointer;color:var(--mut);transition:.18s;display:flex;align-items:center;gap:5px}
+.rede-opt.on{border-color:var(--gold2);color:var(--gold);background:rgba(249,168,37,.15)}
+.rede-pass-row{display:flex;gap:6px;margin-bottom:10px}
+.rpass-btn{flex:1;padding:7px;border:1px solid var(--bord);border-radius:8px;background:rgba(255,255,255,.04);font-size:.73rem;font-weight:600;cursor:pointer;color:var(--mut);text-align:center;transition:.18s}
+.rpass-btn.on{border-color:var(--blue3);color:var(--blue3);background:rgba(66,165,245,.15)}
+
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--bord2)}
 .stat{padding:10px 4px;text-align:center;border-right:1px solid var(--bord2)}
 .stat:last-child{border-right:none}
 .sv{font-size:1.25rem;font-weight:800;color:var(--green4)}
 .sl{font-size:.58rem;color:var(--mut);margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
 
-/* ═══ CHIPS ═══ */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .chip{background:rgba(255,255,255,.05);border:1px solid var(--bord);border-radius:10px;padding:9px 13px;flex:1;min-width:110px;border-left:3px solid var(--blue3)}
 .chip-l{font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .chip-v{font-size:.92rem;font-weight:700;margin-top:3px;color:var(--txt)}
 
-/* ═══ MATERIAL TABLE ═══ */
 .mat-t{width:100%;border-collapse:collapse;font-size:.82rem}
 .mat-t th{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;padding:9px 12px;text-align:left;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.4px}
 .mat-t td{padding:9px 12px;border-bottom:1px solid var(--bord2);color:var(--txt)}
@@ -127,12 +124,10 @@ canvas#gc{display:block;width:100%;touch-action:none;cursor:crosshair}
 .mat-t tr:nth-child(even) td{background:rgba(255,255,255,.025)}
 .qbadge{background:linear-gradient(135deg,rgba(46,125,50,.3),rgba(67,160,71,.15));color:var(--green3);padding:3px 12px;border-radius:20px;font-weight:800;font-size:.85rem;border:1px solid rgba(102,187,106,.3)}
 
-/* ═══ SIGNATURE ═══ */
 .sig-wrap{border:1px solid var(--bord);border-radius:10px;background:#fff;position:relative;overflow:hidden}
 canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:none}
 .sig-clr{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.12);border:none;border-radius:6px;padding:4px 10px;font-size:.7rem;cursor:pointer;color:#333;font-weight:700}
 
-/* ═══ TRAFO DATA ═══ */
 .trow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bord2);font-size:.83rem}
 .trow:last-child{border-bottom:none}
 .trow-l{color:var(--mut)}
@@ -140,34 +135,32 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .snap-wrap{border-radius:10px;overflow:hidden;background:var(--navy2);border:1px solid var(--bord2)}
 .snap-wrap img{width:100%;display:block}
 
-/* ═══ TOAST ═══ */
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(70px);background:#162236;border:1px solid var(--bord);border-radius:12px;padding:11px 20px;font-size:.82rem;transition:.3s cubic-bezier(.4,0,.2,1);z-index:999;opacity:0;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.ok{border-left:3px solid var(--green3)}
 .toast.err{border-left:3px solid #ef5350}
 
-/* ═══════════════════════════════════
-   ██ PRINT / PDF ██
-═══════════════════════════════════ */
+/* ══ POLE LIST ══ */
+#poleList{margin-bottom:12px}
+.pole-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,255,255,.04);border:1px solid var(--bord);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:.18s}
+.pole-item:hover{background:rgba(255,255,255,.08)}
+.pole-item.selected{border-color:var(--purple2);background:rgba(123,31,162,.15)}
+.pole-item-icon{width:30px;height:30px;border-radius:50%;background:rgba(21,101,192,.3);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.pole-item-info{flex:1;min-width:0}
+.pole-item-num{font-weight:700;font-size:.85rem;color:var(--txt)}
+.pole-item-comment{font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pole-item-rede{font-size:.68rem;color:var(--gold);margin-left:auto;flex-shrink:0}
+.pole-item-del{background:none;border:none;color:#ef5350;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:.9rem;flex-shrink:0}
+
+/* ══ PDF ══ */
 #pdfPage{display:none}
-@page {
-  size: A4 landscape;
-  margin: 8mm;
-}
+@page{size:A4 landscape;margin:8mm}
 @media print{
   html,body{height:auto;overflow:visible}
-  body > *:not(#pdfPage){ display:none!important }
-  #pdfPage{
-    display:block!important;
-    margin:0; padding:0;
-    width:100%;
-    page-break-after:avoid;
-    break-after:avoid;
-  }
-  * { print-color-adjust:exact; -webkit-print-color-adjust:exact; color-adjust:exact; }
+  body>*:not(#pdfPage){display:none!important}
+  #pdfPage{display:block!important;margin:0;padding:0;width:100%;page-break-after:avoid;break-after:avoid;}
+  *{print-color-adjust:exact;-webkit-print-color-adjust:exact;color-adjust:exact;}
 }
-
-/* — PDF Page — */
 #pdfPage{font-family:'Segoe UI',system-ui,sans-serif;background:#fff;color:#0d1a2a}
 .pdf-hdr{background:linear-gradient(135deg,#0d47a1 0%,#1565C0 60%,#1976D2 100%);padding:0;display:flex;align-items:stretch;color:#fff}
 .pdf-hdr-logo{width:110px;background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;padding:12px;flex-shrink:0}
@@ -175,8 +168,8 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-hdr-body{flex:1;padding:14px 18px;border-left:1px solid rgba(255,255,255,.2)}
 .pdf-hdr-body h1{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:.4px;margin-bottom:3px}
 .pdf-hdr-body p{font-size:.68rem;color:rgba(255,255,255,.75)}
-.pdf-hdr-stamp{background:rgba(255,255,255,.15);border-left:1px solid rgba(255,255,255,.2);padding:12px 18px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:3px;flex-shrink:0;min-width:130px}
-.pdf-hdr-stamp .stamp-num{font-size:1rem;font-weight:800;color:#fff}
+.pdf-hdr-stamp{background:rgba(255,255,255,.15);border-left:1px solid rgba(255,255,255,.2);padding:12px 18px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:3px;flex-shrink:0;min-width:160px}
+.pdf-hdr-stamp .stamp-num{font-size:.95rem;font-weight:800;color:#fff}
 .pdf-hdr-stamp .stamp-lbl{font-size:.6rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px}
 
 .pdf-info{display:grid;grid-template-columns:repeat(6,1fr);background:#f0f6ff;border-bottom:2px solid #1565C0}
@@ -190,39 +183,39 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 .pdf-cols{display:grid;grid-template-columns:60% 40%;gap:12px;align-items:start}
 .pdf-sec{font-size:.60rem;font-weight:800;color:#1565C0;text-transform:uppercase;letter-spacing:.8px;margin:7px 0 4px;padding-bottom:3px;border-bottom:2px solid #e3f2fd;display:flex;align-items:center;gap:6px}
 .pdf-sec:first-child{margin-top:0}
-
 .pdf-drawing{text-align:center;margin-bottom:4px}
 .pdf-drawing img{max-width:100%;width:100%;height:auto;max-height:340px;object-fit:contain;border:1px solid #d0dff5;border-radius:8px;display:block;background:#fff}
 .pdf-drawing-caption{font-size:.65rem;color:#5577aa;margin-top:4px;text-align:center}
-
 .pdf-trafo{background:#fff8f5;border:1px solid #ffccbc;border-radius:8px;padding:10px 14px;margin-bottom:4px}
 .pdf-trafo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
 .pdf-trafo-item .tl{font-size:.6rem;color:#bf360c;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
 .pdf-trafo-item .tv{font-size:.82rem;font-weight:700;margin-top:1px}
-
 .pdf-mat{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:4px}
 .pdf-mat th{background:#1565C0;color:#fff;padding:7px 12px;text-align:left;font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.3px}
 .pdf-mat td{padding:7px 12px;border-bottom:1px solid #e0eaf8}
 .pdf-mat tr:nth-child(even) td{background:#f5f9ff}
 .pdf-mat td:last-child{text-align:right}
 .pdf-qty{background:#e8f5e9;color:#2E7D32;padding:2px 12px;border-radius:20px;font-weight:800;border:1px solid #c8e6c9}
-
 .pdf-sig-area{display:flex;gap:24px;align-items:flex-end;margin-top:4px}
 .pdf-sig-box{flex:1;text-align:center}
 .pdf-sig-img{border:1px solid #ccc;border-radius:6px;background:#fff;padding:4px;max-width:260px;height:70px;object-fit:contain}
 .pdf-sig-line{border-top:1px solid #333;margin-top:6px;padding-top:4px;font-size:.68rem;color:#555}
-
 .pdf-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:4px}
 .pdf-leg-item{display:flex;align-items:center;gap:5px;font-size:.65rem;color:#556}
 .pdf-leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .pdf-leg-line{width:18px;height:0;border-top:2px dashed;flex-shrink:0}
-
 .pdf-footer{background:#f0f6ff;border-top:2px solid #1565C0;padding:5px 14px;display:flex;justify-content:space-between;align-items:center;font-size:.62rem;color:#5577aa;margin-top:8px}
+
+/* PDF pole comments table */
+.pdf-poles-table{width:100%;border-collapse:collapse;font-size:.75rem;margin-bottom:6px}
+.pdf-poles-table th{background:#1565C0;color:#fff;padding:6px 10px;text-align:left;font-size:.68rem;text-transform:uppercase;font-weight:700}
+.pdf-poles-table td{padding:6px 10px;border-bottom:1px solid #e0eaf8}
+.pdf-poles-table tr:nth-child(even) td{background:#f5f9ff}
 </style>
 </head>
 <body>
 
-<!-- ════════ HEADER ════════ -->
+<!-- HEADER -->
 <div class="hdr no-print">
   <div class="logo-box">
     <img src="static/logo.png" id="headerLogo" alt="Logo"
@@ -243,7 +236,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   <div class="wt" id="wt3"><div class="wn">3</div>Finalizar</div>
 </div>
 
-<!-- ════════ PAGE 1 — DADOS ════════ -->
+<!-- PAGE 1 — DADOS -->
 <div class="page on" id="page1">
   <div class="card">
     <div class="ctitle">📋 Identificação do Serviço</div>
@@ -255,8 +248,9 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
       <div class="field"><label>Cidade ★</label><input id="cidade" placeholder="Ex: Curitiba"></div>
       <div class="field"><label>Data ★</label><input id="data" type="date"></div>
     </div>
-    <div class="r2">
-      <div class="field"><label>Nº do Poste ★</label><input id="poste" placeholder="Ex: P-00123"></div>
+    <div class="r3">
+      <div class="field"><label>Nº Projeto ★</label><input id="numProjeto" placeholder="Ex: 2024-001"></div>
+      <div class="field"><label>Nº do Poste (principal) ★</label><input id="poste" placeholder="Ex: P-00123"></div>
       <div class="field"><label>Resistência (Ω) ★</label><input id="resist" type="number" step="0.1" min="0" placeholder="Ex: 14.5"></div>
     </div>
   </div>
@@ -289,37 +283,24 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   </div>
 </div>
 
-<!-- ════════ PAGE 2 — DESENHO ════════ -->
+<!-- PAGE 2 — DESENHO -->
 <div class="page" id="page2">
 
   <div class="card" style="padding:10px 14px;margin-bottom:10px">
     <div style="font-size:.78rem;color:var(--mut);line-height:1.7">
       <b style="color:var(--blue4)">Como usar:</b>
-      <span style="color:var(--blue3)">①</span> Toque <b>📍 Poste</b> → toque no canvas para posicioná-lo.
-      <span style="color:var(--green3)">②</span> Toque nas células <span style="color:var(--green3)">verdes</span> para adicionar hastes (segmentos de malha).
-      <span style="color:var(--gold)">③</span> Use <b style="color:var(--gold)">🔌 Rede</b> para indicar a direção da rede elétrica.
+      <span style="color:var(--blue3)">①</span> Toque <b>📍 Poste</b> → toque no canvas para posicionar (pode ter vários postes).
+      <span style="color:var(--green3)">②</span> Toque nas células <span style="color:var(--green3)">verdes</span> para adicionar hastes.
+      <span style="color:var(--purple2)">③</span> Toque <b style="color:var(--purple2)">✏️ Editar</b> → clique num poste para configurar rede, passagem e comentário.
       Se houver trafo: toque <b style="color:var(--orange2)">⚡ Trafo</b> → toque ao lado do poste.
     </div>
   </div>
 
   <div class="canvas-shell">
     <div class="c-toolbar no-print">
-      <!-- Modo de posicionamento -->
       <button class="btn btn-bl btn-sm on" id="btnPoste" onclick="setMode('poste')">📍 Poste</button>
       <button class="btn btn-or btn-sm" id="btnTrafo" onclick="setMode('trafo')" style="display:none">⚡ Trafo</button>
-      <div class="toolbar-sep"></div>
-      <!-- Rede elétrica -->
-      <div class="rede-grp">
-        <span>Rede:</span>
-        <button class="btn btn-gold btn-sm" id="btnRede" onclick="cycleRede()" title="Direção da rede elétrica">🔌 —</button>
-      </div>
-      <div class="toolbar-sep"></div>
-      <!-- Espaçamento -->
-      <div class="spacing-grp">
-        <span>Malha:</span>
-        <button class="btn btn-s btn-sm on" id="btn10m" onclick="setSpacing(10)" style="border-color:rgba(66,165,245,.5);color:var(--blue3)">10m</button>
-        <button class="btn btn-s btn-sm" id="btn5m" onclick="setSpacing(5)">5m</button>
-      </div>
+      <button class="btn btn-purple btn-sm" id="btnEdit" onclick="setMode('select')">✏️ Editar Poste</button>
       <div class="toolbar-sep"></div>
       <button class="btn btn-s btn-sm" onclick="undoLast()">↩ Desfazer</button>
       <button class="btn btn-red btn-sm" onclick="clearCanvas()">🗑 Limpar</button>
@@ -336,17 +317,67 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
       <div class="leg"><div class="leg-dot" style="background:#3949ab"></div>Poste</div>
       <div class="leg"><div class="leg-dot" style="background:#2E7D32"></div>Haste (H)</div>
       <div class="leg"><div class="leg-dot" style="background:#E65100"></div>Trafo (TR)</div>
-      <div class="leg"><div class="leg-line" style="border-color:#FFD54F"></div>Rede elétrica</div>
+      <div class="leg"><div class="leg-line" style="border-color:#FFD54F"></div>Rede (passando)</div>
+      <div class="leg"><div class="leg-line" style="border-color:#FF8A65;border-style:solid"></div>Rede (terminal)</div>
       <div class="leg"><div class="leg-line" style="border-color:#00E676"></div>Cabo Cu</div>
-      <div class="leg"><div class="leg-dot" style="background:rgba(67,160,71,.4);border:1px dashed #43A047"></div>Toque para adicionar</div>
     </div>
 
     <div class="stats-bar">
+      <div class="stat"><div class="sv" id="stP">0</div><div class="sl">Postes</div></div>
       <div class="stat"><div class="sv" id="stH">0</div><div class="sl">Hastes</div></div>
       <div class="stat"><div class="sv" id="stFH">0</div><div class="sl">Con. Fio-Haste</div></div>
-      <div class="stat"><div class="sv" id="stFF">0</div><div class="sl">Con. Fio-Fio</div></div>
       <div class="stat"><div class="sv" id="stM">0m</div><div class="sl">Metros</div></div>
     </div>
+  </div>
+
+  <!-- POLE EDITOR PANEL -->
+  <div id="poleEditor">
+    <div class="ped-title">
+      <span>✏️ Configurar Poste Selecionado: <span id="pedPosteLabel" style="color:var(--txt)"></span></span>
+      <button class="ped-close" onclick="closePoleEditor()">✕</button>
+    </div>
+    <div class="r2" style="margin-bottom:10px">
+      <div class="field">
+        <label>Nº do Poste</label>
+        <input id="pedPosteNum" placeholder="Ex: P-00123" oninput="updateSelectedPole()">
+      </div>
+      <div class="field">
+        <label>Espaçamento malha</label>
+        <select id="pedSpacing" onchange="updateSelectedPole()">
+          <option value="10">10m por célula</option>
+          <option value="5">5m por célula</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:8px">
+      <label>Direção da Rede Elétrica</label>
+      <div class="rede-option-row">
+        <button class="rede-opt on" id="ropt-none" onclick="setPosteRede('none')">🔌 Sem rede</button>
+        <button class="rede-opt" id="ropt-H" onclick="setPosteRede('H')">🔌 Horizontal →</button>
+        <button class="rede-opt" id="ropt-V" onclick="setPosteRede('V')">🔌 Vertical ↓</button>
+        <button class="rede-opt" id="ropt-HV" onclick="setPosteRede('HV')">🔌 Cruz ✛</button>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:10px;display:none" id="redePassRow">
+      <label>Tipo de Passagem da Rede</label>
+      <div class="rede-pass-row">
+        <button class="rpass-btn on" id="rpass-cross" onclick="setPosteRedePass(true)">↔ Rede cruza o poste (passa pelo poste)</button>
+        <button class="rpass-btn" id="rpass-end" onclick="setPosteRedePass(false)">→| Rede termina no poste (final de rede)</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>💬 Comentário do Poste</label>
+      <textarea id="pedComment" rows="2" placeholder="Ex: Poste de esquina, cabo partido, necessita revisão…" style="resize:vertical;min-height:44px" oninput="updateSelectedPole()"></textarea>
+    </div>
+  </div>
+
+  <!-- POLE LIST -->
+  <div id="poleListCard" style="display:none" class="card">
+    <div class="ctitle">📋 Postes no Desenho</div>
+    <div id="poleList"></div>
   </div>
 
   <div class="btn-nav no-print">
@@ -355,7 +386,7 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   </div>
 </div>
 
-<!-- ════════ PAGE 3 — FINALIZAR ════════ -->
+<!-- PAGE 3 — FINALIZAR -->
 <div class="page" id="page3">
   <div class="chips" id="chips3"></div>
 
@@ -367,6 +398,11 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   <div class="card">
     <div class="ctitle">🗺️ Malha Desenhada</div>
     <div class="snap-wrap"><img id="snapImg" alt="Malha"></div>
+  </div>
+
+  <div class="card" id="polesSummaryCard" style="display:none">
+    <div class="ctitle">📍 Postes</div>
+    <div id="polesSummary"></div>
   </div>
 
   <div class="card">
@@ -387,12 +423,8 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════
-     PDF PAGE
-════════════════════════════════════════════════ -->
+<!-- PDF PAGE -->
 <div id="pdfPage">
-
-  <!-- HEADER -->
   <div class="pdf-hdr">
     <div class="pdf-hdr-logo">
       <img src="static/logo.png" alt="HACAP"
@@ -405,30 +437,26 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
     <div class="pdf-hdr-stamp">
       <span class="stamp-num" id="pdfPosteTag">—</span>
       <span class="stamp-lbl">Nº do Poste</span>
+      <span class="stamp-num" id="pdfProjetoTag" style="font-size:.8rem;margin-top:3px">—</span>
+      <span class="stamp-lbl">Projeto</span>
     </div>
   </div>
 
-  <!-- INFO STRIP -->
   <div class="pdf-info">
     <div class="pdf-info-cell"><div class="pdf-info-label">Encarregado</div><div class="pdf-info-val" id="pEnc">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Fiscal</div><div class="pdf-info-val" id="pFiscal">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Cidade</div><div class="pdf-info-val" id="pCidade">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Nº do Poste</div><div class="pdf-info-val" id="pPoste">—</div></div>
-    <div class="pdf-info-cell"><div class="pdf-info-label">Data</div><div class="pdf-info-val" id="pData">—</div></div>
+    <div class="pdf-info-cell"><div class="pdf-info-label">Nº Projeto</div><div class="pdf-info-val" id="pProjeto">—</div></div>
     <div class="pdf-info-cell"><div class="pdf-info-label">Resistência</div><div class="pdf-info-val" id="pResist">—</div></div>
   </div>
 
-  <!-- BODY — two-column layout -->
   <div class="pdf-body">
   <div class="pdf-cols">
-
-    <!-- LEFT COLUMN: Drawing -->
     <div>
       <div class="pdf-sec">🗺️ Esquema da Malha de Aterramento</div>
-      <div class="pdf-drawing">
-        <img id="pdfSnap" alt="Malha">
-      </div>
-      <div class="pdf-drawing-caption" id="pdfDrawingCaption" style="font-size:.6rem;color:#5577aa;margin-top:4px;text-align:center"></div>
+      <div class="pdf-drawing"><img id="pdfSnap" alt="Malha"></div>
+      <div class="pdf-drawing-caption" id="pdfDrawingCaption"></div>
       <div class="pdf-legend" style="margin-top:6px">
         <div class="pdf-leg-item"><div class="pdf-leg-dot" style="background:#1565C0"></div>Poste</div>
         <div class="pdf-leg-item"><div class="pdf-leg-dot" style="background:#2E7D32"></div>Haste de Aterramento</div>
@@ -438,21 +466,21 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
       </div>
     </div>
 
-    <!-- RIGHT COLUMN: Trafo + Materials + Signature -->
     <div>
-      <!-- Trafo -->
       <div id="pdfTrafoSection" style="display:none">
         <div class="pdf-sec">⚡ Dados do Transformador</div>
-        <div class="pdf-trafo">
-          <div class="pdf-trafo-grid" id="pdfTrafoGrid"></div>
-        </div>
+        <div class="pdf-trafo"><div class="pdf-trafo-grid" id="pdfTrafoGrid"></div></div>
       </div>
 
-      <!-- Materials -->
+      <div class="pdf-sec">📍 Postes</div>
+      <table class="pdf-poles-table" id="pdfPolesTable">
+        <thead><tr><th>Nº Poste</th><th>Rede</th><th>Comentário</th></tr></thead>
+        <tbody id="pdfPolesTbody"></tbody>
+      </table>
+
       <div class="pdf-sec">🔧 Materiais Utilizados</div>
       <table class="pdf-mat" id="pdfMat"></table>
 
-      <!-- Signature -->
       <div class="pdf-sec" style="margin-top:10px">✍️ Assinatura do Encarregado</div>
       <div class="pdf-sig-area" style="gap:12px;flex-direction:column">
         <div class="pdf-sig-box" style="width:100%">
@@ -464,18 +492,15 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
         </div>
       </div>
     </div>
-
   </div>
   </div>
 
-  <!-- FOOTER -->
   <div class="pdf-footer">
     <span>HACAP Instalações Elétricas — Documento gerado automaticamente</span>
     <span id="pdfFooterDate"></span>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -484,24 +509,20 @@ canvas#sc{display:block;width:100%;height:110px;cursor:crosshair;touch-action:no
 // ══════════════════════════════════════════════════
 const GRID = 11;
 let CELL = 40;
-let G_SPACING = 10; // 10m or 5m per cell
-let REDE_DIR = 'none'; // 'none','H','V','HV'
 
-const REDE_CYCLE = ['none','H','V','HV'];
-const REDE_LABELS = {none:'🔌 —', H:'🔌 →', V:'🔌 ↓', HV:'🔌 ✛'};
-const REDE_MSGS = {
-  none:'Rede desativada',
-  H:'Rede horizontal — passando pelo poste',
-  V:'Rede vertical — passando pelo poste',
-  HV:'Rede horizontal + vertical'
-};
+// Each node: { c, r, type, uid, posteNum, comment, redeDir, redePass, spacing }
+// type: 'poste' | 'haste' | 'trafo'
+// redeDir: 'none'|'H'|'V'|'HV'
+// redePass: true=crosses, false=terminates at pole
+// spacing: 10 or 5
 
 const G = {
-  nodes: new Map(),
-  edges: [],
+  nodes: new Map(),   // key(c,r) -> node
+  edges: [],          // {fc,fr,tc,tr}
   hist:  [],
   mode:  'poste',
-  hasPoste: false,
+  selectedKey: null,  // key of selected poste
+  uidCounter: 0,
 };
 
 function key(c,r){return `${c},${r}`}
@@ -511,7 +532,14 @@ const DIRS=[[0,-1],[0,1],[-1,0],[1,0]];
 function adjacent(c,r){return DIRS.map(([dc,dr])=>({c:c+dc,r:r+dr})).filter(p=>p.c>=0&&p.c<GRID&&p.r>=0&&p.r<GRID)}
 function adjNodes(c,r){return adjacent(c,r).filter(p=>has(p.c,p.r)&&get(p.c,p.r).type!=='trafo')}
 function adjToAny(c,r){return adjNodes(c,r).length>0}
-function findPoste(){for(const[,n]of G.nodes)if(n.type==='poste')return n;return null}
+function getPostes(){return [...G.nodes.values()].filter(n=>n.type==='poste')}
+function findPoste(){return getPostes()[0]||null}
+function nextUid(){return ++G.uidCounter}
+function getSpacingForCell(c,r){
+  // find nearest poste to determine spacing (or use first poste's spacing)
+  const p=findPoste();
+  return p?p.spacing:10;
+}
 
 // ══════════════════════════════════════════════════
 // CANVAS
@@ -521,9 +549,8 @@ const cx=CV.getContext('2d');
 
 function resize(){
   const w=CV.parentElement.clientWidth;
-  CV.width=w; CV.height=Math.min(w, 440);
-  CELL=w/GRID;
-  render();
+  CV.width=w;CV.height=Math.min(w,440);
+  CELL=w/GRID;render();
 }
 
 function tapCoord(e){
@@ -545,221 +572,235 @@ function rr(ctx,x,y,w,h,r){
   ctx.closePath();
 }
 
-// Draw utility pole symbol (elevation-style, plan-view cell)
-function drawPoste(x, y, fp) {
-  const C = CELL;
-  const poleW = Math.max(4, C*0.09);
-  const poleH = C*0.65;
-  const armW  = C*0.58;
-  const armH  = Math.max(3, C*0.07);
-  const armY  = y - C*0.18;
-  const footY = y + C*0.32;
+function drawPoste(x,y,fp,node){
+  const C=CELL;
+  const poleW=Math.max(4,C*0.09);
+  const armW=C*0.58;
+  const armH=Math.max(3,C*0.07);
+  const armY=y-C*0.18;
+  const footY=y+C*0.32;
+  const isSelected=(node&&G.selectedKey===key(node.c,node.r));
 
-  // Glow aura
   if(!fp){
-    const gr = cx.createRadialGradient(x,y,0,x,y,C*0.52);
-    gr.addColorStop(0,'rgba(57,73,171,0.35)');gr.addColorStop(1,'transparent');
+    const gr=cx.createRadialGradient(x,y,0,x,y,C*0.52);
+    gr.addColorStop(0,isSelected?'rgba(171,71,188,0.45)':'rgba(57,73,171,0.35)');
+    gr.addColorStop(1,'transparent');
     cx.fillStyle=gr;cx.beginPath();cx.arc(x,y,C*0.52,0,Math.PI*2);cx.fill();
+    if(isSelected){
+      cx.strokeStyle='rgba(171,71,188,0.8)';cx.lineWidth=2;cx.setLineDash([4,3]);
+      cx.beginPath();cx.arc(x,y,C*0.5,0,Math.PI*2);cx.stroke();cx.setLineDash([]);
+    }
   }
 
-  // Pole body
-  const poleTop = y - C*0.32;
-  const grad = cx.createLinearGradient(x-poleW,0,x+poleW,0);
-  grad.addColorStop(0, fp?'#5d4037':'#795548');
-  grad.addColorStop(0.5, fp?'#8d6e63':'#bcaaa4');
-  grad.addColorStop(1, fp?'#5d4037':'#795548');
+  const poleTop=y-C*0.32;
+  const poleH=C*0.65;
+  const grad=cx.createLinearGradient(x-poleW,0,x+poleW,0);
+  grad.addColorStop(0,fp?'#5d4037':'#795548');
+  grad.addColorStop(0.5,fp?'#8d6e63':'#bcaaa4');
+  grad.addColorStop(1,fp?'#5d4037':'#795548');
   cx.fillStyle=grad;
-  rr(cx, x-poleW/2, poleTop, poleW, poleH, 2);
-  cx.fill();
-  cx.strokeStyle = fp?'#4e342e':'#a1887f';
-  cx.lineWidth=1;
-  cx.stroke();
+  rr(cx,x-poleW/2,poleTop,poleW,poleH,2);cx.fill();
+  cx.strokeStyle=fp?'#4e342e':'#a1887f';cx.lineWidth=1;cx.stroke();
 
-  // Crossarm
-  const armGrad = cx.createLinearGradient(0,armY-armH,0,armY+armH);
-  armGrad.addColorStop(0, fp?'#283593':'#3949ab');
-  armGrad.addColorStop(1, fp?'#1a237e':'#283593');
+  const armGrad=cx.createLinearGradient(0,armY-armH,0,armY+armH);
+  armGrad.addColorStop(0,fp?'#283593':'#3949ab');
+  armGrad.addColorStop(1,fp?'#1a237e':'#283593');
   cx.fillStyle=armGrad;
-  rr(cx, x-armW/2, armY-armH/2, armW, armH, 2);
-  cx.fill();
+  rr(cx,x-armW/2,armY-armH/2,armW,armH,2);cx.fill();
   cx.strokeStyle=fp?'#1a237e':'#5c6bc0';cx.lineWidth=1;cx.stroke();
 
-  // Insulators on crossarm ends + centre
-  const insPositions = [-armW*0.42, 0, armW*0.42];
+  const insPositions=[-armW*0.42,0,armW*0.42];
   insPositions.forEach(dx=>{
-    const ix=x+dx, iy=armY-armH*0.5-C*0.055;
-    // Insulator cap
+    const ix=x+dx,iy=armY-armH*0.5-C*0.055;
     cx.beginPath();cx.arc(ix,iy,Math.max(3,C*0.055),0,Math.PI*2);
     cx.fillStyle=fp?'#1565C0':'#42A5F5';cx.fill();
     cx.strokeStyle=fp?'#0d47a1':'#90CAF9';cx.lineWidth=1;cx.stroke();
-    // Wire stub going down from insulator
     cx.beginPath();cx.moveTo(ix,iy+C*0.055);cx.lineTo(ix,iy+C*0.11);
     cx.strokeStyle=fp?'rgba(100,150,255,0.6)':'rgba(144,202,249,0.7)';
     cx.lineWidth=Math.max(1.5,C*0.035);cx.stroke();
   });
 
-  // Base cross / footing
   cx.strokeStyle=fp?'#4e342e':'#a1887f';
   cx.lineWidth=Math.max(1.5,C*0.04);
   cx.beginPath();cx.moveTo(x-C*0.15,footY);cx.lineTo(x+C*0.15,footY);cx.stroke();
 
-  // "P" label on pole body
+  // Pole number label (show posteNum from node, and project number)
+  const numProjeto=fv('numProjeto');
+  const posteNum=node?node.posteNum:'P';
+  const proj=numProjeto?`PRJ:${numProjeto}`:'';
+  const mainLabel=posteNum||'P';
+
   cx.fillStyle='#ffffff';
-  cx.font=`bold ${Math.max(8,C*0.2)}px 'Segoe UI',sans-serif`;
+  cx.font=`bold ${Math.max(7,C*0.17)}px 'Segoe UI',sans-serif`;
   cx.textAlign='center';cx.textBaseline='middle';
-  if(!fp){cx.shadowColor='rgba(0,0,0,0.6)';cx.shadowBlur=4;}
-  cx.fillText('P',x,y+C*0.05);
+  if(!fp){cx.shadowColor='rgba(0,0,0,0.7)';cx.shadowBlur=5;}
+  cx.fillText(mainLabel,x,y+C*0.01);
   cx.shadowBlur=0;
+
+  // Project number shown directly below pole number, inside the pole area
+  if(proj){
+    cx.font=`${Math.max(6,C*0.13)}px 'Segoe UI',sans-serif`;
+    cx.textAlign='center';cx.textBaseline='top';
+    const projY=y+C*0.13;
+    const pw=cx.measureText(proj).width+8;
+    cx.fillStyle=fp?'rgba(21,101,192,.15)':'rgba(0,0,0,0.55)';
+    rr(cx,x-pw/2,projY,pw,Math.max(10,C*0.2),4);cx.fill();
+    cx.fillStyle=fp?'#1565C0':'#90CAF9';
+    cx.fillText(proj,x,projY+2);
+  }
+
+  // Comment indicator
+  if(node&&node.comment){
+    const cX=x+C*0.32,cY=y-C*0.38;
+    cx.beginPath();cx.arc(cX,cY,Math.max(5,C*0.12),0,Math.PI*2);
+    cx.fillStyle=fp?'#f57f17':'#FFD54F';cx.fill();
+    cx.fillStyle=fp?'#fff':'#000';
+    cx.font=`bold ${Math.max(7,C*0.15)}px 'Segoe UI',sans-serif`;
+    cx.textAlign='center';cx.textBaseline='middle';
+    cx.fillText('!',cX,cY);
+  }
 }
 
-// Draw grounding haste (rod) symbol
-function drawHaste(x, y, fp, num) {
-  const C = CELL;
-  const sz = C*0.3;
-
-  // Glow
+function drawHaste(x,y,fp,num){
+  const C=CELL;
+  const sz=C*0.3;
   if(!fp){
-    const gr = cx.createRadialGradient(x,y,0,x,y,C*0.44);
+    const gr=cx.createRadialGradient(x,y,0,x,y,C*0.44);
     gr.addColorStop(0,'rgba(46,125,50,0.28)');gr.addColorStop(1,'transparent');
     cx.fillStyle=gr;cx.beginPath();cx.arc(x,y,C*0.44,0,Math.PI*2);cx.fill();
     cx.shadowColor='#69F0AE';cx.shadowBlur=10;
   }
-
-  // Rod vertical line
   cx.strokeStyle=fp?'#1b5e20':'#69F0AE';
   cx.lineWidth=Math.max(2,C*0.065);cx.lineCap='round';
   cx.beginPath();cx.moveTo(x,y-sz*0.55);cx.lineTo(x,y+sz*0.45);cx.stroke();
   cx.shadowBlur=0;
-
-  // Ground symbol (3 horizontal lines)
   const gLines=[{w:sz*0.58,oy:sz*0.45},{w:sz*0.4,oy:sz*0.6},{w:sz*0.24,oy:sz*0.73}];
   cx.strokeStyle=fp?'#2e7d32':'#69F0AE';
   cx.lineWidth=Math.max(1.5,C*0.045);
-  gLines.forEach(l=>{
-    cx.beginPath();cx.moveTo(x-l.w,y+l.oy);cx.lineTo(x+l.w,y+l.oy);cx.stroke();
-  });
-
-  // Badge circle at top of rod
-  const bR = Math.max(9,C*0.23);
+  gLines.forEach(l=>{cx.beginPath();cx.moveTo(x-l.w,y+l.oy);cx.lineTo(x+l.w,y+l.oy);cx.stroke();});
+  const bR=Math.max(9,C*0.23);
   cx.beginPath();cx.arc(x,y-sz*0.55,bR,0,Math.PI*2);
   cx.fillStyle=fp?'#1b5e20':'#2E7D32';cx.fill();
   cx.strokeStyle=fp?'#4caf50':'#69F0AE';cx.lineWidth=1.5;cx.stroke();
-
-  // "Hn" label
   cx.fillStyle='#ffffff';
   cx.font=`bold ${Math.max(7,C*0.19)}px 'Segoe UI',sans-serif`;
   cx.textAlign='center';cx.textBaseline='middle';
   cx.fillText('H'+num,x,y-sz*0.55);
 }
 
-// Draw transformer symbol
-function drawTrafo(x, y, fp) {
-  const C = CELL;
-  const bw = C*0.66, bh = C*0.55;
-  const bx = x-bw/2, by = y-bh/2;
-
-  // Glow
+function drawTrafo(x,y,fp){
+  const C=CELL;
+  const bw=C*0.66,bh=C*0.55;
+  const bx=x-bw/2,by=y-bh/2;
   if(!fp){
     const gr=cx.createRadialGradient(x,y,0,x,y,C*0.5);
     gr.addColorStop(0,'rgba(230,81,0,0.3)');gr.addColorStop(1,'transparent');
     cx.fillStyle=gr;cx.beginPath();cx.arc(x,y,C*0.5,0,Math.PI*2);cx.fill();
     cx.shadowColor='#FF8A65';cx.shadowBlur=14;
   }
-
-  // Body rectangle
   const bGrad=cx.createLinearGradient(bx,by,bx+bw,by+bh);
   bGrad.addColorStop(0,fp?'#bf360c':'#d84315');
   bGrad.addColorStop(1,fp?'#8d1a0a':'#bf360c');
-  cx.fillStyle=bGrad;
-  rr(cx,bx,by,bw,bh,5);cx.fill();
+  cx.fillStyle=bGrad;rr(cx,bx,by,bw,bh,5);cx.fill();
   cx.strokeStyle=fp?'#ff8a65':'#ffab91';cx.lineWidth=2;cx.stroke();
   cx.shadowBlur=0;
-
-  // Coil divider line
-  cx.strokeStyle=fp?'rgba(255,200,150,.5)':'rgba(255,200,150,.6)';
-  cx.lineWidth=1;
+  cx.strokeStyle=fp?'rgba(255,200,150,.5)':'rgba(255,200,150,.6)';cx.lineWidth=1;
   cx.beginPath();cx.moveTo(x,by+4);cx.lineTo(x,by+bh-4);cx.stroke();
-
-  // Left coil loops (simplified)
   const coilR=C*0.1;
-  const coilCX=x-bw*0.22;
-  [-bh*0.22, 0, bh*0.22].forEach(dy=>{
-    cx.beginPath();cx.arc(coilCX,y+dy,coilR,Math.PI*0.1,Math.PI*1.9);
-    cx.strokeStyle=fp?'#ffcc80':'#ffe082';cx.lineWidth=Math.max(1.5,C*0.04);cx.stroke();
+  [x-bw*0.22,x+bw*0.22].forEach((cX,i)=>{
+    [-bh*0.22,0,bh*0.22].forEach(dy=>{
+      cx.beginPath();cx.arc(cX,y+dy,coilR,Math.PI*0.1,Math.PI*1.9,i===1);
+      cx.strokeStyle=fp?'#ffcc80':'#ffe082';cx.lineWidth=Math.max(1.5,C*0.04);cx.stroke();
+    });
   });
-
-  // Right coil loops
-  const coilCX2=x+bw*0.22;
-  [-bh*0.22, 0, bh*0.22].forEach(dy=>{
-    cx.beginPath();cx.arc(coilCX2,y+dy,coilR,Math.PI*0.1,Math.PI*1.9,true);
-    cx.strokeStyle=fp?'#ffcc80':'#ffe082';cx.lineWidth=Math.max(1.5,C*0.04);cx.stroke();
-  });
-
-  // "TR" label below
   cx.fillStyle='#ffffff';
   cx.font=`bold ${Math.max(7,C*0.17)}px 'Segoe UI',sans-serif`;
   cx.textAlign='center';cx.textBaseline='top';
   if(!fp){cx.shadowColor='rgba(0,0,0,0.5)';cx.shadowBlur=3;}
-  cx.fillText('TR',x,by+bh+2);
-  cx.shadowBlur=0;
+  cx.fillText('TR',x,by+bh+2);cx.shadowBlur=0;
 }
 
-// Draw network lines (rede)
-function drawRede(fp) {
-  if(REDE_DIR==='none') return;
-  const pn=findPoste();
-  if(!pn) return;
-  const W=CV.width;
-  const px=(pn.c+0.5)*CELL, py=(pn.r+0.5)*CELL;
+// Draw rede for a single poste node
+function drawRedeForPoste(pn,fp){
+  if(!pn||pn.redeDir==='none') return;
+  const W=CV.width,H=CV.height;
+  const px=(pn.c+0.5)*CELL,py=(pn.r+0.5)*CELL;
+  const redePass=pn.redePass!==false; // default true=crossing
 
   cx.save();
-  cx.strokeStyle=fp?'#f57f17':'#FFD54F';
-  cx.lineWidth=Math.max(2.5,CELL*0.07);
-  cx.setLineDash([CELL*0.26,CELL*0.13]);
+  // crossing: dashed (passing through), terminus: solid arrow-ended
+  if(redePass){
+    cx.strokeStyle=fp?'#f57f17':'#FFD54F';
+    cx.lineWidth=Math.max(2.5,CELL*0.07);
+    cx.setLineDash([CELL*0.26,CELL*0.13]);
+  } else {
+    cx.strokeStyle=fp?'#e65100':'#FF8A65';
+    cx.lineWidth=Math.max(2.5,CELL*0.07);
+    cx.setLineDash([]);
+  }
   cx.lineCap='round';
-  if(!fp){cx.shadowColor='#FFD54F';cx.shadowBlur=8;}
+  if(!fp){cx.shadowColor=redePass?'#FFD54F':'#FF8A65';cx.shadowBlur=8;}
 
-  if(REDE_DIR==='H'||REDE_DIR==='HV'){
-    cx.beginPath();cx.moveTo(0,py);cx.lineTo(W,py);cx.stroke();
-    // Arrow labels
-    _redeArrow(cx,12,py,-1,fp);
-    _redeArrow(cx,W-12,py,1,fp);
+  if(pn.redeDir==='H'||pn.redeDir==='HV'){
+    if(redePass){
+      cx.beginPath();cx.moveTo(0,py);cx.lineTo(W,py);cx.stroke();
+    } else {
+      // draw from left edge to pole (arrow terminating at pole)
+      cx.beginPath();cx.moveTo(0,py);cx.lineTo(px,py);cx.stroke();
+      _drawArrowHead(cx,px,py,'right',fp,redePass);
+    }
   }
-  if(REDE_DIR==='V'||REDE_DIR==='HV'){
-    cx.beginPath();cx.moveTo(px,0);cx.lineTo(px,W);cx.stroke();
-    _redeArrow(cx,px,12,0,fp,true);
-    _redeArrow(cx,px,W-12,0,fp,true);
+  if(pn.redeDir==='V'||pn.redeDir==='HV'){
+    if(redePass){
+      cx.beginPath();cx.moveTo(px,0);cx.lineTo(px,H);cx.stroke();
+    } else {
+      cx.beginPath();cx.moveTo(px,0);cx.lineTo(px,py);cx.stroke();
+      _drawArrowHead(cx,px,py,'down',fp,redePass);
+    }
   }
+
   cx.setLineDash([]);cx.shadowBlur=0;
 
-  // "REDE" labels
-  cx.setLineDash([]);
-  cx.fillStyle=fp?'#f57f17':'#FFD54F';
+  // labels
+  cx.fillStyle=fp?(redePass?'#f57f17':'#e65100'):(redePass?'#FFD54F':'#FF8A65');
   cx.font=`bold ${Math.max(8,CELL*0.18)}px 'Segoe UI',sans-serif`;
   cx.textAlign='center';cx.textBaseline='middle';
-  if(REDE_DIR==='H'||REDE_DIR==='HV'){
-    _redePill(cx,CELL*0.8,py,fp);
-    _redePill(cx,W-CELL*0.8,py,fp);
+  if(pn.redeDir==='H'||pn.redeDir==='HV'){
+    _redePill(cx,CELL*0.8,py,fp,redePass);
+    if(redePass) _redePill(cx,W-CELL*0.8,py,fp,redePass);
   }
-  if(REDE_DIR==='V'||REDE_DIR==='HV'){
-    _redePill(cx,px,CELL*0.8,fp);
-    _redePill(cx,px,W-CELL*0.8,fp);
+  if(pn.redeDir==='V'||pn.redeDir==='HV'){
+    _redePill(cx,px,CELL*0.8,fp,redePass);
+    if(redePass) _redePill(cx,px,H-CELL*0.8,fp,redePass);
   }
   cx.restore();
 }
 
-function _redePill(ctx,x,y,fp){
-  const pw=CELL*0.85,ph=CELL*0.26;
-  ctx.fillStyle=fp?'rgba(245,127,23,0.15)':'rgba(30,20,0,0.75)';
-  rr(ctx,x-pw/2,y-ph/2,pw,ph,ph/2);ctx.fill();
-  if(!fp){ctx.strokeStyle='rgba(255,213,79,.4)';ctx.lineWidth=1;rr(ctx,x-pw/2,y-ph/2,pw,ph,ph/2);ctx.stroke();}
-  ctx.fillStyle=fp?'#f57f17':'#FFD54F';
-  ctx.font=`bold ${Math.max(7,CELL*0.17)}px 'Segoe UI',sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('REDE',x,y);
+function _drawArrowHead(ctx,x,y,dir,fp,isEnd){
+  const s=Math.max(7,CELL*0.18);
+  ctx.save();
+  ctx.fillStyle=fp?(isEnd?'#e65100':'#f57f17'):(isEnd?'#FF8A65':'#FFD54F');
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  if(dir==='right'){ctx.moveTo(x,y);ctx.lineTo(x-s,y-s*0.6);ctx.lineTo(x-s,y+s*0.6);}
+  else if(dir==='down'){ctx.moveTo(x,y);ctx.lineTo(x-s*0.6,y-s);ctx.lineTo(x+s*0.6,y-s);}
+  ctx.closePath();ctx.fill();
+  ctx.restore();
 }
 
-function _redeArrow(ctx,x,y,dir,fp,vert=false){}
+function _redePill(ctx,x,y,fp,isEnd){
+  const pw=CELL*0.85,ph=CELL*0.26;
+  ctx.fillStyle=fp?(isEnd?'rgba(230,81,0,0.15)':'rgba(245,127,23,0.15)'):'rgba(30,20,0,0.75)';
+  rr(ctx,x-pw/2,y-ph/2,pw,ph,ph/2);ctx.fill();
+  if(!fp){
+    ctx.strokeStyle=isEnd?'rgba(255,138,101,.4)':'rgba(255,213,79,.4)';
+    ctx.lineWidth=1;rr(ctx,x-pw/2,y-ph/2,pw,ph,ph/2);ctx.stroke();
+  }
+  ctx.fillStyle=fp?(isEnd?'#e65100':'#f57f17'):(isEnd?'#FF8A65':'#FFD54F');
+  ctx.font=`bold ${Math.max(7,CELL*0.17)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(isEnd?'FIM':'REDE',x,y);
+}
 
 // ══════════════════════════════════════════════════
 // MAIN RENDER
@@ -769,24 +810,19 @@ function render(forPrint=false){
   const W=CV.width,H=CV.height;
   cx.clearRect(0,0,W,H);
 
-  // Background
-  if(fp){
-    cx.fillStyle='#ffffff';cx.fillRect(0,0,W,H);
-  } else {
+  if(fp){cx.fillStyle='#ffffff';cx.fillRect(0,0,W,H);}
+  else{
     const bg=cx.createLinearGradient(0,0,W,H);
     bg.addColorStop(0,'#0a1220');bg.addColorStop(1,'#0f1e35');
     cx.fillStyle=bg;cx.fillRect(0,0,W,H);
   }
 
-  // Grid lines
   cx.strokeStyle=fp?'rgba(0,80,160,.07)':'rgba(66,165,245,.07)';
   cx.lineWidth=1;
   for(let i=0;i<=GRID;i++){
     cx.beginPath();cx.moveTo(i*CELL,0);cx.lineTo(i*CELL,H);cx.stroke();
     cx.beginPath();cx.moveTo(0,i*CELL);cx.lineTo(W,i*CELL);cx.stroke();
   }
-
-  // Grid dots
   for(let c=0;c<GRID;c++){
     for(let r=0;r<GRID;r++){
       cx.fillStyle=fp?'rgba(0,80,160,.10)':'rgba(100,150,255,.10)';
@@ -794,51 +830,53 @@ function render(forPrint=false){
     }
   }
 
-  // Grid labels (distance scale - corner only)
-  if(!fp){
-    const labelSpacing = G_SPACING;
-    cx.fillStyle='rgba(100,150,255,.25)';
-    cx.font=`${Math.max(7,CELL*.15)}px 'Segoe UI',sans-serif`;
-    cx.textAlign='center';cx.textBaseline='middle';
-    for(let i=1;i<GRID;i++){
-      cx.fillText(`${i*labelSpacing}m`,(i+.5)*CELL,CELL*0.35);
-    }
-  }
-
-  // ─── Network (rede) lines — drawn BEFORE nodes ───
-  drawRede(fp);
+  // ─── Rede for each poste ───
+  getPostes().forEach(pn=>drawRedeForPoste(pn,fp));
 
   // ─── Available cell highlights ───
-  if(!fp && G.hasPoste){
-    for(let c=0;c<GRID;c++){
-      for(let r=0;r<GRID;r++){
-        if(!has(c,r)&&adjToAny(c,r)){
-          cx.fillStyle='rgba(67,160,71,.12)';
-          rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.fill();
-          cx.strokeStyle='rgba(67,160,71,.45)';cx.lineWidth=1.5;cx.setLineDash([4,4]);
-          rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.stroke();cx.setLineDash([]);
-          const mx=(c+.5)*CELL,my=(r+.5)*CELL,sz=CELL*.12;
-          cx.strokeStyle='rgba(102,187,106,.55)';cx.lineWidth=1.5;
-          cx.beginPath();cx.moveTo(mx-sz,my);cx.lineTo(mx+sz,my);cx.stroke();
-          cx.beginPath();cx.moveTo(mx,my-sz);cx.lineTo(mx,my+sz);cx.stroke();
+  if(!fp){
+    const postes=getPostes();
+    if(postes.length>0){
+      for(let c=0;c<GRID;c++){
+        for(let r=0;r<GRID;r++){
+          if(!has(c,r)&&adjToAny(c,r)){
+            cx.fillStyle='rgba(67,160,71,.12)';
+            rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.fill();
+            cx.strokeStyle='rgba(67,160,71,.45)';cx.lineWidth=1.5;cx.setLineDash([4,4]);
+            rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.stroke();cx.setLineDash([]);
+            const mx=(c+.5)*CELL,my=(r+.5)*CELL,sz=CELL*.12;
+            cx.strokeStyle='rgba(102,187,106,.55)';cx.lineWidth=1.5;
+            cx.beginPath();cx.moveTo(mx-sz,my);cx.lineTo(mx+sz,my);cx.stroke();
+            cx.beginPath();cx.moveTo(mx,my-sz);cx.lineTo(mx,my+sz);cx.stroke();
+          }
+        }
+      }
+      if(G.mode==='trafo'){
+        const pn=findPoste();
+        if(pn) adjacent(pn.c,pn.r).forEach(({c,r})=>{
+          if(!has(c,r)){
+            cx.fillStyle='rgba(230,81,0,.20)';
+            rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.fill();
+            cx.strokeStyle='rgba(255,138,101,.55)';cx.lineWidth=1.5;cx.setLineDash([4,4]);
+            rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.stroke();cx.setLineDash([]);
+          }
+        });
+      }
+    }
+    // In 'poste' mode highlight all empty cells
+    if(G.mode==='poste'){
+      for(let c=0;c<GRID;c++){
+        for(let r=0;r<GRID;r++){
+          if(!has(c,r)){
+            cx.fillStyle='rgba(66,165,245,.04)';
+            rr(cx,c*CELL+1,r*CELL+1,CELL-2,CELL-2,6);cx.fill();
+          }
         }
       }
     }
-    // Trafo mode highlight — cells adjacent to pole
-    if(G.mode==='trafo'){
-      const pn=findPoste();
-      if(pn) adjacent(pn.c,pn.r).forEach(({c,r})=>{
-        if(!has(c,r)){
-          cx.fillStyle='rgba(230,81,0,.20)';
-          rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.fill();
-          cx.strokeStyle='rgba(255,138,101,.55)';cx.lineWidth=1.5;cx.setLineDash([4,4]);
-          rr(cx,c*CELL+2,r*CELL+2,CELL-4,CELL-4,6);cx.stroke();cx.setLineDash([]);
-        }
-      });
-    }
   }
 
-  // ─── Cables (grounding mesh wires) ───
+  // ─── Cables ───
   G.edges.forEach(e=>{
     const x1=(e.fc+.5)*CELL,y1=(e.fr+.5)*CELL;
     const x2=(e.tc+.5)*CELL,y2=(e.tr+.5)*CELL;
@@ -849,32 +887,26 @@ function render(forPrint=false){
     cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.stroke();
     cx.setLineDash([]);cx.shadowBlur=0;
 
-    // Distance pill on cable — offset perpendicularly so it doesn't overlap the line
-    const mx=(x1+x2)/2, my=(y1+y2)/2;
-    const dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy)||1;
-    // perpendicular unit vector
-    const nx=-dy/len, ny=dx/len;
-    const offset=CELL*0.38; // deslocamento perpendicular à linha
-    const lx=mx+nx*offset, ly=my+ny*offset;
-    const pw=Math.max(CELL*.72,36), ph=Math.max(CELL*.32,16);
-    // Fundo sólido e visível
+    const mx=(x1+x2)/2,my=(y1+y2)/2;
+    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy)||1;
+    const nx=-dy/len,ny=dx/len;
+    const offset=CELL*0.38;
+    const lx=mx+nx*offset,ly=my+ny*offset;
+    const pw=Math.max(CELL*.72,36),ph=Math.max(CELL*.32,16);
     cx.fillStyle=fp?'#e3f2fd':'#003020';
     rr(cx,lx-pw/2,ly-ph/2,pw,ph,ph/2);cx.fill();
-    // Borda colorida
-    cx.strokeStyle=fp?'#1565C0':'#00E676';
-    cx.lineWidth=fp?1.5:1.5;
+    cx.strokeStyle=fp?'#1565C0':'#00E676';cx.lineWidth=1.5;
     rr(cx,lx-pw/2,ly-ph/2,pw,ph,ph/2);cx.stroke();
-    // Texto legível
     cx.fillStyle=fp?'#0d47a1':'#00FF88';
     cx.font=`bold ${Math.max(10,CELL*.22)}px 'Segoe UI',sans-serif`;
     cx.textAlign='center';cx.textBaseline='middle';
     if(!fp){cx.shadowColor='rgba(0,0,0,0.8)';cx.shadowBlur=3;}
-    cx.fillText(G_SPACING+'m',lx,ly);
-    cx.shadowBlur=0;
+    const sp=e.spacing||getSpacingForCell(e.tc,e.tr);
+    cx.fillText(sp+'m',lx,ly);cx.shadowBlur=0;
   });
   cx.lineCap='butt';
 
-  // ─── Trafo connector line ───
+  // ─── Trafo connector ───
   let trafoNode=null;
   G.nodes.forEach(n=>{if(n.type==='trafo')trafoNode=n;});
   if(trafoNode){
@@ -894,20 +926,20 @@ function render(forPrint=false){
   let hNum=1;
   G.nodes.forEach(node=>{
     const x=(node.c+.5)*CELL,y=(node.r+.5)*CELL;
-    if(node.type==='poste')     drawPoste(x,y,fp);
+    if(node.type==='poste')     drawPoste(x,y,fp,node);
     else if(node.type==='trafo') drawTrafo(x,y,fp);
-    else                         drawHaste(x,y,fp,hNum++);
+    else                          drawHaste(x,y,fp,hNum++);
   });
 
   // ─── Scale bar ───
-  const sbX=W-CELL*1.1, sbY=H-12, sbW=CELL;
-  cx.strokeStyle=fp?'rgba(0,80,160,.5)':'rgba(255,255,255,.35)';
-  cx.lineWidth=1.5;
+  const sbX=W-CELL*1.1,sbY=H-12,sbW=CELL;
+  const refSpacing=(findPoste()||{spacing:10}).spacing;
+  cx.strokeStyle=fp?'rgba(0,80,160,.5)':'rgba(255,255,255,.35)';cx.lineWidth=1.5;
   cx.beginPath();cx.moveTo(sbX,sbY-5);cx.lineTo(sbX,sbY);cx.lineTo(sbX+sbW,sbY);cx.lineTo(sbX+sbW,sbY-5);cx.stroke();
   cx.fillStyle=fp?'rgba(0,80,160,.7)':'rgba(255,255,255,.5)';
   cx.font=`${Math.max(8,CELL*.17)}px 'Segoe UI',sans-serif`;
   cx.textAlign='center';cx.textBaseline='bottom';
-  cx.fillText(`= ${G_SPACING}m`,sbX+sbW/2,sbY-1);
+  cx.fillText(`= ${refSpacing}m`,sbX+sbW/2,sbY-1);
 
   updateStats();
 }
@@ -918,12 +950,39 @@ function render(forPrint=false){
 function onTap(c,r){
   if(c<0||c>=GRID||r<0||r>=GRID) return;
 
+  // SELECT MODE — click existing poste to select it
+  if(G.mode==='select'){
+    if(has(c,r)&&get(c,r).type==='poste'){
+      G.selectedKey=key(c,r);
+      openPoleEditor(get(c,r));
+      render();
+    } else {
+      // deselect
+      G.selectedKey=null;
+      closePoleEditor();
+      render();
+    }
+    return;
+  }
+
   if(G.mode==='poste'){
-    if(G.hasPoste){toast('Poste já posicionado. Use ↩ Desfazer se precisar mover.','err');return;}
+    if(has(c,r)){toast('Célula ocupada','err');return;}
     saveHist();
-    G.nodes.set(key(c,r),{c,r,type:'poste'});
-    G.hasPoste=true;
+    const postesCount=getPostes().length;
+    const defaultNum=postesCount===0?fv('poste'):`P-${String(postesCount+1).padStart(3,'0')}`;
+    G.nodes.set(key(c,r),{
+      c,r,type:'poste',uid:nextUid(),
+      posteNum:defaultNum,
+      comment:'',
+      redeDir:'none',
+      redePass:true,
+      spacing:10
+    });
+    // auto-select new poste
+    G.selectedKey=key(c,r);
+    openPoleEditor(G.nodes.get(key(c,r)));
     setMode('draw');
+    renderPoleList();
     render();
     return;
   }
@@ -931,13 +990,11 @@ function onTap(c,r){
   if(G.mode==='trafo'){
     const pn=findPoste();
     if(!pn){toast('Posicione o poste primeiro','err');setMode('draw');return;}
-    if(Math.abs(c-pn.c)+Math.abs(r-pn.r)!==1){
-      toast('Posicione o trafo na célula imediatamente ao lado do poste','err');return;
-    }
+    if(Math.abs(c-pn.c)+Math.abs(r-pn.r)!==1){toast('Posicione o trafo na célula imediatamente ao lado do poste','err');return;}
     if(has(c,r)){toast('Célula ocupada','err');return;}
     G.nodes.forEach((v,k)=>{if(v.type==='trafo')G.nodes.delete(k);});
     saveHist();
-    G.nodes.set(key(c,r),{c,r,type:'trafo'});
+    G.nodes.set(key(c,r),{c,r,type:'trafo',uid:nextUid()});
     setMode('draw');
     toast('Transformador posicionado ✓','ok');
     render();
@@ -945,13 +1002,22 @@ function onTap(c,r){
   }
 
   // draw mode — add haste
-  if(!G.hasPoste){toast('Posicione o poste primeiro','err');return;}
+  if(getPostes().length===0){toast('Posicione o poste primeiro','err');return;}
   if(has(c,r)) return;
   const nears=adjNodes(c,r);
   if(!nears.length){toast('Toque em célula adjacente verde a uma haste ou poste','err');return;}
   saveHist();
-  G.nodes.set(key(c,r),{c,r,type:'haste'});
-  nears.forEach(n=>G.edges.push({fc:n.c,fr:n.r,tc:c,tr:r}));
+  // determine spacing from nearest poste
+  let sp=10;
+  let closestPoste=null,minDist=9999;
+  getPostes().forEach(pn=>{
+    const d=Math.abs(pn.c-c)+Math.abs(pn.r-r);
+    if(d<minDist){minDist=d;closestPoste=pn;}
+  });
+  if(closestPoste) sp=closestPoste.spacing;
+
+  G.nodes.set(key(c,r),{c,r,type:'haste',uid:nextUid(),spacing:sp});
+  nears.forEach(n=>G.edges.push({fc:n.c,fr:n.r,tc:c,tr:r,spacing:sp}));
   render();
 }
 
@@ -961,72 +1027,164 @@ CV.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
 CV.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 
 // ══════════════════════════════════════════════════
+// POLE EDITOR
+// ══════════════════════════════════════════════════
+function openPoleEditor(node){
+  const ed=document.getElementById('poleEditor');
+  ed.style.display='block';
+  document.getElementById('pedPosteLabel').textContent=node.posteNum||'(sem número)';
+  document.getElementById('pedPosteNum').value=node.posteNum||'';
+  document.getElementById('pedComment').value=node.comment||'';
+  document.getElementById('pedSpacing').value=node.spacing||10;
+  setRedeOpts(node.redeDir||'none');
+  setRedePassOpts(node.redePass!==false);
+  updateRedePassRowVisibility(node.redeDir||'none');
+}
+
+function closePoleEditor(){
+  document.getElementById('poleEditor').style.display='none';
+  G.selectedKey=null;
+  render();
+}
+
+function updateSelectedPole(){
+  if(!G.selectedKey) return;
+  const node=G.nodes.get(G.selectedKey);
+  if(!node) return;
+  node.posteNum=document.getElementById('pedPosteNum').value.trim();
+  node.comment=document.getElementById('pedComment').value;
+  node.spacing=parseInt(document.getElementById('pedSpacing').value)||10;
+  document.getElementById('pedPosteLabel').textContent=node.posteNum||'(sem número)';
+  renderPoleList();
+  render();
+}
+
+function setPosteRede(dir){
+  if(!G.selectedKey) return;
+  const node=G.nodes.get(G.selectedKey);
+  if(!node) return;
+  node.redeDir=dir;
+  setRedeOpts(dir);
+  updateRedePassRowVisibility(dir);
+  render();
+}
+
+function setPosteRedePass(val){
+  if(!G.selectedKey) return;
+  const node=G.nodes.get(G.selectedKey);
+  if(!node) return;
+  node.redePass=val;
+  setRedePassOpts(val);
+  render();
+}
+
+function setRedeOpts(dir){
+  ['none','H','V','HV'].forEach(d=>{
+    document.getElementById('ropt-'+d).classList.toggle('on',d===dir);
+  });
+}
+
+function setRedePassOpts(val){
+  document.getElementById('rpass-cross').classList.toggle('on',val===true);
+  document.getElementById('rpass-end').classList.toggle('on',val===false);
+}
+
+function updateRedePassRowVisibility(dir){
+  document.getElementById('redePassRow').style.display=dir==='none'?'none':'block';
+}
+
+function renderPoleList(){
+  const postes=getPostes();
+  const card=document.getElementById('poleListCard');
+  card.style.display=postes.length>0?'block':'none';
+  document.getElementById('poleList').innerHTML=postes.map(p=>{
+    const k=key(p.c,p.r);
+    const sel=G.selectedKey===k;
+    const redeLabel={none:'Sem rede',H:'Rede →',V:'Rede ↓',HV:'Rede ✛'}[p.redeDir||'none'];
+    const passLabel=p.redeDir!=='none'?(p.redePass!==false?' (cruza)':' (terminal)'):'';
+    return `<div class="pole-item${sel?' selected':''}" onclick="selectPosteFromList('${k}')">
+      <div class="pole-item-icon">📍</div>
+      <div class="pole-item-info">
+        <div class="pole-item-num">${p.posteNum||'(sem número)'}</div>
+        <div class="pole-item-comment">${p.comment||'Sem comentário'}</div>
+      </div>
+      <div class="pole-item-rede">${redeLabel}${passLabel}</div>
+      <button class="pole-item-del" onclick="deletePoste(event,'${k}')" title="Remover poste">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function selectPosteFromList(k){
+  const node=G.nodes.get(k);
+  if(!node) return;
+  G.selectedKey=k;
+  openPoleEditor(node);
+  setMode('select');
+  render();
+}
+
+function deletePoste(evt,k){
+  evt.stopPropagation();
+  if(!confirm('Remover este poste do desenho?')) return;
+  saveHist();
+  G.nodes.delete(k);
+  if(G.selectedKey===k){G.selectedKey=null;closePoleEditor();}
+  renderPoleList();render();
+}
+
+// ══════════════════════════════════════════════════
 // CONTROLS
 // ══════════════════════════════════════════════════
 function setMode(m){
   G.mode=m;
   document.querySelectorAll('.c-toolbar .btn').forEach(b=>b.classList.remove('on'));
   const msgs={
-    poste:'Toque no canvas para posicionar o POSTE (centro da malha)',
-    draw:'Toque nas células verdes para adicionar hastes de aterramento ('+G_SPACING+'m cada)',
-    trafo:'Toque em uma célula IMEDIATAMENTE AO LADO do poste para posicionar o transformador'
+    poste:'Toque no canvas para adicionar um POSTE (pode adicionar vários)',
+    draw:'Toque nas células verdes para adicionar hastes de aterramento',
+    trafo:'Toque em uma célula IMEDIATAMENTE AO LADO do poste para posicionar o transformador',
+    select:'Toque em um POSTE para selecionar e configurar (rede, comentário…)'
   };
   document.getElementById('cMsg').textContent=msgs[m]||msgs.draw;
   if(m==='poste') document.getElementById('btnPoste').classList.add('on');
   if(m==='trafo') document.getElementById('btnTrafo').classList.add('on');
-  updateRedeBtn();
+  if(m==='select') document.getElementById('btnEdit').classList.add('on');
 }
 
-function cycleRede(){
-  const idx=REDE_CYCLE.indexOf(REDE_DIR);
-  REDE_DIR=REDE_CYCLE[(idx+1)%REDE_CYCLE.length];
-  updateRedeBtn();
-  if(REDE_DIR!=='none') toast(REDE_MSGS[REDE_DIR],'ok');
-  render();
+function saveHist(){
+  G.hist.push({
+    nodes:new Map([...G.nodes].map(([k,v])=>[k,{...v}])),
+    edges:[...G.edges.map(e=>({...e}))],
+    selectedKey:G.selectedKey,
+    uidCounter:G.uidCounter
+  });
 }
-
-function updateRedeBtn(){
-  const btn=document.getElementById('btnRede');
-  btn.textContent=REDE_LABELS[REDE_DIR];
-  if(REDE_DIR!=='none') btn.classList.add('on');
-  else btn.classList.remove('on');
-}
-
-function setSpacing(v){
-  G_SPACING=v;
-  document.getElementById('btn10m').style.borderColor = v===10?'rgba(66,165,245,.5)':'rgba(255,255,255,.12)';
-  document.getElementById('btn10m').style.color = v===10?'var(--blue3)':'var(--txt)';
-  document.getElementById('btn5m').style.borderColor = v===5?'rgba(66,165,245,.5)':'rgba(255,255,255,.12)';
-  document.getElementById('btn5m').style.color = v===5?'var(--blue3)':'var(--txt)';
-  render();
-}
-
-function saveHist(){G.hist.push({nodes:new Map(G.nodes),edges:[...G.edges],hasPoste:G.hasPoste});}
 
 function undoLast(){
   if(!G.hist.length){toast('Nada para desfazer','err');return;}
-  const p=G.hist.pop();G.nodes=p.nodes;G.edges=p.edges;G.hasPoste=p.hasPoste;
-  if(!G.hasPoste) setMode('poste');
-  render();
+  const p=G.hist.pop();
+  G.nodes=p.nodes;G.edges=p.edges;G.selectedKey=p.selectedKey;G.uidCounter=p.uidCounter;
+  if(G.selectedKey&&G.nodes.has(G.selectedKey)) openPoleEditor(G.nodes.get(G.selectedKey));
+  else closePoleEditor();
+  if(G.mode==='select'&&!G.selectedKey) setMode('draw');
+  renderPoleList();render();
 }
 
 function clearCanvas(){
   if(!confirm('Limpar todo o desenho?')) return;
-  G.nodes.clear();G.edges=[];G.hist=[];G.hasPoste=false;
-  REDE_DIR='none';updateRedeBtn();
+  G.nodes.clear();G.edges=[];G.hist=[];G.selectedKey=null;G.uidCounter=0;
+  closePoleEditor();
+  document.getElementById('poleListCard').style.display='none';
   setMode('poste');render();
 }
 
 function updateStats(){
   const allNodes=[...G.nodes.values()];
+  const postes=allNodes.filter(n=>n.type==='poste').length;
   const hastes=allNodes.filter(n=>n.type==='haste').length;
-  const posteCount=allNodes.filter(n=>n.type==='poste').length;
-  const total=hastes+posteCount; // total hastes (poste counts as 1 haste)
-  const metros=G.edges.length*G_SPACING;
-  const ff=G.edges.length>0?1:0;
-  document.getElementById('stH').textContent=total;
-  document.getElementById('stFH').textContent=total;
-  document.getElementById('stFF').textContent=ff;
+  const metros=G.edges.reduce((s,e)=>s+(e.spacing||10),0);
+  document.getElementById('stP').textContent=postes;
+  document.getElementById('stH').textContent=hastes;
+  document.getElementById('stFH').textContent=hastes+postes;
   document.getElementById('stM').textContent=metros+'m';
 }
 
@@ -1047,8 +1205,12 @@ function goStep(n){
   if(n===2) setTimeout(resize,60);
 }
 
+function toggleTrafo(){
+  document.getElementById('trafoBox').style.display=document.getElementById('togTrafo').checked?'block':'none';
+}
+
 function toStep2(){
-  if(!fv('enc')||!fv('fiscal')||!fv('cidade')||!fv('data')||!fv('poste')||!fv('resist')){
+  if(!fv('enc')||!fv('fiscal')||!fv('cidade')||!fv('data')||!fv('poste')||!fv('resist')||!fv('numProjeto')){
     toast('Preencha todos os campos obrigatórios ★','err');return;
   }
   const hasT=document.getElementById('togTrafo').checked;
@@ -1057,20 +1219,35 @@ function toStep2(){
 }
 
 function toStep3(){
-  if(!G.hasPoste){toast('Posicione o poste no desenho primeiro','err');return;}
+  const postes=getPostes();
+  if(postes.length===0){toast('Posicione pelo menos um poste no desenho','err');return;}
 
-  // Snapshot (dark version for preview)
   document.getElementById('snapImg').src=CV.toDataURL();
 
-  // Chips
+  const numProjeto=fv('numProjeto');
   document.getElementById('chips3').innerHTML=`
     <div class="chip"><div class="chip-l">Encarregado</div><div class="chip-v">${fv('enc')}</div></div>
     <div class="chip"><div class="chip-l">Fiscal</div><div class="chip-v">${fv('fiscal')}</div></div>
     <div class="chip"><div class="chip-l">Cidade</div><div class="chip-v">${fv('cidade')}</div></div>
     <div class="chip"><div class="chip-l">Data</div><div class="chip-v">${fmtD(fv('data'))}</div></div>
-    <div class="chip"><div class="chip-l">Poste</div><div class="chip-v">${fv('poste')}</div></div>
+    <div class="chip"><div class="chip-l">Nº Projeto</div><div class="chip-v">${numProjeto}</div></div>
+    <div class="chip"><div class="chip-l">Poste Principal</div><div class="chip-v">${fv('poste')}</div></div>
     <div class="chip"><div class="chip-l">Resistência</div><div class="chip-v">${fv('resist')} Ω</div></div>
   `;
+
+  // Postes summary
+  const pCard=document.getElementById('polesSummaryCard');
+  if(postes.length>0){
+    pCard.style.display='block';
+    document.getElementById('polesSummary').innerHTML=postes.map(p=>{
+      const redeLabel={none:'Sem rede',H:'Rede Horizontal',V:'Rede Vertical',HV:'Rede Cruz'}[p.redeDir||'none'];
+      const passLabel=p.redeDir!=='none'?(p.redePass!==false?' — cruza o poste':' — termina no poste'):'';
+      return `<div class="trow">
+        <span class="trow-l">${p.posteNum||'(sem número)'}</span>
+        <span class="trow-v" style="font-size:.78rem;color:var(--gold)">${redeLabel}${passLabel}</span>
+      </div>`+(p.comment?`<div style="font-size:.75rem;color:var(--mut);padding:4px 0 8px">💬 ${p.comment}</div>`:'');
+    }).join('');
+  } else pCard.style.display='none';
 
   // Trafo card
   const hasT=document.getElementById('togTrafo').checked;
@@ -1084,12 +1261,12 @@ function toStep3(){
   // Materials
   const allNodes=[...G.nodes.values()];
   const hastes=allNodes.filter(n=>n.type==='haste').length;
-  const total=hastes+(G.hasPoste?1:0);
-  const metros=G.edges.length*G_SPACING;
+  const total=hastes+postes.length;
+  const metros=G.edges.reduce((s,e)=>s+(e.spacing||10),0);
   const ff=G.edges.length>0?1:0;
   document.getElementById('matFinal').innerHTML=`
     <tr><th>Material</th><th>Qtd</th></tr>
-    <tr><td>Haste de Aterramento (${G_SPACING}m)</td><td><span class="qbadge">${total}</span></td></tr>
+    <tr><td>Haste de Aterramento</td><td><span class="qbadge">${total}</span></td></tr>
     <tr><td>Conector Fio-Haste</td><td><span class="qbadge">${total}</span></td></tr>
     <tr><td>Conector Fio-Fio</td><td><span class="qbadge">${ff}</span></td></tr>
     <tr><td>Cabo de Cobre (m)</td><td><span class="qbadge">${metros}m</span></td></tr>
@@ -1097,13 +1274,6 @@ function toStep3(){
 
   goStep(3);
   setTimeout(initSig,80);
-}
-
-// ══════════════════════════════════════════════════
-// TRAFO TOGGLE
-// ══════════════════════════════════════════════════
-function toggleTrafo(){
-  document.getElementById('trafoBox').style.display=document.getElementById('togTrafo').checked?'block':'none';
 }
 
 // ══════════════════════════════════════════════════
@@ -1130,44 +1300,53 @@ function clrSig(){if(sigCtx)sigCtx.clearRect(0,0,sc.width,sc.height);}
 // PRINT / PDF
 // ══════════════════════════════════════════════════
 async function doPrint(){
-  // Salva tamanho original do canvas
-  const origW = CV.width, origH = CV.height, origCELL = CELL;
-  // Forçar canvas de alta resolução para PDF (900×900)
-  const PDF_SIZE = 900;
-  CV.width = PDF_SIZE; CV.height = PDF_SIZE; CELL = PDF_SIZE / GRID;
-  // Render com fundo branco para PDF
+  const origW=CV.width,origH=CV.height,origCELL=CELL;
+  const PDF_SIZE=900;
+  CV.width=PDF_SIZE;CV.height=PDF_SIZE;CELL=PDF_SIZE/GRID;
   render(true);
-  const snapPDF = getCroppedSnapshot();
-  // Restaura tamanho original
-  CV.width = origW || window.innerWidth; CV.height = origH || Math.min(window.innerWidth, 440); CELL = origCELL;
-  render(false); // restaura versão escura
+  const snapPDF=getCroppedSnapshot();
+  CV.width=origW||window.innerWidth;CV.height=origH||Math.min(window.innerWidth,440);CELL=origCELL;
+  render(false);
 
-  // Fill PDF data
+  const numProjeto=fv('numProjeto');
+  const postes=getPostes();
+
   document.getElementById('pEnc').textContent=fv('enc');
   document.getElementById('pFiscal').textContent=fv('fiscal');
   document.getElementById('pCidade').textContent=fv('cidade');
   document.getElementById('pPoste').textContent=fv('poste');
-  document.getElementById('pData').textContent=fmtD(fv('data'));
+  document.getElementById('pProjeto').textContent=numProjeto;
+  document.getElementById('pData') && (document.getElementById('pData').textContent=fmtD(fv('data')));
   document.getElementById('pResist').textContent=fv('resist')+' Ω';
   document.getElementById('pdfPosteTag').textContent=fv('poste')||'—';
+  document.getElementById('pdfProjetoTag').textContent=numProjeto?`PRJ: ${numProjeto}`:'—';
   document.getElementById('pdfFiscalSig').textContent=fv('fiscal')||'—';
   document.getElementById('pdfSnap').src=snapPDF;
 
-  // Drawing caption
-  const dirs={none:'Sem rede indicada',H:'Rede horizontal',V:'Rede vertical',HV:'Rede horizontal + vertical'};
-  const hastes=[...G.nodes.values()].filter(n=>n.type==='haste').length;
-  const pCount=G.hasPoste?1:0;
-  const total=hastes+pCount;
-  const metros=G.edges.length*G_SPACING;
-  document.getElementById('pdfDrawingCaption').textContent=
-    `Espaçamento: ${G_SPACING}m por haste · ${dirs[REDE_DIR]} · ${total} haste(s) · ${metros}m de cabo`;
+  const allNodes=[...G.nodes.values()];
+  const hastes=allNodes.filter(n=>n.type==='haste').length;
+  const total=hastes+postes.length;
+  const metros=G.edges.reduce((s,e)=>s+(e.spacing||10),0);
 
-  // Legend items
+  document.getElementById('pdfDrawingCaption').textContent=
+    `${postes.length} poste(s) · ${hastes} haste(s) · ${metros}m cabo · Projeto: ${numProjeto}`;
+
+  // Poles table in PDF
+  const redeLabels={none:'Sem rede',H:'Horizontal →',V:'Vertical ↓',HV:'Cruz ✛'};
+  document.getElementById('pdfPolesTbody').innerHTML=postes.map(p=>{
+    const passLabel=p.redeDir!=='none'?(p.redePass!==false?' (cruza)':' (terminal)'):'';
+    return `<tr>
+      <td><b>${p.posteNum||'—'}</b></td>
+      <td>${redeLabels[p.redeDir||'none']}${passLabel}</td>
+      <td style="color:#555;font-size:.72rem">${p.comment||'—'}</td>
+    </tr>`;
+  }).join('');
+
   const hasT=document.getElementById('togTrafo').checked;
   document.getElementById('pdfLegTrafo').style.display=hasT?'flex':'none';
-  document.getElementById('pdfLegRede').style.display=REDE_DIR!=='none'?'flex':'none';
+  const hasRede=postes.some(p=>p.redeDir!=='none');
+  document.getElementById('pdfLegRede').style.display=hasRede?'flex':'none';
 
-  // Trafo section
   const ts=document.getElementById('pdfTrafoSection');
   if(hasT){
     ts.style.display='block';
@@ -1175,84 +1354,60 @@ async function doPrint(){
     document.getElementById('pdfTrafoGrid').innerHTML=fields.map(([l,v])=>`<div class="pdf-trafo-item"><div class="tl">${l}</div><div class="tv">${v||'—'}</div></div>`).join('');
   } else ts.style.display='none';
 
-  // Materials
   const ff=G.edges.length>0?1:0;
   document.getElementById('pdfMat').innerHTML=`
     <tr><th>Material</th><th>Especificação</th><th style="text-align:right">Qtd</th></tr>
-    <tr><td><b>Haste de Aterramento</b></td><td>Haste Cu/aço ${G_SPACING}m — 1 por nó da malha</td><td style="text-align:right"><span class="pdf-qty">${total}</span></td></tr>
+    <tr><td><b>Haste de Aterramento</b></td><td>Haste Cu/aço — 1 por nó da malha</td><td style="text-align:right"><span class="pdf-qty">${total}</span></td></tr>
     <tr><td><b>Conector Fio-Haste</b></td><td>1 conector por haste instalada</td><td style="text-align:right"><span class="pdf-qty">${total}</span></td></tr>
     <tr><td><b>Conector Fio-Fio</b></td><td>1 por malha completa</td><td style="text-align:right"><span class="pdf-qty">${ff}</span></td></tr>
-    <tr><td><b>Cabo de Cobre</b></td><td>Comprimento total da malha de aterramento</td><td style="text-align:right"><span class="pdf-qty">${metros}m</span></td></tr>
+    <tr><td><b>Cabo de Cobre</b></td><td>Comprimento total da malha</td><td style="text-align:right"><span class="pdf-qty">${metros}m</span></td></tr>
   `;
 
-  // Signature
   document.getElementById('pdfSigImg').src=sc.toDataURL();
   document.getElementById('pdfSigName').textContent=`Encarregado: ${fv('enc')} — ${fmtD(fv('data'))}`;
-
   document.getElementById('pdfFooterDate').textContent='Emitido em '+new Date().toLocaleDateString('pt-BR');
 
-  // Aguarda imagens carregarem e usa html2canvas + jsPDF (cores preservadas, 1 página)
-  const pdfEl = document.getElementById('pdfPage');
-  pdfEl.style.display = 'block';
-  await new Promise(r => setTimeout(r, 600)); // aguarda renders
-
-  try {
+  const pdfEl=document.getElementById('pdfPage');
+  pdfEl.style.display='block';
+  await new Promise(r=>setTimeout(r,600));
+  try{
     toast('⏳ Gerando PDF…','ok');
-    const cnv = await html2canvas(pdfEl, {
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      width: 1122,
-      windowWidth: 1200
-    });
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    const pW = pdf.internal.pageSize.getWidth();
-    const pH = pdf.internal.pageSize.getHeight();
-    const ratio = cnv.height / cnv.width;
-    const imgH = pW * ratio;
-    if (imgH <= pH) {
-      pdf.addImage(cnv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pW, imgH);
-    } else {
-      // Centraliza verticalmente se sobrar espaço
-      pdf.addImage(cnv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pW, pH);
-    }
-    const nome = `malha_aterramento_${fv('poste').replace(/[^a-zA-Z0-9]/g,'_')}_${fv('data')}.pdf`;
+    const cnv=await html2canvas(pdfEl,{scale:3,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false,width:1122,windowWidth:1200});
+    const{jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const pW=pdf.internal.pageSize.getWidth();
+    const pH=pdf.internal.pageSize.getHeight();
+    const ratio=cnv.height/cnv.width;
+    const imgH=pW*ratio;
+    if(imgH<=pH){pdf.addImage(cnv.toDataURL('image/jpeg',0.95),'JPEG',0,0,pW,imgH);}
+    else{pdf.addImage(cnv.toDataURL('image/jpeg',0.95),'JPEG',0,0,pW,pH);}
+    const nome=`malha_aterramento_${fv('poste').replace(/[^a-zA-Z0-9]/g,'_')}_${fv('data')}.pdf`;
     pdf.save(nome);
     toast('✅ PDF gerado com sucesso!','ok');
-  } catch(e) {
-    toast('❌ Erro ao gerar PDF: '+e.message,'err');
-  } finally {
-    pdfEl.style.display = 'none';
-  }
+  }catch(e){toast('❌ Erro ao gerar PDF: '+e.message,'err');}
+  finally{pdfEl.style.display='none';}
 }
 
-// ══════════════════════════════════════════════════
-// CROPPED SNAPSHOT — remove espaço branco ao redor do desenho
-// ══════════════════════════════════════════════════
 function getCroppedSnapshot(){
   if(G.nodes.size===0) return CV.toDataURL('image/png',1.0);
   let minC=GRID,maxC=0,minR=GRID,maxR=0;
   G.nodes.forEach(node=>{
-    if(node.c<minC) minC=node.c;
-    if(node.c>maxC) maxC=node.c;
-    if(node.r<minR) minR=node.r;
-    if(node.r>maxR) maxR=node.r;
+    if(node.c<minC)minC=node.c;if(node.c>maxC)maxC=node.c;
+    if(node.r<minR)minR=node.r;if(node.r>maxR)maxR=node.r;
   });
   const PAD=2;
   let x1=Math.max(0,(minC-PAD)*CELL);
   let y1=Math.max(0,(minR-PAD)*CELL);
   let x2=Math.min(CV.width,(maxC+1+PAD)*CELL);
   let y2=Math.min(CV.height,(maxR+1+PAD)*CELL);
-  // Se rede ativa, manter toda a largura/altura
-  if(REDE_DIR==='H'||REDE_DIR==='HV'){x1=0;x2=CV.width;}
-  if(REDE_DIR==='V'||REDE_DIR==='HV'){y1=0;y2=CV.height;}
-  const w=Math.round(x2-x1), h=Math.round(y2-y1);
+  const hasH=getPostes().some(p=>p.redeDir==='H'||p.redeDir==='HV');
+  const hasV=getPostes().some(p=>p.redeDir==='V'||p.redeDir==='HV');
+  if(hasH){x1=0;x2=CV.width;}
+  if(hasV){y1=0;y2=CV.height;}
+  const w=Math.round(x2-x1),h=Math.round(y2-y1);
   if(w<=0||h<=0) return CV.toDataURL('image/png',1.0);
   const tmp=document.createElement('canvas');
-  tmp.width=w; tmp.height=h;
+  tmp.width=w;tmp.height=h;
   tmp.getContext('2d').drawImage(CV,x1,y1,w,h,0,0,w,h);
   return tmp.toDataURL('image/png',1.0);
 }
@@ -1261,11 +1416,11 @@ function getCroppedSnapshot(){
 // SEND EMAIL
 // ══════════════════════════════════════════════════
 async function doSendEmail(){
-  if(!G.hasPoste){toast('Posicione o poste no desenho primeiro','err');return;}
+  const postes=getPostes();
+  if(postes.length===0){toast('Posicione o poste no desenho primeiro','err');return;}
   const btn=document.getElementById('btnEmail');
   btn.disabled=true;btn.textContent='⏳ Enviando…';
   try{
-    /* Captura canvas em alta resolução (fundo branco) para PDF no servidor */
     const _oW=CV.width,_oH=CV.height,_oC=CELL;
     CV.width=900;CV.height=900;CELL=900/GRID;
     render(true);
@@ -1275,30 +1430,23 @@ async function doSendEmail(){
     const sigImg=scEl?scEl.toDataURL():'';
     const allNodes=[...G.nodes.values()];
     const hastes=allNodes.filter(n=>n.type==='haste').length;
-    const total=hastes+(G.hasPoste?1:0);
-    const metros=G.edges.length*G_SPACING;
+    const total=hastes+postes.length;
+    const metros=G.edges.reduce((s,e)=>s+(e.spacing||10),0);
     const points=allNodes.map((n,i)=>({
-      id: n.type==='poste'?'P':(n.type==='trafo'?'TR':'H'+(i)),
-      tipo: n.type==='poste'?'Poste':(n.type==='trafo'?'Trafo':'Haste'),
-      cx: Math.round((n.c+0.5)*80),
-      cy: Math.round((n.r+0.5)*80),
-      resistencia: n.type==='poste'?parseFloat(fv('resist'))||null:null
+      id:n.type==='poste'?(n.posteNum||'P'):(n.type==='trafo'?'TR':'H'+(i)),
+      tipo:n.type==='poste'?'Poste':(n.type==='trafo'?'Trafo':'Haste'),
+      cx:Math.round((n.c+0.5)*80),cy:Math.round((n.r+0.5)*80),
+      resistencia:n.type==='poste'?parseFloat(fv('resist'))||null:null,
+      posteNum:n.posteNum||null,comment:n.comment||null,
+      redeDir:n.redeDir||'none',redePass:n.redePass!==false
     }));
     const payload={
-      titulo: `Malha de Aterramento — Poste ${fv('poste')} — ${fmtD(fv('data'))}`,
-      cliente: fv('fiscal'),
-      local: fv('poste'),
-      cidade: fv('cidade'),
-      num_poste: fv('poste'),
-      encarregado: fv('enc'),
-      data: fv('data'),
-      resistencia: fv('resist'),
-      rede_dir: REDE_DIR,
-      espacamento: G_SPACING,
-      points,
-      summary:{ pontos: allNodes.length, hastes: total, metros_cabo: metros },
-      canvas_img: canvasImg,
-      sig_img: sigImg
+      titulo:`Malha de Aterramento — Projeto ${fv('numProjeto')} — Poste ${fv('poste')} — ${fmtD(fv('data'))}`,
+      cliente:fv('fiscal'),local:fv('poste'),cidade:fv('cidade'),
+      num_poste:fv('poste'),num_projeto:fv('numProjeto'),
+      encarregado:fv('enc'),data:fv('data'),resistencia:fv('resist'),
+      points,summary:{pontos:allNodes.length,hastes:total,metros_cabo:metros},
+      canvas_img:canvasImg,sig_img:sigImg
     };
     const res=await fetch('/malha/enviar_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const ct=res.headers.get('content-type')||'';
@@ -1309,11 +1457,8 @@ async function doSendEmail(){
     const json=await res.json();
     if(res.ok) toast('✅ E-mail enviado com sucesso!','ok');
     else toast('❌ Erro: '+(json.erro||'Falha no envio'),'err');
-  } catch(e){
-    toast('❌ Erro de conexão: '+e.message,'err');
-  } finally{
-    btn.disabled=false;btn.textContent='📧 Enviar E-mail';
-  }
+  }catch(e){toast('❌ Erro de conexão: '+e.message,'err');}
+  finally{btn.disabled=false;btn.textContent='📧 Enviar E-mail';}
 }
 
 // ══════════════════════════════════════════════════
@@ -1321,13 +1466,13 @@ async function doSendEmail(){
 // ══════════════════════════════════════════════════
 function resetAll(){
   if(!confirm('Iniciar nova malha? Os dados serão perdidos.')) return;
-  G.nodes.clear();G.edges=[];G.hist=[];G.hasPoste=false;
-  REDE_DIR='none';G_SPACING=10;
+  G.nodes.clear();G.edges=[];G.hist=[];G.selectedKey=null;G.uidCounter=0;
+  closePoleEditor();
+  document.getElementById('poleListCard').style.display='none';
   document.querySelectorAll('input[type!=checkbox]').forEach(i=>i.value='');
   document.getElementById('togTrafo').checked=false;
   document.getElementById('trafoBox').style.display='none';
   document.getElementById('data').value=new Date().toISOString().split('T')[0];
-  setSpacing(10);updateRedeBtn();
   setMode('poste');goStep(1);
 }
 
