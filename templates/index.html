@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/GQM6AHbcGQ02UO9V9o56RCEoLLZhafhw/b3bde930-e0a3-4017-9580-71e835a6070d/files/">
+<head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>HAGAP — Gestão de Projetos Elétricos</title>
@@ -985,11 +985,12 @@ function _matFiltrarResumo(lista){
              !String(row.projeto||'').toLowerCase().includes(fb)) return false;
     // filtro de data
     if(dIni||dFim){
-      const dt = _matParseData(row.data||'') || _matParseData(row.arquivo||'');
-      if(!dt) return false; // sem data identificável → excluir quando há filtro ativo
-      const dtStr = dt.toISOString().slice(0,10);
-      if(dIni && dtStr < dIni) return false;
-      if(dFim && dtStr > dFim) return false;
+      const dt = _matParseData(row.arquivo||'');
+      if(dt){
+        const dtStr = dt.toISOString().slice(0,10);
+        if(dIni && dtStr < dIni) return false;
+        if(dFim && dtStr > dFim) return false;
+      }
     }
     return true;
   });
@@ -1005,13 +1006,14 @@ function _matFiltrarItens(lista){
     if(fb && !String(it.descricao||'').toLowerCase().includes(fb) &&
              !String(it.codigo||'').toLowerCase().includes(fb) &&
              !String(it.projeto||'').toLowerCase().includes(fb)) return false;
-    // filtro de data pelo nome do arquivo ou campo data
+    // filtro de data pelo nome do arquivo
     if(dIni||dFim){
-      const dt = _matParseData(it.data||'') || _matParseData(it.arquivo||'');
-      if(!dt) return false; // sem data identificável → excluir quando há filtro ativo
-      const dtStr = dt.toISOString().slice(0,10);
-      if(dIni && dtStr < dIni) return false;
-      if(dFim && dtStr > dFim) return false;
+      const dt = _matParseData(it.arquivo||'');
+      if(dt){
+        const dtStr = dt.toISOString().slice(0,10);
+        if(dIni && dtStr < dIni) return false;
+        if(dFim && dtStr > dFim) return false;
+      }
     }
     return true;
   });
