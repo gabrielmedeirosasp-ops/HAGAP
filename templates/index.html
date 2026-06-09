@@ -983,14 +983,12 @@ function _matFiltrarResumo(lista){
     // busca livre no arquivo ou projeto
     if(fb && !String(row.arquivo||'').toLowerCase().includes(fb) &&
              !String(row.projeto||'').toLowerCase().includes(fb)) return false;
-    // filtro de data
+    // filtro de data — usa campo 'data' real (YYYY-MM-DD) vindo da API
     if(dIni||dFim){
-      const dt = _matParseData(row.arquivo||'');
-      if(dt){
-        const dtStr = dt.toISOString().slice(0,10);
-        if(dIni && dtStr < dIni) return false;
-        if(dFim && dtStr > dFim) return false;
-      }
+      const dtStr = (row.data||'').trim(); // formato YYYY-MM-DD ou ''
+      if(!dtStr) return false; // sem data conhecida: exclui quando há filtro
+      if(dIni && dtStr < dIni) return false;
+      if(dFim && dtStr > dFim) return false;
     }
     return true;
   });
@@ -1006,14 +1004,12 @@ function _matFiltrarItens(lista){
     if(fb && !String(it.descricao||'').toLowerCase().includes(fb) &&
              !String(it.codigo||'').toLowerCase().includes(fb) &&
              !String(it.projeto||'').toLowerCase().includes(fb)) return false;
-    // filtro de data pelo nome do arquivo
+    // filtro de data — usa campo 'data' real (YYYY-MM-DD) vindo da API
     if(dIni||dFim){
-      const dt = _matParseData(it.arquivo||'');
-      if(dt){
-        const dtStr = dt.toISOString().slice(0,10);
-        if(dIni && dtStr < dIni) return false;
-        if(dFim && dtStr > dFim) return false;
-      }
+      const dtStr = (it.data||'').trim();
+      if(!dtStr) return false; // sem data: exclui quando há filtro
+      if(dIni && dtStr < dIni) return false;
+      if(dFim && dtStr > dFim) return false;
     }
     return true;
   });
@@ -1242,6 +1238,7 @@ function _renderMateriais(){
           ${_matThResizable('✔',40)}
           ${_matThResizable('Projeto',80)}
           ${_matThResizable('Arquivo (BMD/FFO)',180)}
+          ${_matThResizable('Data',90)}
           ${_matThResizable('Total',110)}
           ${_matThResizable('Material',110)}
           ${_matThResizable('Mão Obra',110)}
@@ -1258,6 +1255,7 @@ function _renderMateriais(){
             <td style="padding:8px 10px;text-align:center;">${checkBtn}</td>
             <td style="padding:8px 12px;font-weight:800;color:var(--azul);">${escH(r.projeto)}</td>
             <td style="padding:8px 12px;font-size:11px;color:#475569;" title="${escH(r.arquivo)}">${escH(r.arquivo)}</td>
+            <td style="padding:8px 12px;font-size:11px;color:#64748b;text-align:center;">${r.data?(()=>{const p=r.data.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:r.data;})():'—'}</td>
             <td style="padding:8px 12px;text-align:right;font-weight:800;color:#15803d;">${_matFmt(r.total_geral)}</td>
             <td style="padding:8px 12px;text-align:right;color:#c2410c;">${r.total_material>0?_matFmt(r.total_material):'—'}</td>
             <td style="padding:8px 12px;text-align:right;color:#1e40af;">${r.total_mao_obra>0?_matFmt(r.total_mao_obra):'—'}</td>

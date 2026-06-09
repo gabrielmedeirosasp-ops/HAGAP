@@ -2325,6 +2325,54 @@ def api_materiais_bmd():
                 'valor_total':    float(r.get('valor_total') or 0),
             })
 
+    # ── Buscar datas reais dos BMDs/FFOs no banco de dados (hagap_db) ──────────
+    # Monta dicionário: nome_arquivo_normalizado -> data (string YYYY-MM-DD ou DD/MM/YYYY)
+    arquivo_para_data: dict = {}
+    if DATABASE_URL:
+        try:
+            with _pg_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT dados FROM hagap_db WHERE id=1")
+                    row_db = cur.fetchone()
+            if row_db and row_db[0]:
+                import json as _json
+                dados_db = _json.loads(row_db[0]) if isinstance(row_db[0], str) else row_db[0]
+                projetos_db = dados_db if isinstance(dados_db, list) else dados_db.get('projetos', [])
+                for proj_db in projetos_db:
+                    for bmd in proj_db.get('bmds', []):
+                        arq = str(bmd.get('arquivo', '')).strip()
+                        dt  = str(bmd.get('data', '')).strip()
+                        if arq and dt:
+                            arquivo_para_data[arq.lower()] = dt
+                    for ffo in proj_db.get('ffos', []):
+                        arq = str(ffo.get('arquivo', '')).strip()
+                        dt  = str(ffo.get('data', '')).strip()
+                        if arq and dt:
+                            arquivo_para_data[arq.lower()] = dt
+        except Exception as e:
+            print(f'[mat_datas_db] erro ao carregar datas: {e}')
+
+    def _data_para_iso(dt_str: str) -> str:
+        """Converte DD/MM/YYYY ou YYYY-MM-DD para YYYY-MM-DD; retorna '' se inválido."""
+        if not dt_str:
+            return ''
+        import re as _re
+        m = _re.match(r'^(\d{2})/(\d{2})/(\d{4})$', dt_str)
+        if m:
+            return f'{m.group(3)}-{m.group(2)}-{m.group(1)}'
+        m = _re.match(r'^(\d{4})-(\d{2})-(\d{2})$', dt_str)
+        if m:
+            return dt_str
+        return ''
+
+    # Adiciona campo 'data' ao resumo e aos itens
+    for rv in resumo:
+        arq_key = str(rv.get('arquivo', '')).strip().lower()
+        rv['data'] = _data_para_iso(arquivo_para_data.get(arq_key, ''))
+    for it in itens:
+        arq_key = str(it.get('arquivo', '')).strip().lower()
+        it['data'] = _data_para_iso(arquivo_para_data.get(arq_key, ''))
+
     # Aplicar overrides do banco de dados
     overrides = {}
     checks = {}
