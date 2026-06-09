@@ -785,7 +785,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "NO VALOR TOTAL DE R",
     "custo": "R$28.774,45",
     "status": "Pendente",
@@ -836,7 +836,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$28.774,45",
     "status": "Pendente",
@@ -869,11 +869,11 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$28.774,45",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 83978 4600026463 HAGAP.pdf",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -886,12 +886,29 @@
         "valor": "R$1.675,57",
         "rateio": "1.675,57",
         "rateio_float": 1675.57
+      },
+      {
+        "arquivo": "BMD-1720116-HAGAP.pdf",
+        "us": "",
+        "data": "19/05/2026",
+        "valor": "R$168,95",
+        "rateio": "168,95",
+        "rateio_float": 168.95
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1710116-HAGAP.pdf",
+        "us": "221",
+        "data": "08.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "19/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "19/05/2026",
+    "final": "08.06.2026",
     "origem": [
       "ae",
       "medicao"
@@ -912,7 +929,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$28.774,45",
     "status": "Pendente",
@@ -1306,7 +1323,7 @@
     "us": "253,608",
     "us_num": 253.608,
     "prazo": "04/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK",
     "custo": "R$17.534,63",
     "status": "Pendente",
@@ -1354,7 +1371,7 @@
     "us": "253,608",
     "us_num": 253.608,
     "prazo": "04/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$17.534,63",
     "status": "Pendente",
@@ -1387,7 +1404,7 @@
     "us": "253,608",
     "us_num": 253.608,
     "prazo": "04/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$17.534,63",
     "status": "Pendente",
@@ -1420,7 +1437,7 @@
     "us": "253,608",
     "us_num": 253.608,
     "prazo": "04/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$17.534,63",
     "status": "Pendente",
@@ -2265,7 +2282,7 @@
     "us": "110,959",
     "us_num": 110.959,
     "prazo": "05/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$7.731,21",
     "status": "Pendente",
@@ -2304,7 +2321,7 @@
     "us": "110,959",
     "us_num": 110.959,
     "prazo": "05/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$7.731,21",
     "status": "Pendente",
@@ -5447,8 +5464,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -5461,12 +5478,37 @@
         "valor": "R$18.169,34",
         "rateio": "18.169,34",
         "rateio_float": 18169.34
+      },
+      {
+        "arquivo": "BMD-1703223-HAGAP.pdf",
+        "us": "",
+        "data": "19/05/2026",
+        "valor": "R$1.471,15",
+        "rateio": "1.471,15",
+        "rateio_float": 1471.15
+      },
+      {
+        "arquivo": "MULTA-1703223-HAGAP.pdf",
+        "us": "",
+        "data": "",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1703223-HAGAP.pdf",
+        "us": "",
+        "data": "08.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "05/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "05/05/2026",
+    "final": "08.06.2026",
     "origem": [
       "medicao"
     ],
@@ -6341,8 +6383,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -6365,10 +6407,19 @@
         "rateio_float": 3239.73
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1719881-HAGAP.pdf",
+        "us": "",
+        "data": "03.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "20/05/2026",
     "medicao2": "21/05/2026",
-    "final": "",
+    "final": "03.06.2026",
     "origem": [
       "medicao"
     ],
@@ -7322,6 +7373,768 @@
     "ffos": [],
     "medicao1": "29/05/2026",
     "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1706327",
+    "ae": "",
+    "us": "80,635",
+    "us_num": 80.635,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "ARAPUA",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1706327",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1706327_FL1.pdf",
+      "1706327_FL2.pdf",
+      "1706327_FL3.pdf",
+      "LM_DETAL_1706327.pdf",
+      "LM_GERAL_1706327.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1706336",
+    "ae": "",
+    "us": "140,125",
+    "us_num": 140.125,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "E M",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1706336",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1706336_FL1.pdf",
+      "1706336_FL2.pdf",
+      "1706336_FL3.pdf",
+      "1706336_FL4.pdf",
+      "1706336_FL5.pdf",
+      "1706336_FL6.pdf",
+      "1706336_FL7.pdf",
+      "1706336_FL8.pdf",
+      "LM_DETAL_1706336.pdf",
+      "LM_GERAL_1706336.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1711120",
+    "ae": "",
+    "us": "103,840",
+    "us_num": 103.84,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "NOVA TEBAS",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1711120",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1711120_FL1.pdf",
+      "1711120_FL2.pdf",
+      "1711120_FL3.pdf",
+      "1711120_FL4.pdf",
+      "LM_DETAL_1711120.pdf",
+      "LM_GERAL_1711120.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1711629",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "02.03.2027",
+    "prazo_alerta": "ok",
+    "local": "DEASCHORK AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1711629 01.20263195647434 - ALESSANDRO SAMPAIO RIBEIRO 20.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263195647434 FICHA.pdf",
+      "01.20263195647434 RELACAO DE MATERIAIS.pdf",
+      "1711629.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1711788",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "04.08.2026",
+    "prazo_alerta": "ok",
+    "local": "ESPERANÇA NOVA",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1711788 01.20263240861110 - ASSOCIACAO COMUNITARIA TERRA BOA 20.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1711788 corrigido.pdf",
+      "20263240861110 FICHA.pdf",
+      "20263240861110 RELACAO DE MATERIAIS.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1713681",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "02.03.2027",
+    "prazo_alerta": "ok",
+    "local": "DEASCHORK AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1713681 01.20263343447907 - JHIMY KENEDY SOUZA FERRARI 20.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263343447907 FICHA.pdf",
+      "01.20263343447907 RELACAO DE MATERIAIS.pdf",
+      "1713681 (1).pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1716557",
+    "ae": "",
+    "us": "825,664",
+    "us_num": 825.664,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "CIANORTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1716557 - LDNU335802024   - croqui 3. Cianorte",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1716557 detalhado.pdf",
+      "1716557 geral.pdf",
+      "1716557-1.pdf",
+      "1716557-2.pdf",
+      "1716557-3.pdf",
+      "CARTA DE ALINHAMENTO DE POSTE - COPEL - ESTRADA RODEIO E FUBA (1).pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1716612",
+    "ae": "",
+    "us": "32,420",
+    "us_num": 32.42,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "CIANORTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1716612  -LDNU335802024 - croqui 3. Cianorte",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1716612 detalhado.pdf",
+      "1716612 geral.pdf",
+      "1716612_LDNU335802024.pdf",
+      "CARTA DE ALINHAMENTO DE POSTE - COPEL - ESTRADA RODEIO E FUBA (1).pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1718441",
+    "ae": "",
+    "us": "942,003",
+    "us_num": 942.003,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "WESLEY ORTIZ DE OLIVEIRA",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1718441 -LDNU335802024 - croqui 3. Cianorte",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1718441 detalhado.pdf",
+      "1718441 geral.pdf",
+      "1718441-1 (1).pdf",
+      "1718441-2 (1).pdf",
+      "1718441-3 (1).pdf",
+      "CARTA DE ALINHAMENTO DE POSTE - COPEL - ESTRADA RODEIO E FUBA (1).pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1719077",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1719077 01.20263579349056 - SALVADOR ZANOLI 18.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263579349056 FICHA.pdf",
+      "01.20263579349056 RELACAO DE MATERIAIS.pdf",
+      "1719077.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1721898",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "SILVA AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1721898 01.20263889505744 - EPR PARANA S.A 16.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263889505744 FICHA.pdf",
+      "01.20263889505744 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1721898.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724051",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "11.05.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "R$2.765,41",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724051 01.20264075681748 - MARIO SERGIO DE OLIVEIRA 17.11",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264075681748 ficha.pdf",
+      "01.20264075681748 relacao de materiais.pdf",
+      "1724051_MARIO SERGIO.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724053",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "30.12.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724053 01.20263997605660 - JESSICA FERNANDA BONIFACIO DOS SANTOS 24.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263997605660 ficha.pdf",
+      "01.20263997605660 relacao de materiais.pdf",
+      "1724053_JESSICA FERNANDA BONIFACIO.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724174",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "13.05.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "R$0.000,00",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724174 01.20264077495618 - SECRETARIA DE ESTADO DA EDUCACAO SEED 21.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264077495618 FICHA.pdf",
+      "01.20264077495618 RELACAO DE MATERIAIS.pdf",
+      "20264077495618 CONTRATO ASSINADO E OFICIO ACEITE.pdf",
+      "PROJETO 1724174.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724491",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724491 01.20264110172007 - GILMAR ALEIXO 23.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264110172007 FICHA.pdf",
+      "01.20264110172007 RELACAO DE MATERIAIS.pdf",
+      "1724491_GILMAR ALEIXO_REV.pdf",
+      "20264110172007 APE.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724537",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "02.05.2027",
+    "prazo_alerta": "ok",
+    "local": "DEASCHORK AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724537 01.20263968582955 - AGUINEL FERREIRA DA CRUZ 03.08",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263968582955 FICHA.pdf",
+      "01.20263968582955 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1724537.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724550",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "15.05.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724550 01.20264098016709 - ASSOCIACAO DO NUCLEO DE PRODUCAO DOS IDOSOS DE ALTONIA PR 3 IDADE 18.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264098016709 FICHA.pdf",
+      "01.20264098016709 RELACAO DE MATERIAIS.pdf",
+      "1724550_ASSOCIAÇÃO NUCLEO IDOSOS.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724558",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "01.09.2027",
+    "prazo_alerta": "ok",
+    "local": "SILVA AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1724558 01.20263889412776 - EPR PARANA S.A 19.05.2027",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263889412776 FICHA.pdf",
+      "01.20263889412776 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1721896(1724558) FL 1-2.pdf",
+      "PROJETO 1721896(1724558) FL 2-2.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1725260",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "19.05.2027",
+    "prazo_alerta": "ok",
+    "local": "ANUNCIACAO AZEVEDO",
+    "custo": "R$ 30.884,03",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1725260 01.20264163756882 - CONSTRUTORA RVA LTDA 27.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264163756882 ficha.pdf",
+      "01.20264163756882 relacao de materiais.pdf",
+      "1725260.pdf",
+      "20264163756882 contrato assinado.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1725686",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "18.05.2027",
+    "prazo_alerta": "ok",
+    "local": "CARVALHO AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1725686 01.20264132155190 - JOAO DA SILVA NETO 23.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264132155190 FICHA.pdf",
+      "01.20264132155190 RELACAO DE MATERIAIS.pdf",
+      "20264132155190 APE.pdf",
+      "Projeto 1725686 - João da Silva Neto.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726318",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "21.12.2026",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726318 01.20264173095321 - VIVIANE FERREIRA CAMILO GONZAGA 22.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264173095321 FICHA.pdf",
+      "01.20264173095321 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1726318.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726324",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "23.11.2026",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726324 01.20264187424019 - SILVIO YNAMURA 31.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264187424019 FICHA.pdf",
+      "01.20264187424019 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1726324.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726942",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "R$2.624,69",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726942 01.20264264580530 - AFONSO DE OLIVEIRA BERTONCELO 17.11",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264264580530 ficha.pdf",
+      "01.20264264580530 relacao de materiais.pdf",
+      "CROQUI.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1728642",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "GIOVANNI M CARVALHO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1728642 01.20264308973713 - EVANDO APARECIDO BORGES SILVA 30.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264308973713 ficha.pdf",
+      "01.20264308973713 relacao de materiais.pdf",
+      "PROJETO 1727884(1728642).pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1712766I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD-1712766-HAGAP.pdf",
+        "us": "",
+        "data": "06/05/2026",
+        "valor": "R$705,45",
+        "rateio": "705,45",
+        "rateio_float": 705.45
+      },
+      {
+        "arquivo": "FF0-1712766-HAGAP.pdf",
+        "us": "",
+        "data": "08.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "ffos": [],
+    "medicao1": "06/05/2026",
+    "medicao2": "08.06.2026",
     "final": "",
     "origem": [
       "medicao"
