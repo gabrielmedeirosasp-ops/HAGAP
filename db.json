@@ -211,7 +211,7 @@
     "us": "1.732,852",
     "us_num": 1732.852,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "WESLEY ORTIZ DE OLIVEIRA",
     "custo": "R$132.320,57",
     "status": "Pendente",
@@ -1251,7 +1251,7 @@
     "us": "183,633",
     "us_num": 183.633,
     "prazo": "10/06/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "OPÇÃOPOROBRAPARTICULAR",
     "custo": "R$13.214,86",
     "status": "Pendente",
@@ -1290,7 +1290,7 @@
     "us": "183,633",
     "us_num": 183.633,
     "prazo": "10/06/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$13.214,86",
     "status": "Pendente",
@@ -2135,7 +2135,7 @@
     "us": "221,364",
     "us_num": 221.364,
     "prazo": "11/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "VISANDOAOATENDIMENTODE",
     "custo": "R$13.503,20",
     "status": "Pendente",
@@ -2958,13 +2958,23 @@
     "pdfs_projeto": [
       "1657710 (1).pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1657710 BMD PARCIAL ASP.pdf",
+        "us": "",
+        "data": "19/05/2026",
+        "valor": "R$59.714,14",
+        "rateio": "59.714,14",
+        "rateio_float": 59714.14
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "19/05/2026",
     "medicao2": "",
     "final": "",
     "origem": [
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": []
   },
@@ -6603,7 +6613,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -6642,7 +6652,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -6680,7 +6690,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -6719,7 +6729,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -6757,7 +6767,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "ANUNCIACAO AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -6796,7 +6806,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CARVALHO AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -8135,6 +8145,228 @@
     "ffos": [],
     "medicao1": "06/05/2026",
     "medicao2": "08.06.2026",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1718803",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD 1718803 HAGAP.pdf",
+        "us": "",
+        "data": "29/05/2026",
+        "valor": "R$3.825,18",
+        "rateio": "3.825,18",
+        "rateio_float": 3825.18
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO 1718803 HAGAP.pdf",
+        "us": "",
+        "data": "09.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "29/05/2026",
+    "medicao2": "",
+    "final": "09.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1648254",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [],
+    "ffos": [
+      {
+        "arquivo": "1648254- FFO - asp.pdf",
+        "us": "",
+        "data": "03.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "03.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1667593",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [],
+    "ffos": [
+      {
+        "arquivo": "1667593 - FFO - asp.pdf",
+        "us": "",
+        "data": "03.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "03.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1724341",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "1724341 - BMD PARC - ASP.pdf",
+        "us": "",
+        "data": "08/05/2026",
+        "valor": "R$40.758,00",
+        "rateio": "40.758,00",
+        "rateio_float": 40758.0
+      }
+    ],
+    "ffos": [],
+    "medicao1": "08/05/2026",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1704867",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD - 1704867 - ASP.pdf",
+        "us": "",
+        "data": "30/04/2026",
+        "valor": "R$23.915,48",
+        "rateio": "23.915,48",
+        "rateio_float": 23915.48
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1704867 - ASP.pdf",
+        "us": "",
+        "data": "19.05.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "30/04/2026",
+    "medicao2": "",
+    "final": "19.05.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1692636",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD 1692636 ASP.pdf",
+        "us": "",
+        "data": "28/04/2026",
+        "valor": "R$19.387,05",
+        "rateio": "19.387,05",
+        "rateio_float": 19387.05
+      }
+    ],
+    "ffos": [],
+    "medicao1": "28/04/2026",
+    "medicao2": "",
     "final": "",
     "origem": [
       "medicao"
