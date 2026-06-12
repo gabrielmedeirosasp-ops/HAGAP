@@ -4707,8 +4707,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -4721,12 +4721,29 @@
         "valor": "R$6,36",
         "rateio": "6,36",
         "rateio_float": 6.36
+      },
+      {
+        "arquivo": "BMD - 1688115C - HAGAP.pdf",
+        "us": "",
+        "data": "11/06/2026",
+        "valor": "R$6,65",
+        "rateio": "6,65",
+        "rateio_float": 6.65
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1688115C - HAGAP.pdf",
+        "us": "",
+        "data": "12.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "04/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "11/06/2026",
+    "final": "12.06.2026",
     "origem": [
       "medicao"
     ],
@@ -4741,8 +4758,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -4755,12 +4772,29 @@
         "valor": "R$18.752,84",
         "rateio": "18.752,84",
         "rateio_float": 18752.84
+      },
+      {
+        "arquivo": "BMD - 1688115I - HAGAP.pdf",
+        "us": "",
+        "data": "11/06/2026",
+        "valor": "R$2.670,64",
+        "rateio": "2.670,64",
+        "rateio_float": 2670.64
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1688115I - HAGAP.pdf",
+        "us": "",
+        "data": "12.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "04/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "11/06/2026",
+    "final": "12.06.2026",
     "origem": [
       "medicao"
     ],
@@ -4809,8 +4843,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -4823,12 +4857,29 @@
         "valor": "R$2.127,38",
         "rateio": "2.127,38",
         "rateio_float": 2127.38
+      },
+      {
+        "arquivo": "BMD - 1711384 - HAGAP.pdf",
+        "us": "",
+        "data": "11/06/2026",
+        "valor": "R$122,95",
+        "rateio": "122,95",
+        "rateio_float": 122.95
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1711384 - HAGAP.pdf",
+        "us": "",
+        "data": "12.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "14/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "14/05/2026",
+    "final": "12.06.2026",
     "origem": [
       "medicao"
     ],
@@ -8370,6 +8421,498 @@
     "final": "",
     "origem": [
       "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1704074",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "23.03.2027",
+    "prazo_alerta": "ok",
+    "local": "JAPURA",
+    "custo": "R$70.485,69",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1704074 01.20252342373790 - SERVICO AUTONOMO MUNICIPAL DE AGUA E ESGOTO",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1704074 - 01 (1).pdf",
+      "1704074 - 02 (1).pdf",
+      "20252342373790 FICHA.pdf",
+      "20252342373790 Ofício 13-2026 de 02-03-26 Copel aceite orçamento rede poço Cristal assinado.pdf",
+      "20252342373790 RELACAO DE MATERIAIS.pdf",
+      "20252342373790 contrato_copel_de_25-02-2026_assinado juliana, roberto e emerson.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1706325",
+    "ae": "",
+    "us": "140,360",
+    "us_num": 140.36,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "C L F",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1706325 Finalização TK",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1706325_FL1.pdf",
+      "1706325_FL2.pdf",
+      "1706325_FL3.pdf",
+      "1706325_FL4.pdf",
+      "1706325_FL5.pdf",
+      "1706325_FL6.pdf",
+      "LM_DETAL_1706325.pdf",
+      "LM_GERAL_1706325.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1722805",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "02.04.2027",
+    "prazo_alerta": "ok",
+    "local": "DEASCHORK AZEVEDO",
+    "custo": "R$53.481,65",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1722805 01.20263889838038 - EPR PARANA S.A 16.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263889838038 FICHA.pdf",
+      "01.20263889838038 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1722805.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1722845",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "01.09.2027",
+    "prazo_alerta": "ok",
+    "local": "SILVA AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1722845 01.20263890080326 - EPR PARANA S.A 19.05.2027",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20263890080326 FICHA.pdf",
+      "01.20263890080326 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1722116(1722845) FL 01-02.pdf",
+      "PROJETO 1722116(1722845) FL 02-02.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1723691",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "08.05.2027",
+    "prazo_alerta": "ok",
+    "local": "CARVALHO AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1723691 01.20264027799054 - ASSOCIACAO ASSISTENCIAL E PROMOCIONAL CASA DA PAZ 16.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264027799054 FICHA.pdf",
+      "01.20264027799054 RELACAO DE MATERIAIS.pdf",
+      "1723691_ASSOCIAÇÃO ASSISTENCIAL_REV.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726007",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "TUNEIRAS DO OESTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726007 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726007-F1.pdf",
+      "1726007-F2.pdf",
+      "1726007-F3.pdf",
+      "1726007-F4.pdf",
+      "FICHA DE MATERIAIS BRT 1727600.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726007.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726008",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "FAZER JUMPER",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726008 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726008-1.pdf",
+      "1726008-2.pdf",
+      "1726008-3.pdf",
+      "1726008-4.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726008.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726018",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "TUNEIRAS DO OESTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726018 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726018_ALNU392492026.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726018.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726033",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "H H",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726033 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726033-1.pdf",
+      "1726033-2.pdf",
+      "1729927-1.pdf",
+      "BDO.1726033.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726033.pdf",
+      "FICHA DE MATERIAIS PROJETO 1729927.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726042",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "TUNEIRAS DO OESTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726042 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726042 - 1.pdf",
+      "1726042 - 2.pdf",
+      "1726042 - 3.pdf",
+      "1726042 - 4.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726042.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726044",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "TUNEIRAS DO OESTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726044 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726044.01.pdf",
+      "1726044.02.pdf",
+      "1726044.03.pdf",
+      "1726044.04.pdf",
+      "BDO_PROJETO_1726044_assinado.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726044.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726045",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "TNO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726045 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726045-1.pdf",
+      "1726045-2.pdf",
+      "1726045-3.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726045.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726058",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "TUNEIRAS DO OESTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726058 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726058_ALNU392492026.pdf",
+      "FICHA DE MATERIAIS PROJETO 1726058.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1727881",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "PREFEITURA DE CIANORTE",
+    "custo": "R$2.757,73",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1727881 20264266857004 - MUNICIPIO DE CIANORTE 30.07",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264266857004 ficha.pdf",
+      "01.20264266857004 oficio aceite.pdf",
+      "01.20264266857004 relacao de materiais.pdf",
+      "Projeto 1727881 - Município de Cianorte.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1729112",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "18/05/2026",
+    "prazo_alerta": "vencido",
+    "local": "GLOSSÁRIO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1729112 - Melhoria Tensão",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "AvaliacaoQualidadeTensao_UC94562512_CTO8940829576.pdf",
+      "MATERIAIS E TAREFAS - 1729112I.pdf",
+      "PROJETO - 1729112.pdf",
+      "RelatorioSecundaria_UC94562512_CTO8940829576.pdf",
+      "TraceEletrico_UC94562512_CTO8940829576.pdf",
+      "VALIDADOR - 1729112I.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1729397",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "13/05/2026",
+    "prazo_alerta": "vencido",
+    "local": "GLOSSÁRIO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1729397 UC 69928010_CTO 8940800172_ SS 20264438037135",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "AvaliacaoQualidadeTensao_UC69928010_CTO8940800172.pdf",
+      "MATERIAIS E TAREFAS - 1729397.pdf",
+      "PROJETO 1729397.pdf",
+      "RelatorioSecundaria_UC69928010_CTO8940800172.pdf",
+      "TraceEletrico_UC69928010_CTO8940800172.pdf",
+      "relatorio.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
     ],
     "avisos": []
   }
