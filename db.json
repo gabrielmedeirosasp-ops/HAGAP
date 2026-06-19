@@ -785,7 +785,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "NO VALOR TOTAL DE R",
     "custo": "R$28.774,45",
     "status": "Pendente",
@@ -836,7 +836,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$28.774,45",
     "status": "Pendente",
@@ -869,7 +869,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$28.774,45",
     "status": "Final",
@@ -929,7 +929,7 @@
     "us": "414,483",
     "us_num": 414.483,
     "prazo": "12/06/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$28.774,45",
     "status": "Pendente",
@@ -962,7 +962,7 @@
     "us": "385,024",
     "us_num": 385.024,
     "prazo": "15/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "TRIFÁSICOPARAATENDER",
     "custo": "R$29.400,43",
     "status": "Pendente",
@@ -1110,14 +1110,22 @@
     "us_num": 1080.951,
     "prazo": "02/08/2026",
     "prazo_alerta": "ok",
-    "local": "",
+    "local": "AZEVEDO",
     "custo": "R$73.801,59",
     "status": "Pendente",
     "executado": false,
     "arquivo_ae": "AES 83980 4600026463 HAGAP.pdf",
-    "pasta_projeto": "",
+    "pasta_projeto": "1715688 01.20263463790410 - IRINEU ROMERO FERRARINI",
     "pasta_projeto_url": "",
-    "pdfs_projeto": [],
+    "pdfs_projeto": [
+      "01.20263463790410 FICHA.pdf",
+      "01.20263463790410 RELACAO DE MATERIAIS.pdf",
+      "1715688.pdf",
+      "20263463790410 contrato assinado.pdf",
+      "BDO LM.pdf",
+      "BDO LV.pdf",
+      "MAT.pdf"
+    ],
     "bmds": [
       {
         "arquivo": "BMD PARCIAL - 1715688 - HAGAP.pdf",
@@ -1134,7 +1142,8 @@
     "final": "",
     "origem": [
       "ae",
-      "medicao"
+      "medicao",
+      "pasta"
     ],
     "avisos": [
       "⚠ AE '083980' em múltiplos projetos: 1711775I, 1711489, 1713260, 1715688, 1717380, 1719154, 1717166"
@@ -1706,7 +1715,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1754,7 +1763,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "TUNEIRAS DO OESTE",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1792,7 +1801,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1830,7 +1839,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "DASILVA AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1879,7 +1888,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "LOPES AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -1917,7 +1926,7 @@
     "us": "416,990",
     "us_num": 416.99,
     "prazo": "22/06/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "CASTRO AZEVEDO",
     "custo": "R$30.150,78",
     "status": "Pendente",
@@ -2042,7 +2051,8 @@
     "pdfs_projeto": [
       "01.20263912848850 FICHA.pdf",
       "01.20263912848850 RELACAO DE MATERIAIS.pdf",
-      "1721869_MARCIO ROGERIO DA SILVA.pdf"
+      "1721869_MARCIO ROGERIO DA SILVA.pdf",
+      "BDO_1721869.pdf"
     ],
     "bmds": [],
     "ffos": [],
@@ -2078,13 +2088,23 @@
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD - 1725738I - HAGAP.pdf",
+        "us": "",
+        "data": "15/06/2026",
+        "valor": "R$15.544,67",
+        "rateio": "15.544,67",
+        "rateio_float": 15544.67
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "15/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084264' em múltiplos projetos: 1694841, 1722904, 1721869, 1725738I, 1725738C"
@@ -2111,13 +2131,23 @@
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD - 1725738C - HAGAP.pdf",
+        "us": "",
+        "data": "15/06/2026",
+        "valor": "R$140,91",
+        "rateio": "140,91",
+        "rateio_float": 140.91
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "15/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084264' em múltiplos projetos: 1694841, 1722904, 1721869, 1725738I, 1725738C"
@@ -5030,8 +5060,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -5044,12 +5074,29 @@
         "valor": "R$5.019,99",
         "rateio": "5.019,99",
         "rateio_float": 5019.99
+      },
+      {
+        "arquivo": "BMD-1715131-HAGAP.pdf",
+        "us": "",
+        "data": "04/05/2026",
+        "valor": "R$2.220,22",
+        "rateio": "2.220,22",
+        "rateio_float": 2220.22
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1712531-HAGAP.pdf",
+        "us": "",
+        "data": "10.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "29/04/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "29/04/2026",
+    "final": "10.06.2026",
     "origem": [
       "medicao"
     ],
@@ -5064,8 +5111,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -5078,12 +5125,29 @@
         "valor": "R$3.049,11",
         "rateio": "3.049,11",
         "rateio_float": 3049.11
+      },
+      {
+        "arquivo": "BMD-1713226-HAGAP.pdf",
+        "us": "",
+        "data": "21/05/2026",
+        "valor": "R$237,93",
+        "rateio": "237,93",
+        "rateio_float": 237.93
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1713226-HAGAP.pdf",
+        "us": "",
+        "data": "15.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "14/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "21/05/2026",
+    "final": "15.06.2026",
     "origem": [
       "medicao"
     ],
@@ -5098,8 +5162,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -5112,12 +5176,29 @@
         "valor": "R$2.070,47",
         "rateio": "2.070,47",
         "rateio_float": 2070.47
+      },
+      {
+        "arquivo": "BMD-1715668-HAGAP.pdf",
+        "us": "",
+        "data": "21/05/2026",
+        "valor": "R$249,06",
+        "rateio": "249,06",
+        "rateio_float": 249.06
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1715668-HAGAP.pdf",
+        "us": "",
+        "data": "10.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "19/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "21/05/2026",
+    "final": "10.06.2026",
     "origem": [
       "medicao"
     ],
@@ -5788,8 +5869,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -5802,12 +5883,29 @@
         "valor": "R$4.418,94",
         "rateio": "4.418,94",
         "rateio_float": 4418.94
+      },
+      {
+        "arquivo": "BMD-1715127-HAGAP.pdf",
+        "us": "",
+        "data": "21/05/2026",
+        "valor": "R$128,31",
+        "rateio": "128,31",
+        "rateio_float": 128.31
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1715127-HAGAP.pdf",
+        "us": "",
+        "data": "10.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "14/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "21/05/2026",
+    "final": "10.06.2026",
     "origem": [
       "medicao"
     ],
@@ -7041,7 +7139,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7079,7 +7177,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "SILVA AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7117,7 +7215,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7155,7 +7253,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7193,7 +7291,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "SILVA AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7232,7 +7330,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -8913,6 +9011,519 @@
     "final": "",
     "origem": [
       "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1667141",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL-1667141-HAGAP.pdf",
+        "us": "",
+        "data": "09/06/2026",
+        "valor": "R$509,47",
+        "rateio": "509,47",
+        "rateio_float": 509.47
+      },
+      {
+        "arquivo": "BMD-1667141-HAGAP.pdf",
+        "us": "",
+        "data": "10/06/2026",
+        "valor": "R$152,42",
+        "rateio": "152,42",
+        "rateio_float": 152.42
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1667141-HAGAP.pdf",
+        "us": "",
+        "data": "16.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "09/06/2026",
+    "medicao2": "10/06/2026",
+    "final": "16.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726057",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "WESLEY ORTIZ DE OLIVEIRA",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726057 ALNU392492026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1726057.01.pdf",
+      "1726057.02.pdf",
+      "1726057.03.pdf",
+      "1726057.04.pdf",
+      "1726057.05.pdf",
+      "1726057.06.pdf",
+      "1726057.07.pdf",
+      "1726057.08.pdf",
+      "BDO_PROJETO_1726057_assinado (1).pdf",
+      "FICHA DE MATERIAIS PROJETO 1726057.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726332",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2026",
+    "prazo_alerta": "ok",
+    "local": "DETAPIRA CENTRO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726332 01.20264236490327 - MUNICIPIO DE TAPIRA 03.08",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264236490327 FICHA.pdf",
+      "01.20264236490327 RELACAO DE MATERIAIS.pdf",
+      "20264236490327 oficio aceite.pdf",
+      "PROJETO 1726332.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726388",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "28.05.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726388 01.20264187294588 - APARECIDA DE FATIMA PASCHOAL ANTONIEL 29.09",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264187294588 FICHA.pdf",
+      "01.20264187294588 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1726388.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726541",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.05.2027",
+    "prazo_alerta": "ok",
+    "local": "DEUMUARAMA DISTRDELOVAT",
+    "custo": "R$42,95",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726541 01.20264247833541 - MUNICIPIO DE UMUARAMA",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264247833541 FICHA.pdf",
+      "01.20264247833541 RELACAO DE MATERIAIS.pdf",
+      "1726541_MUNICIPIO DE UMUARAMA.pdf",
+      "CONTRATO . AUMENTO DE CARGA UBS LOVAT.pdf",
+      "OFICIO 95. AUMENTO DE CARGA. UBS DE LOVAT.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1726890",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "29.05.2027",
+    "prazo_alerta": "ok",
+    "local": "DETERRABOA JDSENA",
+    "custo": "R$ 11.143,51",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1726890 01.20264225253150 - MUNICIPIO DE TERRA BOA 03.08",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264225253150 FICHA.pdf",
+      "01.20264225253150 RELACAO DE MATERIAIS.pdf",
+      "194 COPEL PADRÃO NOVO NOVA UBS.pdf",
+      "Contrato 01 20264225253150 - Carta 01.pdf",
+      "Projeto 1726890 - Município de Terra Boa.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1727335",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "02.12.2026",
+    "prazo_alerta": "ok",
+    "local": "DEMOREIRASALES MORADADOSOLJD",
+    "custo": "R$ 8.079,08",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1727335 01.20264269641920 - MUNICIPIO DE MOREIRA SALES 10.08",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264269641920 FICHA.pdf",
+      "01.20264269641920 RELACAO DE MATERIAIS.pdf",
+      "20264269641920 CONTRATO ASSINADO.pdf",
+      "20264269641920 OFICIO ACEITE.pdf",
+      "Projeto 1727335 - Município de Moreira Sales.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1730222",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "09.10.2026",
+    "prazo_alerta": "ok",
+    "local": "ESTRADA FUMAÇA - XAMBRE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1730222 01.20263660657526 - MARCELO MENDES DE OLIVEIRA 05.08",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "Projeto 1730222 - Marcelo Mendes.pdf",
+      "Relação Materiais e Tarefas RESUMIDO 1730222.pdf",
+      "Relação Materiais e Tarefas detalhado 1730222.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1730642",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "30/04/2026",
+    "prazo_alerta": "vencido",
+    "local": "GLOSSÁRIO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1730642 UC 73279862_CTO 8940809878_ SS 20264531082338",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "AvaliacaoQualidadeTensao_UC73279862_CTO8940809878.pdf",
+      "PROJETO 1730642.pdf",
+      "RelatorioSecundaria_UC73279862_CTO8940809878.pdf",
+      "TraceEletrico_UC73279862_CTO8940809878.pdf",
+      "TraceEletrico_UC73279862_CTO8940809878_croqui.pdf",
+      "relatorio.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1730761",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "30.06.2027",
+    "prazo_alerta": "ok",
+    "local": "MAICON LUIZ WATHIER",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1730761 -SE em CIANORTE",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1730761-PROJETO.pdf",
+      "1730761-listademterial.pdf",
+      "Evidência-email.pdf",
+      "NTC858510.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1730908",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "30.06.2027",
+    "prazo_alerta": "ok",
+    "local": "CIANORTE",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1730908 - SE em CIANORTE",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1730908-LISTADEMATERIAL.pdf",
+      "1730908-PROJETO.pdf",
+      "Evidência-email.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1683861I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "1683861i BMD.pdf",
+        "us": "",
+        "data": "11/03/2026",
+        "valor": "R$20.224,44",
+        "rateio": "20.224,44",
+        "rateio_float": 20224.44
+      }
+    ],
+    "ffos": [],
+    "medicao1": "11/03/2026",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1715278",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL - 1715278 - HAGAP.pdf",
+        "us": "",
+        "data": "15/06/2026",
+        "valor": "R$2.654,77",
+        "rateio": "2.654,77",
+        "rateio_float": 2654.77
+      }
+    ],
+    "ffos": [],
+    "medicao1": "15/06/2026",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1675389I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD-1675389-HAGAP.pdf",
+        "us": "",
+        "data": "23/04/2026",
+        "valor": "R$389,52",
+        "rateio": "389,52",
+        "rateio_float": 389.52
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1675389-HAGAP.pdf",
+        "us": "341",
+        "data": "16.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "23/04/2026",
+    "medicao2": "",
+    "final": "16.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1715257I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD-1715257I-HAGAP.pdf",
+        "us": "",
+        "data": "08/06/2026",
+        "valor": "R$6.765,65",
+        "rateio": "6.765,65",
+        "rateio_float": 6765.65
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1715257I-HAGAP.pdf",
+        "us": "",
+        "data": "16.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "08/06/2026",
+    "medicao2": "",
+    "final": "16.06.2026",
+    "origem": [
+      "medicao"
     ],
     "avisos": []
   }
