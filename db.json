@@ -2131,7 +2131,7 @@
     "us": "409,871",
     "us_num": 409.871,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "ARAUJO AZEVEDO",
     "custo": "R$25.002,10",
     "status": "Pendente",
@@ -2179,7 +2179,7 @@
     "us": "409,871",
     "us_num": 409.871,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "SISTEMAPARAATENDER",
     "custo": "R$25.002,10",
     "status": "Pendente",
@@ -2217,7 +2217,7 @@
     "us": "409,871",
     "us_num": 409.871,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "SILVA AZEVEDO",
     "custo": "R$25.002,10",
     "status": "Pendente",
@@ -2266,7 +2266,7 @@
     "us": "409,871",
     "us_num": 409.871,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$25.002,10",
     "status": "Pendente",
@@ -2309,7 +2309,7 @@
     "us": "409,871",
     "us_num": 409.871,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$25.002,10",
     "status": "Pendente",
@@ -2399,7 +2399,7 @@
     "us": "158,152",
     "us_num": 158.152,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$10.782,30",
     "status": "Pendente",
@@ -2438,7 +2438,7 @@
     "us": "158,152",
     "us_num": 158.152,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "AGUARDANDOACEITEPARA",
     "custo": "R$10.782,30",
     "status": "Pendente",
@@ -2476,7 +2476,7 @@
     "us": "158,152",
     "us_num": 158.152,
     "prazo": "01/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$10.782,30",
     "status": "Pendente",
@@ -3086,13 +3086,23 @@
       "1513223 - 3.pdf",
       "1513223 - 4.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1513223 - BMD 01.pdf",
+        "us": "",
+        "data": "23/06/2026",
+        "valor": "R$110.020,78",
+        "rateio": "110.020,78",
+        "rateio_float": 110020.78
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "23/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": []
   },
@@ -10858,6 +10868,74 @@
     ],
     "ffos": [],
     "medicao1": "02/06/2026",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1675032C",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "1675032C - BMD 01.pdf",
+        "us": "",
+        "data": "24/06/2026",
+        "valor": "R$23,99",
+        "rateio": "23,99",
+        "rateio_float": 23.99
+      }
+    ],
+    "ffos": [],
+    "medicao1": "24/06/2026",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1675032I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "1675032I - BMD 01.pdf",
+        "us": "",
+        "data": "23/06/2026",
+        "valor": "R$222.884,15",
+        "rateio": "222.884,15",
+        "rateio_float": 222884.15
+      }
+    ],
+    "ffos": [],
+    "medicao1": "23/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
