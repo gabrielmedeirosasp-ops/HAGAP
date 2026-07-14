@@ -215,13 +215,23 @@
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD - 1718783C - HAGAP.pdf",
+        "us": "",
+        "data": "18/06/2026",
+        "valor": "R$7,32",
+        "rateio": "7,32",
+        "rateio_float": 7.32
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "18/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '083946' em múltiplos projetos: 1718783I, 1718435, 1718783C"
@@ -239,7 +249,7 @@
     "us": "1.732,852",
     "us_num": 1732.852,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "WESLEY ORTIZ DE OLIVEIRA",
     "custo": "R$132.320,57",
     "status": "Pendente",
@@ -477,19 +487,38 @@
     "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$3.896,19",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 83968 4600026463 HAGAP (1).pdf",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD-1714857-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$185,07",
+        "rateio": "185,07",
+        "rateio_float": 185.07
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1714857-HAGAP.pdf",
+        "us": "31",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "26/06/2026",
     "medicao2": "",
-    "final": "",
+    "final": "30.06.2026",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '083968' em múltiplos projetos: 1714857I, 1536912I"
@@ -1071,8 +1100,8 @@
     "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$73.801,59",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 83980 4600026463 HAGAP.pdf",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -1085,12 +1114,29 @@
         "valor": "R$1.928,86",
         "rateio": "1.928,86",
         "rateio_float": 1928.86
+      },
+      {
+        "arquivo": "BMD-1711775-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$4,07",
+        "rateio": "4,07",
+        "rateio_float": 4.07
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1711775-HAGAP.pdf",
+        "us": "",
+        "data": "01.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "11/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "26/06/2026",
+    "final": "01.07.2026",
     "origem": [
       "ae",
       "medicao"
@@ -1207,8 +1253,8 @@
     "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$73.801,59",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 83980 4600026463 HAGAP.pdf",
     "pasta_projeto": "1715688 01.20263463790410 - IRINEU ROMERO FERRARINI",
     "pasta_projeto_url": "",
@@ -1229,12 +1275,29 @@
         "valor": "R$9.669,94",
         "rateio": "9.669,94",
         "rateio_float": 9669.94
+      },
+      {
+        "arquivo": "BMD FINAL - 1715688 - HAGAP.pdf",
+        "us": "",
+        "data": "11/06/2026",
+        "valor": "R$1.425,04",
+        "rateio": "1.425,04",
+        "rateio_float": 1425.04
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1715688 - HAGAP.pdf",
+        "us": "",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "18/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "18/05/2026",
+    "final": "08.07.2026",
     "origem": [
       "ae",
       "medicao",
@@ -1386,8 +1449,8 @@
     "prazo_alerta": "vencido",
     "local": "OPÇÃOPOROBRAPARTICULAR",
     "custo": "R$13.214,86",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 84003 4600026463 HAGAP.pdf",
     "pasta_projeto": "1717315 01.20263530761496 - VALDEIR QUIRINO DA SILVA",
     "pasta_projeto_url": "",
@@ -1397,14 +1460,33 @@
       "01.20263530761496 - RELAÇÃO DE MATERIAIS.pdf",
       "1717315 - PROJETO.pdf"
     ],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD_1717315_HAGAP.pdf",
+        "us": "",
+        "data": "15/06/2026",
+        "valor": "R$13.183,29",
+        "rateio": "13.183,29",
+        "rateio_float": 13183.29
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO_1717315_HAGAP.pdf",
+        "us": "",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "15/06/2026",
     "medicao2": "",
-    "final": "",
+    "final": "13.07.2026",
     "origem": [
       "ae",
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084003' em múltiplos projetos: 1717315, 1720725"
@@ -1682,8 +1764,8 @@
     "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$294.803,26",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 84025 4600026463 HAGAP.pdf",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -1698,10 +1780,19 @@
         "rateio_float": 22840.59
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO 1520615 HAGAP.pdf",
+        "us": "",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "19/05/2026",
     "medicao2": "",
-    "final": "",
+    "final": "13.07.2026",
     "origem": [
       "ae",
       "medicao"
@@ -1725,8 +1816,8 @@
     "prazo_alerta": "alerta",
     "local": "MOREIRA SALES",
     "custo": "R$294.803,26",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 84025 4600026463 HAGAP.pdf",
     "pasta_projeto": "1722165 - ALNC327072022 - Substituicao do BRT 81584RT326",
     "pasta_projeto_url": "",
@@ -1738,14 +1829,33 @@
       "BDO_1722165CF PROV .pdf",
       "malha_aterramento_1_2_2026-06-09.pdf"
     ],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "1722165 BMD HAGAP.pdf",
+        "us": "",
+        "data": "29/06/2026",
+        "valor": "R$23.880,34",
+        "rateio": "23.880,34",
+        "rateio_float": 23880.34
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "1722165 FFO.pdf",
+        "us": "",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "29/06/2026",
     "medicao2": "",
-    "final": "",
+    "final": "30.06.2026",
     "origem": [
       "ae",
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084025' em múltiplos projetos: 1520606, 1520615, 1722165, 1563492"
@@ -2056,8 +2166,8 @@
     "prazo_alerta": "vencido",
     "local": "DASILVA AZEVEDO",
     "custo": "R$30.150,78",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 84145 4600026463 HAGAP.pdf",
     "pasta_projeto": "1719155 01.20263668659284 - ANDRESSA SILVA MAIA",
     "pasta_projeto_url": "",
@@ -2076,12 +2186,29 @@
         "valor": "R$2.223,15",
         "rateio": "2.223,15",
         "rateio_float": 2223.15
+      },
+      {
+        "arquivo": "BMD FF 1719155 HAGAP.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$145,82",
+        "rateio": "145,82",
+        "rateio_float": 145.82
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO 1719155 HAGAP.pdf",
+        "us": "311",
+        "data": "02.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "20/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "30/06/2026",
+    "final": "02.07.2026",
     "origem": [
       "ae",
       "pasta",
@@ -2125,11 +2252,19 @@
         "valor": "R$5.951,32",
         "rateio": "5.951,32",
         "rateio_float": 5951.32
+      },
+      {
+        "arquivo": "BMD 1719213 FF HAGAP.pdf",
+        "us": "",
+        "data": "01/07/2026",
+        "valor": "R$1.371,87",
+        "rateio": "1.371,87",
+        "rateio_float": 1371.87
       }
     ],
     "ffos": [],
     "medicao1": "08/06/2026",
-    "medicao2": "",
+    "medicao2": "08/06/2026",
     "final": "",
     "origem": [
       "ae",
@@ -2241,8 +2376,8 @@
     "prazo_alerta": "vencido",
     "local": "SISTEMAPARAATENDER",
     "custo": "R$25.002,10",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 84264 460026463 HAGAP.pdf",
     "pasta_projeto": "1722904 01.20263890407377 - HELTON BATISTA DAGUSTIN 03.07",
     "pasta_projeto_url": "",
@@ -2251,14 +2386,33 @@
       "01.20263890407377 - RELAÇÃO DE MATERIAIS.pdf",
       "1722904 - PROJETO.pdf"
     ],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD 1722904 HAGAP.pdf",
+        "us": "",
+        "data": "11/06/2026",
+        "valor": "R$2.417,20",
+        "rateio": "2.417,20",
+        "rateio_float": 2417.2
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO 1722904 HAGAP.pdf",
+        "us": "311",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "11/06/2026",
     "medicao2": "",
-    "final": "",
+    "final": "13.07.2026",
     "origem": [
       "ae",
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084264' em múltiplos projetos: 1694841, 1722904, 1721869, 1725738I, 1725738C"
@@ -2428,7 +2582,7 @@
     "us": "221,364",
     "us_num": 221.364,
     "prazo": "11/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "VISANDOAOATENDIMENTODE",
     "custo": "R$13.503,20",
     "status": "Pendente",
@@ -2562,13 +2716,31 @@
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD_1725869_HAGAP.pdf",
+        "us": "31",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      },
+      {
+        "arquivo": "FFO_1725869_HAGAP.pdf",
+        "us": "",
+        "data": "16/06/2026",
+        "valor": "R$2.488,83",
+        "rateio": "2.488,83",
+        "rateio_float": 2488.83
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
-    "medicao2": "",
+    "medicao1": "13.07.2026",
+    "medicao2": "16/06/2026",
     "final": "",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084395' em múltiplos projetos: 1719775, 1723722, 1725869I"
@@ -2589,8 +2761,8 @@
     "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$7.731,21",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 84453 4600026463 HAGAP.pdf",
     "pasta_projeto": "1720909 01.20263824668950 - JOSE ANTONIO DIAS GOMES 13.07",
     "pasta_projeto_url": "",
@@ -2600,14 +2772,33 @@
       "20263824668950 CONTRATO ASSINADO.pdf",
       "PROJETO 1720909.pdf"
     ],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD 1720909 HAGAP.pdf",
+        "us": "",
+        "data": "12/06/2026",
+        "valor": "R$2.851,89",
+        "rateio": "2.851,89",
+        "rateio_float": 2851.89
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO 1720909 HAGAP.pdf",
+        "us": "3341",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "12/06/2026",
     "medicao2": "",
-    "final": "",
+    "final": "13.07.2026",
     "origem": [
       "ae",
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '084453' em múltiplos projetos: 1720909, 1723694"
@@ -3351,21 +3542,40 @@
     "prazo_alerta": "",
     "local": "TAPEJARA",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "1667134 - 1531011 RA",
     "pasta_projeto_url": "",
     "pdfs_projeto": [
       "1667134 - RA.pdf"
     ],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "1667134 - BMD - HAGAP.pdf",
+        "us": "",
+        "data": "29/06/2026",
+        "valor": "R$1.273,55",
+        "rateio": "1.273,55",
+        "rateio_float": 1273.55
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "1667134 - FFO - HAGAP.pdf",
+        "us": "",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "29/06/2026",
     "medicao2": "",
-    "final": "",
+    "final": "30.06.2026",
     "origem": [
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": []
   },
@@ -4600,8 +4810,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -4614,12 +4824,29 @@
         "valor": "R$1.998,42",
         "rateio": "1.998,42",
         "rateio_float": 1998.42
+      },
+      {
+        "arquivo": "BMD 1711525 FF HAGAP.pdf",
+        "us": "",
+        "data": "29/06/2026",
+        "valor": "R$126,93",
+        "rateio": "126,93",
+        "rateio_float": 126.93
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO 1711525 HAGAP.pdf",
+        "us": "311",
+        "data": "06.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "14/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "29/06/2026",
+    "final": "06.07.2026",
     "origem": [
       "medicao"
     ],
@@ -4882,8 +5109,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -4896,12 +5123,29 @@
         "valor": "R$555,60",
         "rateio": "555,60",
         "rateio_float": 555.6
+      },
+      {
+        "arquivo": "BMD 1720920 FF HAGAP.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$89,29",
+        "rateio": "89,29",
+        "rateio_float": 89.29
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO 1720920 HAGAP.pdf",
+        "us": "",
+        "data": "06.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "19/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "30/06/2026",
+    "final": "06.07.2026",
     "origem": [
       "medicao"
     ],
@@ -5044,8 +5288,8 @@
     "prazo_alerta": "vencido",
     "local": "CONTRATODEM",
     "custo": "R$139,89",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "1677314 01.20252477868689 - LUIZ CARLOS BARBOSA JUNIOR 12.03.27",
     "pasta_projeto_url": "",
@@ -5065,12 +5309,29 @@
         "valor": "R$46.760,40",
         "rateio": "46.760,40",
         "rateio_float": 46760.4
+      },
+      {
+        "arquivo": "BMD - 1677314 - HAGAP.pdf",
+        "us": "",
+        "data": "07/07/2026",
+        "valor": "R$4.880,14",
+        "rateio": "4.880,14",
+        "rateio_float": 4880.14
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1677314 - HAGAP.pdf",
+        "us": "",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "19/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "19/05/2026",
+    "final": "13.07.2026",
     "origem": [
       "medicao",
       "pasta"
@@ -6478,7 +6739,7 @@
     "us": "47,524",
     "us_num": 47.524,
     "prazo": "20/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$3.628,93",
     "status": "Pendente",
@@ -6541,8 +6802,8 @@
     "prazo_alerta": "vencido",
     "local": "CONTRATODEM",
     "custo": "R$139,89",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "1677316 01.20252477868689 - LUIZ CARLOS BARBOSA JUNIOR 12.03.27",
     "pasta_projeto_url": "",
@@ -6564,10 +6825,27 @@
         "rateio_float": 51623.62
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "BMD FINAL - 1677316 HAGAP.pdf",
+        "us": "",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      },
+      {
+        "arquivo": "FFO - 1677316 HAGAP.pdf",
+        "us": "",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "20/05/2026",
     "medicao2": "",
-    "final": "",
+    "final": "08.07.2026",
     "origem": [
       "medicao",
       "pasta"
@@ -7146,7 +7424,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -7195,7 +7473,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -7233,7 +7511,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -7274,7 +7552,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -7322,7 +7600,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "ANUNCIACAO AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -7361,7 +7639,7 @@
     "us": "818,659",
     "us_num": 818.659,
     "prazo": "10/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "CARVALHO AZEVEDO",
     "custo": "R$60.918,10",
     "status": "Pendente",
@@ -7558,7 +7836,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7606,7 +7884,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "SILVA AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7645,7 +7923,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7683,7 +7961,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7721,7 +7999,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "SILVA AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7760,7 +8038,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -7943,8 +8221,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -7957,12 +8235,29 @@
         "valor": "R$15.365,48",
         "rateio": "15.365,48",
         "rateio_float": 15365.48
+      },
+      {
+        "arquivo": "BMD 1704525 FF HAGAP.pdf",
+        "us": "",
+        "data": "01/07/2026",
+        "valor": "R$86,77",
+        "rateio": "86,77",
+        "rateio_float": 86.77
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO 1704525 HAGAP.pdf",
+        "us": "",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "29/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "29/05/2026",
+    "final": "08.07.2026",
     "origem": [
       "medicao"
     ],
@@ -9521,14 +9816,24 @@
       "1726042 - 4.pdf",
       "FICHA DE MATERIAIS PROJETO 1726042.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1726042 - BMD PARCIAL - HAGAP.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$52.831,30",
+        "rateio": "52.831,30",
+        "rateio_float": 52831.3
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "30/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -9560,14 +9865,24 @@
       "BDO_PROJETO_1726044_assinado.pdf",
       "FICHA DE MATERIAIS PROJETO 1726044.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1726044 - BMD PARCIAL - HAGAP.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$68.094,35",
+        "rateio": "68.094,35",
+        "rateio_float": 68094.35
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "30/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -9597,14 +9912,24 @@
       "1726045-3.pdf",
       "FICHA DE MATERIAIS PROJETO 1726045.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1726045 BMD PARCIAL.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$59.559,30",
+        "rateio": "59.559,30",
+        "rateio_float": 59559.3
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "30/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -9632,14 +9957,24 @@
       "1726058_ALNU392492026.pdf",
       "FICHA DE MATERIAIS PROJETO 1726058.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1726058 BMD PARCIAL.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$28.638,24",
+        "rateio": "28.638,24",
+        "rateio_float": 28638.24
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "30/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -9821,14 +10156,24 @@
       "BDO_PROJETO_1726057_assinado (1).pdf",
       "FICHA DE MATERIAIS PROJETO 1726057.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "1726057 BMD PARCIAL.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$98.316,97",
+        "rateio": "98.316,97",
+        "rateio_float": 98316.97
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "30/06/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -10230,8 +10575,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -10244,12 +10589,29 @@
         "valor": "R$2.654,77",
         "rateio": "2.654,77",
         "rateio_float": 2654.77
+      },
+      {
+        "arquivo": "FFO - 1715278 - HAGAP.pdf",
+        "us": "",
+        "data": "16/06/2026",
+        "valor": "R$306,36",
+        "rateio": "306,36",
+        "rateio_float": 306.36
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "BMD FINAL - 1715278 - HAGAP.pdf",
+        "us": "",
+        "data": "13.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "15/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "16/06/2026",
+    "final": "13.07.2026",
     "origem": [
       "medicao"
     ],
@@ -10347,7 +10709,7 @@
     "us": "29,740",
     "us_num": 29.74,
     "prazo": "11/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$2.270,94",
     "status": "Pendente",
@@ -10378,7 +10740,7 @@
     "us": "199,911",
     "us_num": 199.911,
     "prazo": "11/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$15.265,20",
     "status": "Pendente",
@@ -10411,7 +10773,7 @@
     "us": "199,911",
     "us_num": 199.911,
     "prazo": "11/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$15.265,20",
     "status": "Pendente",
@@ -10882,8 +11244,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -10896,12 +11258,29 @@
         "valor": "R$20.334,45",
         "rateio": "20.334,45",
         "rateio_float": 20334.45
+      },
+      {
+        "arquivo": "BMD - 1691534 - HAGAP - 03-07-2026.pdf",
+        "us": "",
+        "data": "02/07/2026",
+        "valor": "R$996,86",
+        "rateio": "996,86",
+        "rateio_float": 996.86
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1691534 - HAGAP - 03-07-2026.pdf",
+        "us": "",
+        "data": "03.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "18/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "18/06/2026",
+    "final": "03.07.2026",
     "origem": [
       "medicao"
     ],
@@ -10958,8 +11337,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -10972,12 +11351,29 @@
         "valor": "R$5.318,80",
         "rateio": "5.318,80",
         "rateio_float": 5318.8
+      },
+      {
+        "arquivo": "BMD-1713626-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$161,42",
+        "rateio": "161,42",
+        "rateio_float": 161.42
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1713626-HAGAP.pdf",
+        "us": "933",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "18/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "26/06/2026",
+    "final": "30.06.2026",
     "origem": [
       "medicao"
     ],
@@ -10992,8 +11388,8 @@
     "prazo_alerta": "vencido",
     "local": "DECIANORTE ZONAUM",
     "custo": "R$ 47.063,85",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "1709486 01.20246775246601 MUNICIPIO DE CIANORTE 25.09.2026",
     "pasta_projeto_url": "",
@@ -11019,12 +11415,29 @@
         "valor": "R$4.402,38",
         "rateio": "4.402,38",
         "rateio_float": 4402.38
+      },
+      {
+        "arquivo": "BMD-1709486-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$1.889,02",
+        "rateio": "1.889,02",
+        "rateio_float": 1889.02
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1709486-HAGAP.pdf",
+        "us": "",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "09/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "26/06/2026",
+    "final": "30.06.2026",
     "origem": [
       "medicao",
       "pasta"
@@ -11040,8 +11453,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -11054,12 +11467,29 @@
         "valor": "R$4.315,58",
         "rateio": "4.315,58",
         "rateio_float": 4315.58
+      },
+      {
+        "arquivo": "BMD-1713656I-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$161,74",
+        "rateio": "161,74",
+        "rateio_float": 161.74
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1713656I-HAGAP.pdf",
+        "us": "343271",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "18/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "26/06/2026",
+    "final": "08.07.2026",
     "origem": [
       "medicao"
     ],
@@ -11074,8 +11504,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -11088,12 +11518,29 @@
         "valor": "R$6.987,28",
         "rateio": "6.987,28",
         "rateio_float": 6987.28
+      },
+      {
+        "arquivo": "BMD-1715201-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$3,29",
+        "rateio": "3,29",
+        "rateio_float": 3.29
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1715201-HAGAP.pdf",
+        "us": "",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "18/06/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "26/06/2026",
+    "final": "08.07.2026",
     "origem": [
       "medicao"
     ],
@@ -11224,11 +11671,27 @@
         "valor": "R$13.683,99",
         "rateio": "13.683,99",
         "rateio_float": 13683.99
+      },
+      {
+        "arquivo": "BMD 1718561 FF HAGAP.pdf",
+        "us": "",
+        "data": "08.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      },
+      {
+        "arquivo": "FFO 1718561 HAGAP.pdf",
+        "us": "",
+        "data": "30/06/2026",
+        "valor": "R$1.543,28",
+        "rateio": "1.543,28",
+        "rateio_float": 1543.28
       }
     ],
     "ffos": [],
     "medicao1": "01/06/2026",
-    "medicao2": "",
+    "medicao2": "08.07.2026",
     "final": "",
     "origem": [
       "medicao"
@@ -13033,16 +13496,16 @@
   },
   {
     "projeto": "1683425",
-    "ae": "",
-    "us": "",
-    "us_num": 0.0,
+    "ae": "086019",
+    "us": "1.033,676",
+    "us_num": 1033.676,
     "prazo": "30.09.2026",
     "prazo_alerta": "ok",
     "local": "AZEVEDO",
     "custo": "R$ 8.481,96",
     "status": "Pendente",
     "executado": false,
-    "arquivo_ae": "",
+    "arquivo_ae": "AES 86019 4600026463 HAGAP.pdf",
     "pasta_projeto": "1683425 01.20264153503686 - SECRETARIA DE ESTADO DA SEGURANCA PUBLICA 28.10.2026",
     "pasta_projeto_url": "",
     "pdfs_projeto": [
@@ -13058,9 +13521,18 @@
     "medicao2": "",
     "final": "",
     "origem": [
-      "pasta"
+      "pasta",
+      "ae"
     ],
-    "avisos": []
+    "avisos": [
+      "⚠ AE '086019' em múltiplos projetos: 1683425, 1718953, 1730822"
+    ],
+    "aes": [
+      {
+        "arquivo": "AES 86019 4600026463 HAGAP.pdf",
+        "ae": "086019"
+      }
+    ]
   },
   {
     "projeto": "1701624",
@@ -13133,16 +13605,16 @@
   },
   {
     "projeto": "1718953",
-    "ae": "",
-    "us": "",
-    "us_num": 0.0,
+    "ae": "086019",
+    "us": "1.033,676",
+    "us_num": 1033.676,
     "prazo": "02.05.2027",
     "prazo_alerta": "ok",
     "local": "DEDOURADINA",
     "custo": "R$ 89.094,20",
     "status": "Pendente",
     "executado": false,
-    "arquivo_ae": "",
+    "arquivo_ae": "AES 86019 4600026463 HAGAP.pdf",
     "pasta_projeto": "1718953 01.20264175521075 - MUNICIPIO DE DOURADINA 23.10.2026",
     "pasta_projeto_url": "",
     "pdfs_projeto": [
@@ -13158,9 +13630,18 @@
     "medicao2": "",
     "final": "",
     "origem": [
-      "pasta"
+      "pasta",
+      "ae"
     ],
-    "avisos": []
+    "avisos": [
+      "⚠ AE '086019' em múltiplos projetos: 1683425, 1718953, 1730822"
+    ],
+    "aes": [
+      {
+        "arquivo": "AES 86019 4600026463 HAGAP.pdf",
+        "ae": "086019"
+      }
+    ]
   },
   {
     "projeto": "1721631",
@@ -13227,16 +13708,16 @@
   },
   {
     "projeto": "1730822",
-    "ae": "",
-    "us": "",
-    "us_num": 0.0,
+    "ae": "086019",
+    "us": "1.033,676",
+    "us_num": 1033.676,
     "prazo": "15.06.2027",
     "prazo_alerta": "ok",
     "local": "AZEVEDO",
-    "custo": "",
+    "custo": "R$68.930,71",
     "status": "Pendente",
     "executado": false,
-    "arquivo_ae": "",
+    "arquivo_ae": "AES 86019 4600026463 HAGAP.pdf",
     "pasta_projeto": "1730822 01.20264461840418 - MARCOS ANTONIO BRONZI 28.10.2026",
     "pasta_projeto_url": "",
     "pdfs_projeto": [
@@ -13250,9 +13731,18 @@
     "medicao2": "",
     "final": "",
     "origem": [
-      "pasta"
+      "pasta",
+      "ae"
     ],
-    "avisos": []
+    "avisos": [
+      "⚠ AE '086019' em múltiplos projetos: 1683425, 1718953, 1730822"
+    ],
+    "aes": [
+      {
+        "arquivo": "AES 86019 4600026463 HAGAP.pdf",
+        "ae": "086019"
+      }
+    ]
   },
   {
     "projeto": "1733419",
@@ -13323,6 +13813,252 @@
     "medicao1": "15/06/2026",
     "medicao2": "",
     "final": "24.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1663544",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "1663544 - BMD - HAGAP.pdf",
+        "us": "",
+        "data": "29/06/2026",
+        "valor": "R$1.065,14",
+        "rateio": "1.065,14",
+        "rateio_float": 1065.14
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "1663544 - FFO - HAGAP.pdf",
+        "us": "",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "29/06/2026",
+    "medicao2": "",
+    "final": "30.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1682195",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD FF 1682195 HAGAP.pdf",
+        "us": "",
+        "data": "29/06/2026",
+        "valor": "R$8,36",
+        "rateio": "8,36",
+        "rateio_float": 8.36
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO 1682195 HAGAP.pdf",
+        "us": "",
+        "data": "01.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "29/06/2026",
+    "medicao2": "",
+    "final": "01.07.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1693027",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD FF 1693027 HAGAP.pdf",
+        "us": "",
+        "data": "09/06/2026",
+        "valor": "R$2.215,91",
+        "rateio": "2.215,91",
+        "rateio_float": 2215.91
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO 1693027 HAGAP.pdf",
+        "us": "",
+        "data": "01.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "09/06/2026",
+    "medicao2": "",
+    "final": "01.07.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1713660I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD-1713660-HAGAP.pdf",
+        "us": "",
+        "data": "26/06/2026",
+        "valor": "R$161,11",
+        "rateio": "161,11",
+        "rateio_float": 161.11
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO.-1713660-HAGAP.pdf",
+        "us": "31",
+        "data": "30.06.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "26/06/2026",
+    "medicao2": "",
+    "final": "30.06.2026",
+    "origem": [
+      "medicao"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1671216I",
+    "ae": "086018",
+    "us": "145,584",
+    "us_num": 145.584,
+    "prazo": "07/09/2026",
+    "prazo_alerta": "ok",
+    "local": "",
+    "custo": "R$8.880,62",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "AES 86018 4600026463 HAGAP.pdf",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "ae"
+    ],
+    "avisos": [],
+    "aes": [
+      {
+        "arquivo": "AES 86018 4600026463 HAGAP.pdf",
+        "ae": "086018"
+      }
+    ]
+  },
+  {
+    "projeto": "1702640I",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "",
+    "custo": "",
+    "status": "Final",
+    "executado": true,
+    "arquivo_ae": "",
+    "pasta_projeto": "",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [],
+    "bmds": [
+      {
+        "arquivo": "BMD - 1702640 - HAGAP - 10-07-2026.pdf",
+        "us": "",
+        "data": "16/04/2026",
+        "valor": "R$2.963,92",
+        "rateio": "2.963,92",
+        "rateio_float": 2963.92
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1702640 - HAGAP - 10-07-2026.pdf",
+        "us": "341",
+        "data": "10.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "16/04/2026",
+    "medicao2": "",
+    "final": "10.07.2026",
     "origem": [
       "medicao"
     ],

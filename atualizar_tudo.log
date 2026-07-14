@@ -296,3 +296,47 @@
 [19:15:56]   Passo 3 — Gerador + Sync Render          ✅ OK     
 [19:15:56]   Tempo total: 3804.4s
 [19:15:56]   🎉 Tudo atualizado com sucesso!
+
+================================================================
+  INÍCIO: 09/07/2026 11:16:09
+================================================================
+[11:16:09] PASSO 1/3 — Leitor BMD
+[11:16:09]   Lê PDFs de medição e gera materiais_por_projeto.xlsx
+[11:16:09]   ▶ Executando: leitor_bmd.py
+[11:17:31]   ✅ Concluído em 82.3s
+[11:17:31] PASSO 2/3 — Extrair BMD
+[11:17:31]   Extrai rateios/datas e gera medicoes.xlsx + analise_financeira.xlsx
+[11:17:31]   ▶ Executando: extrair_bmd.py
+[11:18:53]   ✅ Concluído em 81.6s
+[11:18:53] PASSO 3/3 — Gerador + Sync Render
+[11:18:53]   Gera db.json + resultado.xlsx e sincroniza com o Render
+[11:18:53]   ▶ Executando: gerador.py
+[12:28:58]   ✅ Concluído em 4205.1s
+[12:28:58]   RESUMO FINAL
+[12:28:58]   Passo 1 — Leitor BMD                     ✅ OK     
+[12:28:58]   Passo 2 — Extrair BMD                    ✅ OK     
+[12:28:58]   Passo 3 — Gerador + Sync Render          ✅ OK     
+[12:28:58]   Tempo total: 4369.0s
+[12:28:58]   🎉 Tudo atualizado com sucesso!
+
+================================================================
+  INÍCIO: 13/07/2026 15:34:31
+================================================================
+[15:34:31] PASSO 1/3 — Leitor BMD
+[15:34:31]   Lê PDFs de medição e gera materiais_por_projeto.xlsx
+[15:34:31]   ▶ Executando: leitor_bmd.py
+[15:36:05]   ✅ Concluído em 93.8s
+[15:36:05] PASSO 2/3 — Extrair BMD
+[15:36:05]   Extrai rateios/datas e gera medicoes.xlsx + analise_financeira.xlsx
+[15:36:05]   ▶ Executando: extrair_bmd.py
+[15:37:34]   ✅ Concluído em 89.4s
+[15:37:34] PASSO 3/3 — Gerador + Sync Render
+[15:37:34]   Gera db.json + resultado.xlsx e sincroniza com o Render
+[15:37:34]   ▶ Executando: gerador.py
+[16:44:19]   ✅ Concluído em 4005.1s
+[16:44:19]   RESUMO FINAL
+[16:44:19]   Passo 1 — Leitor BMD                     ✅ OK     
+[16:44:19]   Passo 2 — Extrair BMD                    ✅ OK     
+[16:44:19]   Passo 3 — Gerador + Sync Render          ✅ OK     
+[16:44:19]   Tempo total: 4188.4s
+[16:44:19]   🎉 Tudo atualizado com sucesso!
