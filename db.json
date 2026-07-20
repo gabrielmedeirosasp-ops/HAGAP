@@ -2976,7 +2976,7 @@
     "us": "3.253,001",
     "us_num": 3253.001,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "PALAVRA-CHAVE",
     "custo": "R$205.265,15",
     "status": "Pendente",
@@ -3023,7 +3023,7 @@
     "us": "3.253,001",
     "us_num": 3253.001,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$205.265,15",
     "status": "Pendente",
@@ -3062,7 +3062,7 @@
     "us": "3.253,001",
     "us_num": 3253.001,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "APROVADO ELETRONICAMENTE",
     "custo": "R$205.265,15",
     "status": "Pendente",
@@ -3102,7 +3102,7 @@
     "us": "3.253,001",
     "us_num": 3253.001,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$205.265,15",
     "status": "Pendente",
@@ -3150,7 +3150,7 @@
     "us": "3.253,001",
     "us_num": 3253.001,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$205.265,15",
     "status": "Pendente",
@@ -3199,7 +3199,7 @@
     "us": "1.678,665",
     "us_num": 1678.665,
     "prazo": "19/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CIT",
     "custo": "R$128.182,85",
     "status": "Pendente",
@@ -3245,7 +3245,7 @@
     "us": "569,167",
     "us_num": 569.167,
     "prazo": "19/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "K V",
     "custo": "R$43.461,59",
     "status": "Pendente",
@@ -3261,14 +3261,24 @@
       "1564134 geral.pdf",
       "LDNU335802024 croqui 4.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL-1564134-HAGAP.pdf",
+        "us": "",
+        "data": "15/07/2026",
+        "valor": "R$44.646,20",
+        "rateio": "44.646,20",
+        "rateio_float": 44646.2
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "15/07/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "ae",
-      "pasta"
+      "pasta",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -3284,7 +3294,7 @@
     "us": "720,572",
     "us_num": 720.572,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CARVALHO AZEVEDO",
     "custo": "R$55.022,87",
     "status": "Pendente",
@@ -3336,7 +3346,7 @@
     "us": "720,572",
     "us_num": 720.572,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DENOVAOLIMPIA NOVAOLIMPIA",
     "custo": "R$55.022,87",
     "status": "Pendente",
@@ -3389,7 +3399,7 @@
     "us": "720,572",
     "us_num": 720.572,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CARVALHO AZEVEDO",
     "custo": "R$55.022,87",
     "status": "Pendente",
@@ -3797,14 +3807,24 @@
       "20263383601119 OFICIO ACEITE.pdf",
       "BDO_1714348_1782344126.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL-1714348-HAGAP.pdf",
+        "us": "",
+        "data": "08/07/2026",
+        "valor": "R$7.890,42",
+        "rateio": "7.890,42",
+        "rateio_float": 7890.42
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "08/07/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -7053,8 +7073,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -7067,12 +7087,29 @@
         "valor": "R$28.642,47",
         "rateio": "28.642,47",
         "rateio_float": 28642.47
+      },
+      {
+        "arquivo": "BMD - 1510407 - HAGAP - 20-07-2026.pdf",
+        "us": "",
+        "data": "26/05/2026",
+        "valor": "R$27.008,69",
+        "rateio": "27.008,69",
+        "rateio_float": 27008.69
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO - 1510407 - HAGAP - 20-07-2026.pdf",
+        "us": "",
+        "data": "20.07.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "22/05/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "26/05/2026",
+    "final": "20.07.2026",
     "origem": [
       "medicao"
     ],
@@ -7391,7 +7428,7 @@
     "us": "121,685",
     "us_num": 121.685,
     "prazo": "26/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$8.676,98",
     "status": "Final",
@@ -7443,7 +7480,7 @@
     "us": "121,685",
     "us_num": 121.685,
     "prazo": "26/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$8.676,98",
     "status": "Pendente",
@@ -7575,6 +7612,14 @@
         "valor": "R$39.199,95",
         "rateio": "39.199,95",
         "rateio_float": 39199.95
+      },
+      {
+        "arquivo": "BMD PARCIAL -1676605-HAGAP.pdf",
+        "us": "",
+        "data": "03/07/2026",
+        "valor": "R$42.204,27",
+        "rateio": "42.204,27",
+        "rateio_float": 42204.27
       }
     ],
     "ffos": [],
@@ -8050,7 +8095,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Final",
@@ -8115,7 +8160,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "SILVA AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -8154,7 +8199,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -8202,7 +8247,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -8250,7 +8295,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "SILVA AZEVEDO",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -8289,7 +8334,7 @@
     "us": "331,320",
     "us_num": 331.32,
     "prazo": "17/07/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$22.187,97",
     "status": "Pendente",
@@ -8899,14 +8944,24 @@
       "BDO_1719077_1782202190.pdf",
       "malha_aterramento_2_2026-06-20.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL-1719077-HAGAP.pdf",
+        "us": "",
+        "data": "07/07/2026",
+        "valor": "R$9.937,52",
+        "rateio": "9.937,52",
+        "rateio_float": 9937.52
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "07/07/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '085082' em múltiplos projetos: 1719077, 1724174, 1724550, 1726318, 1729397I"
@@ -9156,14 +9211,24 @@
       "01.20263968582955 RELACAO DE MATERIAIS.pdf",
       "PROJETO 1724537.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL-1724537-HAGAP.pdf",
+        "us": "",
+        "data": "15/07/2026",
+        "valor": "R$6.077,43",
+        "rateio": "6.077,43",
+        "rateio_float": 6077.43
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "15/07/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '085152' em múltiplos projetos: 1724537, 1725260, 1726324, 1728642"
@@ -9412,14 +9477,24 @@
       "01.20264187424019 RELACAO DE MATERIAIS.pdf",
       "PROJETO 1726324.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "bmd parcial-1726324-hagap.pdf",
+        "us": "",
+        "data": "15/07/2026",
+        "valor": "R$2.048,89",
+        "rateio": "2.048,89",
+        "rateio_float": 2048.89
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "15/07/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '085152' em múltiplos projetos: 1724537, 1725260, 1726324, 1728642"
@@ -9473,7 +9548,7 @@
     "us": "284,315",
     "us_num": 284.315,
     "prazo": "25/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "GIOVANNI M CARVALHO",
     "custo": "R$19.215,26",
     "status": "Pendente",
@@ -10765,14 +10840,24 @@
       "Relação Materiais e Tarefas detalhado 1730222.pdf",
       "malha_aterramento_5_2026-06-24.pdf"
     ],
-    "bmds": [],
+    "bmds": [
+      {
+        "arquivo": "BMD PARCIAL-1730222-HAGAP.pdf",
+        "us": "",
+        "data": "07/07/2026",
+        "valor": "R$18.608,52",
+        "rateio": "18.608,52",
+        "rateio_float": 18608.52
+      }
+    ],
     "ffos": [],
-    "medicao1": "",
+    "medicao1": "07/07/2026",
     "medicao2": "",
     "final": "",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [
       "⚠ AE '085301' em múltiplos projetos: 1726332, 1726890, 1730222"
@@ -12807,7 +12892,7 @@
     "us": "156,481",
     "us_num": 156.481,
     "prazo": "19/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$11.948,87",
     "status": "Pendente",
@@ -12840,7 +12925,7 @@
     "us": "156,481",
     "us_num": 156.481,
     "prazo": "19/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$11.948,87",
     "status": "Pendente",
@@ -12873,7 +12958,7 @@
     "us": "156,481",
     "us_num": 156.481,
     "prazo": "19/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "",
     "custo": "R$11.948,87",
     "status": "Pendente",
@@ -12906,7 +12991,7 @@
     "us": "579,679",
     "us_num": 579.679,
     "prazo": "25/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "GERONIMODASILVA AZEVEDO",
     "custo": "R$44.264,28",
     "status": "Pendente",
@@ -13263,7 +13348,7 @@
     "us": "720,820",
     "us_num": 720.82,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$45.853,04",
     "status": "Pendente",
@@ -13301,7 +13386,7 @@
     "us": "720,820",
     "us_num": 720.82,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEDOURADINA",
     "custo": "R$45.853,04",
     "status": "Pendente",
@@ -13342,7 +13427,7 @@
     "us": "720,820",
     "us_num": 720.82,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEDOURADINA",
     "custo": "R$45.853,04",
     "status": "Pendente",
@@ -13382,7 +13467,7 @@
     "us": "720,820",
     "us_num": 720.82,
     "prazo": "18/08/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$45.853,04",
     "status": "Pendente",
@@ -14535,7 +14620,7 @@
     "us": "327,110",
     "us_num": 327.11,
     "prazo": "25/07/2026",
-    "prazo_alerta": "alerta",
+    "prazo_alerta": "critico",
     "local": "",
     "custo": "R$23.692,57",
     "status": "Pendente",

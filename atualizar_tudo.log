@@ -362,3 +362,25 @@
 [17:26:17]   Passo 3 — Gerador + Sync Render          ✅ OK     
 [17:26:17]   Tempo total: 2082.0s
 [17:26:17]   🎉 Tudo atualizado com sucesso!
+
+================================================================
+  INÍCIO: 20/07/2026 09:01:43
+================================================================
+[09:01:43] PASSO 1/3 — Leitor BMD
+[09:01:43]   Lê PDFs de medição e gera materiais_por_projeto.xlsx
+[09:01:43]   ▶ Executando: leitor_bmd.py
+[09:03:34]   ✅ Concluído em 110.6s
+[09:03:34] PASSO 2/3 — Extrair BMD
+[09:03:34]   Extrai rateios/datas e gera medicoes.xlsx + analise_financeira.xlsx
+[09:03:34]   ▶ Executando: extrair_bmd.py
+[09:05:24]   ✅ Concluído em 110.3s
+[09:05:24] PASSO 3/3 — Gerador + Sync Render
+[09:05:24]   Gera db.json + resultado.xlsx e sincroniza com o Render
+[09:05:24]   ▶ Executando: gerador.py
+[09:37:08]   ✅ Concluído em 1904.3s
+[09:37:08]   RESUMO FINAL
+[09:37:08]   Passo 1 — Leitor BMD                     ✅ OK     
+[09:37:08]   Passo 2 — Extrair BMD                    ✅ OK     
+[09:37:08]   Passo 3 — Gerador + Sync Render          ✅ OK     
+[09:37:08]   Tempo total: 2125.2s
+[09:37:08]   🎉 Tudo atualizado com sucesso!
