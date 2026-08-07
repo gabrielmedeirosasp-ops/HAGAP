@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/ze4GnmJ82sjXJj0CthwlawMX1q3HRNhD/fce95d32-26b8-4792-a983-ea2f48a306f5/files/">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BDO — Boletim Diário de Obras | HAGAP</title>
@@ -276,7 +276,6 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
       <button class="btn btn-ghost btn-sm" onclick="salvarRascunho()">💾 Rascunho</button>
       <button class="btn btn-yellow btn-sm" onclick="irParaExportar()">📄 Exportar BDO</button>
       <button class="btn btn-success btn-sm" onclick="abrirModalMAT()">⚡ MAT</button>
-      <button class="btn btn-sm" style="background:#2d2557;color:#f5c518;border:1px solid #f5c518" onclick="abrirModalChaves()">🔑 Chaves</button>
     </div>
   </div>
   <div class="prog-wrap">
@@ -620,17 +619,6 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
       <button class="mat-modal-close" onclick="fecharModalMAT()">✕</button>
     </div>
     <iframe class="mat-modal-iframe" id="mat-iframe" src="" title="MAT - Malha de Aterramento"></iframe>
-  </div>
-</div>
-
-<!-- ── MODAL CHAVES ── -->
-<div class="mat-modal-ov" id="modal-chaves">
-  <div class="mat-modal-wrap">
-    <div class="mat-modal-header" style="background:linear-gradient(135deg,#7a5000,#c07000)">
-      <h3>🔑 Liberação de Chaves — Encarregados</h3>
-      <button class="mat-modal-close" onclick="fecharModalChaves()">✕</button>
-    </div>
-    <iframe class="mat-modal-iframe" id="chaves-iframe" src="" title="Liberação de Chaves"></iframe>
   </div>
 </div>
 
@@ -1405,30 +1393,13 @@ function fecharModalMAT() {
   document.getElementById('modal-mat').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-// ── MODAL CHAVES ──
-function abrirModalChaves() {
-  const iframe = document.getElementById('chaves-iframe');
-  if (!iframe.src || iframe.src === window.location.href) iframe.src = '/chaves';
-  document.getElementById('modal-chaves').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function fecharModalChaves() {
-  document.getElementById('modal-chaves').classList.remove('open');
-  document.body.style.overflow = '';
-}
 // Fechar com ESC
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fecharModalMAT(); fecharModalChaves(); }
+  if (e.key === 'Escape') fecharModalMAT();
 });
 // Fechar clicando fora
-const _closeMatM = document.getElementById('modal-mat');
-if (_closeMatM) _closeMatM.addEventListener('click', function(e){
+document.getElementById('modal-mat')?.addEventListener('click', function(e){
   if(e.target === this) fecharModalMAT();
-});
-const _closeChM = document.getElementById('modal-chaves');
-if (_closeChM) _closeChM.addEventListener('click', function(e){
-  if(e.target === this) fecharModalChaves();
 });
 
 function imprimirBDO() {
