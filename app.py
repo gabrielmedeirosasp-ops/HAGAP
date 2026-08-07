@@ -2753,6 +2753,7 @@ if __name__ == "__main__":
 
 
 CHAVES_PADRAO = [f"CH-{i:03d}" for i in range(1, 11)]  # CH-001 .. CH-010
+CHAVES_JSON   = "chaves_db.json"   # usado no modo local (sem DATABASE_URL)
 
 
 def _chaves_pg_init():
@@ -2772,33 +2773,54 @@ def _chaves_pg_init():
 
 
 def _chaves_ler():
-    """Retorna dict {available:[], released:[]} do PostgreSQL."""
-    _ensure_pg()
-    _chaves_pg_init()
-    with _pg_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("SELECT dados FROM hagap_chaves WHERE id=1")
-            row = cur.fetchone()
-            if row and row[0]:
-                d = row[0]
-                d = d if isinstance(d, dict) else json.loads(d)
-            else:
+    """Retorna dict {available:[], released:[]}. Usa PostgreSQL (Render) ou arquivo JSON (local)."""
+    if DATABASE_URL:
+        _ensure_pg()
+        _chaves_pg_init()
+        with _pg_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT dados FROM hagap_chaves WHERE id=1")
+                row = cur.fetchone()
+                if row and row[0]:
+                    d = row[0]
+                    d = d if isinstance(d, dict) else json.loads(d)
+                else:
+                    d = {}
+        dados = {
+            "available": d.get("available", list(CHAVES_PADRAO)),
+            "released":  d.get("released", []),
+        }
+    else:
+        if os.path.exists(CHAVES_JSON):
+            try:
+                with open(CHAVES_JSON, encoding="utf-8") as f:
+                    d = json.load(f)
+                if not isinstance(d, dict):
+                    d = {}
+            except Exception:
                 d = {}
-    return {
-        "available": d.get("available", list(CHAVES_PADRAO)),
-        "released":  d.get("released", []),
-    }
+        else:
+            d = {}
+        dados = {
+            "available": d.get("available", list(CHAVES_PADRAO)),
+            "released":  d.get("released", []),
+        }
+    return dados
 
 
 def _chaves_salvar(dados):
-    _chaves_pg_init()
-    with _pg_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                INSERT INTO hagap_chaves (id, dados) VALUES (1, %s)
-                ON CONFLICT (id) DO UPDATE SET dados = EXCLUDED.dados
-            """, (json.dumps(dados, ensure_ascii=False),))
-        conn.commit()
+    if DATABASE_URL:
+        _chaves_pg_init()
+        with _pg_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO hagap_chaves (id, dados) VALUES (1, %s)
+                    ON CONFLICT (id) DO UPDATE SET dados = EXCLUDED.dados
+                """, (json.dumps(dados, ensure_ascii=False),))
+            conn.commit()
+    else:
+        with open(CHAVES_JSON, "w", encoding="utf-8") as f:
+            json.dump(dados, f, ensure_ascii=False, indent=2)
 
 
 def _chaves_senha():
