@@ -2749,3 +2749,164 @@ def api_enviar_bdo_email():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
+
+
+
+CHAVES_PADRAO = [f"CH-{i:03d}" for i in range(1, 11)]  # CH-001 .. CH-010
+
+
+def _chaves_pg_init():
+    with _pg_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS hagap_chaves (
+                    id    INT PRIMARY KEY DEFAULT 1,
+                    dados JSONB NOT NULL DEFAULT '{}'
+                )
+            """)
+            cur.execute("""
+                INSERT INTO hagap_chaves (id, dados) VALUES (1, '{}')
+                ON CONFLICT (id) DO NOTHING
+            """)
+        conn.commit()
+
+
+def _chaves_ler():
+    """Retorna dict {available:[], released:[]} do PostgreSQL."""
+    _ensure_pg()
+    _chaves_pg_init()
+    with _pg_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT dados FROM hagap_chaves WHERE id=1")
+            row = cur.fetchone()
+            if row and row[0]:
+                d = row[0]
+                d = d if isinstance(d, dict) else json.loads(d)
+            else:
+                d = {}
+    return {
+        "available": d.get("available", list(CHAVES_PADRAO)),
+        "released":  d.get("released", []),
+    }
+
+
+def _chaves_salvar(dados):
+    _chaves_pg_init()
+    with _pg_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO hagap_chaves (id, dados) VALUES (1, %s)
+                ON CONFLICT (id) DO UPDATE SET dados = EXCLUDED.dados
+            """, (json.dumps(dados, ensure_ascii=False),))
+        conn.commit()
+
+
+def _chaves_senha():
+    return os.environ.get("SENHA_CHAVES", "HACAP2025")
+
+
+@app.route("/chaves")
+def chaves_page():
+    return send_from_directory("templates", "chaves.html")
+
+
+@app.route("/api/chaves")
+def api_chaves_get():
+    """GET → liberados + contagem; com ?senha= correta → inclui lista disponível."""
+    dados = _chaves_ler()
+    dados["availableCount"] = len(dados.get("available", []))
+    senha = request.args.get("senha", "")
+    if senha and senha == _chaves_senha():
+        return jsonify(dados)          # gerente: vê a lista completa
+    # encarregado: NÃO vê a lista disponível
+    return jsonify({"released": dados.get("released", []),
+                    "availableCount": dados.get("availableCount", 0)})
+
+
+@app.route("/api/chaves/verificar_senha", methods=["POST"])
+def api_chaves_verificar_senha():
+    body = request.get_json() or {}
+    if body.get("senha") == _chaves_senha():
+        return jsonify({"ok": True})
+    return jsonify({"erro": "Senha incorreta"}), 403
+
+
+@app.route("/api/chaves/liberar", methods=["POST"])
+def api_chaves_liberar():
+    """Atribui a próxima chave automaticamente e a remove da lista."""
+    body = request.get_json() or {}
+    encarregado = (body.get("encarregado") or "").strip()
+    data        = (body.get("data") or "").strip()
+    projeto     = (body.get("projeto") or "").strip()
+    estrutura   = (body.get("estrutura") or "").strip()
+    if not (encarregado and data and projeto and estrutura):
+        return jsonify({"erro": "Todos os campos são obrigatórios"}), 400
+
+    dados = _chaves_ler()
+    available = dados.get("available", [])
+    if not available:
+        return jsonify({"erro": "Não há chaves disponíveis no momento"}), 409
+
+    num = available[0]
+    dados["available"] = available[1:]
+    dados.setdefault("released", []).append({
+        "num": num, "encarregado": encarregado, "data": data,
+        "projeto": projeto, "estrutura": estrutura,
+        "hora": datetime.now().strftime("%d/%m/%Y %H:%M"),
+    })
+    _chaves_salvar(dados)
+    return jsonify({"ok": True, "num": num,
+                    "availableCount": len(dados["available"])})
+
+
+@app.route("/api/chaves/adicionar", methods=["POST"])
+def api_chaves_adicionar():
+    body = request.get_json() or {}
+    if body.get("senha") != _chaves_senha():
+        return jsonify({"erro": "Senha incorreta"}), 403
+    num = (body.get("num") or "").strip()
+    if not num:
+        return jsonify({"erro": "Informe um número"}), 400
+    dados = _chaves_ler()
+    if num in dados["available"] or any(r["num"] == num for r in dados.get("released", [])):
+        return jsonify({"erro": f"A chave {num} já existe"}), 409
+    dados["available"].append(num)
+    _chaves_salvar(dados)
+    return jsonify({"ok": True, "adicionadas": 1})
+
+
+@app.route("/api/chaves/batch", methods=["POST"])
+def api_chaves_batch():
+    body = request.get_json() or {}
+    if body.get("senha") != _chaves_senha():
+        return jsonify({"erro": "Senha incorreta"}), 403
+    numeros = [n.strip() for n in (body.get("numeros") or []) if n.strip()]
+    if not numeros:
+        return jsonify({"erro": "Nenhum número informado"}), 400
+    dados = _chaves_ler()
+    existentes = set(dados.get("available", [])) | {r["num"] for r in dados.get("released", [])}
+    novas = [n for n in numeros if n not in existentes]
+    dados["available"] = dados.get("available", []) + novas
+    _chaves_salvar(dados)
+    return jsonify({"ok": True, "adicionadas": len(novas)})
+
+
+@app.route("/api/chaves/recarregar", methods=["POST"])
+def api_chaves_recarregar():
+    body = request.get_json() or {}
+    if body.get("senha") != _chaves_senha():
+        return jsonify({"erro": "Senha incorreta"}), 403
+    dados = _chaves_ler()
+    # Recarrega a lista padrão SEM apagar o histórico
+    dados["available"] = [n for n in CHAVES_PADRAO if n not in {r["num"] for r in dados.get("released", [])}]
+    _chaves_salvar(dados)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/chaves/reset", methods=["POST"])
+def api_chaves_reset():
+    body = request.get_json() or {}
+    if body.get("senha") != _chaves_senha():
+        return jsonify({"erro": "Senha incorreta"}), 403
+    _chaves_salvar({"available": list(CHAVES_PADRAO), "released": []})
+    return jsonify({"ok": True})
