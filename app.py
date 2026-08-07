@@ -2745,12 +2745,11 @@ def api_enviar_bdo_email():
         print(f"[E-mail BDO] Erro: {e}")
         return jsonify({"ok": False, "erro": str(e)}), 200
 
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
-
-
+# ═══════════════════════════════════════════════════════════════════
+#  LIBERAÇÃO DE CHAVES — HAÇAP  (adicione este bloco ao final de app.py)
+#  Requisitos: templates/chaves.html na pasta templates/
+#  Senha do gerente: variável de ambiente SENHA_CHAVES (padrão HACAP2025)
+# ═══════════════════════════════════════════════════════════════════
 
 CHAVES_PADRAO = [f"CH-{i:03d}" for i in range(1, 11)]  # CH-001 .. CH-010
 CHAVES_JSON   = "chaves_db.json"   # usado no modo local (sem DATABASE_URL)
@@ -2932,3 +2931,8 @@ def api_chaves_reset():
         return jsonify({"erro": "Senha incorreta"}), 403
     _chaves_salvar({"available": list(CHAVES_PADRAO), "released": []})
     return jsonify({"ok": True})
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
