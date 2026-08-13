@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/ze4GnmJ82sjXJj0CthwlawMX1q3HRNhD/b8803c8b-cd93-4dc8-b43e-223ccdf2e7a1/files/"></head>
-<meta charset="UTF-8">
+<html lang="pt-BR">
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/ze4GnmJ82sjXJj0CthwlawMX1q3HRNhD/b8803c8b-cd93-4dc8-b43e-223ccdf2e7a1/files/"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Liberação de Chaves — HAÇAP</title>
 <style>
@@ -226,8 +226,9 @@ function setConn(ok){
 }
 
 async function api(path, opts={}){
+  if (path.startsWith('/')) path = window.location.origin + path;  // garante que /api vai para o SERVIDOR, nao para o CDN
   const controller = new AbortController();
-  const to = setTimeout(()=>controller.abort(), 15000);
+  const to = setTimeout(()=>controller.abort(), 30000);
   let r;
   try{
     r = await fetch(path, Object.assign({
