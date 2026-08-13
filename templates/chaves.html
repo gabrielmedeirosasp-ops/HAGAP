@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/ze4GnmJ82sjXJj0CthwlawMX1q3HRNhD/b8803c8b-cd93-4dc8-b43e-223ccdf2e7a1/files/"><meta charset="UTF-8">
+<head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Liberação de Chaves — HAÇAP</title>
 <style>
@@ -51,7 +51,9 @@
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{background:#fff;border:1.5px solid var(--hapac);color:var(--hapac);
     padding:6px 13px;border-radius:999px;font-weight:700;font-size:.9rem}
-  .chip.gone{background:#eef1f5;border-color:#cbd5e1;color:#94a3b8;text-decoration:line-through}
+.chip.gone{background:#eef1f5;border-color:#cbd5e1;color:#94a3b8;text-decoration:line-through}
+  .chip-del{background:none;border:none;color:#dc2626;font-size:1rem;font-weight:800;cursor:pointer;margin-left:6px;line-height:1}
+  .chip-del:hover{color:#991b1b}
   .empty{color:var(--muted);font-style:italic;text-align:center;padding:14px}
   .log{max-height:300px;overflow:auto}
   .log-item{display:flex;gap:12px;align-items:center;padding:11px;border:1px solid #e6ecf4;
@@ -290,7 +292,8 @@ function render(){
         const used = (dados.released||[]).some(r=>r.num===n);
         const ok = (dados.available||[]).includes(n);
         const cls = used && !ok ? 'chip gone' : 'chip';
-        return `<span class="${cls}">${esc(used&&!ok ? n+' (em uso)' : n)}</span>`;
+        const del = (!used && ok) ? `<button class="chip-del" onclick="removerChave('${esc(n)}')" title="Remover">\u00d7</button>` : '';
+        return `<span class="${cls}">${esc(used&&!ok ? n+' (em uso)' : n)}${del}</span>`;
       }).join('');
     }
   }
@@ -389,6 +392,16 @@ document.getElementById('btnConfirmBatch').addEventListener('click', async ()=>{
     await carregar(true);
   }catch(e){ toast(e.message,'err'); }
 });
+
+/* ── REMOVER CHAVE ── */
+async function removerChave(num){
+  if(!confirm('Remover a chave '+num+'?')) return;
+  try{
+    await api('/api/chaves/remover', { method:'POST', body: JSON.stringify({ senha, num }) });
+    toast('Chave '+num+' removida.','ok');
+    await carregar(true);
+  }catch(e){ toast(e.message,'err'); }
+}
 
 /* ── RELOAD / RESET ── */
 document.getElementById('btnReload').addEventListener('click', async ()=>{
