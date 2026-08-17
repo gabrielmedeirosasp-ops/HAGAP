@@ -2751,7 +2751,7 @@ def api_enviar_bdo_email():
 #  Senha do gerente: variável de ambiente SENHA_CHAVES (padrão HACAP2025)
 # ═══════════════════════════════════════════════════════════════════
 
-CHAVES_PADRAO = []   # sem chaves modelo: so existem as que voce cadastrar na Area do Gerente
+CHAVES_PADRAO = [f"CH-{i:03d}" for i in range(1, 11)]  # CH-001 .. CH-010
 CHAVES_JSON   = "chaves_db.json"   # usado no modo local (sem DATABASE_URL)
 
 
