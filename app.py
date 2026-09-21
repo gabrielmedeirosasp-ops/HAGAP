@@ -11,7 +11,7 @@ CORREÇÕES:
 
 import json, os, re, base64, io
 from datetime import date, datetime
-from flask import Flask, jsonify, request, send_from_directory, send_file
+from flask import Flask, jsonify, request, send_from_directory
 import pandas as pd
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -473,18 +473,6 @@ def index():
     resp.headers["Expires"] = "0"
 
     return resp
-# ─── MAPA GPS COPEL/HAGAP V30 ───
-@app.route("/mapa")
-def mapa_copel_hagap():
-    mapa_gz = os.path.join(app.static_folder, "mapa_v30.html.gz")
-    if not os.path.exists(mapa_gz):
-        return "Mapa GPS COPEL/HAGAP não encontrado.", 404
-    response = send_file(mapa_gz, mimetype="text/html", conditional=True)
-    response.headers["Content-Encoding"] = "gzip"
-    response.headers["Cache-Control"] = "no-cache"
-    return response
-
-
 # ─── BOLETIM DE OBRAS (BDO) — acesso público, sem login ───
 @app.route("/boletim")
 def boletim():
@@ -2943,6 +2931,12 @@ def api_chaves_reset():
         return jsonify({"erro": "Senha incorreta"}), 403
     _chaves_salvar({"available": list(CHAVES_PADRAO), "released": []})
     return jsonify({"ok": True})
+
+
+# --- MAPA COPEL/HAGAP V31 WEB ---
+@app.route("/mapa")
+def mapa_v31():
+    return send_from_directory("static/mapa", "index.html")
 
 
 if __name__ == "__main__":
