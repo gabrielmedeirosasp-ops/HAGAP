@@ -1450,6 +1450,49 @@ function exportCroqui(){
  <script>setTimeout(()=>{},1000)<\/script>
 
 
+
+
+<!-- V37 MOBILE INPUT + TAP PATCH: additive; desktop V36 preserved -->
+<style id="v37-mobile-fix-css">
+@media (max-width:900px),(pointer:coarse){
+  #map{touch-action:none!important;}
+  input,textarea,select,button,a{pointer-events:auto!important;touch-action:manipulation!important;}
+  input,textarea{user-select:text!important;-webkit-user-select:text!important;}
+}
+</style>
+<script id="v37-mobile-fix-js">
+(function(){
+ 'use strict';
+ const isControl=e=>e&&e.closest&&e.closest('input,textarea,select,button,a,[contenteditable="true"]');
+ ['touchstart','touchmove','touchend','pointerdown','pointerup'].forEach(type=>{
+   document.addEventListener(type,function(ev){const c=isControl(ev.target);if(c)ev.stopPropagation();},true);
+ });
+ document.addEventListener('touchend',function(ev){
+   const c=isControl(ev.target);
+   if(c&&c.matches('input,textarea,[contenteditable="true"]'))setTimeout(()=>{try{c.focus();}catch(_){}},0);
+ },true);
+ const map=document.getElementById('map'), canvas=document.getElementById('canvas')||document.querySelector('#map canvas');
+ if(!map)return;
+ let tap=null;
+ map.addEventListener('touchstart',function(ev){
+   if(isControl(ev.target)||ev.touches.length!==1){tap=null;return;}
+   const t=ev.touches[0];tap={x:t.clientX,y:t.clientY,time:Date.now()};
+ },true);
+ map.addEventListener('touchmove',function(ev){
+   if(!tap||ev.touches.length!==1)return;
+   const t=ev.touches[0];if(Math.hypot(t.clientX-tap.x,t.clientY-tap.y)>10)tap=null;
+ },true);
+ map.addEventListener('touchend',function(ev){
+   if(!tap||!ev.changedTouches.length)return;
+   const t=ev.changedTouches[0],ok=Date.now()-tap.time<450&&Math.hypot(t.clientX-tap.x,t.clientY-tap.y)<=10;
+   tap=null;if(!ok)return;
+   const target=document.elementFromPoint(t.clientX,t.clientY);if(isControl(target))return;
+   const clickTarget=(target&&target.closest&&target.closest('#map'))?target:(canvas||map);
+   setTimeout(()=>clickTarget.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:t.clientX,clientY:t.clientY,button:0})),0);
+ },true);
+})();
+</script>
+
 </body></html>`;
  let croquiName='CROQUI_HAGAP_'+(el('admProject').value||'PROJETO').replace(/[^\w.-]+/g,'_')+'_'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
  try{
