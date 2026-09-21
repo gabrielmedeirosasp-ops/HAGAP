@@ -2933,11 +2933,14 @@ def api_chaves_reset():
     return jsonify({"ok": True})
 
 
-# --- MAPA COPEL/HAGAP V31 WEB ---
-@app.route("/mapa")
-def mapa_v31():
-    return send_from_directory("static/mapa", "index.html")
 
+# ============================================================
+# MAPA GPS COPEL/HAGAP V36 — base funcional aprovada
+# Arquivos em static/mapa/. Não altera banco nem demais rotas.
+# ============================================================
+@app.route('/mapa')
+def mapa_copel_hagap_v36():
+    return send_from_directory(os.path.join(app.static_folder, 'mapa'), 'index.html')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

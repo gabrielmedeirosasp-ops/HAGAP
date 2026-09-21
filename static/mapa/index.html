@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+<base href="/static/mapa/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mapa Redes COPEL — HAGAP | Pontos Significativos Paraná</title>
@@ -912,21 +913,12 @@ body.adm12marking #admPanel12{transform:translateX(105%)!important}body.adm12mar
   <div id="zoomCtl"><button id="zin">+</button><button id="zout">−</button></div>
 </div>
 </div>
-<script src="dados/rede_mt.js"></script>
-<script src="dados/rede_bt.js"></script>
-<script src="dados/meta.js"></script>
-<script src="dados/pontos_1.js"></script>
-<script src="dados/pontos_2.js"></script>
-<script src="dados/pontos_3.js"></script>
-<script src="dados/pontos_4.js"></script>
-<script src="dados/equip_1.js"></script>
-<script src="dados/equip_2.js"></script>
 <script>
-const MTNET=window.MTNET;
-const BTNET=window.BTNET;
-const META=window.META;
-const DATA_CHUNKS=(()=>{let a=[],p=[window.__PTS1,window.__PTS2,window.__PTS3,window.__PTS4],m=Math.max(...p.map(x=>x.length));for(let j=0;j<m;j++)for(let i=0;i<4;i++)if(j<p[i].length)a.push(p[i][j]);return a})();
-const EQUIP_CHUNKS=(()=>{let a=[],p=[window.__EQ1,window.__EQ2],m=Math.max(...p.map(x=>x.length));for(let j=0;j<m;j++)for(let i=0;i<2;i++)if(j<p[i].length)a.push(p[i][j]);return a})();
+</script><script src="dados/rede_mt.js"></script><script>
+</script><script src="dados/rede_bt.js"></script><script>
+</script><script src="dados/pontos_meta.js"></script><script>
+</script><script src="dados/pontos_base.js"></script><script>
+</script><script src="dados/equipamentos.js"></script><script>
 const map=document.getElementById('map'), tiles=document.getElementById('tiles'), canvas=document.getElementById('points'),ctx=canvas.getContext('2d'), condCanvas=document.getElementById('conductors'),condCtx=condCanvas.getContext('2d');
 let center={lat:-24.7,lon:-51.5}, zoom=7, base='sat', raw=null, ints=null, ready=false, dragging=false,last={x:0,y:0}, lastDrawn=[], equipReady=false, equip=[], equipGrid=new Map(), lastEquipDrawn=[];
 const MAXZ=18,MINZ=6;
