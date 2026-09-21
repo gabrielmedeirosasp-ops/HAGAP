@@ -1493,6 +1493,106 @@ function exportCroqui(){
 })();
 </script>
 
+
+<!-- HAGAP V38 - CAMADAS MOBILE NATIVO -->
+<style id="hagap-v38-layers-css">
+@media (max-width: 900px), (pointer: coarse) {
+  /* Painéis/controles de camadas devem receber toque nativo, acima do mapa */
+  #layersPanel, #layersDrawer, #layerPanel, #layerDrawer,
+  .layers-panel, .layers-drawer, .layer-panel, .layer-drawer,
+  [id*="camadas" i], [class*="camadas" i] {
+    pointer-events: auto !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative;
+    z-index: 2147483000 !important;
+  }
+
+  #layersPanel input, #layersDrawer input, #layerPanel input, #layerDrawer input,
+  .layers-panel input, .layers-drawer input, .layer-panel input, .layer-drawer input,
+  [id*="camadas" i] input, [class*="camadas" i] input,
+  #layersPanel textarea, #layersDrawer textarea,
+  [id*="camadas" i] textarea, [class*="camadas" i] textarea,
+  #layersPanel select, #layersDrawer select,
+  [id*="camadas" i] select, [class*="camadas" i] select,
+  #layersPanel button, #layersDrawer button,
+  [id*="camadas" i] button, [class*="camadas" i] button,
+  #layersPanel label, #layersDrawer label,
+  [id*="camadas" i] label, [class*="camadas" i] label {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  #layersPanel input[type="text"], #layersDrawer input[type="text"],
+  #layersPanel input[type="search"], #layersDrawer input[type="search"],
+  [id*="camadas" i] input[type="text"], [class*="camadas" i] input[type="text"],
+  [id*="camadas" i] input[type="search"], [class*="camadas" i] input[type="search"],
+  #layersPanel textarea, #layersDrawer textarea,
+  [id*="camadas" i] textarea, [class*="camadas" i] textarea {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+}
+</style>
+
+<script id="hagap-v38-layers-js">
+(function(){
+  "use strict";
+
+  function layersRoot(el){
+    if(!el || !el.closest) return null;
+    return el.closest(
+      '#layersPanel,#layersDrawer,#layerPanel,#layerDrawer,' +
+      '.layers-panel,.layers-drawer,.layer-panel,.layer-drawer,' +
+      '[id*="camadas" i],[class*="camadas" i]'
+    );
+  }
+
+  function editable(el){
+    return el && el.matches &&
+      el.matches('input[type="text"],input[type="search"],input:not([type]),textarea,[contenteditable="true"]');
+  }
+
+  function nativeControl(el){
+    return el && el.matches &&
+      el.matches('input,textarea,select,button,label,a,[role="button"]');
+  }
+
+  /*
+    Critical fix:
+    stop touch/pointer events from bubbling from CAMADAS to the map.
+    Do NOT preventDefault: native checkbox toggling and virtual keyboard must remain available.
+  */
+  ['touchstart','touchmove','touchend','touchcancel',
+   'pointerdown','pointermove','pointerup','pointercancel',
+   'mousedown','mousemove','mouseup','click'].forEach(function(type){
+    document.addEventListener(type, function(e){
+      var root = layersRoot(e.target);
+      if(!root) return;
+      e.stopPropagation();
+    }, true);
+  });
+
+  /* Explicit focus for mobile text/search fields without synthetic mouse events. */
+  document.addEventListener('touchend', function(e){
+    if(!layersRoot(e.target)) return;
+    var el = e.target;
+    if(editable(el)){
+      setTimeout(function(){
+        try { el.focus({preventScroll:false}); }
+        catch(_) { try { el.focus(); } catch(__){} }
+      }, 0);
+    }
+  }, true);
+
+  /*
+    Some layouts use styled labels over checkboxes. Keep the browser's native label/checkbox
+    behavior; only focus text controls. No manual checkbox inversion is done here to avoid
+    double toggles.
+  */
+})();
+</script>
+
 </body></html>`;
  let croquiName='CROQUI_HAGAP_'+(el('admProject').value||'PROJETO').replace(/[^\w.-]+/g,'_')+'_'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
  try{
