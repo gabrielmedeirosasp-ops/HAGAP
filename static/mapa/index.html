@@ -914,11 +914,11 @@ body.adm12marking #admPanel12{transform:translateX(105%)!important}body.adm12mar
 </div>
 </div>
 <script>
-</script><script src="dados/rede_mt.js"></script><script>
-</script><script src="dados/rede_bt.js"></script><script>
-</script><script src="dados/pontos_meta.js"></script><script>
-</script><script src="dados/pontos_base.js"></script><script>
-</script><script src="dados/equipamentos.js"></script><script>
+</script><script src="/static/mapa/dados/rede_mt.js"></script><script>
+</script><script src="/static/mapa/dados/rede_bt.js"></script><script>
+</script><script src="/static/mapa/dados/pontos_meta.js"></script><script>
+</script><script src="/static/mapa/dados/pontos_base.js"></script><script>
+</script><script src="/static/mapa/dados/equipamentos.js"></script><script>
 const map=document.getElementById('map'), tiles=document.getElementById('tiles'), canvas=document.getElementById('points'),ctx=canvas.getContext('2d'), condCanvas=document.getElementById('conductors'),condCtx=condCanvas.getContext('2d');
 let center={lat:-24.7,lon:-51.5}, zoom=7, base='sat', raw=null, ints=null, ready=false, dragging=false,last={x:0,y:0}, lastDrawn=[], equipReady=false, equip=[], equipGrid=new Map(), lastEquipDrawn=[];
 const MAXZ=18,MINZ=6;

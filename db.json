@@ -4012,11 +4012,19 @@
         "valor": "R$110.020,78",
         "rateio": "110.020,78",
         "rateio_float": 110020.78
+      },
+      {
+        "arquivo": "Parcial 02.pdf",
+        "us": "",
+        "data": "21/09/2026",
+        "valor": "R$155.362,53",
+        "rateio": "155.362,53",
+        "rateio_float": 155362.53
       }
     ],
     "ffos": [],
     "medicao1": "23/06/2026",
-    "medicao2": "",
+    "medicao2": "23/06/2026",
     "final": "",
     "origem": [
       "pasta",
@@ -11899,8 +11907,8 @@
     "prazo_alerta": "ok",
     "local": "DEUMUARAMA DISTRDELOVAT",
     "custo": "R$42,95",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 85302 4600026463 HAGAP.pdf",
     "pasta_projeto": "1726541 01.20264247833541 - MUNICIPIO DE UMUARAMA",
     "pasta_projeto_url": "",
@@ -11919,12 +11927,29 @@
         "valor": "R$17.173,17",
         "rateio": "17.173,17",
         "rateio_float": 17173.17
+      },
+      {
+        "arquivo": "BMD-1726541-HAGAP.pdf",
+        "us": "",
+        "data": "21/08/2026",
+        "valor": "R$4.972,33",
+        "rateio": "4.972,33",
+        "rateio_float": 4972.33
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1726541-HAGAP.pdf",
+        "us": "",
+        "data": "17.09.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "06/08/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "21/08/2026",
+    "final": "17.09.2026",
     "origem": [
       "pasta",
       "ae",
@@ -15643,19 +15668,38 @@
     "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$13,48",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 85948 4600026463 HAGAP.pdf",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD-1671216C-HAGAP.pdf",
+        "us": "",
+        "data": "01/09/2026",
+        "valor": "R$13,51",
+        "rateio": "13,51",
+        "rateio_float": 13.51
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1671216C-HAGAP.pdf",
+        "us": "124",
+        "data": "14.09.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "01/09/2026",
     "medicao2": "",
-    "final": "",
+    "final": "14.09.2026",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -15799,8 +15843,8 @@
     "prazo_alerta": "vencido",
     "local": "CARVALHO AZEVEDO",
     "custo": "R$46.847,53",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 86008 4600026463 HAGAP.pdf",
     "pasta_projeto": "1723726 01.20264009577505 - PAULO PERES DOS SANTOS 31.08.2026",
     "pasta_projeto_url": "",
@@ -15820,12 +15864,29 @@
         "valor": "R$7.911,81",
         "rateio": "7.911,81",
         "rateio_float": 7911.81
+      },
+      {
+        "arquivo": "BMD-1723726-HAGAP.pdf",
+        "us": "",
+        "data": "21/08/2026",
+        "valor": "R$1.718,28",
+        "rateio": "1.718,28",
+        "rateio_float": 1718.28
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1723726-HAGAP.pdf",
+        "us": "",
+        "data": "18.09.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "17/08/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "21/08/2026",
+    "final": "18.09.2026",
     "origem": [
       "ae",
       "pasta",
@@ -16677,19 +16738,38 @@
     "prazo_alerta": "vencido",
     "local": "",
     "custo": "R$8.880,62",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 86018 4600026463 HAGAP.pdf",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
     "pdfs_projeto": [],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD-1671216I-HAGAP.pdf",
+        "us": "",
+        "data": "01/09/2026",
+        "valor": "R$8.907,02",
+        "rateio": "8.907,02",
+        "rateio_float": 8907.02
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1671216I-HAGAP.pdf",
+        "us": "",
+        "data": "14.09.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "01/09/2026",
     "medicao2": "",
-    "final": "",
+    "final": "14.09.2026",
     "origem": [
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -17662,7 +17742,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DETERRABOA CENTRO",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -17702,7 +17782,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DEALTONIA RURAL",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -17741,7 +17821,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -17780,7 +17860,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -17818,7 +17898,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -17856,7 +17936,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -17895,7 +17975,7 @@
     "us": "517,979",
     "us_num": 517.979,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$34.510,68",
     "status": "Pendente",
@@ -18169,8 +18249,8 @@
     "prazo_alerta": "ok",
     "local": "MOREIRA AZEVEDO EXECUÇÃO",
     "custo": "R$10.490,41",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "AES 86612 4600026463 HAGAP.pdf",
     "pasta_projeto": "1729553 100000048876 - CONJUNTO DE MED TRIFÁSICA - TERRA BOA",
     "pasta_projeto_url": "",
@@ -18181,14 +18261,33 @@
       "PROJETO 1729553.pdf",
       "TCO - Termo de Conclusão de Obra.pdf"
     ],
-    "bmds": [],
-    "ffos": [],
-    "medicao1": "",
+    "bmds": [
+      {
+        "arquivo": "BMD-1729553-HAGAP.pdf",
+        "us": "",
+        "data": "21/08/2026",
+        "valor": "R$11.151,84",
+        "rateio": "11.151,84",
+        "rateio_float": 11151.84
+      }
+    ],
+    "ffos": [
+      {
+        "arquivo": "FFO-1729553-HAGAP.pdf",
+        "us": "",
+        "data": "21.09.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
+    "medicao1": "21/08/2026",
     "medicao2": "",
-    "final": "",
+    "final": "21.09.2026",
     "origem": [
       "pasta",
-      "ae"
+      "ae",
+      "medicao"
     ],
     "avisos": [],
     "aes": [
@@ -18366,7 +18465,7 @@
     "us": "33,838",
     "us_num": 33.838,
     "prazo": "15/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "GLOSSÁRIO",
     "custo": "R$2.583,86",
     "status": "Pendente",
@@ -18977,7 +19076,7 @@
     "us": "27,985",
     "us_num": 27.985,
     "prazo": "20/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DECAFEZALDOSUL CENTRO",
     "custo": "R$1.707,08",
     "status": "Pendente",
@@ -20315,7 +20414,7 @@
     "us": "203,931",
     "us_num": 203.931,
     "prazo": "20/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$13.987,44",
     "status": "Pendente",
@@ -20354,7 +20453,7 @@
     "us": "203,931",
     "us_num": 203.931,
     "prazo": "20/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "DEJAPURA",
     "custo": "R$13.987,44",
     "status": "Pendente",
@@ -20393,7 +20492,7 @@
     "us": "203,931",
     "us_num": 203.931,
     "prazo": "20/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$13.987,44",
     "status": "Pendente",
@@ -20469,7 +20568,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CORBELIA",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20510,7 +20609,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CORBELIA",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20550,7 +20649,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CAFELANDIA",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20586,7 +20685,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CAFELANDIA",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20635,7 +20734,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "BRTURGENTE-PLANILHACOPACOL",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20683,7 +20782,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CASCAVEL",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20723,7 +20822,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "S SUBESTAÇÕES ALIMENTADORES VÍNCULOS",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20763,7 +20862,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "S SUBESTAÇÕES ALIMENTADORES VÍNCULOS",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -20812,7 +20911,7 @@
     "us": "1.483,617",
     "us_num": 1483.617,
     "prazo": "18/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CASCAVEL",
     "custo": "R$113.288,94",
     "status": "Pendente",
@@ -21795,8 +21894,8 @@
     "prazo_alerta": "",
     "local": "",
     "custo": "",
-    "status": "Pendente",
-    "executado": false,
+    "status": "Final",
+    "executado": true,
     "arquivo_ae": "",
     "pasta_projeto": "",
     "pasta_projeto_url": "",
@@ -21809,12 +21908,29 @@
         "valor": "R$4.815,09",
         "rateio": "4.815,09",
         "rateio_float": 4815.09
+      },
+      {
+        "arquivo": "BMD-1713916-HAGAP.pdf",
+        "us": "",
+        "data": "19/08/2026",
+        "valor": "R$3.083,18",
+        "rateio": "3.083,18",
+        "rateio_float": 3083.18
       }
     ],
-    "ffos": [],
+    "ffos": [
+      {
+        "arquivo": "FFO-1713916-HAGAP.pdf",
+        "us": "",
+        "data": "18.09.2026",
+        "valor": "",
+        "rateio": "",
+        "rateio_float": 0.0
+      }
+    ],
     "medicao1": "19/08/2026",
-    "medicao2": "",
-    "final": "",
+    "medicao2": "19/08/2026",
+    "final": "18.09.2026",
     "origem": [
       "medicao"
     ],
@@ -21826,7 +21942,7 @@
     "us": "225,733",
     "us_num": 225.733,
     "prazo": "16/09/2026",
-    "prazo_alerta": "critico",
+    "prazo_alerta": "vencido",
     "local": "AZEVEDO",
     "custo": "R$17.236,97",
     "status": "Pendente",
@@ -22966,7 +23082,7 @@
     "us": "329,972",
     "us_num": 329.972,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$25.196,65",
     "status": "Pendente",
@@ -23004,7 +23120,7 @@
     "us": "329,972",
     "us_num": 329.972,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "UMUARAMA",
     "custo": "R$25.196,65",
     "status": "Pendente",
@@ -23530,7 +23646,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "DEASCHORK AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23568,7 +23684,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "ARAUJO AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23606,7 +23722,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "CIANORTE",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23644,7 +23760,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23684,7 +23800,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23723,7 +23839,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "ARAUJO AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23762,7 +23878,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -23800,7 +23916,7 @@
     "us": "669,949",
     "us_num": 669.949,
     "prazo": "20/10/2026",
-    "prazo_alerta": "ok",
+    "prazo_alerta": "alerta",
     "local": "AZEVEDO",
     "custo": "R$43.203,36",
     "status": "Pendente",
@@ -24478,5 +24594,274 @@
         "ae": "087904"
       }
     ]
+  },
+  {
+    "projeto": "1729831",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "18.06.2027",
+    "prazo_alerta": "ok",
+    "local": "CANTELLI AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1729831 01.20264496342596 - AVELINO ANTONIO DA ROCHA NETO 04-01-2027",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20264496342596 FICHA.pdf",
+      "01.20264496342596 RELACAO DE MATERIAIS.pdf",
+      "1729831- AVELINO ANTONIO DA ROCHA NETO.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1739806",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "14.08.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1739806 01.20265051844179 - GRASIELI PEREIRA DE PAULA 06-11-2026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265051844179 FICHA.pdf",
+      "01.20265051844179 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1739806.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1739818",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "24.08.2026",
+    "prazo_alerta": "vencido",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1739818 01.20265182300845 - CONSELHO DE DESENVOLVIMENTO COMUNITARIO DO DISTRITO DE SAO LOURENCO 09-11-2026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265182300845 FICHA.pdf",
+      "01.20265182300845 RELACAO DE MATERIAIS.pdf",
+      "PROJETO 1739818.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1741044",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "R$10.090,61",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1741044 01.20265224786670 - L C MORI EMBALAGENS LTDA 03-11-2026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265224786670 FICHA.pdf",
+      "01.20265224786670 RELACAO DE MATERIAIS.pdf",
+      "20265224786670 CONTRATO ASSINADO.pdf",
+      "Projeto 1741044 - L C Mori.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1741045",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "AZEVEDO",
+    "custo": "R$0,00",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1741045 01.20265225151470 - KARINA RENATA MOREIRA MAZER 07-01-2027",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265225151470 FICHA.pdf",
+      "01.20265225151470 RELACAO DE MATERIAIS.pdf",
+      "20265225151470 CONTRATO ASSINADO.pdf",
+      "Projeto 1741045 - Karina Renata.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1741586",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "30.09.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1741586 01.20265320955652 - ADEMIR PAULINO FERRARINI 09-11-2026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265320955652 FICHA.pdf",
+      "01.20265320955652 RELACAO DE MATERIAIS.pdf",
+      "1741586_ADEMIR PAULINO FERRARINI.pdf",
+      "20265320955652 CONTRATO ASSINADO.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1743091",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "03.02.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1743091 01.20265320460766 - KAUANI RAMOS THE - falta projeto Ticiano 09-11-2026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265320460766 FICHA.pdf",
+      "01.20265320460766 relacao de materiais.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1743095",
+    "ae": "",
+    "us": "",
+    "us_num": 0.0,
+    "prazo": "31.12.2027",
+    "prazo_alerta": "ok",
+    "local": "AZEVEDO",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1743095 01.20265373231459 - MARIA ANTONIA DA SILVA 12-11-2026",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "01.20265373231459 ficha.pdf",
+      "01.20265373231459 relacao de materiais.pdf",
+      "PROJETO 1743095.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
+  },
+  {
+    "projeto": "1744409",
+    "ae": "",
+    "us": "91,340",
+    "us_num": 91.34,
+    "prazo": "",
+    "prazo_alerta": "",
+    "local": "NOVA TEBAS",
+    "custo": "",
+    "status": "Pendente",
+    "executado": false,
+    "arquivo_ae": "",
+    "pasta_projeto": "1744409 (1706447) TK NOVA TEBAS",
+    "pasta_projeto_url": "",
+    "pdfs_projeto": [
+      "1706447_FL1.pdf",
+      "1706447_FL2.pdf",
+      "1706447_FL3.pdf",
+      "1706447_FL4.pdf",
+      "1706447_FL5.pdf",
+      "1706447_FL6.pdf",
+      "1706447_FL7.pdf",
+      "LM_DETAL_1706447.pdf",
+      "LM_GERAL_1706447.pdf"
+    ],
+    "bmds": [],
+    "ffos": [],
+    "medicao1": "",
+    "medicao2": "",
+    "final": "",
+    "origem": [
+      "pasta"
+    ],
+    "avisos": []
   }
 ]
