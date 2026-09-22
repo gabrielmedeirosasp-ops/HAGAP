@@ -1462,6 +1462,34 @@ function exportCroqui(){
 
 
 
+</body></html>`;
+ let croquiName='CROQUI_HAGAP_'+(el('admProject').value||'PROJETO').replace(/[^\w.-]+/g,'_')+'_'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+ try{
+   let hist=JSON.parse(localStorage.getItem('HAGAP_CROQUIS_V3')||'[]');
+   hist.unshift({id:Date.now(),name:croquiName,project:el('admProject').value||'',created_at:new Date().toISOString(),html:doc});
+   hist=hist.slice(0,10);
+   localStorage.setItem('HAGAP_CROQUIS_V3',JSON.stringify(hist));
+ }catch(e){}
+ if(window.renderCroquiHistoryV3)window.renderCroquiHistoryV3();
+ download(croquiName+'.html',doc,'text/html');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ ac=el('admCanvas');actx=ac.getContext('2d');
+ el('admFab').onclick=()=>el('admPanel').classList.add('open');el('admClose').onclick=()=>el('admPanel').classList.remove('open');
+ el('admEditMode').onclick=()=>setMode('edit');el('admConsultMode').onclick=()=>setMode('consult');
+ el('admSavePoint').onclick=savePoint;el('admDeletePoint').onclick=deletePoint;el('admSaveProject').onclick=saveLocal;el('admExportJSON').onclick=exportJSON;
+ el('admImportJSON').onclick=()=>el('admFile').click();el('admFile').onchange=e=>{if(e.target.files[0])importJSON(e.target.files[0])};
+ el('admExportCroqui').onclick=exportCroqui;
+ el('admProject').onchange=()=>A.project=el('admProject').value.trim();
+ canvas.addEventListener('click',captureAt,true);
+ try{let s=JSON.parse(localStorage.getItem('HAGAP_ADM_V1')||'null');if(s&&Array.isArray(s.points)){A.points=s.points;A.project=s.project||'';el('admProject').value=A.project}}catch(e){}
+ renderList();setMode('consult');drawADM();
+});
+const _admRender=render;render=function(){_admRender();requestAnimationFrame(drawADM)}
+window.addEventListener('resize',()=>requestAnimationFrame(drawADM));
+})();
+</script>
+
 <!-- V37 MOBILE INPUT + TAP PATCH: additive; desktop V36 preserved -->
 <style id="v37-mobile-fix-css">
 @media (max-width:900px),(pointer:coarse){
@@ -1663,33 +1691,7 @@ function exportCroqui(){
 })();
 </script>
 
-</body></html>`;
- let croquiName='CROQUI_HAGAP_'+(el('admProject').value||'PROJETO').replace(/[^\w.-]+/g,'_')+'_'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
- try{
-   let hist=JSON.parse(localStorage.getItem('HAGAP_CROQUIS_V3')||'[]');
-   hist.unshift({id:Date.now(),name:croquiName,project:el('admProject').value||'',created_at:new Date().toISOString(),html:doc});
-   hist=hist.slice(0,10);
-   localStorage.setItem('HAGAP_CROQUIS_V3',JSON.stringify(hist));
- }catch(e){}
- if(window.renderCroquiHistoryV3)window.renderCroquiHistoryV3();
- download(croquiName+'.html',doc,'text/html');
-}
-document.addEventListener('DOMContentLoaded',()=>{
- ac=el('admCanvas');actx=ac.getContext('2d');
- el('admFab').onclick=()=>el('admPanel').classList.add('open');el('admClose').onclick=()=>el('admPanel').classList.remove('open');
- el('admEditMode').onclick=()=>setMode('edit');el('admConsultMode').onclick=()=>setMode('consult');
- el('admSavePoint').onclick=savePoint;el('admDeletePoint').onclick=deletePoint;el('admSaveProject').onclick=saveLocal;el('admExportJSON').onclick=exportJSON;
- el('admImportJSON').onclick=()=>el('admFile').click();el('admFile').onchange=e=>{if(e.target.files[0])importJSON(e.target.files[0])};
- el('admExportCroqui').onclick=exportCroqui;
- el('admProject').onchange=()=>A.project=el('admProject').value.trim();
- canvas.addEventListener('click',captureAt,true);
- try{let s=JSON.parse(localStorage.getItem('HAGAP_ADM_V1')||'null');if(s&&Array.isArray(s.points)){A.points=s.points;A.project=s.project||'';el('admProject').value=A.project}}catch(e){}
- renderList();setMode('consult');drawADM();
-});
-const _admRender=render;render=function(){_admRender();requestAnimationFrame(drawADM)}
-window.addEventListener('resize',()=>requestAnimationFrame(drawADM));
-})();
-</script>
+
 
 
 <script id="hagap-v5-patch">
