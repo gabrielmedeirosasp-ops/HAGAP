@@ -914,11 +914,21 @@ body.adm12marking #admPanel12{transform:translateX(105%)!important}body.adm12mar
 </div>
 </div>
 <script>
-</script><script src="/static/mapa/dados/rede_mt.js"></script><script>
-</script><script src="/static/mapa/dados/rede_bt.js"></script><script>
-</script><script src="/static/mapa/dados/pontos_meta.js"></script><script>
-</script><script src="/static/mapa/dados/pontos_base.js"></script><script>
-</script><script src="/static/mapa/dados/equipamentos.js"></script><script>
+</script><script>
+</script><script>
+</script><script>
+</script><script>
+</script><script src="/static/mapa/dados/rede_mt_01.js"></script>
+<script src="/static/mapa/dados/rede_mt_02.js"></script>
+<script src="/static/mapa/dados/rede_mt_03.js"></script>
+<script src="/static/mapa/dados/rede_bt_01.js"></script>
+<script src="/static/mapa/dados/rede_bt_02.js"></script>
+<script src="/static/mapa/dados/pontos_meta.js"></script>
+<script src="/static/mapa/dados/pontos_base_01.js"></script>
+<script src="/static/mapa/dados/pontos_base_02.js"></script>
+<script src="/static/mapa/dados/pontos_base_03.js"></script>
+<script src="/static/mapa/dados/equipamentos_01.js"></script>
+<script>
 const map=document.getElementById('map'), tiles=document.getElementById('tiles'), canvas=document.getElementById('points'),ctx=canvas.getContext('2d'), condCanvas=document.getElementById('conductors'),condCtx=condCanvas.getContext('2d');
 let center={lat:-24.7,lon:-51.5}, zoom=7, base='sat', raw=null, ints=null, ready=false, dragging=false,last={x:0,y:0}, lastDrawn=[], equipReady=false, equip=[], equipGrid=new Map(), lastEquipDrawn=[];
 const MAXZ=18,MINZ=6;
@@ -1590,6 +1600,131 @@ function exportCroqui(){
     behavior; only focus text controls. No manual checkbox inversion is done here to avoid
     double toggles.
   */
+})();
+</script>
+
+
+<!-- HAGAP V39 - CORRECAO EXATA DA GAVETA #v24Drawer NO CELULAR -->
+<style id="hagap-v39-v24drawer-css">
+@media (max-width:760px), (pointer:coarse){
+  #v24Drawer,#v24DrawerContent,#v24DrawerContent aside{
+    pointer-events:auto!important;
+    touch-action:pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+  }
+  #v24Drawer input,#v24Drawer textarea,#v24Drawer select,#v24Drawer button,#v24Drawer label,#v24Drawer a{
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+  }
+  #v24Drawer input[type="text"],#v24Drawer input[type="search"],#v24Drawer textarea{
+    user-select:text!important;
+    -webkit-user-select:text!important;
+  }
+  #v24Drawer input[type="checkbox"],#v24Drawer input[type="radio"]{
+    min-width:22px!important;min-height:22px!important;
+  }
+}
+</style>
+<script id="hagap-v39-v24drawer-js">
+(function(){
+  'use strict';
+  function install(){
+    var drawer=document.getElementById('v24Drawer');
+    if(!drawer || drawer.dataset.v39Installed==='1') return;
+    drawer.dataset.v39Installed='1';
+
+    /* Impede a gaveta CAMADAS de comandar o mapa. Nao usa preventDefault:
+       teclado, checkbox, select, botoes e rolagem continuam nativos. */
+    ['touchstart','touchmove','touchend','touchcancel',
+     'pointerdown','pointermove','pointerup','pointercancel',
+     'mousedown','mousemove','mouseup','wheel'].forEach(function(type){
+      drawer.addEventListener(type,function(e){ e.stopPropagation(); },{passive:true});
+    });
+
+    /* Foco explicito SOMENTE nos campos dentro de CAMADAS. */
+    drawer.addEventListener('touchend',function(e){
+      var el=e.target;
+      if(el && el.matches && el.matches('input[type="text"],input[type="search"],input:not([type]),textarea')){
+        setTimeout(function(){
+          try{ el.focus({preventScroll:false}); }
+          catch(_){ try{el.focus();}catch(__){} }
+        },0);
+      }
+    },{passive:true});
+  }
+
+  function waitDrawer(){
+    install();
+    if(!document.getElementById('v24Drawer')) setTimeout(waitDrawer,150);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',waitDrawer);
+  else waitDrawer();
+})();
+</script>
+
+
+<!-- V44 — MOBILE: UMA ÚNICA BUSCA, A BUSCA GERAL DENTRO DE CAMADAS -->
+<style id="hagap-v44-one-mobile-search">
+@media (max-width:760px), (pointer:coarse){
+  /* Remove definitivamente a barra/mini busca duplicada do topo no celular,
+     inclusive durante o carregamento. */
+  #mobileTopBar,
+  #mobileSearchWrap,
+  #mobileSearch,
+  #mobileSearchBtn,
+  #mobileMenuBtn{
+    display:none!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+}
+</style>
+<script id="hagap-v44-one-mobile-search-js">
+(function(){
+  'use strict';
+
+  function install(){
+    var drawer=document.getElementById('v24Drawer');
+    var input=document.getElementById('search');
+    var button=document.getElementById('searchBtn');
+
+    if(!drawer || !input || !button){
+      setTimeout(install,150);
+      return;
+    }
+    if(button.dataset.v44Installed==='1') return;
+    button.dataset.v44Installed='1';
+
+    /*
+      Não cria busca nova.
+      Não redireciona para botão oculto.
+      Não fecha CAMADAS.
+      #searchBtn mantém exatamente o onclick original: searchAll().
+    */
+
+    /* No mobile, impedir que touch do botão atravesse a gaveta e alcance o mapa,
+       sem cancelar o click nativo do próprio botão. */
+    ['touchstart','touchend','pointerdown','pointerup'].forEach(function(type){
+      button.addEventListener(type,function(e){
+        e.stopPropagation();
+      },{passive:true});
+    });
+
+    /* O mesmo para o campo de busca, preservando foco/teclado/Enter nativos. */
+    ['touchstart','touchend','pointerdown','pointerup'].forEach(function(type){
+      input.addEventListener(type,function(e){
+        e.stopPropagation();
+      },{passive:true});
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',install);
+  }else{
+    install();
+  }
 })();
 </script>
 
