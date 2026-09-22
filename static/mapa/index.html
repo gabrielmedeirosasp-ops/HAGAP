@@ -635,13 +635,6 @@ body{padding:0!important;background:#061a2b!important}
 body.adm12marking #admPanel12{transform:translateX(105%)!important}body.adm12marking #admFab{display:none!important}
 }
 </style>
-
-<style id="hagap-v46-hide-duplicate-search-early">
-@media (max-width:760px), (pointer:coarse){
-  html body #mobileTopBar{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
-}
-</style>
-
 </head>
 <body>
 
@@ -1481,8 +1474,9 @@ function exportCroqui(){
 (function(){
  'use strict';
  const isControl=e=>e&&e.closest&&e.closest('input,textarea,select,button,a,[contenteditable="true"]');
- /* V46: removido interceptador global CAPTURE dos controles.
-    Ele impedia o evento de chegar ao input/checkbox/botão no mobile. */
+ ['touchstart','touchmove','touchend','pointerdown','pointerup'].forEach(type=>{
+   document.addEventListener(type,function(ev){const c=isControl(ev.target);if(c)ev.stopPropagation();},true);
+ });
  document.addEventListener('touchend',function(ev){
    const c=isControl(ev.target);
    if(c&&c.matches('input,textarea,[contenteditable="true"]'))setTimeout(()=>{try{c.focus();}catch(_){}},0);
@@ -1579,9 +1573,15 @@ function exportCroqui(){
     stop touch/pointer events from bubbling from CAMADAS to the map.
     Do NOT preventDefault: native checkbox toggling and virtual keyboard must remain available.
   */
-  /* V46: removido interceptador global CAPTURE da área CAMADAS.
-     Os controles voltam a receber eventos nativos do navegador.
-     A contenção local da gaveta #v24Drawer (V39) permanece. */
+  ['touchstart','touchmove','touchend','touchcancel',
+   'pointerdown','pointermove','pointerup','pointercancel',
+   'mousedown','mousemove','mouseup','click'].forEach(function(type){
+    document.addEventListener(type, function(e){
+      var root = layersRoot(e.target);
+      if(!root) return;
+      e.stopPropagation();
+    }, true);
+  });
 
   /* Explicit focus for mobile text/search fields without synthetic mouse events. */
   document.addEventListener('touchend', function(e){
@@ -1662,17 +1662,6 @@ function exportCroqui(){
   else waitDrawer();
 })();
 </script>
-
-
-<style id="hagap-v46-mobile-final">
-@media (max-width:760px), (pointer:coarse){
-  html body #mobileTopBar{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
-  #v24Drawer,#v24DrawerContent,#v24DrawerContent aside{pointer-events:auto!important;}
-  #v24Drawer input,#v24Drawer textarea,#v24Drawer select,#v24Drawer button,#v24Drawer label{
-    pointer-events:auto!important;
-  }
-}
-</style>
 
 </body></html>`;
  let croquiName='CROQUI_HAGAP_'+(el('admProject').value||'PROJETO').replace(/[^\w.-]+/g,'_')+'_'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
