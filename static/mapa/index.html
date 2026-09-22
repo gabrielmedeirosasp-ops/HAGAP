@@ -1502,13 +1502,9 @@ window.addEventListener('resize',()=>requestAnimationFrame(drawADM));
 (function(){
  'use strict';
  const isControl=e=>e&&e.closest&&e.closest('input,textarea,select,button,a,[contenteditable="true"]');
- ['touchstart','touchmove','touchend','pointerdown','pointerup'].forEach(type=>{
-   document.addEventListener(type,function(ev){const c=isControl(ev.target);if(c)ev.stopPropagation();},true);
- });
- document.addEventListener('touchend',function(ev){
-   const c=isControl(ev.target);
-   if(c&&c.matches('input,textarea,[contenteditable="true"]'))setTimeout(()=>{try{c.focus();}catch(_){}},0);
- },true);
+ /* V47: não interromper eventos de controles na fase CAPTURE do document.
+    Isso impedia o toque/clique de chegar ao próprio botão, checkbox e campo no mobile.
+    A gaveta CAMADAS já isola os eventos localmente no V39, sem bloquear o alvo. */
  const map=document.getElementById('map'), canvas=document.getElementById('canvas')||document.querySelector('#map canvas');
  if(!map)return;
  let tap=null;
@@ -1601,27 +1597,10 @@ window.addEventListener('resize',()=>requestAnimationFrame(drawADM));
     stop touch/pointer events from bubbling from CAMADAS to the map.
     Do NOT preventDefault: native checkbox toggling and virtual keyboard must remain available.
   */
-  ['touchstart','touchmove','touchend','touchcancel',
-   'pointerdown','pointermove','pointerup','pointercancel',
-   'mousedown','mousemove','mouseup','click'].forEach(function(type){
-    document.addEventListener(type, function(e){
-      var root = layersRoot(e.target);
-      if(!root) return;
-      e.stopPropagation();
-    }, true);
-  });
-
-  /* Explicit focus for mobile text/search fields without synthetic mouse events. */
-  document.addEventListener('touchend', function(e){
-    if(!layersRoot(e.target)) return;
-    var el = e.target;
-    if(editable(el)){
-      setTimeout(function(){
-        try { el.focus({preventScroll:false}); }
-        catch(_) { try { el.focus(); } catch(__){} }
-      }, 0);
-    }
-  }, true);
+  /* V47: removido o bloqueio GLOBAL em capture do V38.
+     O stopPropagation no document acontecia antes de o evento chegar ao controle,
+     quebrando busca, checkboxes e botões no modo mobile. A contenção correta fica
+     restrita à gaveta #v24Drawer no V39, em fase local/bubble, sem preventDefault. */
 
   /*
     Some layouts use styled labels over checkboxes. Keep the browser's native label/checkbox
@@ -2830,6 +2809,51 @@ map.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null},{passive:t
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
+})();
+</script>
+
+<!-- V47 MOBILE SEARCH / CAMADAS - correção mínima sobre a base funcional -->
+<script id="hagap-v47-mobile-search-fix">
+(function(){
+  'use strict';
+  function initV47(){
+    if(!window.matchMedia('(max-width:760px),(pointer:coarse)').matches) return;
+    var ms=document.getElementById('mobileSearch');
+    var mb=document.getElementById('mobileSearchBtn');
+    var ds=document.getElementById('search');
+    var db=document.getElementById('searchBtn');
+
+    function runSearchV47(ev){
+      if(ev){ try{ev.preventDefault();}catch(_){} }
+      if(ms && ds) ds.value=ms.value;
+      try{
+        if(typeof searchAll==='function') searchAll();
+        else if(db) db.click();
+      }catch(err){ console.error('V47 mobile search:',err); }
+    }
+
+    if(ms){
+      ms.setAttribute('inputmode','search');
+      ms.setAttribute('enterkeyhint','search');
+      ms.addEventListener('keydown',function(e){
+        if(e.key==='Enter'){ e.preventDefault(); runSearchV47(); }
+      },false);
+    }
+    if(mb){
+      mb.setAttribute('type','button');
+      mb.addEventListener('click',runSearchV47,false);
+    }
+
+    var drawer=document.getElementById('v24Drawer');
+    if(drawer){
+      drawer.style.touchAction='pan-y';
+      drawer.querySelectorAll('input,textarea,select,button,label,a').forEach(function(el){
+        el.style.pointerEvents='auto';
+      });
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(initV47,0);});
+  else setTimeout(initV47,0);
 })();
 </script>
 
