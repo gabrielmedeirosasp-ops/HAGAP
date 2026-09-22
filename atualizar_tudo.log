@@ -583,3 +583,10 @@
 [16:37:33] PASSO 3/3 — Gerador + Sync Render
 [16:37:33]   Gera db.json + resultado.xlsx e sincroniza com o Render
 [16:37:33]   ▶ Executando: gerador.py
+[18:47:08]   ✅ Concluído em 7774.9s
+[18:47:08]   RESUMO FINAL
+[18:47:08]   Passo 1 — Leitor BMD                     ✅ OK     
+[18:47:08]   Passo 2 — Extrair BMD                    ✅ OK     
+[18:47:08]   Passo 3 — Gerador + Sync Render          ✅ OK     
+[18:47:08]   Tempo total: 8152.6s
+[18:47:08]   🎉 Tudo atualizado com sucesso!
