@@ -3116,3 +3116,62 @@ function bind(){
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',bind):bind();
 })();
 </script>
+
+<!-- V48 MOBILE SEARCH RESULT FIX — não altera searchAll nem dados -->
+<script id="hagap-v48-mobile-search-result-fix">
+(function(){
+  'use strict';
+  const mobile=()=>window.matchMedia('(max-width:760px),(pointer:coarse)').matches;
+  let searchUntil=0;
+
+  function revealSearchResult(){
+    if(!mobile()) return;
+    document.body.classList.remove('v24-layers');
+    const sh=document.getElementById('mobileInfoSheet');
+    if(!sh) return;
+    /* O V19 gravava display:none!important inline no sheet durante o load.
+       Remover apenas essa trava devolve o controle ao CSS .open do próprio app. */
+    sh.style.removeProperty('display');
+    sh.style.removeProperty('visibility');
+    sh.style.removeProperty('opacity');
+    sh.classList.add('open');
+  }
+
+  function markMobileSearch(){
+    if(!mobile()) return;
+    searchUntil=Date.now()+2500;
+    document.body.classList.remove('v24-layers');
+    setTimeout(revealSearchResult,0);
+    setTimeout(revealSearchResult,40);
+    setTimeout(revealSearchResult,120);
+  }
+
+  function install(){
+    /* Não substitui handlers existentes: apenas identifica quando a pesquisa mobile começou. */
+    document.addEventListener('click',function(e){
+      const t=e.target && e.target.closest ? e.target.closest('#searchBtn,#mobileSearchBtn') : null;
+      if(t) markMobileSearch();
+    },true);
+
+    document.addEventListener('keydown',function(e){
+      if(e.key!=='Enter') return;
+      const t=e.target;
+      if(t && (t.id==='search' || t.id==='mobileSearch')) markMobileSearch();
+    },true);
+
+    /* Reaproveita a mesma showInfo já funcional no PC.
+       No mobile, durante uma pesquisa, apenas torna o sheet visível. */
+    if(typeof showInfo==='function'){
+      const previousShowInfo=showInfo;
+      showInfo=function(content,cls){
+        previousShowInfo(content,cls);
+        if(mobile() && Date.now()<=searchUntil) revealSearchResult();
+      };
+    }
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install);
+  else install();
+})();
+</script>
+
