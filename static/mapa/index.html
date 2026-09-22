@@ -3175,3 +3175,47 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',bin
 })();
 </script>
 
+<!-- V49 MOBILE ONLY — mantém resultado da busca visível após resize do teclado -->
+<script id="hagap-v49-mobile-search-stable">
+(function(){
+  'use strict';
+  function isMobile(){
+    return window.matchMedia('(max-width:760px),(pointer:coarse)').matches;
+  }
+  function protectSheet(){
+    if(!isMobile()) return;
+    var sh=document.getElementById('mobileInfoSheet');
+    if(!sh || sh.dataset.v49Protected==='1') return;
+    sh.dataset.v49Protected='1';
+
+    function restoreIfOpen(){
+      if(!isMobile() || !sh.classList.contains('open')) return;
+      if(sh.style.getPropertyValue('display')==='none') sh.style.removeProperty('display');
+      if(sh.style.getPropertyValue('visibility')==='hidden') sh.style.removeProperty('visibility');
+      if(sh.style.getPropertyValue('opacity')==='0') sh.style.removeProperty('opacity');
+    }
+
+    /* O patch legado chama clean() em resize/orientation, inclusive quando o teclado
+       do celular fecha, e grava display:none!important no resultado. Este observador
+       apenas remove essa trava quando o próprio resultado está em estado .open. */
+    var obs=new MutationObserver(function(){ restoreIfOpen(); });
+    obs.observe(sh,{attributes:true,attributeFilter:['style','class']});
+
+    window.addEventListener('resize',function(){
+      setTimeout(restoreIfOpen,0);
+      setTimeout(restoreIfOpen,100);
+      setTimeout(restoreIfOpen,250);
+    },{passive:true});
+    window.addEventListener('orientationchange',function(){
+      setTimeout(restoreIfOpen,0);
+      setTimeout(restoreIfOpen,300);
+    },{passive:true});
+
+    restoreIfOpen();
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',protectSheet);
+  else protectSheet();
+})();
+</script>
+
