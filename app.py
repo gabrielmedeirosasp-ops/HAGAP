@@ -2947,6 +2947,12 @@ def api_chaves_reset():
 def mapa_copel_hagap_v36():
     return send_from_directory(os.path.join(app.static_folder, 'mapa'), 'index.html')
 
+
+# ─── HAGAP GPS CAMPO — módulo independente ───
+@app.route("/gps")
+def gps_campo():
+    return send_from_directory("templates", "gps.html")
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
