@@ -478,6 +478,11 @@ def index():
 def boletim():
     return send_from_directory("templates", "boletim.html")
 
+# ─── BDO NS — módulo independente; não altera /boletim ───
+@app.route("/bdonds")
+def bdonds():
+    return send_from_directory("templates", "bdonds.html")
+
 # ───────────────────────────────────────────────────────────────────
 #  MAT — Malha de Aterramento
 # ───────────────────────────────────────────────────────────────────

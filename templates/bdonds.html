@@ -1,0 +1,1604 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDO — Boletim Diário de Obras | HAGAP</title>
+<style>
+:root{
+  --navy:#061539;--navy2:#0a2557;--blue:#1565c0;
+  --yellow:#f5c518;--yellow2:#e6b800;--orange:#e67e22;
+  --bg:#f0f3f9;--border:#d0d8ec;
+  --text:#0d1b3e;--muted:#4a5a7a;
+  --success:#1a7a3c;--danger:#c0392b;--warning:#c07000;--ps:#7b2ff7;
+  --white:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--text);}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;position:sticky;top:0;z-index:100;box-shadow:0 3px 16px rgba(0,0,0,.4);}
+.topbar-border{height:4px;background:linear-gradient(90deg,var(--yellow),var(--orange),var(--yellow));}
+.topbar-inner{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.topbar-logo{display:flex;align-items:center;gap:12px;}
+.topbar-mark{height:58px;width:142px;background:white;border-radius:8px;padding:0;box-shadow:0 2px 10px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.topbar-mark img{display:block;width:100%;height:100%;object-fit:cover;}
+.topbar-title h1{font-size:15px;font-weight:800;line-height:1.2;color:white;}
+.topbar-title span{font-size:10px;opacity:.65;font-weight:400;display:block;color:var(--yellow);}
+.topbar-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.prog-wrap{max-width:900px;margin:0 auto;padding:0 16px 6px;}
+.prog-bar{height:3px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--orange));border-radius:4px;transition:width .4s;width:0%;}
+
+/* ── BOTÕES ── */
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;transition:all .18s;display:inline-flex;align-items:center;gap:5px;letter-spacing:.2px;}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08);}
+.btn:active{transform:translateY(0);}
+.btn-yellow{background:var(--yellow);color:var(--navy);}
+.btn-primary{background:var(--blue);color:white;}
+.btn-success{background:var(--success);color:white;}
+.btn-whats{background:#25d366;color:white;}
+.btn-danger{background:var(--danger);color:white;}
+.btn-outline{background:white;color:var(--navy2);border:1.5px solid var(--border);}
+.btn-ghost{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);}
+.btn-sm{padding:6px 12px;font-size:11px;}
+.btn-lg{padding:12px 22px;font-size:14px;}
+.btn-icon{font-size:16px;}
+
+/* ── LAYOUT ── */
+.container{max-width:900px;margin:0 auto;padding:18px 14px 90px;}
+
+/* ── STEP INDICATOR ── */
+.step-bar{display:flex;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:18px;}
+.step-item{flex:1;text-align:center;padding:9px 3px;font-size:9.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;}
+.step-item:hover{color:var(--navy2);background:#f5f7ff;}
+.step-item.active{color:var(--navy2);border-bottom-color:var(--yellow);background:#fffef0;}
+.step-item.done{color:var(--success);border-bottom-color:var(--success);}
+.step-item .sn{display:block;font-size:15px;margin-bottom:2px;}
+.step-panel{display:none;}.step-panel.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:12px;overflow:hidden;border:1px solid var(--border);}
+.card-header{padding:10px 16px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;color:white;}
+.card-header.azul{background:linear-gradient(135deg,var(--navy),var(--navy2));}
+.card-header.amarelo{background:linear-gradient(135deg,#7a5000,#c07000);}
+.card-header.roxo{background:linear-gradient(135deg,#4a0e8f,var(--ps));}
+.card-header.status-h{background:linear-gradient(135deg,#1a5276,var(--blue));}
+.card-header.verde{background:linear-gradient(135deg,#0d5c27,var(--success));}
+.card-header .badge{background:var(--yellow);color:var(--navy);border-radius:12px;padding:2px 8px;font-size:10px;margin-left:auto;}
+.card-body{padding:14px 16px;}
+
+/* ── FORMS ── */
+.fg{margin-bottom:10px;}
+.fg label{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px;}
+.fg label .req{color:var(--danger);}
+.fg input,.fg select,.fg textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--text);transition:border .18s,box-shadow .18s;background:white;font-family:inherit;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(10,37,87,.1);}
+.fg textarea{resize:vertical;min-height:80px;}
+.fg input[readonly]{background:#f3f6fb;color:var(--navy2);font-weight:700;cursor:default;}
+.grid{display:grid;gap:10px;}
+.g2{grid-template-columns:1fr 1fr;}
+.g3{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:560px){.g2,.g3{grid-template-columns:1fr;}}
+
+/* ── TOGGLES ── */
+.tg-group{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.tg-opt{flex:1;min-width:90px;border:2px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;background:white;}
+.tg-opt:hover{border-color:var(--navy2);background:#f5f8ff;}
+.tg-opt .ti{font-size:24px;margin-bottom:4px;}
+.tg-opt .tl{font-weight:800;font-size:13px;}
+.tg-opt .td{font-size:10px;color:var(--muted);margin-top:2px;}
+.tg-opt.sel-ok{border-color:var(--success);background:#f0fff4;box-shadow:0 0 0 3px rgba(26,122,60,.12);}
+.tg-opt.sel-warn{border-color:var(--warning);background:#fffbf0;box-shadow:0 0 0 3px rgba(192,112,0,.12);}
+.tg-opt.sel-danger{border-color:var(--danger);background:#fff5f5;box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+.tg-opt.sel-ps{border-color:var(--ps);background:#f5f0ff;box-shadow:0 0 0 3px rgba(123,47,247,.12);}
+.tg-opt.sel-std{border-color:var(--muted);background:#f5f5f5;box-shadow:0 0 0 2px rgba(74,90,122,.1);}
+.tg-opt.sel-yellow{border-color:var(--yellow2);background:#fffef0;box-shadow:0 0 0 3px rgba(230,184,0,.18);}
+.radio-grp{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.radio-opt{border:2px solid var(--border);border-radius:8px;padding:9px 14px;cursor:pointer;font-size:12px;font-weight:700;transition:all .18s;background:white;}
+.radio-opt:hover{border-color:var(--navy2);background:#f5f8ff;}
+.radio-opt.selected{border-color:var(--navy2);background:#eef2ff;color:var(--navy2);}
+
+/* ── SERVIÇOS ── */
+.srv-item{border:1.5px solid var(--border);border-radius:9px;margin-bottom:7px;transition:all .18s;overflow:hidden;background:white;}
+.srv-item:hover{border-color:var(--navy2);}
+.srv-item.checked{border-color:var(--yellow2);background:#fffef4;box-shadow:0 0 0 2px rgba(230,184,0,.15);}
+.srv-top{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+.srv-chk{width:18px;height:18px;accent-color:var(--navy2);cursor:pointer;flex-shrink:0;}
+.srv-lbl{flex:1;font-weight:700;font-size:13px;cursor:pointer;}
+.srv-qty{display:none;padding:0 12px 10px;}
+.srv-qty input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;width:100%;max-width:240px;}
+.srv-item.checked .srv-qty{display:block;}
+.srv-ps-area{display:none;padding:0 12px 10px;gap:6px;flex-wrap:wrap;align-items:center;}
+.srv-item.checked .srv-ps-area{display:flex;}
+.modo-postes-on .srv-ps-area{display:flex!important;}
+
+/* ── CHIPS ── */
+.ps-chip{border:none;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;background:#ede8ff;color:var(--ps);transition:all .18s;}
+.ps-chip:hover{background:#d4c8ff;}
+.ps-chip.geral{background:#e8f4fd;color:#1a5276;}
+.ps-chip .prm{font-size:13px;line-height:1;opacity:.7;}
+.ps-chip .prm:hover{opacity:1;}
+.ps-add-btn{border:1.5px dashed var(--border);background:white;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);}
+.ps-add-btn:hover{border-color:var(--ps);color:var(--ps);background:#f5f0ff;}
+
+/* ── MATERIAIS ── */
+.mat-item{display:flex;align-items:center;gap:7px;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin-bottom:6px;background:white;}
+.mat-item input{border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:12px;font-family:inherit;}
+.mat-desc{flex:1;min-width:0;}
+.mat-qty{width:72px;flex-shrink:0;}
+.mat-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:17px;padding:2px 4px;flex-shrink:0;opacity:.7;}
+.mat-del:hover{opacity:1;}
+.mat-add-btn{border:2px dashed var(--border);background:white;border-radius:8px;padding:9px;width:100%;cursor:pointer;font-size:12px;color:var(--muted);font-weight:700;transition:all .18s;margin-top:4px;}
+.mat-add-btn:hover{border-color:var(--blue);color:var(--blue);background:#f5f7ff;}
+
+/* ── OBS ── */
+.obs-item{border:1.5px solid var(--border);border-radius:9px;padding:10px;margin-bottom:8px;background:white;}
+.obs-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.obs-hd span{flex:1;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;}
+.obs-item textarea{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;min-height:70px;}
+.obs-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:17px;padding:2px 5px;opacity:.7;}
+.obs-del:hover{opacity:1;}
+
+/* ── POSTES PICKER ── */
+.ps-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;}
+.ps-overlay.open{display:block;}
+.ps-picker{position:fixed;bottom:0;left:0;right:0;z-index:301;background:white;border-radius:18px 18px 0 0;padding:20px 16px 36px;box-shadow:0 -4px 30px rgba(0,0,0,.2);transform:translateY(100%);transition:transform .3s ease;max-height:75vh;overflow-y:auto;}
+.ps-picker.open{transform:translateY(0);}
+.ps-handle{width:38px;height:4px;background:#ddd;border-radius:4px;margin:0 auto 12px;}
+.ps-title{font-size:15px;font-weight:800;color:var(--navy2);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.ps-title button{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+.ps-btns{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+.ps-btn{border:2px solid var(--border);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:13px;font-weight:700;background:white;transition:all .18s;}
+.ps-btn:hover{border-color:var(--ps);background:#f5f0ff;}
+.ps-btn-geral{border-color:#b8d9f7;color:#1a5276;background:#e8f4fd;}
+.ps-custom{display:flex;gap:8px;margin-top:8px;}
+.ps-custom input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;}
+.ps-custom button{border:none;border-radius:8px;padding:9px 16px;background:var(--ps);color:white;font-weight:700;cursor:pointer;}
+
+/* ── POSTES CHIPS ── */
+.postes-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.poste-chip{background:#ede8ff;color:var(--ps);border:2px solid #d4c8ff;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;}
+
+/* ── AUTO TEXT ── */
+.auto-text{background:linear-gradient(135deg,#e8f4fd,#f0f5ff);border:1.5px solid #c5d5f8;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--navy2);font-style:italic;display:flex;align-items:center;gap:8px;}
+.auto-text::before{content:'🤖';font-size:16px;flex-shrink:0;}
+
+/* ── ASSINATURA ── */
+.sig-wrapper{border:2px dashed var(--border);border-radius:10px;background:#fafbff;padding:10px;}
+.sig-canvas{display:block;width:100%;height:120px;border-radius:6px;background:white;border:1px solid var(--border);cursor:crosshair;touch-action:none;}
+.sig-ctrls{display:flex;gap:8px;margin-top:6px;align-items:center;}
+
+/* ── NAV ── */
+.nav-btns{display:flex;justify-content:space-between;margin-top:18px;gap:10px;}
+.nav-btns .btn{min-width:110px;justify-content:center;}
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.alert{border-radius:8px;padding:10px 13px;margin-bottom:10px;font-size:12px;display:flex;align-items:center;gap:8px;}
+.alert-info{background:#e8f4fd;border:1px solid #b8d9f7;color:#1a5276;}
+.alert-ps{background:#f5f0ff;border:1px solid #d4c8ff;color:#4a0e8f;}
+.alert-yellow{background:#fffef0;border:1px solid var(--yellow2);color:#7a5500;}
+
+/* ── PRÉVIA BDO ── */
+.bdo-preview{background:white;border-radius:10px;border:2px solid var(--border);overflow:hidden;font-size:12px;line-height:1.6;}
+.bdo-hbar{background:linear-gradient(135deg,#061539,#0a2f7a);color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.bdo-brand{height:54px;width:132px;background:white;border-radius:6px;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.bdo-brand img{display:block;width:100%;height:100%;object-fit:cover;}
+.bdo-hinfo{flex:1;}
+.bdo-hinfo h2{font-size:13px;font-weight:800;margin-bottom:2px;}
+.bdo-hinfo p{font-size:9px;opacity:.75;}
+.bdo-num{font-size:20px;font-weight:900;opacity:.9;text-align:right;white-space:nowrap;color:var(--yellow);}
+.bdo-sec{padding:5px 14px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:white;}
+.bdo-sec.azul{background:#0a2557;}
+.bdo-sec.roxo{background:linear-gradient(90deg,#4a0e8f,var(--ps));}
+.bdo-sec.verde{background:#1a7a3c;}
+.bdo-sec.laranja{background:#c0390b;}
+.bdo-sec.amarelo{background:#c07000;}
+.bdo-row{display:grid;grid-template-columns:1fr 1fr;}
+.bdo-field{padding:6px 14px;border-bottom:1px solid #e8ecf5;}
+.bdo-field:nth-child(odd){border-right:1px solid #e8ecf5;}
+.bdo-field .fl{font-size:8.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:2px;}
+.bdo-field .fv{font-size:11.5px;font-weight:700;}
+.bdo-block{padding:9px 14px;border-bottom:1px solid #e8ecf5;}
+.bdo-block .bl{font-size:8.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.bdo-paragraphs{display:flex;flex-direction:column;gap:8px;}
+.bdo-paragraph{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;}
+.bdo-sig{display:grid;grid-template-columns:1fr 1fr;}
+.bdo-sig-cell{padding:10px;border-right:1px solid #e8ecf5;text-align:center;}
+.bdo-sig-cell:last-child{border-right:none;}
+.bdo-sig-line{border-top:1.5px solid #333;margin:28px 20px 5px;}
+.bdo-sig-name{font-size:10.5px;font-weight:700;}
+.bdo-sig-role{font-size:9.5px;color:var(--muted);}
+.bdo-footer{background:#f0f4fb;padding:5px 14px;font-size:8.5px;color:var(--muted);text-align:center;border-top:1px solid var(--border);}
+.bdo-ybar{height:3px;background:linear-gradient(90deg,var(--yellow),var(--orange));}
+
+/* ── EXPORT PANEL ── */
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+@media(max-width:500px){.export-grid{grid-template-columns:1fr;}}
+.export-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px 12px;border-radius:12px;border:2px solid var(--border);background:white;cursor:pointer;transition:all .2s;font-weight:700;font-size:13px;}
+.export-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.export-btn .eb-icon{font-size:28px;}
+.export-btn.eb-pdf{border-color:var(--blue);color:var(--blue);}
+.export-btn.eb-pdf:hover{background:#f0f4ff;}
+.export-btn.eb-email{border-color:var(--success);color:var(--success);}
+.export-btn.eb-email:hover{background:#f0fff4;}
+.export-btn.eb-whats{border-color:#25d366;color:#1a8c4c;}
+.export-btn.eb-whats:hover{background:#f0fff6;}
+.export-btn.eb-print{border-color:var(--muted);color:var(--muted);}
+.export-btn.eb-print:hover{background:#f5f5f5;}
+
+/* ── MODAL ── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+.modal-ov.open{display:flex;}
+.modal-box{background:white;border-radius:14px;padding:26px;max-width:430px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.25);}
+.modal-icon{font-size:44px;margin-bottom:10px;}
+.modal-box h3{font-size:17px;margin-bottom:7px;color:var(--navy2);}
+.modal-box p{color:var(--muted);font-size:12.5px;margin-bottom:18px;line-height:1.5;}
+.modal-acts{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;}
+.spinner{width:32px;height:32px;border:3px solid #eee;border-top-color:var(--navy2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── MODAL MAT ── */
+.mat-modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;}
+.mat-modal-ov.open{display:flex;}
+.mat-modal-wrap{background:#fff;border-radius:16px;width:95vw;max-width:1100px;height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;}
+.mat-modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(135deg,#1b5e20,#2E7D32);color:#fff;flex-shrink:0;}
+.mat-modal-header h3{margin:0;font-size:15px;display:flex;align-items:center;gap:8px;}
+.mat-modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.mat-modal-close:hover{background:rgba(255,255,255,.35);}
+.mat-modal-iframe{flex:1;border:none;width:100%;}
+.btn-mat{background:#1b5e20;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;margin-left:8px;display:inline-flex;align-items:center;gap:4px;transition:background .2s;}
+.btn-mat:hover{background:#2E7D32;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:20px;padding:12px 20px;border-radius:9px;z-index:999;font-size:12.5px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .28s;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.info{background:var(--navy2);color:white;}
+.toast.success{background:var(--success);color:white;}
+.toast.error{background:var(--danger);color:white;}
+.toast.warn{background:var(--warning);color:white;}
+
+/* ── MISC ── */
+.yellow-line{height:2px;background:linear-gradient(90deg,var(--yellow),var(--orange));border-radius:2px;margin-bottom:14px;}
+.section-tip{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="topbar-border"></div>
+  <div class="topbar-inner">
+    <div class="topbar-logo">
+      <div class="topbar-mark"><img id="logo-topbar" alt="HAGAP Instalações Elétricas"></div>
+      <div class="topbar-title">
+        <h1>BDO — Boletim Diário de Obras</h1>
+        <span>⚡ HAGAP Instalações Elétricas</span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="limparFormulario()">🔄 Limpar</button>
+      <button class="btn btn-ghost btn-sm" onclick="salvarRascunho()">💾 Rascunho</button>
+      <button class="btn btn-yellow btn-sm" onclick="irParaExportar()">📄 Exportar BDO</button>
+      <button class="btn btn-success btn-sm" onclick="abrirModalMAT()">⚡ MAT</button>
+      <button class="btn btn-ghost btn-sm" onclick="window.open('https://hagap.onrender.com/chaves','_blank')">🔑 Chaves</button>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="mainProgress"></div></div>
+  </div>
+</div>
+
+<div class="container" id="main-container">
+
+  <!-- ── STEPS ── -->
+  <div class="step-bar">
+    <div class="step-item active" id="si-1" onclick="goStep(1)"><span class="sn">📋</span>Cabeçalho</div>
+    <div class="step-item" id="si-2" onclick="goStep(2)"><span class="sn">🔑</span>Serviço</div>
+    <div class="step-item" id="si-3" onclick="goStep(3)"><span class="sn">🔌</span>Manobra</div>
+    <div class="step-item" id="si-4" onclick="goStep(4)"><span class="sn">📦</span>Materiais</div>
+    <div class="step-item" id="si-5" onclick="goStep(5)"><span class="sn">🔧</span>Serviços</div>
+    <div class="step-item" id="si-6" onclick="goStep(6)"><span class="sn">📝</span>Obs.</div>
+    <div class="step-item" id="si-7" onclick="goStep(7)"><span class="sn">✍️</span>Assinar</div>
+    <div class="step-item" id="si-8" onclick="irParaExportar()"><span class="sn">📤</span>Exportar</div>
+  </div>
+
+  <!-- ══════════ STEP 1 ══════════ -->
+  <div class="step-panel active" id="step-1">
+    <div class="card">
+      <div class="card-header azul">📋 1. Identificação do BDO <span class="badge">Obrigatório</span></div>
+      <div class="card-body">
+        <div class="grid g2">
+          <div class="fg"><label>Nº do Projeto <span class="req">*</span></label><input type="text" id="num_projeto" placeholder="Ex: PRJ-2026-001" oninput="updateProgress()"></div>
+          <div class="fg"><label>Cidade <span class="req">*</span></label><input type="text" id="cidade" placeholder="Ex: Londrina / PR" oninput="updateProgress()"></div>
+        </div>
+        <div class="grid g3" style="margin-top:4px">
+          <div class="fg"><label>Data <span class="req">*</span></label><input type="date" id="data_bdo" oninput="updateProgress()"></div>
+          <div class="fg"><label>Hora Início</label><input type="time" id="hora_inicio" oninput="atualizarHoras()"></div>
+          <div class="fg"><label>Hora Final</label><input type="time" id="hora_final" oninput="atualizarHoras()"></div>
+        </div>
+        <div class="grid g3" style="margin-top:4px">
+          <div class="fg"><label>Horas trabalhadas</label><input type="text" id="horas_trabalhadas" placeholder="Cálculo automático" readonly></div>
+          <div class="fg"><label>KM Inicial</label><input type="text" id="km_inicial" inputmode="decimal" placeholder="Ex: 125430" oninput="atualizarKm()"></div>
+          <div class="fg"><label>KM Final</label><input type="text" id="km_final" inputmode="decimal" placeholder="Ex: 125512" oninput="atualizarKm()"></div>
+        </div>
+        <div class="fg" style="margin-top:4px"><label>KM percorrido</label><input type="text" id="km_percorrido" placeholder="Cálculo automático" readonly></div>
+        <div class="fg" style="margin-top:4px"><label>Encarregado <span class="req">*</span></label><input type="text" id="encarregado" placeholder="Nome completo do encarregado" oninput="updateProgress()"></div>
+        <input type="hidden" id="equipe" value="">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header azul">👷 Equipes e Apoio</div>
+      <div class="card-body">
+        <div class="grid g2">
+          <div class="fg"><label>Número de equipes</label><input type="number" id="qtd_equipes" min="1" max="20" value="1" oninput="gerarCamposEquipes()"></div>
+          <div class="fg"><label>Total de elementos</label><input type="text" id="total_elementos" placeholder="Cálculo automático" readonly></div>
+        </div>
+        <div class="grid g3" id="equipes-elementos"></div>
+        <div class="divider"></div>
+        <p class="section-tip">Foi utilizado carro de apoio?</p>
+        <div class="tg-group">
+          <div class="tg-opt" id="apoio-sim" onclick="setCarroApoio(true)"><div class="ti">🚙</div><div class="tl" style="color:var(--success)">SIM</div><div class="td">Registrar no boletim</div></div>
+          <div class="tg-opt" id="apoio-nao" onclick="setCarroApoio(false)"><div class="ti">➖</div><div class="tl" style="color:var(--muted)">NÃO</div><div class="td">Não incluir informação</div></div>
+        </div>
+        <div id="apoio-auto-txt" style="display:none;margin-top:12px"><div class="auto-text">Utilizado carro de apoio.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header status-h">📊 Status da Execução <span class="req" style="margin-left:4px">*</span></div>
+      <div class="card-body">
+        <p class="section-tip">Qual foi o resultado desta jornada de trabalho?</p>
+        <div class="tg-group">
+          <div class="tg-opt" id="st-conclusao" onclick="setStatus('conclusao')">
+            <div class="ti">✅</div><div class="tl" style="color:var(--success)">CONCLUSÃO</div><div class="td">Serviço concluído</div>
+          </div>
+          <div class="tg-opt" id="st-parcial" onclick="setStatus('parcial')">
+            <div class="ti">🔄</div><div class="tl" style="color:var(--warning)">PARCIAL</div><div class="td">Execução parcial</div>
+          </div>
+          <div class="tg-opt" id="st-cancelamento" onclick="setStatus('cancelamento')">
+            <div class="ti">❌</div><div class="tl" style="color:var(--danger)">CANCELAMENTO</div><div class="td">Serviço cancelado</div>
+          </div>
+        </div>
+        <div id="status-motivo" style="display:none;margin-top:12px">
+          <div class="fg"><label id="status-motivo-label">Motivo</label>
+            <textarea id="status_motivo_txt" placeholder="Descreva o motivo..." rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header roxo">🏗️ Agrupamento por Poste <span class="badge" style="background:rgba(255,255,255,.2);color:white">Opcional</span></div>
+      <div class="card-body">
+        <p class="section-tip">Ative para organizar serviços, materiais e observações por poste (PS).</p>
+        <div class="tg-group">
+          <div class="tg-opt sel-std" id="ps-nao" onclick="setModoPostes(false)">
+            <div class="ti">📄</div><div class="tl" style="color:var(--muted)">PADRÃO</div><div class="td">Sem agrupamento</div>
+          </div>
+          <div class="tg-opt" id="ps-sim" onclick="setModoPostes(true)">
+            <div class="ti">🏗️</div><div class="tl" style="color:var(--ps)">POR POSTE</div><div class="td">Agrupar por PS</div>
+          </div>
+        </div>
+        <div id="postes-config" style="display:none;margin-top:14px">
+          <div class="grid g2">
+            <div class="fg"><label>Quantidade de postes</label>
+              <input type="number" id="qtd_postes" min="1" max="50" placeholder="Ex: 3" oninput="gerarListaPostes()">
+            </div>
+          </div>
+          <div id="postes-chips-wrap" style="display:none;margin-top:8px">
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:5px">Postes gerados:</div>
+            <div class="postes-chips" id="postes-chips"></div>
+            <p style="font-size:11px;color:var(--muted);margin-top:6px">💡 Você pode adicionar postes extras ao vincular os itens.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns"><div></div><button class="btn btn-primary" onclick="goStep(2)">Próximo →</button></div>
+  </div>
+
+  <!-- ══════════ STEP 2 ══════════ -->
+  <div class="step-panel" id="step-2">
+    <div class="card">
+      <div class="card-header azul">🔑 2. Serviço Livre</div>
+      <div class="card-body">
+        <p class="section-tip">Trata-se de serviço livre? <strong><span class="req">*</span></strong></p>
+        <div class="tg-group">
+          <div class="tg-opt" id="sl-sim" onclick="setServicoLivre(true)"><div class="ti">✅</div><div class="tl" style="color:var(--success)">SIM</div><div class="td">Serviço livre</div></div>
+          <div class="tg-opt" id="sl-nao" onclick="setServicoLivre(false)"><div class="ti">📋</div><div class="tl" style="color:var(--navy2)">NÃO</div><div class="td">Preencher OMB / PLV</div></div>
+        </div>
+        <div id="campos-omb-plv" style="display:none;margin-top:14px">
+          <div class="grid g2">
+            <div class="fg"><label>Nº OMB <span class="req">*</span></label><input type="text" id="num_omb" placeholder="Número da OMB"></div>
+            <div class="fg"><label>Nº PLV <span class="req">*</span></label><input type="text" id="num_plv" placeholder="Número do PLV"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goStep(1)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 3 ══════════ -->
+  <div class="step-panel" id="step-3">
+    <div class="card">
+      <div class="card-header azul">🔌 3. Manobra</div>
+      <div class="card-body">
+        <p class="section-tip">Manobra executada pela equipe? <strong><span class="req">*</span></strong></p>
+        <div class="tg-group">
+          <div class="tg-opt" id="man-sim" onclick="setManobra('equipe')"><div class="ti">👷</div><div class="tl" style="color:var(--success)">SIM</div><div class="td">Pela equipe</div></div>
+          <div class="tg-opt" id="man-nao" onclick="setManobra('outras')"><div class="ti">🔄</div><div class="tl" style="color:var(--navy2)">NÃO</div><div class="td">Outra equipe</div></div>
+          <div class="tg-opt" id="man-sem" onclick="setManobra('sem')"><div class="ti">⛔</div><div class="tl" style="color:var(--warning)">SEM</div><div class="td">Sem manobra</div></div>
+        </div>
+        <div id="manobra-outras" style="display:none;margin-top:14px">
+          <div class="radio-grp">
+            <div class="radio-opt" id="man-copel" onclick="setManobraExt('copel')">🏢 Agência COPEL</div>
+            <div class="radio-opt" id="man-hagap" onclick="setManobraExt('hagap')">⚡ Linha Viva HAGAP</div>
+          </div>
+        </div>
+        <div id="manobra-qtd-chaves" style="display:none;margin-top:14px">
+          <div class="fg"><label>Quantidade de chaves manobradas <span class="req">*</span></label>
+            <input type="number" id="qtd_chaves_manobra" min="1" step="1" placeholder="Ex: 3" oninput="showManobraAutoText()">
+          </div>
+        </div>
+        <div id="manobra-auto-txt" style="display:none;margin-top:12px"></div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goStep(2)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 4 ══════════ -->
+  <div class="step-panel" id="step-4">
+    <div class="card">
+      <div class="card-header azul">🔩 4. Alterações de Projeto</div>
+      <div class="card-body">
+        <p class="section-tip">Houve alguma alteração em relação ao projeto?</p>
+        <div class="tg-group">
+          <div class="tg-opt" id="alt-nao" onclick="setAlteracoes(false)"><div class="ti">✅</div><div class="tl" style="color:var(--success)">NÃO</div><div class="td">Conforme projeto</div></div>
+          <div class="tg-opt" id="alt-sim" onclick="setAlteracoes(true)"><div class="ti">📝</div><div class="tl" style="color:var(--warning)">SIM</div><div class="td">Descrever alteração</div></div>
+        </div>
+        <div id="alt-auto-txt" style="display:none;margin-top:12px"><div class="auto-text">Executado conforme projeto.</div></div>
+        <div id="alt-desc-campo" style="display:none;margin-top:12px">
+          <div class="fg"><label>Descreva as alterações</label>
+            <textarea id="alt_descricao" placeholder="Descreva as alterações realizadas..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header amarelo">📦 Materiais Utilizados</div>
+      <div class="card-body">
+        <div class="alert alert-info" id="mat-alert-n">ℹ️ Adicione os materiais utilizados na obra.</div>
+        <div class="alert alert-ps" id="mat-alert-ps" style="display:none">🏗️ Vincule cada material ao poste ou deixe como <strong>Geral</strong>.</div>
+        <div id="materiais-lista"></div>
+        <button class="mat-add-btn" onclick="adicionarMaterial()">＋ Adicionar Material</button>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(5)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 5 ══════════ -->
+  <div class="step-panel" id="step-5">
+    <div class="card">
+      <div class="card-header azul">🔧 5. Serviços Executados</div>
+      <div class="card-body">
+        <div class="alert alert-info" id="srv-alert-n">ℹ️ Marque os serviços realizados nesta jornada.</div>
+        <div class="alert alert-ps" id="srv-alert-ps" style="display:none">🏗️ Modo poste ativo — vincule cada serviço a um ou mais postes.</div>
+        <div id="servicos-container"></div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goStep(4)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(6)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 6 ══════════ -->
+  <div class="step-panel" id="step-6">
+    <div class="card">
+      <div class="card-header azul">📝 6. Observações Adicionais</div>
+      <div class="card-body">
+        <div id="obs-normal">
+          <div class="fg">
+            <label>Observações (campo livre)</label>
+            <textarea id="observacoes" rows="6" placeholder="Intercorrências, condições climáticas, horários especiais, pendências..."></textarea>
+          </div>
+        </div>
+        <div id="obs-postes" style="display:none">
+          <div class="alert alert-ps" style="margin-bottom:10px">🏗️ Vincule cada observação ao poste ou deixe como <strong>Geral</strong>.</div>
+          <div id="obs-lista"></div>
+          <button class="mat-add-btn" onclick="adicionarObs()">＋ Adicionar Observação</button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goStep(5)">← Voltar</button>
+      <button class="btn btn-primary" onclick="goStep(7)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 7 ══════════ -->
+  <div class="step-panel" id="step-7">
+    <div class="card">
+      <div class="card-header verde">✍️ 7. Assinatura do Encarregado</div>
+      <div class="card-body">
+        <div class="grid g2">
+          <div class="fg"><label>Nome completo <span class="req">*</span></label><input type="text" id="sig-nome" placeholder="Nome completo"></div>
+          <div class="fg"><label>Cargo / Função</label><input type="text" id="sig-cargo" value="Encarregado Elétrico"></div>
+        </div>
+        <div class="sig-wrapper" style="margin-top:10px">
+          <label style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:block">✍️ Desenhe a assinatura abaixo</label>
+          <canvas class="sig-canvas" id="canvas-sig" width="800" height="120"></canvas>
+          <div class="sig-ctrls">
+            <button class="btn btn-sm btn-outline" onclick="limparCanvas()">🗑️ Limpar</button>
+            <span style="font-size:10.5px;color:var(--muted)">Use o mouse ou toque na tela para assinar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="goStep(6)">← Voltar</button>
+      <button class="btn btn-yellow" onclick="irParaExportar()">Ver BDO →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 8 ══════════ -->
+  <div class="step-panel" id="step-8">
+    <div class="card">
+      <div class="card-header azul">👁️ Prévia do BDO</div>
+      <div class="card-body" style="padding:0">
+        <div class="bdo-preview" id="bdo-preview-box" style="border:none;border-radius:0"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header amarelo">📤 Exportar &amp; Compartilhar</div>
+      <div class="card-body">
+        <div class="alert alert-yellow" style="margin-bottom:10px">
+          ⚡ O PDF gerado é idêntico à prévia acima.
+        </div>
+        <div class="export-grid">
+          <button class="export-btn eb-pdf" onclick="abrirModal()">
+            <span class="eb-icon">📄</span>
+            <span>Baixar PDF</span>
+            <small style="font-size:10px;font-weight:400;color:var(--muted)">Download local</small>
+          </button>
+          <button class="export-btn eb-email" onclick="enviarPorEmail()">
+            <span class="eb-icon">📧</span>
+            <span>Enviar por E-mail</span>
+            <small style="font-size:10px;font-weight:400;color:var(--muted)">Abrir mensagem no computador</small>
+          </button>
+          <button class="export-btn eb-whats" onclick="compartilharWhatsApp()">
+            <span class="eb-icon">💬</span>
+            <span>WhatsApp</span>
+            <small style="font-size:10px;font-weight:400;color:var(--muted)">Compartilhar BDO</small>
+          </button>
+          <button class="export-btn eb-print" onclick="imprimirBDO()">
+            <span class="eb-icon">🖨️</span>
+            <span>Imprimir</span>
+            <small style="font-size:10px;font-weight:400;color:var(--muted)">Impressão direta</small>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns"><button class="btn btn-outline" onclick="goStep(7)">← Voltar</button><div></div></div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ── POSTE PICKER ── -->
+<div class="ps-overlay" id="ps-overlay" onclick="fecharPS()"></div>
+<div class="ps-picker" id="ps-picker">
+  <div class="ps-handle"></div>
+  <div class="ps-title">
+    <span>📍 Vincular a qual poste?</span>
+    <button onclick="fecharPS()">✕</button>
+  </div>
+  <div class="ps-btns" id="ps-btns"></div>
+  <div class="ps-custom">
+    <input type="text" id="ps-custom-inp" placeholder="Poste personalizado (ex: PS4-A)">
+    <button onclick="confirmarPsCustom()">✓ OK</button>
+  </div>
+</div>
+
+<!-- ── MODAL PDF ── -->
+<div class="modal-ov" id="modal-pdf">
+  <div class="modal-box">
+    <div id="modal-confirm">
+      <div class="modal-icon">📄</div>
+      <h3>Salvar BDO em PDF?</h3>
+      <p>A geração será feita localmente. Na janela de impressão, escolha <strong>Salvar como PDF</strong>.</p>
+      <div class="modal-acts">
+        <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-yellow" onclick="gerarPDF()">⬇️ Abrir e Salvar</button>
+      </div>
+    </div>
+    <div id="modal-loading" style="display:none">
+      <div class="spinner"></div>
+      <h3>Gerando PDF...</h3>
+      <p>Aguarde alguns segundos.</p>
+    </div>
+    <div id="modal-success" style="display:none">
+      <div class="modal-icon">✅</div>
+      <h3>BDO Gerado com Sucesso!</h3>
+      <p id="msg-success">Pronto para download.</p>
+      <div class="modal-acts">
+        <button class="btn btn-outline" onclick="fecharModal()">Fechar</button>
+        <a class="btn btn-success" id="btn-download" href="#">⬇️ Baixar PDF</a>
+      </div>
+    </div>
+    <div id="modal-error" style="display:none">
+      <div class="modal-icon">❌</div>
+      <h3>Erro ao Gerar PDF</h3>
+      <p id="error-msg">Verifique os dados e tente novamente.</p>
+      <div class="modal-acts">
+        <button class="btn btn-primary" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL MAT ── -->
+<div class="mat-modal-ov" id="modal-mat">
+  <div class="mat-modal-wrap">
+    <div class="mat-modal-header">
+      <h3>⚡ MAT — Malha de Aterramento</h3>
+      <button class="mat-modal-close" onclick="fecharModalMAT()">✕</button>
+    </div>
+    <iframe class="mat-modal-iframe" id="mat-iframe" src="" title="MAT - Malha de Aterramento"></iframe>
+  </div>
+</div>
+
+<div class="toast info" id="toast"></div>
+
+<script>
+const HAGAP_LOGO = 'data:image/webp;base64,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';
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let currentStep   = 1;
+let servicoLivre  = null;
+let manobraState  = null;
+let carroApoio    = null;
+let alteracoes    = null;
+let statusExec    = null;
+let modoPostes    = false;
+let listaPostes   = [];
+let postesExtra   = [];
+let psMulti       = {};
+let materiaisLista= [];
+let obsLista      = [];
+let _psCtx        = null;
+let _midCnt = 0, _oidCnt = 0;
+
+const SERVICOS_DEF = [
+  { id:'calcada',    emoji:'🏗️', label:'Reforma de calçada',        qty:'text',   ph:'Quantidade / descrição' },
+  { id:'podas',      emoji:'🌳', label:'Podas',                     qty:'text',   ph:'Quantidade / descrição' },
+  { id:'luminarias', emoji:'💡', label:'Reinstalação de luminárias', qty:'text',   ph:'Quantidade' },
+  { id:'fibra',      emoji:'🔗', label:'Amarração de fibra óptica',  qty:'text',   ph:'Quantidade' },
+  { id:'malha',      emoji:'⚡', label:'Malha de aterramento',       qty:'number', ph:'Metros executados' },
+  { id:'aterramento_temp', emoji:'🛡️', label:'Aterramento temporário', qty:'number', ph:'Quantidade instalada' },
+  { id:'estai',      emoji:'🪝', label:'Estai prov.',                qty:'text',   ph:'Quantidade / descrição' },
+  { id:'ramal',      emoji:'🔌', label:'Reinstalação de ramal',      qty:'text',   ph:'Quantidade / descrição' },
+];
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+function buildServicos() {
+  const c = document.getElementById('servicos-container');
+  c.innerHTML = '';
+  SERVICOS_DEF.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'srv-item';
+    div.id = 'si-' + s.id;
+    div.innerHTML = `
+      <div class="srv-top">
+        <input type="checkbox" class="srv-chk" id="chk-${s.id}" onchange="toggleServico('${s.id}')">
+        <label class="srv-lbl" for="chk-${s.id}">${s.emoji} ${s.label}</label>
+        ${s.id==='malha' ? '<button class="btn-mat" onclick="abrirModalMAT()">🗺️ Abrir MAT</button>' : ''}
+      </div>
+      <div class="srv-qty">
+        <input type="${s.qty}" id="qty-${s.id}" placeholder="${s.ph}"
+          ${s.id==='aterramento_temp'?'min="1" step="1"':s.qty==='number'?'min="0" step="any"':''}
+          ${s.id==='malha'?'oninput="updateMalhaText()"':''}>
+      </div>
+      <div class="srv-ps-area" id="psarea-${s.id}">
+        <span style="font-size:10.5px;font-weight:700;color:var(--muted)">Postes:</span>
+        <div id="pschips-${s.id}" style="display:contents"></div>
+        <button class="ps-add-btn" onclick="abrirPS(null,ps=>adicionarPsServico('${s.id}',ps))">＋ Poste</button>
+      </div>`;
+    c.appendChild(div);
+    psMulti[s.id] = [];
+  });
+  const malhaDiv = document.createElement('div');
+  malhaDiv.id = 'malha-auto-txt';
+  malhaDiv.style.display = 'none';
+  c.appendChild(malhaDiv);
+}
+
+// ═══════════════════════════════════════════════════
+//  NAVEGAÇÃO
+// ═══════════════════════════════════════════════════
+function goStep(n) {
+  if (currentStep === 3 && n > 3 && manobraState === 'equipe') {
+    const qtdChaves = parseInt(document.getElementById('qtd_chaves_manobra').value, 10) || 0;
+    if (qtdChaves < 1) {
+      showToast('⚠️ Informe a quantidade de chaves manobradas.', 'warn');
+      document.getElementById('qtd_chaves_manobra').focus();
+      return;
+    }
+  }
+  if (currentStep === 5 && n > 5 && document.getElementById('chk-aterramento_temp')?.checked) {
+    const qtdAterramentos = parseInt(document.getElementById('qty-aterramento_temp').value, 10) || 0;
+    if (qtdAterramentos < 1) {
+      showToast('⚠️ Informe a quantidade de aterramentos temporários.', 'warn');
+      document.getElementById('qty-aterramento_temp').focus();
+      return;
+    }
+  }
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('si-' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  document.getElementById('si-' + currentStep).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateProgress();
+  if (n === 8) renderPreview();
+}
+function irParaExportar() {
+  if (manobraState === 'equipe' && (parseInt(document.getElementById('qtd_chaves_manobra').value, 10) || 0) < 1) {
+    goStep(3);
+    showToast('⚠️ Informe a quantidade de chaves manobradas antes de exportar.', 'warn');
+    return;
+  }
+  if (document.getElementById('chk-aterramento_temp')?.checked && (parseInt(document.getElementById('qty-aterramento_temp').value, 10) || 0) < 1) {
+    goStep(5);
+    showToast('⚠️ Informe a quantidade de aterramentos temporários antes de exportar.', 'warn');
+    return;
+  }
+  goStep(8);
+}
+function updateProgress() {
+  let f = 0;
+  if (document.getElementById('num_projeto').value) f++;
+  if (document.getElementById('cidade').value) f++;
+  if (document.getElementById('data_bdo').value) f++;
+  if (document.getElementById('encarregado').value) f++;
+  if (servicoLivre !== null) f++;
+  if (manobraState) f++;
+  if (alteracoes !== null) f++;
+  if (statusExec) f++;
+  document.getElementById('mainProgress').style.width = Math.round(f / 8 * 100) + '%';
+}
+
+// ═══════════════════════════════════════════════════
+//  HORAS, QUILOMETRAGEM E EQUIPES
+// ═══════════════════════════════════════════════════
+function calcularHorasTrabalhadas() {
+  const inicio = document.getElementById('hora_inicio').value;
+  const final  = document.getElementById('hora_final').value;
+  if (!inicio || !final) return { minutos: null, texto: '' };
+  const [hi, mi] = inicio.split(':').map(Number);
+  const [hf, mf] = final.split(':').map(Number);
+  let minutos = (hf * 60 + mf) - (hi * 60 + mi);
+  if (minutos < 0) minutos += 24 * 60;
+  const horas = Math.floor(minutos / 60);
+  const mins  = minutos % 60;
+  return { minutos, texto: `${horas}h${mins ? ' ' + String(mins).padStart(2, '0') + 'min' : ''}` };
+}
+function atualizarHoras() {
+  document.getElementById('horas_trabalhadas').value = calcularHorasTrabalhadas().texto;
+}
+function numeroPt(v) {
+  let txt = String(v ?? '').trim();
+  if (!txt) return null;
+  if (txt.includes(',')) txt = txt.replace(/\./g, '').replace(',', '.');
+  const n = Number(txt);
+  return Number.isFinite(n) ? n : null;
+}
+function calcularKmPercorrido() {
+  const inicial = numeroPt(document.getElementById('km_inicial').value);
+  const final   = numeroPt(document.getElementById('km_final').value);
+  if (inicial === null || final === null || final < inicial) return null;
+  return final - inicial;
+}
+function atualizarKm() {
+  const km = calcularKmPercorrido();
+  const el = document.getElementById('km_percorrido');
+  el.value = km === null ? '' : km.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' km';
+}
+function gerarCamposEquipes() {
+  const container = document.getElementById('equipes-elementos');
+  const anteriores = Array.from(container.querySelectorAll('input')).map(i => i.value);
+  const qtd = Math.min(20, Math.max(0, parseInt(document.getElementById('qtd_equipes').value, 10) || 0));
+  container.innerHTML = '';
+  for (let i = 1; i <= qtd; i++) {
+    const div = document.createElement('div');
+    div.className = 'fg';
+    div.innerHTML = `<label>Elementos — Equipe ${i}</label><input type="number" id="elementos_equipe_${i}" min="0" step="1" placeholder="Quantidade" value="${anteriores[i - 1] || ''}" oninput="atualizarTotalElementos()">`;
+    container.appendChild(div);
+  }
+  atualizarTotalElementos();
+}
+function getEquipes() {
+  const qtd = Math.min(20, Math.max(0, parseInt(document.getElementById('qtd_equipes').value, 10) || 0));
+  return Array.from({ length: qtd }, (_, i) => ({
+    equipe: i + 1,
+    elementos: Math.max(0, parseInt(document.getElementById(`elementos_equipe_${i + 1}`)?.value, 10) || 0)
+  }));
+}
+function atualizarTotalElementos() {
+  const total = getEquipes().reduce((soma, item) => soma + item.elementos, 0);
+  document.getElementById('total_elementos').value = total ? String(total) : '';
+}
+function setCarroApoio(sim) {
+  carroApoio = sim;
+  document.getElementById('apoio-sim').className = 'tg-opt' + (sim ? ' sel-ok' : '');
+  document.getElementById('apoio-nao').className = 'tg-opt' + (!sim ? ' sel-std' : '');
+  document.getElementById('apoio-auto-txt').style.display = sim ? '' : 'none';
+}
+function getCarroApoioText() {
+  return carroApoio === true ? 'Utilizado carro de apoio.' : '';
+}
+
+// ═══════════════════════════════════════════════════
+//  STATUS
+// ═══════════════════════════════════════════════════
+function setStatus(val) {
+  statusExec = val;
+  ['conclusao','parcial','cancelamento'].forEach(s => {
+    const el = document.getElementById('st-' + s);
+    const cls = s==='conclusao'?'sel-ok' : s==='parcial'?'sel-warn':'sel-danger';
+    el.className = 'tg-opt' + (val === s ? ' ' + cls : '');
+  });
+  const motivo = document.getElementById('status-motivo');
+  const lbl    = document.getElementById('status-motivo-label');
+  if (val === 'parcial')           { motivo.style.display = ''; lbl.textContent = 'Motivo / pendências da execução parcial'; }
+  else if (val === 'cancelamento') { motivo.style.display = ''; lbl.textContent = 'Motivo do cancelamento'; }
+  else motivo.style.display = 'none';
+  updateProgress();
+}
+function getStatusLabel() {
+  if (statusExec === 'conclusao')    return { emoji: '✅', label: 'Conclusão',       cor: 'verde'   };
+  if (statusExec === 'parcial')      return { emoji: '🔄', label: 'Execução Parcial', cor: 'amarelo' };
+  if (statusExec === 'cancelamento') return { emoji: '❌', label: 'Cancelamento',     cor: 'laranja' };
+  return null;
+}
+
+// ═══════════════════════════════════════════════════
+//  MODO POSTES
+// ═══════════════════════════════════════════════════
+function setModoPostes(ativo) {
+  modoPostes = ativo;
+  document.getElementById('ps-sim').className = 'tg-opt' + (ativo ? ' sel-ps' : '');
+  document.getElementById('ps-nao').className = 'tg-opt' + (ativo ? '' : ' sel-std');
+  document.getElementById('postes-config').style.display = ativo ? '' : 'none';
+  document.getElementById('srv-alert-n').style.display  = ativo ? 'none' : '';
+  document.getElementById('srv-alert-ps').style.display = ativo ? '' : 'none';
+  document.getElementById('mat-alert-n').style.display  = ativo ? 'none' : '';
+  document.getElementById('mat-alert-ps').style.display = ativo ? '' : 'none';
+  document.getElementById('obs-normal').style.display   = ativo ? 'none' : '';
+  document.getElementById('obs-postes').style.display   = ativo ? '' : 'none';
+  const c = document.getElementById('main-container');
+  ativo ? c.classList.add('modo-postes-on') : c.classList.remove('modo-postes-on');
+  renderMateriaisLista();
+  if (ativo && obsLista.length === 0) adicionarObs();
+}
+function gerarListaPostes() {
+  const qtd = parseInt(document.getElementById('qtd_postes').value) || 0;
+  listaPostes = Array.from({ length: qtd }, (_, i) => 'PS' + (i + 1));
+  const wrap = document.getElementById('postes-chips-wrap');
+  if (qtd > 0) {
+    wrap.style.display = '';
+    document.getElementById('postes-chips').innerHTML =
+      [...listaPostes, ...postesExtra].map(p => `<span class="poste-chip">${p}</span>`).join('');
+  } else wrap.style.display = 'none';
+}
+function getTodosPostes() { return [...listaPostes, ...postesExtra]; }
+
+// ═══════════════════════════════════════════════════
+//  PICKER DE POSTE
+// ═══════════════════════════════════════════════════
+function abrirPS(_, cb) {
+  _psCtx = { cb };
+  document.getElementById('ps-custom-inp').value = '';
+  const btns = document.getElementById('ps-btns');
+  btns.innerHTML = '';
+  const bg = document.createElement('button');
+  bg.className = 'ps-btn ps-btn-geral';
+  bg.textContent = '🌐 Geral do Projeto';
+  bg.onclick = () => _selPS('geral');
+  btns.appendChild(bg);
+  getTodosPostes().forEach(ps => {
+    const b = document.createElement('button');
+    b.className = 'ps-btn';
+    b.textContent = '🏗️ ' + ps;
+    b.onclick = () => _selPS(ps);
+    btns.appendChild(b);
+  });
+  document.getElementById('ps-overlay').classList.add('open');
+  document.getElementById('ps-picker').classList.add('open');
+}
+function fecharPS() {
+  document.getElementById('ps-overlay').classList.remove('open');
+  document.getElementById('ps-picker').classList.remove('open');
+  _psCtx = null;
+}
+function _selPS(ps) { if (!_psCtx) return; const cb = _psCtx.cb; fecharPS(); cb(ps); }
+function confirmarPsCustom() {
+  const v = document.getElementById('ps-custom-inp').value.trim().toUpperCase();
+  if (!v) return;
+  if (!listaPostes.includes(v) && !postesExtra.includes(v)) {
+    postesExtra.push(v);
+    gerarListaPostes();
+  }
+  _selPS(v);
+}
+
+// ═══════════════════════════════════════════════════
+//  SERVIÇOS
+// ═══════════════════════════════════════════════════
+function toggleServico(id) {
+  const chk  = document.getElementById('chk-' + id);
+  const item = document.getElementById('si-' + id);
+  chk.checked ? item.classList.add('checked') : item.classList.remove('checked');
+  if (id === 'malha') updateMalhaText();
+  if (chk.checked) setTimeout(() => document.getElementById('qty-' + id)?.focus(), 0);
+}
+function updateMalhaText() {
+  const chk = document.getElementById('chk-malha');
+  const qty = document.getElementById('qty-malha')?.value;
+  const div = document.getElementById('malha-auto-txt');
+  if (div) {
+    if (chk && chk.checked && qty) {
+      div.innerHTML = `<div class="auto-text" style="margin:0 0 8px">Feito ${qty} metros de malha de aterramento.</div>`;
+      div.style.display = '';
+    } else div.style.display = 'none';
+  }
+}
+function adicionarPsServico(servId, ps) {
+  if (!psMulti[servId]) psMulti[servId] = [];
+  if (!psMulti[servId].includes(ps)) psMulti[servId].push(ps);
+  renderPsChipsServico(servId);
+}
+function removerPsServico(servId, ps) {
+  psMulti[servId] = (psMulti[servId] || []).filter(p => p !== ps);
+  renderPsChipsServico(servId);
+}
+function renderPsChipsServico(servId) {
+  const container = document.getElementById('pschips-' + servId);
+  if (!container) return;
+  container.innerHTML = '';
+  (psMulti[servId] || []).forEach(ps => {
+    const btn = document.createElement('button');
+    btn.className = 'ps-chip' + (ps === 'geral' ? ' geral' : '');
+    btn.innerHTML = `${ps==='geral'?'🌐 Geral':'🏗️ '+ps} <span class="prm" onclick="removerPsServico('${servId}','${ps}');event.stopPropagation()">✕</span>`;
+    container.appendChild(btn);
+  });
+}
+function getServicosCompleto() {
+  return SERVICOS_DEF
+    .filter(s => document.getElementById('chk-' + s.id)?.checked)
+    .map(s => {
+      const q  = document.getElementById('qty-' + s.id)?.value || '';
+      const ps = (psMulti[s.id] || []);
+      const postes = modoPostes && ps.length > 0 ? ps : ['geral'];
+      let nome = s.emoji + ' ' + s.label + (q ? ' (' + q + ')' : '');
+      if (s.id === 'malha' && q) nome = `${s.emoji} Malha de aterramento — ${q} m`;
+      if (s.id === 'aterramento_temp' && q) {
+        const n = Number(q);
+        nome = n === 1
+          ? `${s.emoji} Instalado 1 aterramento temporário`
+          : `${s.emoji} Instalados ${q} aterramentos temporários`;
+      }
+      return { nome, postes };
+    });
+}
+function getServicosText() { return getServicosCompleto().map(s => s.nome); }
+
+// ═══════════════════════════════════════════════════
+//  MATERIAIS
+// ═══════════════════════════════════════════════════
+function adicionarMaterial(desc = '', qtd = '', poste = 'geral') {
+  const id = 'mat-' + (++_midCnt);
+  materiaisLista.push({ id, descricao: desc, qtd, poste });
+  renderMateriaisLista();
+}
+function removerMaterial(id) {
+  materiaisLista = materiaisLista.filter(m => m.id !== id);
+  renderMateriaisLista();
+}
+function renderMateriaisLista() {
+  const el = document.getElementById('materiais-lista');
+  el.innerHTML = '';
+  materiaisLista.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'mat-item';
+    const psLbl = m.poste === 'geral' ? '🌐 Geral' : '🏗️ ' + m.poste;
+    const psCls = 'ps-chip' + (m.poste === 'geral' ? ' geral' : '');
+    div.innerHTML = `
+      <input class="mat-desc" type="text" placeholder="Descrição do material" value="${m.descricao}"
+             oninput="updMat('${m.id}','descricao',this.value)">
+      <input class="mat-qty" type="text" placeholder="Qtd" value="${m.qtd}"
+             oninput="updMat('${m.id}','qtd',this.value)">
+      ${modoPostes ? `<button class="${psCls}" onclick="abrirPS(null,ps=>{updMat('${m.id}','poste',ps);renderMateriaisLista();})">${psLbl}</button>` : ''}
+      <button class="mat-del" onclick="removerMaterial('${m.id}')">🗑️</button>`;
+    el.appendChild(div);
+  });
+}
+function updMat(id, campo, val) { const m = materiaisLista.find(x => x.id === id); if (m) m[campo] = val; }
+
+// ═══════════════════════════════════════════════════
+//  OBSERVAÇÕES
+// ═══════════════════════════════════════════════════
+function adicionarObs(txt = '', poste = 'geral') {
+  const id = 'obs-' + (++_oidCnt);
+  obsLista.push({ id, texto: txt, poste });
+  renderObsLista();
+}
+function removerObs(id) { obsLista = obsLista.filter(o => o.id !== id); renderObsLista(); }
+function renderObsLista() {
+  const el = document.getElementById('obs-lista');
+  el.innerHTML = '';
+  obsLista.forEach((o, i) => {
+    const div = document.createElement('div');
+    div.className = 'obs-item';
+    const psLbl = o.poste === 'geral' ? '🌐 Geral' : '🏗️ ' + o.poste;
+    const psCls = 'ps-chip' + (o.poste === 'geral' ? ' geral' : '');
+    div.innerHTML = `
+      <div class="obs-hd">
+        <span>Observação ${i + 1}</span>
+        <button class="${psCls}" onclick="abrirPS(null,ps=>{updObs('${o.id}','poste',ps);renderObsLista();})">${psLbl}</button>
+        ${obsLista.length > 1 ? `<button class="obs-del" onclick="removerObs('${o.id}')">🗑️</button>` : ''}
+      </div>
+      <textarea placeholder="Descreva a observação..." oninput="updObs('${o.id}','texto',this.value)">${o.texto}</textarea>`;
+    el.appendChild(div);
+  });
+}
+function updObs(id, campo, val) { const o = obsLista.find(x => x.id === id); if (o) o[campo] = val; }
+
+// ═══════════════════════════════════════════════════
+//  SERVIÇO LIVRE / MANOBRA / ALTERAÇÕES
+// ═══════════════════════════════════════════════════
+function setServicoLivre(sim) {
+  servicoLivre = sim;
+  document.getElementById('sl-sim').className = 'tg-opt' + (sim ? ' sel-ok' : '');
+  document.getElementById('sl-nao').className = 'tg-opt' + (!sim ? ' sel-ok' : '');
+  document.getElementById('campos-omb-plv').style.display = sim ? 'none' : '';
+  updateProgress();
+}
+function setManobra(val) {
+  manobraState = val;
+  document.getElementById('man-sim').className = 'tg-opt' + (val === 'equipe' ? ' sel-ok' : '');
+  document.getElementById('man-nao').className = 'tg-opt' + (val === 'outras' ? ' sel-ok' : '');
+  document.getElementById('man-sem').className = 'tg-opt' + (val === 'sem' ? ' sel-warn' : '');
+  document.getElementById('manobra-outras').style.display = val === 'outras' ? '' : 'none';
+  document.getElementById('manobra-qtd-chaves').style.display = val === 'equipe' ? '' : 'none';
+  if (val !== 'outras') showManobraAutoText();
+  else {
+    ['man-copel', 'man-hagap'].forEach(id => document.getElementById(id).className = 'radio-opt');
+    document.getElementById('manobra-auto-txt').style.display = 'none';
+  }
+  updateProgress();
+}
+function setManobraExt(t) {
+  manobraState = t;
+  document.getElementById('manobra-qtd-chaves').style.display = 'none';
+  document.getElementById('man-copel').className = 'radio-opt' + (t === 'copel' ? ' selected' : '');
+  document.getElementById('man-hagap').className = 'radio-opt' + (t === 'hagap' ? ' selected' : '');
+  showManobraAutoText();
+  updateProgress();
+}
+function showManobraAutoText() {
+  const div = document.getElementById('manobra-auto-txt'), txt = getManobraText();
+  if (txt) { div.innerHTML = `<div class="auto-text">${txt}</div>`; div.style.display = ''; }
+  else div.style.display = 'none';
+}
+function getManobraText() {
+  if (manobraState === 'equipe') {
+    const qtd = Math.max(0, parseInt(document.getElementById('qtd_chaves_manobra')?.value, 10) || 0);
+    if (qtd === 1) return 'Manobra executada pela equipe, com abertura e fechamento de 1 chave; GLV e porta-fusível retirados e reinstalados.';
+    if (qtd > 1) return `Manobra executada pela equipe, com abertura e fechamento de ${qtd} chaves; GLVs e porta-fusíveis retirados e reinstalados.`;
+    return 'Manobra executada pela equipe; GLVs e porta-fusíveis retirados e reinstalados.';
+  }
+  if (manobraState === 'copel')  return 'Manobra executada pela Agência COPEL.';
+  if (manobraState === 'hagap')  return 'Manobra executada pela equipe Linha Viva HAGAP.';
+  if (manobraState === 'sem')    return 'Sem manobra realizada.';
+  return '';
+}
+function setAlteracoes(sim) {
+  alteracoes = sim;
+  document.getElementById('alt-sim').className = 'tg-opt' + (sim ? ' sel-warn' : '');
+  document.getElementById('alt-nao').className = 'tg-opt' + (!sim ? ' sel-ok' : '');
+  document.getElementById('alt-auto-txt').style.display = !sim ? '' : 'none';
+  document.getElementById('alt-desc-campo').style.display = sim ? '' : 'none';
+  updateProgress();
+}
+function getAlteracoesText() {
+  if (alteracoes === false) return 'Executado conforme projeto.';
+  if (alteracoes === true)  return document.getElementById('alt_descricao').value || '';
+  return '';
+}
+
+// ═══════════════════════════════════════════════════
+//  CANVAS ASSINATURA
+// ═══════════════════════════════════════════════════
+function initCanvas() {
+  const c = document.getElementById('canvas-sig'), ctx = c.getContext('2d');
+  let drawing = false, lx = 0, ly = 0;
+  function pos(e) {
+    const r = c.getBoundingClientRect(), sx = c.width / r.width, sy = c.height / r.height;
+    return e.touches
+      ? [(e.touches[0].clientX - r.left) * sx, (e.touches[0].clientY - r.top) * sy]
+      : [(e.clientX - r.left) * sx, (e.clientY - r.top) * sy];
+  }
+  c.addEventListener('mousedown', e => { drawing = true; [lx, ly] = pos(e); });
+  c.addEventListener('mousemove', e => {
+    if (!drawing) return;
+    const [x, y] = pos(e);
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(x, y);
+    ctx.strokeStyle = '#0d1b3e'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.stroke();
+    [lx, ly] = [x, y];
+  });
+  c.addEventListener('mouseup', () => drawing = false);
+  c.addEventListener('mouseleave', () => drawing = false);
+  c.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; [lx, ly] = pos(e); }, { passive: false });
+  c.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!drawing) return;
+    const [x, y] = pos(e);
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(x, y);
+    ctx.strokeStyle = '#0d1b3e'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.stroke();
+    [lx, ly] = [x, y];
+  }, { passive: false });
+  c.addEventListener('touchend', () => drawing = false);
+}
+function limparCanvas() { document.getElementById('canvas-sig').getContext('2d').clearRect(0, 0, 800, 120); }
+
+// ═══════════════════════════════════════════════════
+//  COLETAR DADOS
+// ═══════════════════════════════════════════════════
+function fmtData(v) {
+  if (!v) return '';
+  const [y, m, d] = v.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function escaparHtml(valor = '') {
+  return String(valor)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function separarParagrafos(texto = '') {
+  return String(texto)
+    .replace(/\r\n?/g, '\n')
+    .split(/\n+/)
+    .map(paragrafo => paragrafo.trim())
+    .filter(Boolean);
+}
+
+function renderizarParagrafos(textos) {
+  const entradas = Array.isArray(textos) ? textos : [textos];
+  const paragrafos = entradas.flatMap(separarParagrafos);
+  return `<div class="bdo-paragraphs">${paragrafos
+    .map(paragrafo => `<p class="bdo-paragraph">${escaparHtml(paragrafo)}</p>`)
+    .join('')}</div>`;
+}
+
+function renderizarMateriais(materiais) {
+  const paragrafos = materiais.flatMap(material => {
+    const quantidade = material.qtd ? ` — ${material.qtd}` : '';
+    return separarParagrafos(`${material.descricao}${quantidade}`);
+  });
+  return renderizarParagrafos(paragrafos);
+}
+
+function coletarDados() {
+  const horas = calcularHorasTrabalhadas();
+  const equipes = getEquipes();
+  const kmPercorrido = calcularKmPercorrido();
+  return {
+    num_projeto:       document.getElementById('num_projeto').value,
+    cidade:            document.getElementById('cidade').value,
+    data_bdo:          fmtData(document.getElementById('data_bdo').value),
+    hora_inicio:       document.getElementById('hora_inicio').value,
+    hora_final:        document.getElementById('hora_final').value,
+    horas_trabalhadas: horas.texto,
+    horas_minutos:     horas.minutos,
+    km_inicial:        document.getElementById('km_inicial').value,
+    km_final:          document.getElementById('km_final').value,
+    km_percorrido:     kmPercorrido,
+    encarregado:       document.getElementById('encarregado').value,
+    equipe:            document.getElementById('equipe').value,
+    qtd_equipes:       equipes.length,
+    equipes:           equipes,
+    total_elementos:   equipes.reduce((soma, item) => soma + item.elementos, 0),
+    carro_apoio:       carroApoio,
+    carro_apoio_texto: getCarroApoioText(),
+    servico_livre:     servicoLivre,
+    num_omb:           document.getElementById('num_omb').value,
+    num_plv:           document.getElementById('num_plv').value,
+    qtd_chaves_manobra: Math.max(0, parseInt(document.getElementById('qtd_chaves_manobra').value, 10) || 0),
+    manobra_texto:     getManobraText(),
+    alteracoes_texto:  getAlteracoesText(),
+    status_execucao:   statusExec,
+    status_motivo:     document.getElementById('status_motivo_txt').value,
+    servicos:          getServicosText(),
+    servicos_completo: getServicosCompleto(),
+    materiais:         materiaisLista.filter(m => m.descricao.trim()),
+    observacoes:       modoPostes ? '' : document.getElementById('observacoes').value,
+    observacoes_lista: modoPostes
+      ? obsLista.filter(o => o.texto.trim())
+      : (document.getElementById('observacoes').value
+          ? [{ texto: document.getElementById('observacoes').value, poste: 'geral' }]
+          : []),
+    modo_postes:       modoPostes,
+    postes:            getTodosPostes(),
+    sig_nome:          document.getElementById('sig-nome').value,
+    sig_cargo:         document.getElementById('sig-cargo').value,
+    sig_data:          document.getElementById('canvas-sig').toDataURL('image/png'),
+  };
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER PREVIEW
+// ═══════════════════════════════════════════════════
+function renderPreview() {
+  const d = coletarDados();
+  const now = new Date().toLocaleString('pt-BR');
+
+  const ombPlv = (d.servico_livre === false && (d.num_omb || d.num_plv))
+    ? `<div class="bdo-row">
+        <div class="bdo-field"><div class="fl">Nº OMB</div><div class="fv">${d.num_omb || '—'}</div></div>
+        <div class="bdo-field"><div class="fl">Nº PLV</div><div class="fv">${d.num_plv || '—'}</div></div>
+       </div>` : '';
+
+  const st = getStatusLabel();
+  const statusHtml = st
+    ? `<div class="bdo-sec ${st.cor}">${st.emoji} STATUS: ${st.label.toUpperCase()}${d.status_motivo ? ' — ' + d.status_motivo : ''}</div>`
+    : '';
+
+  let corpo = '';
+  const manobra    = d.manobra_texto;
+  const alteracoes = d.alteracoes_texto;
+  const apoio      = d.carro_apoio_texto;
+  const composicaoEquipes = d.equipes.map(e => `Equipe ${e.equipe}: ${e.elementos} elemento${e.elementos === 1 ? '' : 's'}`).join(' | ');
+
+  if (d.modo_postes) {
+    if (apoio || manobra || alteracoes) {
+      corpo += `<div class="bdo-sec azul">👷 EQUIPE / MANOBRA / ALTERAÇÕES</div>
+        <div class="bdo-block"><div>${[apoio, manobra, alteracoes].filter(Boolean).join(' — ')}</div></div>`;
+    }
+    const todosPostes = ['geral', ...d.postes];
+    todosPostes.forEach(ps => {
+      const srvs = d.servicos_completo.filter(s => s.postes.includes(ps));
+      const mats = d.materiais.filter(m => (m.poste || 'geral') === ps);
+      const obss = d.observacoes_lista.filter(o => (o.poste || 'geral') === ps);
+      if (!srvs.length && !mats.length && !obss.length) return;
+      const lbl = ps === 'geral' ? '🌐 GERAL DO PROJETO' : '🏗️ POSTE: ' + ps;
+      const cls = ps === 'geral' ? 'azul' : 'roxo';
+      corpo += `<div class="bdo-sec ${cls}">${lbl}</div>`;
+      if (srvs.length) {
+        corpo += `<div class="bdo-block"><div class="bl">Serviços</div><ul>${srvs.map(s => `<li>${s.nome}</li>`).join('')}</ul></div>`;
+      }
+      if (mats.length) {
+        corpo += `<div class="bdo-block"><div class="bl">Materiais</div>${renderizarMateriais(mats)}</div>`;
+      }
+      if (obss.length) {
+        corpo += `<div class="bdo-block"><div class="bl">Observações</div>${renderizarParagrafos(obss.map(o => o.texto))}</div>`;
+      }
+    });
+  } else {
+    const linhas = [apoio, manobra, alteracoes, ...d.servicos].filter(Boolean);
+    if (linhas.length) {
+      corpo += `<div class="bdo-sec azul">🔧 SERVIÇOS / MANOBRA / ALTERAÇÕES</div>
+        <div class="bdo-block"><ul>${linhas.map(l => `<li>${l}</li>`).join('')}</ul></div>`;
+    }
+    if (d.materiais.length) {
+      corpo += `<div class="bdo-sec azul">📦 MATERIAIS UTILIZADOS</div>
+        <div class="bdo-block">${renderizarMateriais(d.materiais)}</div>`;
+    }
+    const obs = d.observacoes || d.observacoes_lista.map(o => o.texto).join('\n\n');
+    if (obs.trim()) {
+      corpo += `<div class="bdo-sec azul">📝 OBSERVAÇÕES</div>
+        <div class="bdo-block">${renderizarParagrafos(obs)}</div>`;
+    }
+  }
+
+  document.getElementById('bdo-preview-box').innerHTML = `
+    <div class="bdo-ybar"></div>
+    <div class="bdo-hbar">
+      <div class="bdo-brand"><img src="${HAGAP_LOGO}" alt="HAGAP Instalações Elétricas"></div>
+      <div class="bdo-hinfo">
+        <h2>BOLETIM DIÁRIO DE OBRAS</h2>
+        <p>HAGAP Instalações Elétricas &nbsp;|&nbsp; Registro de Campo</p>
+        <p>Gerado em: ${now}</p>
+      </div>
+      <div class="bdo-num">Nº ${d.num_projeto || '---'}</div>
+    </div>
+    <div class="bdo-sec azul">📋 IDENTIFICAÇÃO</div>
+    <div class="bdo-row">
+      <div class="bdo-field"><div class="fl">Projeto</div><div class="fv">${d.num_projeto || '—'}</div></div>
+      <div class="bdo-field"><div class="fl">Cidade</div><div class="fv">${d.cidade || '—'}</div></div>
+    </div>
+    <div class="bdo-row">
+      <div class="bdo-field"><div class="fl">Data</div><div class="fv">${d.data_bdo || '—'}</div></div>
+      <div class="bdo-field"><div class="fl">Horário / Horas trabalhadas</div><div class="fv">${d.hora_inicio || '--:--'} → ${d.hora_final || '--:--'}${d.horas_trabalhadas ? ' · ' + d.horas_trabalhadas : ''}</div></div>
+    </div>
+    <div class="bdo-row">
+      <div class="bdo-field"><div class="fl">KM Inicial</div><div class="fv">${d.km_inicial || '—'}</div></div>
+      <div class="bdo-field"><div class="fl">KM Final / Percorrido</div><div class="fv">${d.km_final || '—'}${d.km_percorrido !== null ? ' · ' + d.km_percorrido.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' km' : ''}</div></div>
+    </div>
+    <div class="bdo-row">
+      <div class="bdo-field"><div class="fl">Encarregado</div><div class="fv">${d.encarregado || '—'}</div></div>
+      <div class="bdo-field"><div class="fl">Equipes / Total de elementos</div><div class="fv">${d.qtd_equipes || '—'} equipe${d.qtd_equipes === 1 ? '' : 's'} · ${d.total_elementos || 0} elemento${d.total_elementos === 1 ? '' : 's'}</div></div>
+    </div>
+    ${composicaoEquipes ? `<div class="bdo-row"><div class="bdo-field" style="grid-column:1/-1"><div class="fl">Elementos por equipe</div><div class="fv">${composicaoEquipes}</div></div></div>` : ''}
+    ${ombPlv}
+    ${statusHtml}
+    ${corpo}
+    <div class="bdo-sec azul">✍️ ASSINATURAS</div>
+    <div class="bdo-sig">
+      <div class="bdo-sig-cell">
+        <img src="${d.sig_data}" style="max-width:180px;max-height:55px;display:block;margin:0 auto 4px">
+        <div class="bdo-sig-line"></div>
+        <div class="bdo-sig-name">${d.sig_nome || d.encarregado || '______________________'}</div>
+        <div class="bdo-sig-role">${d.sig_cargo || 'Encarregado'}</div>
+      </div>
+      <div class="bdo-sig-cell">
+        <div style="height:59px"></div>
+        <div class="bdo-sig-line"></div>
+        <div class="bdo-sig-name">______________________</div>
+        <div class="bdo-sig-role">Fiscal / Supervisor</div>
+      </div>
+    </div>
+    <div class="bdo-footer">
+      ⚡ HAGAP Instalações Elétricas &nbsp;|&nbsp; BDO: ${d.num_projeto || '---'} &nbsp;|&nbsp; ${now}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+//  UTILITÁRIOS
+// ═══════════════════════════════════════════════════
+async function salvarRascunho() {
+  try {
+    localStorage.setItem('bdo_rascunho', JSON.stringify(coletarDados()));
+    showToast('💾 Rascunho salvo localmente!', 'success');
+  } catch {
+    showToast('❌ Não foi possível salvar o rascunho neste navegador.', 'error');
+  }
+}
+
+function limparFormulario() {
+  if (!confirm('Limpar todos os dados do formulário?')) return;
+  document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(e => {
+    if (e.type === 'checkbox' || e.type === 'radio') e.checked = false; else e.value = '';
+  });
+  servicoLivre = null; manobraState = null; carroApoio = null; alteracoes = null; statusExec = null;
+  modoPostes = false; listaPostes = []; postesExtra = []; psMulti = {};
+  materiaisLista = []; obsLista = []; _midCnt = 0; _oidCnt = 0;
+  SERVICOS_DEF.forEach(s => { psMulti[s.id] = []; const el = document.getElementById('si-' + s.id); if (el) el.classList.remove('checked'); });
+  document.getElementById('main-container').classList.remove('modo-postes-on');
+  ['postes-config','status-motivo','obs-postes','mat-alert-ps','srv-alert-ps','apoio-auto-txt','manobra-qtd-chaves','manobra-outras','manobra-auto-txt'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  document.getElementById('obs-normal').style.display = '';
+  document.getElementById('mat-alert-n').style.display = '';
+  document.getElementById('srv-alert-n').style.display = '';
+  document.getElementById('materiais-lista').innerHTML = '';
+  document.getElementById('obs-lista').innerHTML = '';
+  ['st-conclusao','st-parcial','st-cancelamento','ps-sim','ps-nao','sl-sim','sl-nao','man-sim','man-nao','man-sem','alt-sim','alt-nao','apoio-sim','apoio-nao'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.className = 'tg-opt';
+  });
+  document.getElementById('ps-nao').className = 'tg-opt sel-std';
+  buildServicos();
+  document.getElementById('qtd_equipes').value = '1';
+  document.getElementById('sig-cargo').value = 'Encarregado Elétrico';
+  gerarCamposEquipes();
+  atualizarHoras();
+  atualizarKm();
+  limparCanvas();
+  goStep(1);
+  showToast('🔄 Formulário limpo!', 'info');
+}
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+window.onload = () => {
+  document.getElementById('logo-topbar').src = HAGAP_LOGO;
+  buildServicos();
+  initCanvas();
+  gerarCamposEquipes();
+  document.getElementById('data_bdo').value = new Date().toISOString().split('T')[0];
+  atualizarHoras();
+  atualizarKm();
+  updateProgress();
+};
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════
+function abrirModal() {
+  ['modal-confirm','modal-loading','modal-success','modal-error'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === 'modal-confirm' ? '' : 'none';
+  });
+  document.getElementById('modal-pdf').classList.add('open');
+}
+function fecharModal() { document.getElementById('modal-pdf').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════════
+//  PDF — geração local pelo painel de impressão do navegador
+// ═══════════════════════════════════════════════════
+function gerarPDF() {
+  const el = document.getElementById('bdo-preview-box');
+  if (!el || !el.innerHTML.trim()) {
+    showToast('❌ Prévia vazia — verifique os dados!', 'error');
+    fecharModal();
+    return;
+  }
+  fecharModal();
+  imprimirBDO(true);
+}
+
+// ═══════════════════════════════════════════════════
+//  E-MAIL — abre o aplicativo local, sem depender do servidor
+// ═══════════════════════════════════════════════════
+function enviarPorEmail() {
+  const d = coletarDados();
+  if (!d.num_projeto || !d.encarregado) {
+    showToast('⚠️ Preencha Projeto e Encarregado antes de enviar!', 'warn');
+    return;
+  }
+  const assunto = `BDO ${d.num_projeto} — ${d.data_bdo}`;
+  const corpo = montarResumoCompartilhamento(d, false) + '\n\nSalve o BDO em PDF e anexe-o a esta mensagem.';
+  showToast('📧 Abrindo seu aplicativo de e-mail. O PDF deve ser anexado após ser salvo.', 'info');
+  window.location.href = `mailto:?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+}
+
+// ═══════════════════════════════════════════════════
+//  WHATSAPP — mensagem local, sem gerar link de PDF no servidor
+// ═══════════════════════════════════════════════════
+function montarResumoCompartilhamento(d, formatarWhatsApp = true) {
+  const negrito = texto => formatarWhatsApp ? `*${texto}*` : texto;
+  const st = getStatusLabel();
+  const linhaOmb = d.servico_livre === false
+    ? `\n📋 OMB: ${d.num_omb || '—'} | PLV: ${d.num_plv || '—'}` : '';
+  const linhaSt = st ? `\n${st.emoji} ${negrito('Status:')} ${st.label}` : '';
+  const linhaKm = d.km_inicial || d.km_final
+    ? `\n🚙 ${negrito('KM:')} ${d.km_inicial || '—'} → ${d.km_final || '—'}${d.km_percorrido !== null ? ` (${d.km_percorrido.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} km)` : ''}` : '';
+  const linhaEquipe = `\n👥 ${negrito('Equipes:')} ${d.qtd_equipes} | ${negrito('Elementos:')} ${d.total_elementos}`;
+  const linhaApoio = d.carro_apoio ? `\n🚘 ${d.carro_apoio_texto}` : '';
+  const linhaObs = d.observacoes ? `\n📝 ${negrito('Obs:')} ${d.observacoes}` : '';
+  return `📋 ${negrito('BDO — Boletim Diário de Obras')}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `📁 ${negrito('Projeto:')} ${d.num_projeto}\n` +
+    `📍 ${negrito('Cidade:')} ${d.cidade}\n` +
+    `📅 ${negrito('Data:')} ${d.data_bdo}  ⏰ ${d.hora_inicio || '--'} → ${d.hora_final || '--'}${d.horas_trabalhadas ? ` (${d.horas_trabalhadas})` : ''}\n` +
+    `👷 ${negrito('Encarregado:')} ${d.encarregado}` +
+    `${linhaKm}${linhaEquipe}${linhaApoio}${linhaOmb}${linhaSt}${linhaObs}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `${formatarWhatsApp ? '_' : ''}⚡ HAGAP Instalações Elétricas${formatarWhatsApp ? '_' : ''}`;
+}
+function compartilharWhatsApp() {
+  const d = coletarDados();
+  if (!d.num_projeto || !d.encarregado) {
+    showToast('⚠️ Preencha Projeto e Encarregado antes de compartilhar!', 'warn');
+    return;
+  }
+
+  const msg = montarResumoCompartilhamento(d, true);
+  showToast('✅ Abrindo WhatsApp...', 'success');
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ═══════════════════════════════════════════════════
+//  IMPRIMIR
+// ═══════════════════════════════════════════════════
+// ── MODAL MAT ──
+function abrirModalMAT() {
+  if (window.location.protocol === 'file:') {
+    showToast('ℹ️ No arquivo local, registre a malha nos serviços. O desenho MAT continua disponível na versão online.', 'info');
+    return;
+  }
+  const modal = document.getElementById('modal-mat');
+  const iframe = document.getElementById('mat-iframe');
+  if (!iframe.src || iframe.src === window.location.href) {
+    iframe.src = '/malha';
+  }
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function fecharModalMAT() {
+  document.getElementById('modal-mat').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Fechar com ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') fecharModalMAT();
+});
+// Fechar clicando fora
+document.getElementById('modal-mat')?.addEventListener('click', function(e){
+  if(e.target === this) fecharModalMAT();
+});
+
+function imprimirBDO(salvarComoPdf = false) {
+  const el = document.getElementById('bdo-preview-box');
+  if (!el || !el.innerHTML.trim()) {
+    showToast('❌ Gere a prévia primeiro (passo 8)!', 'error');
+    return;
+  }
+  const d = coletarDados();
+  const nomeDocumento = `BDO_${(d.num_projeto || 'HAGAP').replace(/[^a-zA-Z0-9_-]/g, '_')}_${(d.data_bdo || '').replace(/\//g, '-')}`;
+
+  document.getElementById('bdo-print-root')?.remove();
+  document.getElementById('bdo-print-style')?.remove();
+
+  const areaImpressao = document.createElement('div');
+  areaImpressao.id = 'bdo-print-root';
+  areaImpressao.innerHTML = `<div class="bdo-preview">${el.innerHTML}</div>`;
+
+  const estiloImpressao = document.createElement('style');
+  estiloImpressao.id = 'bdo-print-style';
+  estiloImpressao.textContent = `
+    #bdo-print-root{display:none;}
+    @page{size:A4;margin:12mm 14mm 14mm 14mm;}
+    @media print{
+      *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+      html,body{background:#fff!important;margin:0!important;padding:0!important;}
+      body > *:not(#bdo-print-root){display:none!important;}
+      #bdo-print-root{display:block!important;width:100%!important;}
+      #bdo-print-root .bdo-preview{border:none!important;box-shadow:none!important;border-radius:0!important;width:100%!important;overflow:visible!important;}
+      #bdo-print-root .bdo-block,#bdo-print-root .bdo-field,#bdo-print-root .bdo-sec{break-inside:avoid;page-break-inside:avoid;}
+    }`;
+
+  document.head.appendChild(estiloImpressao);
+  document.body.appendChild(areaImpressao);
+
+  const tituloAnterior = document.title;
+  document.title = nomeDocumento;
+  const limparImpressao = () => {
+    document.title = tituloAnterior;
+    areaImpressao.remove();
+    estiloImpressao.remove();
+  };
+
+  showToast(salvarComoPdf ? '📄 No painel, escolha “Salvar como PDF”.' : '🖨️ Abrindo impressão...', 'info');
+  window.addEventListener('afterprint', limparImpressao, { once: true });
+
+  requestAnimationFrame(() => {
+    try {
+      window.focus();
+      window.print();
+      showToast(salvarComoPdf ? '📄 Painel de PDF aberto.' : '🖨️ Painel de impressão aberto.', 'success');
+    } catch (erro) {
+      limparImpressao();
+      showToast('❌ Não foi possível abrir a impressão.', 'error');
+    }
+  });
+}
+</script>
+</body>
+</html>
