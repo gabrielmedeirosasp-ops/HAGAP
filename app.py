@@ -2951,7 +2951,11 @@ def mapa_copel_hagap_v36():
 # ─── HAGAP GPS CAMPO — módulo independente ───
 @app.route("/gps")
 def gps_campo():
-    return send_from_directory("templates", "gps.html")
+    response = send_from_directory("templates", "gps.html")
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
