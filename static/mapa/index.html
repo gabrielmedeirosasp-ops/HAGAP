@@ -3123,6 +3123,71 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',bin
 })();
 </script>
 
+<!-- V50 CROQUI EXPORT BIND FIX — garante V29 como único handler do botão -->
+<script id="v50-croqui-export-bind-fix">
+(function(){
+ 'use strict';
+ function bindV50(){
+   var b=document.getElementById('v28ExportSelected');
+   if(!b){setTimeout(bindV50,120);return}
+   /* V28 e V29 são IIFEs separados. O V28 podia reassumir o onclick
+      dependendo da ordem de DOMContentLoaded. Capturamos o clique por último,
+      impedimos o handler legado e executamos diretamente o gerador ADM12. */
+   b.addEventListener('click',function(e){
+     e.preventDefault();
+     e.stopImmediatePropagation();
+     var checks=[].slice.call(document.querySelectorAll('.v28Pick:checked'));
+     var msg=document.getElementById('v28CroquiMsg');
+     if(!checks.length){if(msg)msg.textContent='Selecione pelo menos um projeto.';return}
+     var data;
+     try{data=JSON.parse(localStorage.getItem('HAGAP_ADM12_PROJECTS')||'null')}catch(err){data=null}
+     if(!data||!Array.isArray(data.projects)){if(msg)msg.textContent='[PENDENTE] Base ADM12 não localizada ou inválida.';return}
+     var selected=checks.map(function(x){return data.projects[Number(x.dataset.i)]}).filter(Boolean);
+     function valid(p){return p&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))}
+     var bad=selected.filter(function(p){return !(p.points||[]).some(valid)});
+     if(bad.length){if(msg)msg.textContent='[PENDENTE] Projeto sem coordenadas válidas: '+bad.map(function(p){return p.name||'[sem nome]'}).join(', ');return}
+     /* Usa a função pública instalada abaixo; se não existir, não chama o legado. */
+     if(typeof window.HAGAP_EXPORT_CROQUI_V50!=='function'){
+       if(msg)msg.textContent='[PENDENTE] Exportador ADM12 ainda não inicializou. Atualize a página e tente novamente.';
+       return;
+     }
+     window.HAGAP_EXPORT_CROQUI_V50(selected,msg);
+   },true);
+ }
+ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',bindV50):bindV50();
+})();
+</script>
+<script id="v50-croqui-export-engine">
+(function(){
+ 'use strict';
+ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+ function safeName(s){return String(s||'PROJETO').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_.-]+/g,'_').replace(/^_+|_+$/g,'')||'PROJETO'}
+ function validPoint(pt){return pt&&Number.isFinite(Number(pt.lat))&&Number.isFinite(Number(pt.lon))}
+ function classLabel(v){return v==='malha'?'Malha de aterramento':v==='concluido'?'Concluído':'Pendente'}
+ function classColor(v){return v==='malha'?'#ff3b30':v==='concluido'?'#29a85a':'#ffd43b'}
+ function build(project){
+   var pts=(project.points||[]).filter(validPoint),W=1120,H=650;
+   if(!pts.length)throw new Error('Projeto sem pontos válidos.');
+   var lats=pts.map(p=>Number(p.lat)),lons=pts.map(p=>Number(p.lon));
+   var lat0=Math.min.apply(null,lats),lat1=Math.max.apply(null,lats),lon0=Math.min.apply(null,lons),lon1=Math.max.apply(null,lons);
+   var padLat=Math.max((lat1-lat0)*.22,.0012),padLon=Math.max((lon1-lon0)*.22,.0012);lat0-=padLat;lat1+=padLat;lon0-=padLon;lon1+=padLon;
+   var z=18;for(var zz=19;zz>=6;zz--){if(Math.abs(lonX(lon1,zz)-lonX(lon0,zz))<=W-100&&Math.abs(latY(lat0,zz)-latY(lat1,zz))<=H-100){z=zz;break}}
+   var cx=(lonX(lon0,z)+lonX(lon1,z))/2,cy=(latY(lat0,z)+latY(lat1,z))/2,left=cx-W/2,top=cy-H/2;
+   var tx0=Math.floor(left/256),ty0=Math.floor(top/256),tx1=Math.floor((left+W)/256),ty1=Math.floor((top+H)/256),n=Math.pow(2,z),tiles='';
+   for(var ty=ty0;ty<=ty1;ty++)for(var tx=tx0;tx<=tx1;tx++){if(ty<0||ty>=n)continue;var wrap=((tx%n)+n)%n;tiles+='<img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/'+z+'/'+ty+'/'+wrap+'" style="position:absolute;left:'+(tx*256-left)+'px;top:'+(ty*256-top)+'px;width:256px;height:256px">'}
+   var marks=pts.map(function(p,i){var x=lonX(Number(p.lon),z)-left,y=latY(Number(p.lat),z)-top,c=classColor(p.class),label=esc(p.name||('Ponto '+(i+1)));return '<g><circle cx="'+x+'" cy="'+y+'" r="8" fill="'+c+'" stroke="#111" stroke-width="2"/><text x="'+(x+12)+'" y="'+(y-10)+'" font-size="13" font-weight="700" fill="#fff" stroke="#000" stroke-width="3" paint-order="stroke">'+label+'</text></g>'}).join('');
+   var rows=pts.map(function(p,i){return '<tr><td class="edit" contenteditable="true">'+(i+1)+'</td><td class="edit" contenteditable="true">'+esc(p.name||'')+'</td><td class="edit" contenteditable="true">'+esc(classLabel(p.class))+'</td><td>'+Number(p.lat).toFixed(7)+'</td><td>'+Number(p.lon).toFixed(7)+'</td><td class="edit" contenteditable="true">'+esc(p.obs||'')+'</td></tr>'}).join('');
+   var pname=esc(project.name||'[PROJETO NÃO INFORMADO]');
+   return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Croqui HAGAP '+pname+'</title><style>body{font-family:Arial,sans-serif;margin:20px;color:#132f47;background:#fff}h1{margin:0;color:#063a68;font-size:21px}.sub{font-size:12px;margin:5px 0 12px;color:#526b7e}.map{width:'+W+'px;height:'+H+'px;position:relative;overflow:hidden;background:#ddd;border:2px solid #173a57}.map img{user-select:none}.ov{position:absolute;inset:0}table{border-collapse:collapse;width:'+W+'px;margin-top:12px;font-size:10px}th,td{border:1px solid #7b8b98;padding:5px;text-align:left;vertical-align:top}th{background:#eaf0f5;color:#063a68}.note,.legend,.editbar{width:'+W+'px}.note{font-size:10px;margin-top:8px;line-height:1.4}.legend{margin:8px 0;font-size:11px}.ball{display:inline-block;width:11px;height:11px;border-radius:50%;border:1px solid #111;margin:0 4px 0 12px}.edit{outline:1px dashed #0d86f8;outline-offset:1px}.edit:focus{outline:2px solid #0d86f8;background:#fffbe8}.editbar{margin:0 0 10px;padding:9px 11px;box-sizing:border-box;background:#eaf4fb;border:1px solid #b9d5e8;border-radius:8px;font-size:11px}@media print{body{margin:7mm}.map,table,.note,.legend{max-width:100%;page-break-inside:avoid}.edit{outline:none!important}.editbar{display:none!important}}</style></head><body><div class="editbar"><b>MODO EDIÇÃO:</b> clique nos textos e células para editar. Latitude e longitude ficam protegidas.</div><h1 class="edit" contenteditable="true">CROQUI HAGAP — '+pname+'</h1><div class="sub edit" contenteditable="true">Fonte dos pontos: projeto selecionado no ADM HAGAP · Coordenadas preservadas exatamente conforme cadastro.</div><div class="legend edit" contenteditable="true"><span class="ball" style="background:#ff3b30"></span>Malha de aterramento <span class="ball" style="background:#ffd43b"></span>Pendente <span class="ball" style="background:#29a85a"></span>Concluído</div><div class="map">'+tiles+'<svg class="ov" width="'+W+'" height="'+H+'">'+marks+'</svg></div><table><thead><tr><th class="edit" contenteditable="true">#</th><th class="edit" contenteditable="true">Ponto</th><th class="edit" contenteditable="true">Classificação</th><th>Latitude</th><th>Longitude</th><th class="edit" contenteditable="true">Observação</th></tr></thead><tbody>'+rows+'</tbody></table><div class="note edit" contenteditable="true"><b>Rastreabilidade:</b> este croqui foi gerado exclusivamente a partir dos pontos do projeto ADM selecionado.</div></body></html>';
+ }
+ function download(name,html){var blob=new Blob([html],{type:'text/html;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000)}
+ window.HAGAP_EXPORT_CROQUI_V50=function(selected,msg){
+   var ok=0;
+   selected.forEach(function(p,i){setTimeout(function(){try{download('CROQUI_HAGAP_'+safeName(p.name)+'.html',build(p));ok++;if(msg)msg.textContent=ok+' de '+selected.length+' croqui(s) exportado(s).'}catch(e){if(msg)msg.textContent='[PENDENTE] '+(p.name||'Projeto')+': '+e.message}},i*350)});
+ };
+})();
+</script>
+
 <!-- V48 MOBILE SEARCH RESULT FIX — não altera searchAll nem dados -->
 <script id="hagap-v48-mobile-search-result-fix">
 (function(){
