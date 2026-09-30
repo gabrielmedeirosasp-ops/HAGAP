@@ -3056,7 +3056,13 @@ function init(){
  const b=I('v27ExportCroqui');
  if(b){b.onclick=open;b.textContent='EXPORTAR CROQUIS'}
  const original=I('admExportCroqui');
- if(original) original.style.display='none';
+ if(original){
+   /* O botão legado usava HAGAP_ADM_V1 e podia disparar
+      "Não há pontos HAGAP para o croqui" mesmo com projetos no ADM12.
+      A partir daqui qualquer acionamento dele abre o seletor ADM12. */
+   original.onclick=open;
+   original.style.display='none';
+ }
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();
