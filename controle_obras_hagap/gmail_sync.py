@@ -352,14 +352,18 @@ def process_message(service, message_id):
 
         for a in pdfs:
             name_upper = parsers.norm(a["filename"])
+
             if "FFO" in name_upper or "FF0" in name_upper:
                 attachment_kind = "FFO"
             elif "BMD" in name_upper:
                 attachment_kind = "BMD"
-            elif kind == "FFO":
+            elif len(pdfs) == 1 and kind == "FFO":
                 attachment_kind = "FFO"
-            else:
+            elif len(pdfs) == 1 and kind == "BMD":
                 attachment_kind = "BMD"
+            else:
+                # Ex.: e-mail BMD/FFO/MULTA. MULTA não pode virar BMD.
+                continue
 
             data = attachment_bytes(service, message_id, a["attachment_id"])
             text = pdf_text(data)
