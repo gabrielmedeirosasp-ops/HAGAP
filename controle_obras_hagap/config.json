@@ -1,0 +1,5 @@
+{
+  "history_start": "2025-01-01",
+  "sync_interval_minutes": 10,
+  "port": 5055
+}
