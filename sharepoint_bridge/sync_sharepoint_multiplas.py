@@ -94,12 +94,19 @@ def sincronizar_pasta(context, pasta):
     print("=" * 72)
 
     concluidos = 0
+    erros = []
 
     for indice, item in enumerate(baixar, start=1):
         nome = item.get("Name", item.get("ServerRelativeUrl"))
         print(f"[{indice}/{len(baixar)}] {nome}")
 
-        destino, bytes_salvos = sp.baixar_arquivo(context, item)
+        try:
+            destino, bytes_salvos = sp.baixar_arquivo(context, item)
+        except Exception as exc:
+            remoto = item.get("ServerRelativeUrl", nome)
+            erros.append({"arquivo": remoto, "erro": str(exc)})
+            print(f"  [ERRO] {nome}: {exc}", flush=True)
+            continue
 
         remoto = item["ServerRelativeUrl"]
         estado["arquivos"][remoto] = {
@@ -113,8 +120,16 @@ def sincronizar_pasta(context, pasta):
 
     print(
         f"[CONFIRMADO] Sincronizados nesta execução: {concluidos}. "
-        f"Sem alteração: {len(arquivos) - len(baixar)}."
+        f"Já atualizados: {len(arquivos) - len(baixar)}. "
+        f"Erros pendentes: {len(erros)}."
     )
+
+    if erros:
+        print("[PENDENTE] Estes arquivos serão tentados novamente na próxima execução:")
+        for erro in erros[:30]:
+            print(f"  - {erro['arquivo']} | {erro['erro']}")
+        if len(erros) > 30:
+            print(f"  ... mais {len(erros) - 30} arquivo(s).")
 
     return len(arquivos), concluidos
 
