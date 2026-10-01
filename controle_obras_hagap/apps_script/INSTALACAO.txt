@@ -1,0 +1,61 @@
+HAGAP — CONTROLE DE OBRAS — APPS SCRIPT
+
+OBJETIVO
+Nova página independente do site HAGAP atual.
+Não altera o site existente e não altera /boletim.
+
+ROTINA AUTOMÁTICA
+Gmail -> DOCUMENTOS / PDE / PLV / OMB / BMD / FFO -> Base -> Painel.
+
+PRIMEIRA CARGA
+Histórico desde 01/01/2025 em blocos mensais.
+A rotina também olha os últimos 7 dias em cada execução para que novidades apareçam antes do histórico terminar.
+
+DEDUPLICAÇÃO
+- ID único do Gmail em EMAILS_PROCESSADOS.
+- Chave única por evento em EVENTOS.
+- E-mail já concluído não é processado de novo.
+- E-mail com erro fica pendente e será tentado novamente.
+
+RELAÇÕES
+- DOCUMENTOS <projeto> = documentos enviados.
+- DOCUMENTOS PARCIAL <projeto> = parcial.
+- PDE = lê PDF e extrai Nº Projeto.
+- PLV = lê PDF e extrai Nº Projeto.
+- OMB = lê PDF, extrai PDE e resolve OMB -> PDE -> Projeto.
+- BMD = identifica projeto pelo nome do anexo/assunto.
+- FFO = identifica projeto pelo nome do anexo/assunto.
+
+SEGURANÇA
+- GmailApp apenas lê.
+- Não envia, não apaga e não move e-mails.
+- Projeto I/C/S permanece separado.
+- Se não houver evidência suficiente do projeto, o evento fica [PENDENTE] no LOG.
+- PDFs PDE/PLV/OMB são convertidos temporariamente em Google Docs para extração; o documento temporário vai para a lixeira.
+
+COMO INSTALAR
+1. No Apps Script, crie/abra o projeto "HAGAP - CONTROLE DE OBRAS".
+2. Em Code.gs, cole o arquivo Code.gs desta pasta.
+3. Crie um arquivo HTML chamado exatamente: Index
+4. Cole nele Index.html.
+5. Configurações do projeto -> mostrar appsscript.json.
+6. Substitua o manifesto pelo appsscript.json desta pasta.
+7. Salve.
+8. Execute configurarSistema() uma vez e autorize Gmail/Drive/Sheets/Docs.
+9. Execute sincronizarAgora() uma vez.
+10. Implantar -> Nova implantação -> Aplicativo da Web.
+11. Executar como: Eu.
+12. Quem tem acesso: Apenas eu.
+13. Abra a URL gerada.
+
+A função configurarSistema() cria automaticamente uma planilha chamada:
+HAGAP - CONTROLE DE OBRAS
+
+ABAS
+- EVENTOS
+- EMAILS_PROCESSADOS
+- LOG
+- CONFIG
+
+TRIGGER
+A função configurarSistema() cria trigger automático a cada 5 minutos.
