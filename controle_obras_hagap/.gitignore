@@ -1,0 +1,7 @@
+credentials.json
+token.json
+controle_obras.db
+controle_obras.db-shm
+controle_obras.db-wal
+__pycache__/
+*.pyc
