@@ -30,6 +30,33 @@ def extract_projects(*values):
     return found
 
 
+def extract_projects_from_pdf(pdf_text):
+    """
+    Extrai projeto de PDF com prioridade para campos rotulados.
+    Se o documento não trouxer um campo claro e houver mais de um número
+    de 7 dígitos, NÃO escolhe silenciosamente.
+    """
+    text = str(pdf_text or "")
+
+    patterns = [
+        r"N[º°]\s*Projeto\s*[:.]?\s*(\d{7}[A-Za-z]?)",
+        r"N[º°]\s*PROJETO\s*[:.]?\s*(\d{7}[A-Za-z]?)",
+        r"FISCAL\s+N[º°]\s*PROJETO[^\n]*\n[^\n]*?\b(\d{7}[A-Za-z]?)\b",
+        r"N[º°]\s*Projeto[^\n]*\n(?:[^\n]*\n){0,4}?[^\n]*?\b(\d{7}[A-Za-z]?)\b",
+    ]
+
+    for pattern in patterns:
+        m = re.search(pattern, text, re.I)
+        if m:
+            return [m.group(1).upper()]
+
+    candidates = extract_projects(text)
+    if len(candidates) == 1:
+        return candidates
+
+    return []
+
+
 def classify_subject(subject):
     s = norm(subject)
 
@@ -117,7 +144,7 @@ def parse_period(text):
 
 def parse_pde(subject, pdf_text):
     ref = parse_ref(subject, "PDE") or parse_ref(pdf_text, "PDE")
-    projects = extract_projects(pdf_text)
+    projects = extract_projects_from_pdf(pdf_text)
 
     municipio = parse_municipality_from_subject(subject)
     if not municipio:
@@ -144,7 +171,7 @@ def parse_pde(subject, pdf_text):
 
 def parse_plv(subject, pdf_text):
     ref = parse_ref(subject, "PLV") or parse_ref(pdf_text, "PLV")
-    projects = extract_projects(pdf_text)
+    projects = extract_projects_from_pdf(pdf_text)
     return {
         "kind": "PLV",
         "ref_number": ref,
@@ -173,7 +200,12 @@ def parse_omb(subject, pdf_text):
 
 
 def parse_measurement(kind, subject, pdf_text, attachment_name=""):
-    projects = extract_projects(pdf_text, subject, attachment_name)
+    # Em BMD/FFO, assunto/nome do anexo têm prioridade porque o PDF também
+    # contém outros números de 7 dígitos (ex.: número de fornecedor).
+    projects = extract_projects(subject, attachment_name)
+    if not projects:
+        projects = extract_projects_from_pdf(pdf_text)
+
     upper = norm(subject + " " + attachment_name + " " + (pdf_text or "")[:2000])
     details = {
         "parcial": "PARCIAL" in upper,
