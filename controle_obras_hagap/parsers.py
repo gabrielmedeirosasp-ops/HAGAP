@@ -108,10 +108,22 @@ def parse_ref(text, label):
 def parse_municipality_from_subject(subject):
     s = clean_text(subject)
     parts = [clean_text(x) for x in s.split(" - ")]
-    if len(parts) >= 3:
-        candidate = parts[2]
-        if candidate and "RESP" not in norm(candidate):
-            return candidate
+
+    ignorar = {
+        "ABERTO", "APROVADO", "CANCELADO", "REPROVADO",
+        "ENCERRADO", "FECHADO",
+    }
+
+    for candidate in parts[1:]:
+        n = norm(candidate)
+        if not candidate:
+            continue
+        if n in ignorar:
+            continue
+        if "RESP" in n or "ENVIADO POR" in n:
+            continue
+        return candidate
+
     return ""
 
 
@@ -202,7 +214,9 @@ def parse_omb(subject, pdf_text):
 def parse_measurement(kind, subject, pdf_text, attachment_name=""):
     # Em BMD/FFO, assunto/nome do anexo têm prioridade porque o PDF também
     # contém outros números de 7 dígitos (ex.: número de fornecedor).
-    projects = extract_projects(subject, attachment_name)
+    projects = extract_projects(attachment_name)
+    if not projects:
+        projects = extract_projects(subject)
     if not projects:
         projects = extract_projects_from_pdf(pdf_text)
 
