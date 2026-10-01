@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HAGAP — Controle de Obras</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="brand">
+      <img src="/logo-hagap" alt="HAGAP" class="logo">
+      <div>
+        <h1>Controle de Obras</h1>
+        <p>Programação → Execução → Documentos → BMD → FFO</p>
+      </div>
+    </div>
+    <div class="syncbox">
+      <span id="syncStatus" class="pill neutral">Carregando...</span>
+      <button id="syncBtn" class="btn primary" type="button">Sincronizar agora</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="cards">
+      <article class="card">
+        <div class="card-label">Obras identificadas</div>
+        <div class="card-value" id="kTotal">—</div>
+      </article>
+      <article class="card">
+        <div class="card-label">Documentos enviados</div>
+        <div class="card-value" id="kConcluidas">—</div>
+      </article>
+      <article class="card">
+        <div class="card-label">Documentos parciais</div>
+        <div class="card-value" id="kParciais">—</div>
+      </article>
+      <article class="card">
+        <div class="card-label">Programadas</div>
+        <div class="card-value" id="kProgramadas">—</div>
+      </article>
+      <article class="card">
+        <div class="card-label">Com BMD</div>
+        <div class="card-value" id="kBmd">—</div>
+      </article>
+      <article class="card">
+        <div class="card-label">Com FFO</div>
+        <div class="card-value" id="kFfo">—</div>
+      </article>
+    </section>
+
+    <section class="panel toolbar">
+      <div class="search-group">
+        <label for="busca">Pesquisar</label>
+        <input id="busca" type="search" placeholder="Projeto ou município">
+      </div>
+      <div class="filter-group">
+        <label><input type="checkbox" id="fConcluidas"> Documentos enviados</label>
+        <label><input type="checkbox" id="fParciais"> Parcial</label>
+        <label><input type="checkbox" id="fProgramadas"> Programada</label>
+        <label><input type="checkbox" id="fBmd"> BMD</label>
+        <label><input type="checkbox" id="fFfo"> FFO</label>
+      </div>
+      <button id="limparFiltros" class="btn ghost" type="button">Limpar filtros</button>
+    </section>
+
+    <section class="panel">
+      <div class="table-head">
+        <div>
+          <h2>Obras</h2>
+          <p id="contador">—</p>
+        </div>
+        <div id="ultimaSync" class="small"></div>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Projeto</th>
+              <th>Município</th>
+              <th>Documentos</th>
+              <th>PDE</th>
+              <th>PLV</th>
+              <th>OMB</th>
+              <th>BMD</th>
+              <th>FFO</th>
+              <th>Último movimento</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="10" class="empty">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">RASTREABILIDADE</span>
+          <h2 id="modalTitle">Projeto</h2>
+        </div>
+        <button class="icon-btn" id="modalClose" aria-label="Fechar">×</button>
+      </div>
+      <div id="modalBody" class="timeline"></div>
+    </div>
+  </div>
+
+  <script>
+    let dados = [];
+
+    const $ = id => document.getElementById(id);
+
+    function esc(v) {
+      return String(v ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    function dataBR(v) {
+      if (!v) return '—';
+      try {
+        const d = new Date(v);
+        if (Number.isNaN(d.getTime())) return esc(v);
+        return d.toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
+      } catch { return esc(v); }
+    }
+
+    function badge(ok, texto, cls='ok') {
+      return ok
+        ? `<span class="badge ${cls}">${esc(texto)}</span>`
+        : '<span class="badge off">—</span>';
+    }
+
+    function documentosBadge(r) {
+      if (r.documentos) return badge(true, 'ENVIADOS', 'success');
+      if (r.parcial) return badge(true, 'PARCIAL', 'warning');
+      return '<span class="badge off">—</span>';
+    }
+
+    function ultimoMov(r) {
+      const vals = [
+        r.documentos_data, r.parcial_data, r.pde_data, r.plv_data,
+        r.omb_data, r.bmd_data, r.ffo_data
+      ].filter(Boolean);
+      if (!vals.length) return '';
+      return vals.sort().at(-1);
+    }
+
+    function aplicar() {
+      const q = $('busca').value.trim().toLowerCase();
+      const selected = {
+        concluida: $('fConcluidas').checked,
+        parcial: $('fParciais').checked,
+        programada: $('fProgramadas').checked,
+        bmd: $('fBmd').checked,
+        ffo: $('fFfo').checked,
+      };
+      const hasFilter = Object.values(selected).some(Boolean);
+
+      const lista = dados.filter(r => {
+        const text = `${r.projeto} ${r.municipio || ''}`.toLowerCase();
+        if (q && !text.includes(q)) return false;
+        if (!hasFilter) return true;
+        return (
+          (selected.concluida && r.documentos) ||
+          (selected.parcial && r.parcial && !r.documentos) ||
+          (selected.programada && r.programada) ||
+          (selected.bmd && r.medida) ||
+          (selected.ffo && r.fechada)
+        );
+      });
+
+      render(lista);
+    }
+
+    function render(lista) {
+      $('contador').textContent = `${lista.length} obra(s) exibida(s)`;
+
+      if (!lista.length) {
+        $('tbody').innerHTML = '<tr><td colspan="10" class="empty">Nenhuma obra encontrada.</td></tr>';
+        return;
+      }
+
+      $('tbody').innerHTML = lista.map(r => `
+        <tr>
+          <td><button class="project-link" onclick="abrirProjeto('${esc(r.projeto)}')">${esc(r.projeto)}</button></td>
+          <td>${esc(r.municipio || '—')}</td>
+          <td>${documentosBadge(r)}</td>
+          <td>${r.qtd_pde ? badge(true, r.qtd_pde, 'blue') : badge(false)}</td>
+          <td>${r.qtd_plv ? badge(true, r.qtd_plv, 'blue') : badge(false)}</td>
+          <td>${r.qtd_omb ? badge(true, r.qtd_omb, 'blue') : badge(false)}</td>
+          <td>${r.qtd_bmd ? badge(true, r.qtd_bmd, 'paid') : badge(false)}</td>
+          <td>${r.qtd_ffo ? badge(true, r.qtd_ffo, 'final') : badge(false)}</td>
+          <td class="nowrap">${dataBR(ultimoMov(r))}</td>
+          <td><button class="btn tiny" onclick="abrirProjeto('${esc(r.projeto)}')">Detalhes</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function carregar() {
+      const [rResumo, rProjetos] = await Promise.all([
+        fetch('/api/resumo').then(r => r.json()),
+        fetch('/api/projetos').then(r => r.json())
+      ]);
+
+      const k = rResumo.resumo;
+      $('kTotal').textContent = k.total;
+      $('kConcluidas').textContent = k.concluidas;
+      $('kParciais').textContent = k.parciais;
+      $('kProgramadas').textContent = k.programadas;
+      $('kBmd').textContent = k.com_bmd;
+      $('kFfo').textContent = k.com_ffo;
+
+      const rt = rResumo.runtime;
+      if (!rt.gmail_configured) {
+        $('syncStatus').textContent = 'Gmail não conectado';
+        $('syncStatus').className = 'pill warning';
+      } else if (rt.running) {
+        $('syncStatus').textContent = 'Sincronizando...';
+        $('syncStatus').className = 'pill blue';
+      } else if (rt.last_error) {
+        $('syncStatus').textContent = 'Atenção';
+        $('syncStatus').className = 'pill warning';
+      } else {
+        $('syncStatus').textContent = 'Automático';
+        $('syncStatus').className = 'pill success';
+      }
+
+      const s = rResumo.ultima_sync;
+      $('ultimaSync').textContent = s?.finished_at
+        ? `Última sincronização: ${dataBR(s.finished_at)} · ${s.status}`
+        : 'Ainda sem sincronização concluída';
+
+      dados = rProjetos;
+      aplicar();
+    }
+
+    async function abrirProjeto(projeto) {
+      $('modal').classList.remove('hidden');
+      $('modalTitle').textContent = `Projeto ${projeto}`;
+      $('modalBody').innerHTML = '<div class="empty">Carregando histórico...</div>';
+
+      const d = await fetch('/api/projeto/' + encodeURIComponent(projeto)).then(r => r.json());
+      const eventos = d.eventos || [];
+
+      if (!eventos.length) {
+        $('modalBody').innerHTML = '<div class="empty">Nenhum evento localizado.</div>';
+        return;
+      }
+
+      $('modalBody').innerHTML = eventos.map(e => {
+        const refs = [
+          e.ref_number ? `Nº ${e.ref_number}` : '',
+          e.related_ref ? `PDE relacionado: ${e.related_ref}` : '',
+          e.status || '',
+          e.municipality || ''
+        ].filter(Boolean).join(' · ');
+
+        return `
+          <article class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <div class="timeline-top">
+                <span class="event-kind">${esc(e.kind)}</span>
+                <span class="small">${dataBR(e.event_ts)}</span>
+              </div>
+              <strong>${esc(e.subject || '')}</strong>
+              <div class="event-meta">${esc(refs)}</div>
+              ${e.attachment_name ? `<div class="file">${esc(e.attachment_name)}</div>` : ''}
+              ${e.gmail_url ? `<a class="mail-link" target="_blank" rel="noopener" href="${esc(e.gmail_url)}">Abrir e-mail</a>` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function sincronizar() {
+      $('syncBtn').disabled = true;
+      $('syncBtn').textContent = 'Iniciando...';
+      try {
+        const r = await fetch('/api/sincronizar', {method:'POST'});
+        const j = await r.json();
+        if (!j.ok && j.status !== 'em_execucao') {
+          alert(j.erro || 'Não foi possível iniciar.');
+        }
+      } finally {
+        setTimeout(() => {
+          $('syncBtn').disabled = false;
+          $('syncBtn').textContent = 'Sincronizar agora';
+          carregar();
+        }, 1800);
+      }
+    }
+
+    ['busca','fConcluidas','fParciais','fProgramadas','fBmd','fFfo']
+      .forEach(id => $(id).addEventListener('input', aplicar));
+
+    $('limparFiltros').onclick = () => {
+      $('busca').value = '';
+      ['fConcluidas','fParciais','fProgramadas','fBmd','fFfo'].forEach(id => $(id).checked = false);
+      aplicar();
+    };
+
+    $('syncBtn').onclick = sincronizar;
+    $('modalClose').onclick = () => $('modal').classList.add('hidden');
+    $('modal').addEventListener('click', e => {
+      if (e.target === $('modal')) $('modal').classList.add('hidden');
+    });
+
+    carregar();
+    setInterval(carregar, 30000);
+  </script>
+</body>
+</html>
