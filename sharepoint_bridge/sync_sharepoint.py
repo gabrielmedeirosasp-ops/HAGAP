@@ -60,16 +60,45 @@ def endpoint_download(caminho):
     )
 
 
+def request_get_retry(context, url, headers=None, tentativas=6, timeout=120000):
+    ultimo_erro = None
+
+    for tentativa in range(1, tentativas + 1):
+        try:
+            resposta = context.request.get(
+                url,
+                headers=headers or {},
+                timeout=timeout,
+            )
+            if resposta.ok:
+                return resposta
+
+            ultimo_erro = RuntimeError(
+                f"SharePoint HTTP {resposta.status}: {resposta.text()[:300]}"
+            )
+        except Exception as exc:
+            ultimo_erro = exc
+
+        if tentativa < tentativas:
+            espera = min(30, 2 ** (tentativa - 1))
+            print(
+                f"  [RETRY {tentativa}/{tentativas}] conexão interrompida; "
+                f"nova tentativa em {espera}s...",
+                flush=True,
+            )
+            time.sleep(espera)
+
+    raise RuntimeError(
+        f"Falha após {tentativas} tentativas: {ultimo_erro}"
+    )
+
+
 def get_json(context, endpoint):
-    resposta = context.request.get(
+    resposta = request_get_retry(
+        context,
         url_api(endpoint),
         headers={"Accept": "application/json;odata=nometadata"},
-        timeout=120000,
     )
-    if not resposta.ok:
-        raise RuntimeError(
-            f"SharePoint HTTP {resposta.status}: {resposta.text()[:300]}"
-        )
     return resposta.json()
 
 
@@ -192,15 +221,11 @@ def baixar_arquivo(context, item):
     destino = caminho_local(remoto)
     destino.parent.mkdir(parents=True, exist_ok=True)
 
-    resposta = context.request.get(
+    resposta = request_get_retry(
+        context,
         url_api(endpoint_download(remoto)),
-        timeout=120000,
+        timeout=180000,
     )
-
-    if not resposta.ok:
-        raise RuntimeError(
-            f"Falha baixando {remoto}: HTTP {resposta.status}"
-        )
 
     dados = resposta.body()
     esperado = item.get("Length")
@@ -261,12 +286,19 @@ def executar_sync(context):
     print("=" * 72)
 
     concluidos = 0
+    erros = []
 
     for indice, item in enumerate(baixar, start=1):
         nome = item.get("Name", item.get("ServerRelativeUrl"))
         print(f"[{indice}/{len(baixar)}] {nome}")
 
-        destino, bytes_salvos = baixar_arquivo(context, item)
+        try:
+            destino, bytes_salvos = baixar_arquivo(context, item)
+        except Exception as exc:
+            remoto = item.get("ServerRelativeUrl", nome)
+            erros.append({"arquivo": remoto, "erro": str(exc)})
+            print(f"  [ERRO] {nome}: {exc}", flush=True)
+            continue
 
         remoto = item["ServerRelativeUrl"]
         estado["arquivos"][remoto] = {
@@ -281,8 +313,16 @@ def executar_sync(context):
     print()
     print(
         f"[CONFIRMADO] Sincronizados nesta execução: {concluidos}. "
-        f"Sem alteração: {len(arquivos) - len(baixar)}."
+        f"Já atualizados: {len(arquivos) - len(baixar)}. "
+        f"Erros pendentes: {len(erros)}."
     )
+
+    if erros:
+        print("\n[PENDENTE] Arquivos que serão tentados novamente na próxima execução:")
+        for erro in erros[:30]:
+            print(f"  - {erro['arquivo']} | {erro['erro']}")
+        if len(erros) > 30:
+            print(f"  ... mais {len(erros) - 30} arquivo(s).")
 
 
 def main():
