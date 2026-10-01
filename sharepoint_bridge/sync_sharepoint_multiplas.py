@@ -37,8 +37,49 @@ def aguardar_login_generico(context, pagina, pasta_teste, limite_segundos=300):
     )
 
 
+def listar_recursivo_com_progresso(context, pasta_raiz):
+    arquivos = []
+    pilha = [pasta_raiz]
+    pastas_lidas = 0
+
+    print(f"[VARREDURA] Iniciando: {pasta_raiz}", flush=True)
+
+    while pilha:
+        atual = pilha.pop()
+        pastas_lidas += 1
+
+        js_arquivos = sp.get_json(context, sp.endpoint_arquivos(atual))
+        novos_arquivos = js_arquivos.get("value", [])
+        arquivos.extend(novos_arquivos)
+
+        js_pastas = sp.get_json(context, sp.endpoint_pastas(atual))
+        subpastas = []
+        for pasta in js_pastas.get("value", []):
+            nome = pasta.get("Name", "")
+            if str(nome).lower() == "forms":
+                continue
+            caminho = pasta.get("ServerRelativeUrl")
+            if caminho:
+                subpastas.append(caminho)
+                pilha.append(caminho)
+
+        print(
+            f"[VARREDURA] Pastas lidas: {pastas_lidas} | "
+            f"Arquivos encontrados: {len(arquivos)} | "
+            f"Fila: {len(pilha)} | Atual: {atual}",
+            flush=True,
+        )
+
+    print(
+        f"[VARREDURA] Concluída. Pastas: {pastas_lidas} | "
+        f"Arquivos: {len(arquivos)}",
+        flush=True,
+    )
+    return arquivos
+
+
 def sincronizar_pasta(context, pasta):
-    arquivos = sp.listar_recursivo(context, pasta)
+    arquivos = listar_recursivo_com_progresso(context, pasta)
     estado = sp.carregar_estado()
     estado.setdefault("arquivos", {})
 
