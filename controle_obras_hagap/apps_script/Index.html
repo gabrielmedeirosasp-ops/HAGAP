@@ -12,12 +12,12 @@
     .brand{display:flex;align-items:center;gap:16px}.brand img{width:170px;max-height:70px;object-fit:contain;background:#fff;border-radius:10px;padding:5px 9px}
     h1{margin:0;font-size:28px}.sub{margin-top:5px;font-weight:700;opacity:.9}.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .btn{border:0;border-radius:8px;padding:10px 13px;font-weight:800;cursor:pointer;background:#fff;color:var(--azul)}.btn.primary{background:var(--azul);color:#fff}.btn:disabled{opacity:.55;cursor:wait}
-    .wrap{max-width:1650px;margin:auto;padding:20px}.cards{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:12px;margin-bottom:15px}
+    .wrap{max-width:1750px;margin:auto;padding:20px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:15px}
     .card,.panel{background:#fff;border:1px solid var(--linha);border-radius:13px;box-shadow:var(--sombra)}.card{padding:15px}.label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:var(--muted)}.value{font-size:30px;font-weight:900;color:var(--azul);margin-top:5px}
     .panel{padding:15px;margin-bottom:15px}.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.toolbar input[type=search]{flex:1;min-width:240px;padding:11px 12px;border:1px solid #c8d3e2;border-radius:9px;font-size:14px}.checks{display:flex;gap:12px;flex-wrap:wrap}.checks label{font-size:13px;font-weight:700}
     .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;color:var(--muted);font-size:12px}.scroll{overflow:auto;border:1px solid var(--linha);border-radius:10px}
     table{border-collapse:collapse;width:100%;min-width:1120px;background:#fff}th{position:sticky;top:0;background:var(--azul);color:#fff;text-align:left;padding:10px;font-size:11px;text-transform:uppercase;letter-spacing:.04em}td{padding:9px 10px;border-bottom:1px solid #edf1f6;font-size:13px}tbody tr:hover{background:#f7faff}
-    .projeto{color:var(--azul);font-weight:900;cursor:pointer;border:0;background:transparent;padding:0;font-size:14px}.badge{display:inline-flex;min-width:32px;justify-content:center;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900;background:#f0f2f5;color:#97a0ae}.ok{background:var(--verdebg);color:var(--verde)}.warn{background:var(--ambarbg);color:var(--ambar)}.blue{background:#e3edff;color:var(--azul)}.final{background:var(--roxobg);color:var(--roxo)}
+    .projeto{color:var(--azul);font-weight:900;cursor:pointer;border:0;background:transparent;padding:0;font-size:14px}.badge{display:inline-flex;min-width:32px;justify-content:center;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900;background:#f0f2f5;color:#97a0ae}.ok{background:var(--verdebg);color:var(--verde)}.warn{background:var(--ambarbg);color:var(--ambar)}.danger{background:#ffe1e1;color:#a40000}.today{background:#ffe7c2;color:#9b4d00}.blue{background:#e3edff;color:var(--azul)}.final{background:var(--roxobg);color:var(--roxo)}.pedlink{color:inherit;text-decoration:none}.pedidoObs{display:block;max-width:260px;margin-top:5px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .modal{position:fixed;inset:0;background:rgba(5,18,40,.58);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}.hidden{display:none}.modalbox{width:min(940px,97vw);max-height:88vh;overflow:auto;background:#fff;border-radius:15px;box-shadow:0 28px 70px rgba(0,0,0,.35)}.mhead{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--linha);padding:16px 18px;display:flex;justify-content:space-between;align-items:center}.mhead h2{margin:0}.close{width:34px;height:34px;border:0;border-radius:50%;font-size:22px;cursor:pointer}
     .timeline{padding:18px}.event{border-left:4px solid var(--amarelo);background:#f9fbfe;border-radius:9px;padding:11px 13px;margin-bottom:10px}.eventtop{display:flex;justify-content:space-between;gap:10px;margin-bottom:5px}.kind{font-weight:900;color:var(--azul)}.meta{color:var(--muted);font-size:12px;margin-top:5px}.mail{display:inline-block;margin-top:7px;color:var(--azul);font-size:12px;font-weight:800;text-decoration:none}.empty{text-align:center;color:var(--muted);padding:28px}
     @media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){header{align-items:flex-start;flex-direction:column;padding:14px}.brand img{width:120px}.brand h1{font-size:22px}.wrap{padding:10px}.cards{grid-template-columns:repeat(2,1fr)}}
@@ -27,7 +27,7 @@
 <header>
   <div class="brand">
     <img id="logo" alt="HAGAP">
-    <div><h1>Controle de Obras</h1><div class="sub">Programação → Documentos → BMD → FFO</div></div>
+    <div><h1>Controle de Obras</h1><div class="sub">Pedido → PDE/PLV → OMB → Documentos → BMD → FFO</div></div>
   </div>
   <div class="actions">
     <span id="syncTxt">Carregando...</span>
@@ -39,6 +39,9 @@
 <main class="wrap">
   <section class="cards">
     <div class="card"><div class="label">Obras</div><div id="kTotal" class="value">—</div></div>
+    <div class="card"><div class="label">Com pedido</div><div id="kPedidos" class="value">—</div></div>
+    <div class="card"><div class="label">Pedido sem PDE/PLV</div><div id="kSemLib" class="value">—</div></div>
+    <div class="card"><div class="label">Alertas de pedido</div><div id="kAlertas" class="value">—</div></div>
     <div class="card"><div class="label">Documentos enviados</div><div id="kDocs" class="value">—</div></div>
     <div class="card"><div class="label">Documentos parcial</div><div id="kParc" class="value">—</div></div>
     <div class="card"><div class="label">Programadas</div><div id="kProg" class="value">—</div></div>
@@ -49,6 +52,9 @@
   <section class="panel toolbar">
     <input id="busca" type="search" placeholder="Pesquisar projeto ou município..." oninput="filtrar()">
     <div class="checks">
+      <label><input id="fPedido" type="checkbox" onchange="filtrar()"> Com pedido</label>
+      <label><input id="fSemPedido" type="checkbox" onchange="filtrar()"> Sem pedido</label>
+      <label><input id="fAlerta" type="checkbox" onchange="filtrar()"> Alerta pedido</label>
       <label><input id="fDocs" type="checkbox" onchange="filtrar()"> Documentos</label>
       <label><input id="fParc" type="checkbox" onchange="filtrar()"> Parcial</label>
       <label><input id="fProg" type="checkbox" onchange="filtrar()"> Programada</label>
@@ -66,11 +72,11 @@
     <div class="scroll">
       <table>
         <thead><tr>
-          <th>Projeto</th><th>Município</th><th>Documentos</th>
-          <th>PDE</th><th>PLV</th><th>OMB</th><th>BMD</th><th>FFO</th>
+          <th>Projeto</th><th>Município</th><th>Pedido</th>
+          <th>PDE</th><th>PLV</th><th>OMB</th><th>Documentos</th><th>BMD</th><th>FFO</th>
           <th>Último movimento</th><th></th>
         </tr></thead>
-        <tbody id="tbody"><tr><td colspan="10" class="empty">Carregando...</td></tr></tbody>
+        <tbody id="tbody"><tr><td colspan="11" class="empty">Carregando...</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -96,6 +102,9 @@
         base=d;linhas=d.projetos||[];
         el('logo').src=d.logoUrl||'';
         el('kTotal').textContent=d.resumo.total;
+        el('kPedidos').textContent=d.resumo.comPedido||0;
+        el('kSemLib').textContent=d.resumo.pedidosSemLiberacao||0;
+        el('kAlertas').textContent=d.resumo.alertasPedido||0;
         el('kDocs').textContent=d.resumo.documentosEnviados;
         el('kParc').textContent=d.resumo.documentosParciais;
         el('kProg').textContent=d.resumo.programadas;
@@ -106,14 +115,27 @@
         filtrar();
       })
       .withFailureHandler(err=>{
-        el('tbody').innerHTML='<tr><td colspan="10" class="empty">Erro: '+esc(err.message||err)+'</td></tr>';
+        el('tbody').innerHTML='<tr><td colspan="11" class="empty">Erro: '+esc(err.message||err)+'</td></tr>';
       })
       .getPainelData();
+  }
+
+  function pedidoHtml(p){
+    if(!p.pedido||!p.ultimoPedido)return badge('NÃO PEDIDO','');
+    const ped=p.ultimoPedido;
+    const a=p.alertaPedido||{};
+    const cls=a.nivel==='OK'?'ok':a.nivel==='ALERTA'?'warn':a.nivel==='HOJE'?'today':a.nivel==='ATRASADO'?'danger':'blue';
+    const data=ped.dataServico||'SEM DATA';
+    const link=ped.urlEmail?'<a class="pedlink" href="'+esc(ped.urlEmail)+'" target="_blank">'+badge('PEDIDO '+data,cls)+'</a>':badge('PEDIDO '+data,cls);
+    const alerta=a.texto&&a.texto!=='PEDIDO'&&a.texto!=='PDE/PLV RECEBIDO'?'<div class="pedidoObs"><strong>'+esc(a.texto)+'</strong></div>':'';
+    const obs=ped.observacao?'<div class="pedidoObs" title="'+esc(ped.observacao)+'">'+esc(ped.observacao)+'</div>':'';
+    return link+alerta+obs;
   }
 
   function filtrar(){
     const q=el('busca').value.trim().toLowerCase();
     const filtros={
+      pedido:el('fPedido').checked,semPedido:el('fSemPedido').checked,alerta:el('fAlerta').checked,
       docs:el('fDocs').checked,parc:el('fParc').checked,prog:el('fProg').checked,
       bmd:el('fBmd').checked,ffo:el('fFfo').checked
     };
@@ -123,20 +145,22 @@
       const txt=(p.projeto+' '+(p.municipio||'')).toLowerCase();
       if(q&&!txt.includes(q))return false;
       if(!ativo)return true;
-      return (filtros.docs&&p.docFinal)||(filtros.parc&&p.docParcial&&!p.docFinal)||(filtros.prog&&p.programada)||(filtros.bmd&&p.bmds>0)||(filtros.ffo&&p.ffos>0);
+      const alertaPedido=p.alertaPedido&&['ALERTA','HOJE','ATRASADO'].includes(p.alertaPedido.nivel);
+      return (filtros.pedido&&p.pedido)||(filtros.semPedido&&!p.pedido)||(filtros.alerta&&alertaPedido)||(filtros.docs&&p.docFinal)||(filtros.parc&&p.docParcial&&!p.docFinal)||(filtros.prog&&p.programada)||(filtros.bmd&&p.bmds>0)||(filtros.ffo&&p.ffos>0);
     });
 
     el('contador').textContent=arr.length+' obra(s) exibida(s)';
-    if(!arr.length){el('tbody').innerHTML='<tr><td colspan="10" class="empty">Nenhuma obra encontrada.</td></tr>';return}
+    if(!arr.length){el('tbody').innerHTML='<tr><td colspan="11" class="empty">Nenhuma obra encontrada.</td></tr>';return}
 
     el('tbody').innerHTML=arr.map(p=>`
       <tr>
         <td><button class="projeto" onclick="detalhes('${esc(p.projeto)}')">${esc(p.projeto)}</button></td>
         <td>${esc(p.municipio||'—')}</td>
-        <td>${p.docFinal?badge('ENVIADOS','ok'):(p.docParcial?badge('PARCIAL','warn'):badge('—',''))}</td>
+        <td>${pedidoHtml(p)}</td>
         <td>${p.qtdPde?badge(p.qtdPde,'blue'):badge('—','')}</td>
         <td>${p.qtdPlv?badge(p.qtdPlv,'blue'):badge('—','')}</td>
         <td>${p.qtdOmb?badge(p.qtdOmb,'blue'):badge('—','')}</td>
+        <td>${p.docFinal?badge('ENVIADOS','ok'):(p.docParcial?badge('PARCIAL','warn'):badge('—',''))}</td>
         <td>${p.bmds?badge(p.bmds,'blue'):badge('—','')}</td>
         <td>${p.ffos?badge(p.ffos,'final'):badge('—','')}</td>
         <td>${fmtData(p.ultimoMovimento)}</td>
@@ -146,7 +170,7 @@
 
   function limpar(){
     el('busca').value='';
-    ['fDocs','fParc','fProg','fBmd','fFfo'].forEach(id=>el(id).checked=false);
+    ['fPedido','fSemPedido','fAlerta','fDocs','fParc','fProg','fBmd','fFfo'].forEach(id=>el(id).checked=false);
     filtrar();
   }
 
@@ -175,6 +199,7 @@
             <strong>${esc(e.assunto||'')}</strong>
             <div class="meta">${esc(meta)}</div>
             ${e.anexo?'<div class="meta">Anexo: '+esc(e.anexo)+'</div>':''}
+            ${e.observacao?'<div class="meta"><strong>Observação/serviço:</strong> '+esc(e.observacao)+'</div>':''}
             ${e.urlEmail?'<a class="mail" href="'+esc(e.urlEmail)+'" target="_blank">Abrir e-mail</a>':''}
           </div>`;
         }).join('');
