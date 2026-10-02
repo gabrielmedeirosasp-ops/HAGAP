@@ -186,8 +186,26 @@ def municipio_from_text(text: str) -> str:
     return ""
 
 
+def project_from_text(text: str) -> str:
+    t = norm(text)
+    # Só aceita projeto quando houver rótulo explícito.
+    patterns = [
+        r"\bPROJETO\s*[:\-]?\s*(\d{7})\b",
+        r"\bN[ºO°.]?\s*PROJETO\s*[:\-]?\s*(\d{7})\b",
+        r"\bPROJ[.]?\s*[:\-]?\s*(\d{7})\b",
+    ]
+    achados = []
+    for pat in patterns:
+        achados += re.findall(pat, t)
+    unicos = []
+    for x in achados:
+        if x not in unicos:
+            unicos.append(x)
+    return unicos[0] if len(unicos) == 1 else ""
+
+
 def project_from_path(path: Path) -> str:
-    # Prioriza nomes de pastas/arquivo; exige ocorrência única de 7 dígitos.
+    # Fallback apenas quando o caminho inteiro contém UM único número de projeto.
     candidates = RE_PROJECT.findall(str(path))
     uniq = []
     for x in candidates:
@@ -230,16 +248,22 @@ def main():
     # 2) OBRAS PARA EXECUCAO — município SOMENTE do campo MUNICIPIO DA OBRA.
     proj_pdfs = all_pdfs_under(ROOT, lambda rel: "OBRAS PARA EXECUCAO" in rel)
     for pdf in proj_pdfs:
-        projeto = project_from_path(pdf)
+        texto = text_pdf(pdf)
+        projeto = project_from_text(texto) or project_from_path(pdf)
         if not projeto:
             continue
+
         p = projects[projeto]
         p["arquivosProjeto"].append({"nome": pdf.name, "url": ""})
         p["fontes"].append(str(pdf.relative_to(ROOT)))
 
-        city = municipio_from_text(text_pdf(pdf))
+        city = municipio_from_text(texto)
         if city:
             p["municipios"].append({"municipio": city, "arquivo": pdf.name})
+        else:
+            p["divergencias"].append(
+                "[NÃO LOCALIZADO] MUNICÍPIO DA OBRA não encontrado em " + pdf.name
+            )
 
     # 3) BMD/FFO — associação somente quando o nome/caminho contém UM projeto.
     med_pdfs = all_pdfs_under(
@@ -265,7 +289,7 @@ def main():
     report = [
         "HAGAP — BASE TEAMS LIMPA",
         "Fonte: somente C:\\HAGAP\\TEAMS_SYNC (SharePoint/Teams).",
-        "db.json/site HAGAP: NÃO UTILIZADO.",
+        "db.json/site HAGAP: NÃO UTILIZADO. Fonte técnica exclusiva: Teams/SharePoint.",
         "",
     ]
 
@@ -276,15 +300,19 @@ def main():
         prazo_values = sorted({x["prazo"] for x in p["aes_rows"] if x["prazo"]})
         mun_values = sorted({x["municipio"] for x in p["municipios"] if x["municipio"]})
 
-        aes = aes_values[0] if len(aes_values) == 1 else " / ".join(aes_values)
+        aes = aes_values[0] if len(aes_values) == 1 else (" / ".join(aes_values) if aes_values else "")
         prazo = prazo_values[0] if len(prazo_values) == 1 else ""
         municipio = mun_values[0] if len(mun_values) == 1 else ""
 
         div = list(p["divergencias"])
+        if not p["aes_rows"]:
+            div.append("[NÃO LOCALIZADO] Projeto não localizado em linha válida de AES.")
         if len(aes_values) > 1:
             div.append("[DIVERGÊNCIA] Mais de uma AES localizada: " + " / ".join(aes_values))
         if len(prazo_values) > 1:
             div.append("[DIVERGÊNCIA] Prazos diferentes na(s) AES: " + " / ".join(prazo_values))
+        if not mun_values:
+            div.append("[NÃO LOCALIZADO] Município não confirmado no campo MUNICÍPIO DA OBRA.")
         if len(mun_values) > 1:
             div.append("[DIVERGÊNCIA] Municípios diferentes em projetos: " + " / ".join(mun_values))
 
