@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import importlib.util
-import io
 import json
 import os
-import mimetypes
 import re
+import shutil
 import sys
 import time
 from datetime import date, datetime
@@ -15,55 +13,53 @@ from urllib.parse import quote
 from openpyxl import load_workbook
 from playwright.sync_api import sync_playwright
 
+
 BASE = Path(__file__).resolve().parent
-ROOT_REPO = BASE.parent
 
 SITE_URL = "https://copel0.sharepoint.com/sites/VORUMU-OBRAS-HAGAP-"
 PASTA_TEAMS = "/sites/VORUMU-OBRAS-HAGAP-/Documentos Compartilhados/HAGAP -/3- Obras para Execução"
-URL_INICIAL = (
-    "https://copel0.sharepoint.com/sites/VORUMU-OBRAS-HAGAP-/"
-    "Shared%20Documents/Forms/AllItems.aspx"
-)
-PERFIL_EDGE = Path(r"C:\HAGAP\SHAREPOINT_BROWSER_PROFILE")
-DRIVE_DESTINO_ID = "1TTdT09m-WOVeEiii2hed9y4JhsNw8uh9"
+URL_TEAMS = "https://copel0.sharepoint.com/sites/VORUMU-OBRAS-HAGAP-/Shared%20Documents/Forms/AllItems.aspx"
+
+DRIVE_FOLDER_ID = "1TTdT09m-WOVeEiii2hed9y4JhsNw8uh9"
+URL_DRIVE = f"https://drive.google.com/drive/u/0/folders/{DRIVE_FOLDER_ID}"
+
+PERFIL_EDGE = Path(r"C:\HAGAP\ENVIO_PROGRAMADOS_BROWSER")
+TEMP_ROOT = Path(r"C:\HAGAP\TEMP_ENVIO_PROGRAMADOS")
 RELATORIO = BASE / "RELATORIO_ENVIO_PROGRAMADOS_DRIVE.json"
-CONFIG_LOCAL = BASE / "config_envio_drive.json"
+ESTADO = BASE / "ESTADO_ENVIO_PROGRAMADOS.json"
 
 RE_PROJ = re.compile(r"(?<!\d)(\d{7}[A-Z]?)(?!\d)", re.I)
 
+# [CONFIRMADO] Estes projetos já estavam representados na pasta destino
+# quando o programa foi preparado. O estado local complementa esta lista
+# após cada envio bem-sucedido.
+JA_NO_DRIVE_INICIAL = {
+    "1513221","1706284","1711120","1718931","1718955",
+    "1726018","1726914","1727315","1727889","1731349",
+    "1731354","1732558","1737088","1737089","1739821",
+}
 
-def norm(s):
-    return re.sub(r"\s+", " ", str(s or "")).strip()
 
-
-def escolher_planilha() -> Path:
-    candidatos = [
-        Path.cwd() / "PROGRAMAÇÃO UMU .xlsx",
-        BASE / "PROGRAMAÇÃO UMU .xlsx",
-        Path.home() / "Downloads" / "PROGRAMAÇÃO UMU .xlsx",
-        Path.home() / "Desktop" / "PROGRAMAÇÃO UMU .xlsx",
-        Path.home() / "Documents" / "PROGRAMAÇÃO UMU .xlsx",
-    ]
-    for p in candidatos:
-        if p.exists():
-            return p
-
+def carregar_estado():
+    if not ESTADO.exists():
+        return {"enviados": []}
     try:
-        import tkinter as tk
-        from tkinter import filedialog
-        root = tk.Tk()
-        root.withdraw()
-        arq = filedialog.askopenfilename(
-            title="Selecione PROGRAMAÇÃO UMU .xlsx",
-            filetypes=[("Excel", "*.xlsx")],
-        )
-        root.destroy()
-        if arq:
-            return Path(arq)
+        data = json.loads(ESTADO.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            return {"enviados": []}
+        data.setdefault("enviados", [])
+        return data
     except Exception:
-        pass
+        return {"enviados": []}
 
-    raise RuntimeError("PROGRAMAÇÃO UMU .xlsx não localizada.")
+
+def salvar_enviado(projetos):
+    estado = carregar_estado()
+    atual = {str(x).upper() for x in estado.get("enviados", [])}
+    atual.update(str(x).upper() for x in projetos)
+    estado["enviados"] = sorted(atual)
+    estado["atualizado_em"] = datetime.now().isoformat(timespec="seconds")
+    ESTADO.write_text(json.dumps(estado, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def parse_data(v):
@@ -109,11 +105,37 @@ def projeto_da_celula(v):
     return s if re.fullmatch(r"\d{7}[A-Z]?", s) else ""
 
 
-def projetos_mes_atual(xlsx: Path) -> list[str]:
-    """
-    Leitura corrigida para a PROGRAMAÇÃO UMU:
-    DATA e PROJETO podem estar deslocados por colunas vazias/mescladas.
-    """
+def escolher_planilha():
+    candidatos = [
+        Path.cwd() / "PROGRAMAÇÃO UMU .xlsx",
+        BASE / "PROGRAMAÇÃO UMU .xlsx",
+        Path.home() / "Downloads" / "PROGRAMAÇÃO UMU .xlsx",
+        Path.home() / "Desktop" / "PROGRAMAÇÃO UMU .xlsx",
+        Path.home() / "Documents" / "PROGRAMAÇÃO UMU .xlsx",
+    ]
+    for p in candidatos:
+        if p.exists():
+            return p
+
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+        root = tk.Tk()
+        root.withdraw()
+        arq = filedialog.askopenfilename(
+            title="Selecione PROGRAMAÇÃO UMU .xlsx",
+            filetypes=[("Excel", "*.xlsx")],
+        )
+        root.destroy()
+        if arq:
+            return Path(arq)
+    except Exception:
+        pass
+
+    raise RuntimeError("PROGRAMAÇÃO UMU .xlsx não localizada.")
+
+
+def projetos_mes_atual(xlsx):
     wb = load_workbook(xlsx, data_only=True, read_only=True)
     if "MÊS ATUAL" not in wb.sheetnames:
         raise RuntimeError(
@@ -126,9 +148,6 @@ def projetos_mes_atual(xlsx: Path) -> list[str]:
     projetos = []
 
     for row in ws.iter_rows(values_only=True):
-        if not row:
-            continue
-
         data_linha = None
         for v in row:
             d = parse_data(v)
@@ -159,6 +178,14 @@ def projetos_mes_atual(xlsx: Path) -> list[str]:
     return projetos
 
 
+def project_ids_from_name(s):
+    return {m.upper() for m in RE_PROJ.findall(str(s or ""))}
+
+
+# ============================================================
+# TEAMS / SHAREPOINT - SOMENTE LEITURA
+# ============================================================
+
 def odata_path(path):
     return str(path).replace("'", "''")
 
@@ -171,7 +198,7 @@ def endpoint_files(folder):
     return (
         "/_api/web/GetFolderByServerRelativePath(decodedUrl='"
         + odata_path(folder)
-        + "')/Files?$select=Name,ServerRelativeUrl,TimeLastModified,Length,UniqueId"
+        + "')/Files?$select=Name,ServerRelativeUrl,Length"
     )
 
 
@@ -179,7 +206,7 @@ def endpoint_folders(folder):
     return (
         "/_api/web/GetFolderByServerRelativePath(decodedUrl='"
         + odata_path(folder)
-        + "')/Folders?$select=Name,ServerRelativeUrl,TimeLastModified,ItemCount"
+        + "')/Folders?$select=Name,ServerRelativeUrl,ItemCount"
     )
 
 
@@ -201,8 +228,10 @@ def request_get_retry(context, url, headers=None, tentativas=6, timeout=120000):
             last = RuntimeError(f"SharePoint HTTP {r.status}: {r.text()[:250]}")
         except Exception as exc:
             last = exc
+
         if n < tentativas:
             time.sleep(min(30, 2 ** (n - 1)))
+
     raise RuntimeError(f"Falha SharePoint após {tentativas} tentativas: {last}")
 
 
@@ -214,24 +243,27 @@ def get_json(context, endpoint):
     ).json()
 
 
-def aguardar_login(context, page, limite=300):
-    page.goto(URL_INICIAL, wait_until="domcontentloaded", timeout=120000)
+def aguardar_login_teams(context, page, limite=300):
+    page.goto(URL_TEAMS, wait_until="domcontentloaded", timeout=120000)
     inicio = time.time()
-    last = ""
+    ultimo = ""
+
     while time.time() - inicio < limite:
         try:
             get_json(context, endpoint_folders(PASTA_TEAMS))
+            print("\n[CONFIRMADO] Teams/SharePoint autenticado.")
             return
         except Exception as exc:
-            last = str(exc)
+            ultimo = str(exc)
             print(
-                "\rAguardando autenticação COPEL/Teams no Edge... faça login/MFA se solicitado.      ",
+                "\rAguardando login COPEL/Teams no Edge... faça login/MFA se solicitado.      ",
                 end="",
                 flush=True,
             )
             time.sleep(3)
+
     print()
-    raise RuntimeError("Não foi possível validar o Teams. Último erro: " + last)
+    raise RuntimeError("Não foi possível validar o Teams. Último erro: " + ultimo)
 
 
 def listar_arvore(context, folder):
@@ -244,6 +276,7 @@ def listar_arvore(context, folder):
 def scan_folder(context, folder):
     all_files = []
     stack = [folder]
+
     while stack:
         current = stack.pop()
         files, folders = listar_arvore(context, current)
@@ -252,319 +285,237 @@ def scan_folder(context, folder):
             u = sub.get("ServerRelativeUrl")
             if u:
                 stack.append(u)
+
     return all_files
 
 
-def project_ids_from_name(s):
-    return {m.upper() for m in RE_PROJ.findall(str(s or ""))}
+def safe_windows_name(name):
+    name = re.sub(r'[<>:"/\\|?*]', "_", str(name))
+    name = name.rstrip(". ")
+    return name or "_"
 
 
-def _config_get():
-    try:
-        return json.loads(CONFIG_LOCAL.read_text(encoding="utf-8")) if CONFIG_LOCAL.exists() else {}
-    except Exception:
-        return {}
+def baixar_pasta_teams(context, source_folder):
+    if TEMP_ROOT.exists():
+        shutil.rmtree(TEMP_ROOT, ignore_errors=True)
+    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
 
+    source_name = safe_windows_name(source_folder.rstrip("/").rsplit("/", 1)[-1])
+    local_root = TEMP_ROOT / source_name
+    local_root.mkdir(parents=True, exist_ok=True)
 
-def _config_set(**kwargs):
-    cfg = _config_get()
-    cfg.update(kwargs)
-    CONFIG_LOCAL.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
-
-
-def _load_drive_from_gerador(path):
-    try:
-        spec = importlib.util.spec_from_file_location("hagap_gerador_drive", path)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-    except Exception:
-        return None
-
-    if not hasattr(mod, "_get_drive_service_local"):
-        return None
-
-    try:
-        return mod._get_drive_service_local()
-    except Exception:
-        return None
-
-
-def _candidate_roots():
-    roots = [
-        Path(r"C:\\HAGAP"),
-        BASE,
-        BASE.parent,
-        Path.home() / "Downloads",
-        Path.home() / "Desktop",
-        Path.home() / "Documents",
-    ]
-
-    onedrive = Path.home() / "OneDrive"
-    if onedrive.exists():
-        roots.append(onedrive)
-
-    out = []
-    for root in roots:
-        try:
-            rr = root.resolve()
-            if rr.exists() and rr not in out:
-                out.append(rr)
-        except Exception:
-            pass
-    return out
-
-
-def _search_geradores():
-    encontrados = []
-    skip_dirs = {"node_modules", ".git", "venv", ".venv", "AppData", "__pycache__"}
-    vistos = 0
-    limite = 30000
-
-    for root in _candidate_roots():
-        try:
-            for cur, dirs, files in os.walk(root):
-                dirs[:] = [d for d in dirs if d not in skip_dirs]
-
-                try:
-                    if len(Path(cur).relative_to(root).parts) > 6:
-                        dirs[:] = []
-                except Exception:
-                    pass
-
-                for fn in files:
-                    vistos += 1
-                    if vistos > limite:
-                        return encontrados
-
-                    if fn.lower() == "gerador.py":
-                        encontrados.append(Path(cur) / fn)
-        except Exception:
-            continue
-
-    return encontrados
-
-
-def _manual_gerador():
-    try:
-        import tkinter as tk
-        from tkinter import filedialog
-
-        root = tk.Tk()
-        root.withdraw()
-        arq = filedialog.askopenfilename(
-            title="Selecione o gerador.py antigo do HAGAP",
-            filetypes=[
-                ("gerador.py", "gerador.py"),
-                ("Arquivo Python", "*.py"),
-                ("Todos os arquivos", "*.*"),
-            ],
-        )
-        root.destroy()
-        return Path(arq) if arq else None
-    except Exception:
-        return None
-
-
-def get_drive_service():
-    """
-    Procura automaticamente o gerador.py que o HAGAP já usa para o Drive.
-    Não exige mais C:\\HAGAP\\gerador.py em um caminho fixo.
-    """
-
-    salvo = _config_get().get("gerador_py")
-    if salvo and Path(salvo).exists():
-        svc = _load_drive_from_gerador(Path(salvo))
-        if svc:
-            print("[CONFIRMADO] Drive: integração HAGAP reutilizada.")
-            return svc
-
-    print("[Drive] Procurando gerador.py do HAGAP no computador...")
-
-    for arq in _search_geradores():
-        svc = _load_drive_from_gerador(arq)
-        if svc:
-            _config_set(gerador_py=str(arq))
-            print(f"[CONFIRMADO] gerador.py encontrado em: {arq}")
-            return svc
-
-    print("[PENDENTE] Não localizei automaticamente o gerador.py correto.")
-    print("Será aberta uma janela para você selecionar o gerador.py antigo do HAGAP.")
-
-    arq = _manual_gerador()
-    if arq and arq.exists():
-        svc = _load_drive_from_gerador(arq)
-        if svc:
-            _config_set(gerador_py=str(arq))
-            print("[CONFIRMADO] gerador.py aceito e salvo para as próximas execuções.")
-            return svc
-
-    raise RuntimeError(
-        "Não foi possível localizar o gerador.py que contém a integração Google Drive do HAGAP."
-    )
-
-
-def drive_children(service, parent_id):
-    out = []
-    token = None
-    while True:
-        r = service.files().list(
-            q=f"'{parent_id}' in parents and trashed=false",
-            fields="nextPageToken,files(id,name,mimeType,webViewLink)",
-            pageSize=1000,
-            pageToken=token,
-        ).execute()
-        out.extend(r.get("files", []))
-        token = r.get("nextPageToken")
-        if not token:
-            break
-    return out
-
-
-def drive_find_exact(service, parent_id, name, mime=None):
-    esc = name.replace("'", "\\'")
-    q = f"'{parent_id}' in parents and name='{esc}' and trashed=false"
-    if mime:
-        q += f" and mimeType='{mime}'"
-    r = service.files().list(q=q, fields="files(id,name,mimeType,webViewLink)", pageSize=10).execute()
-    return (r.get("files") or [None])[0]
-
-
-def drive_ensure_folder(service, parent_id, name):
-    mime = "application/vnd.google-apps.folder"
-    found = drive_find_exact(service, parent_id, name, mime)
-    if found:
-        return found["id"], False
-    meta = {"name": name, "mimeType": mime, "parents": [parent_id]}
-    x = service.files().create(body=meta, fields="id,name,webViewLink").execute()
-    return x["id"], True
-
-
-def drive_upload_bytes(service, parent_id, name, data):
-    from googleapiclient.http import MediaIoBaseUpload
-
-    found = drive_find_exact(service, parent_id, name)
-    if found:
-        return found["id"], False
-
-    mime = mimetypes.guess_type(name)[0] or "application/octet-stream"
-    media = MediaIoBaseUpload(io.BytesIO(data), mimetype=mime, resumable=True)
-    meta = {"name": name, "parents": [parent_id]}
-    x = service.files().create(body=meta, media_body=media, fields="id,name,webViewLink").execute()
-    return x["id"], True
-
-
-def relative_under(root, full):
-    root = root.rstrip("/")
-    if full.startswith(root + "/"):
-        return full[len(root) + 1:]
-    return full.rsplit("/", 1)[-1]
-
-
-def upload_source_folder(context, drive, source_folder, target_parent_id):
-    source_name = source_folder.rstrip("/").rsplit("/", 1)[-1]
-    root_drive_id, created = drive_ensure_folder(drive, target_parent_id, source_name)
     files = scan_folder(context, source_folder)
 
-    folders_cache = {"": root_drive_id}
-    uploaded = 0
-    skipped = 0
-
-    for item in files:
+    for idx, item in enumerate(files, start=1):
         remote = item.get("ServerRelativeUrl", "")
         if not remote:
             continue
-        rel = relative_under(source_folder, remote)
-        parts = [x for x in rel.split("/") if x]
+
+        rel = remote[len(source_folder.rstrip("/") + "/"):] if remote.startswith(source_folder.rstrip("/") + "/") else remote.rsplit("/", 1)[-1]
+        parts = [safe_windows_name(x) for x in rel.split("/") if x]
         if not parts:
             continue
 
-        parent_rel = ""
-        parent_id = root_drive_id
-        for part in parts[:-1]:
-            next_rel = parent_rel + ("/" if parent_rel else "") + part
-            if next_rel not in folders_cache:
-                fid, _ = drive_ensure_folder(drive, parent_id, part)
-                folders_cache[next_rel] = fid
-            parent_id = folders_cache[next_rel]
-            parent_rel = next_rel
+        destino = local_root.joinpath(*parts)
+        destino.parent.mkdir(parents=True, exist_ok=True)
 
-        fname = parts[-1]
-        existing = drive_find_exact(drive, parent_id, fname)
-        if existing:
-            skipped += 1
-            continue
-
+        print(f"\r[DOWNLOAD TEAMS] {idx}/{len(files)} - {parts[-1][:55]:55}", end="", flush=True)
         data = request_get_retry(
-            context, url_api(endpoint_download(remote)), timeout=180000
+            context,
+            url_api(endpoint_download(remote)),
+            timeout=180000,
         ).body()
-        _, made = drive_upload_bytes(drive, parent_id, fname, data)
-        uploaded += 1 if made else 0
-        skipped += 0 if made else 1
+        destino.write_bytes(data)
 
-    return {"folder": source_name, "folder_created": created, "uploaded": uploaded, "skipped": skipped}
+    print()
+    return local_root
 
 
-def upload_root_file(context, drive, item, target_parent_id):
-    name = item.get("Name") or item.get("ServerRelativeUrl", "").rsplit("/", 1)[-1]
-    existing = drive_find_exact(drive, target_parent_id, name)
-    if existing:
-        return {"file": name, "uploaded": 0, "skipped": 1}
+def baixar_arquivo_teams(context, item):
+    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
+    name = safe_windows_name(item.get("Name") or item.get("ServerRelativeUrl", "").rsplit("/", 1)[-1])
+    destino = TEMP_ROOT / name
     data = request_get_retry(
-        context, url_api(endpoint_download(item["ServerRelativeUrl"])), timeout=180000
+        context,
+        url_api(endpoint_download(item["ServerRelativeUrl"])),
+        timeout=180000,
     ).body()
-    _, made = drive_upload_bytes(drive, target_parent_id, name, data)
-    return {"file": name, "uploaded": 1 if made else 0, "skipped": 0 if made else 1}
+    destino.write_bytes(data)
+    return destino
 
+
+# ============================================================
+# GOOGLE DRIVE - LOGIN NORMAL PELO EDGE
+# ============================================================
+
+def aguardar_login_drive(page, limite=300):
+    page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
+    inicio = time.time()
+
+    while time.time() - inicio < limite:
+        url = page.url.lower()
+
+        if "drive.google.com/drive" in url:
+            print("\n[CONFIRMADO] Google Drive aberto.")
+            return
+
+        print(
+            "\rAguardando login do Google no Edge... entre na sua conta se solicitado.       ",
+            end="",
+            flush=True,
+        )
+        time.sleep(3)
+
+    print()
+    raise RuntimeError("Não foi possível abrir a pasta do Google Drive.")
+
+
+def _clicar_novo(page):
+    tentativas = [
+        lambda: page.get_by_role("button", name=re.compile(r"^(Novo|New)$", re.I)).first,
+        lambda: page.locator('[aria-label="Novo"]').first,
+        lambda: page.locator('[aria-label="New"]').first,
+        lambda: page.get_by_text(re.compile(r"^(Novo|New)$", re.I), exact=True).first,
+    ]
+
+    for getloc in tentativas:
+        try:
+            loc = getloc()
+            if loc.count() and loc.is_visible(timeout=1500):
+                loc.click()
+                return
+        except Exception:
+            pass
+
+    raise RuntimeError("Não encontrei o botão Novo/New no Google Drive.")
+
+
+def _menu_upload(page, pasta):
+    regex = (
+        re.compile(r"^(Upload de pasta|Folder upload)$", re.I)
+        if pasta
+        else re.compile(r"^(Upload de arquivo|File upload)$", re.I)
+    )
+
+    loc = page.get_by_text(regex, exact=True)
+    if not loc.count():
+        # Alguns layouts expõem como menuitem.
+        loc = page.get_by_role("menuitem", name=regex)
+
+    if not loc.count():
+        raise RuntimeError(
+            "Não encontrei a opção "
+            + ("Upload de pasta" if pasta else "Upload de arquivo")
+            + " no Google Drive."
+        )
+
+    return loc.first
+
+
+def _esperar_upload(page, nome, timeout_s):
+    inicio = time.time()
+    texto_ok = re.compile(
+        r"(Upload conclu[ií]do|Upload complete|Conclu[ií]do|Complete)",
+        re.I,
+    )
+
+    while time.time() - inicio < timeout_s:
+        try:
+            body = page.locator("body").inner_text(timeout=3000)
+            if texto_ok.search(body):
+                return True
+            if nome.lower() in body.lower() and time.time() - inicio > 12:
+                # O item já apareceu na pasta. Dá uma margem para finalizar.
+                time.sleep(3)
+                return True
+        except Exception:
+            pass
+
+        time.sleep(2)
+
+    return False
+
+
+def upload_drive_browser(page, caminho):
+    caminho = Path(caminho)
+    if not caminho.exists():
+        raise RuntimeError(f"Arquivo/pasta local não existe: {caminho}")
+
+    page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
+    time.sleep(2)
+
+    _clicar_novo(page)
+    menu = _menu_upload(page, caminho.is_dir())
+
+    try:
+        with page.expect_file_chooser(timeout=15000) as fc_info:
+            menu.click()
+        chooser = fc_info.value
+        chooser.set_files(str(caminho))
+    except Exception as exc:
+        raise RuntimeError(f"Falha ao selecionar {caminho.name} para upload: {exc}")
+
+    total = 0
+    if caminho.is_dir():
+        for p in caminho.rglob("*"):
+            if p.is_file():
+                try:
+                    total += p.stat().st_size
+                except Exception:
+                    pass
+    else:
+        total = caminho.stat().st_size
+
+    timeout_s = max(120, min(900, 90 + int(total / (1024 * 1024)) * 8))
+
+    print(f"[UPLOAD DRIVE] {caminho.name} ({total/1024/1024:.1f} MB)")
+    ok = _esperar_upload(page, caminho.name, timeout_s)
+
+    if not ok:
+        raise RuntimeError(
+            f"Não consegui confirmar o término do upload de {caminho.name}. "
+            "Confira o Google Drive antes de repetir."
+        )
+
+
+# ============================================================
+# FLUXO PRINCIPAL
+# ============================================================
 
 def main():
     planilha = escolher_planilha()
     projetos = projetos_mes_atual(planilha)
     alvos = set(projetos)
 
+    estado = carregar_estado()
+    conhecidos = set(JA_NO_DRIVE_INICIAL)
+    conhecidos.update(str(x).upper() for x in estado.get("enviados", []))
+
+    faltantes = alvos - conhecidos
+
     print("=" * 78)
     print("HAGAP — ENVIAR PROJETOS PROGRAMADOS PARA O DRIVE")
     print(f"Planilha: {planilha}")
     print(f"Mês: {date.today().month:02d}/{date.today().year}")
     print(f"Projetos únicos: {len(projetos)}")
-    print("[CONFIRMADO] Fonte dos arquivos: Teams/SharePoint — 3- Obras para Execução")
-    print("[CONFIRMADO] O Teams é somente leitura; nada será removido.")
+    print(f"[CONFIRMADO] Já conhecidos no Drive/estado local: {len(alvos & conhecidos)}")
+    print(f"[PENDENTE] A procurar no Teams: {len(faltantes)}")
+    print("[CONFIRMADO] Teams é somente leitura; nada será removido.")
+    print("[CONFIRMADO] Google Drive será acessado pelo login normal do Edge.")
     print("=" * 78)
 
-    PERFIL_EDGE.mkdir(parents=True, exist_ok=True)
-    drive = get_drive_service()
-
-    try:
-        meta = drive.files().get(
-            fileId=DRIVE_DESTINO_ID,
-            fields="id,name,mimeType,capabilities(canAddChildren)",
-        ).execute()
-        if meta.get("mimeType") != "application/vnd.google-apps.folder":
-            raise RuntimeError("O destino informado no Drive não é uma pasta.")
-        if not (meta.get("capabilities") or {}).get("canAddChildren", False):
-            raise RuntimeError("A autenticação HAGAP não possui permissão para adicionar arquivos nessa pasta do Drive.")
-        print(f"[CONFIRMADO] Drive destino: {meta.get('name')} ({DRIVE_DESTINO_ID})")
-    except Exception as exc:
-        raise RuntimeError(f"Não consegui validar a pasta destino no Drive: {exc}")
-
-    root_items = drive_children(drive, DRIVE_DESTINO_ID)
-    already = set()
-    for x in root_items:
-        already |= project_ids_from_name(x.get("name", ""))
-
-    faltavam = alvos - already
-    print(f"[CONFIRMADO] Projetos já representados no Drive: {len(alvos & already)}")
-    print(f"[PENDENTE] Projetos a procurar no Teams: {len(faltavam)}")
-
-    report = {
+    relatorio = {
         "planilha": str(planilha),
         "mes": f"{date.today().month:02d}/{date.today().year}",
         "projetos_programacao": projetos,
-        "ja_no_drive": sorted(alvos & already),
+        "ja_no_drive_ou_estado": sorted(alvos & conhecidos),
         "localizados_teams": {},
         "nao_localizados_teams": [],
-        "uploads": [],
         "divergencias": [],
+        "uploads": [],
     }
+
+    PERFIL_EDGE.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
@@ -575,34 +526,37 @@ def main():
         )
 
         try:
-            page = context.pages[0] if context.pages else context.new_page()
-            aguardar_login(context, page)
-            print("\n[CONFIRMADO] Sessão Teams/SharePoint validada.")
+            teams_page = context.pages[0] if context.pages else context.new_page()
+            aguardar_login_teams(context, teams_page)
+
+            drive_page = context.new_page()
+            aguardar_login_drive(drive_page)
 
             root_files, root_folders = listar_arvore(context, PASTA_TEAMS)
 
-            # Indexa pastas de primeiro nível pelo número que aparece no nome
-            # e, quando necessário, pelos nomes dos arquivos internos.
             folder_projects = {}
+            project_sources = {}
+
             for idx, folder in enumerate(root_folders, start=1):
                 url = folder.get("ServerRelativeUrl")
                 name = folder.get("Name", "")
-                ids = set(project_ids_from_name(name)) & alvos
+                ids = project_ids_from_name(name) & faltantes
 
                 if not ids and url:
                     files = scan_folder(context, url)
                     for item in files:
-                        ids |= project_ids_from_name(item.get("Name", "")) & alvos
-                        ids |= project_ids_from_name(item.get("ServerRelativeUrl", "")) & alvos
+                        ids |= project_ids_from_name(item.get("Name", "")) & faltantes
+                        ids |= project_ids_from_name(item.get("ServerRelativeUrl", "")) & faltantes
 
                 if ids:
                     folder_projects[url] = ids
                     for proj in ids:
-                        report["localizados_teams"].setdefault(proj, []).append(name)
+                        project_sources.setdefault(proj, set()).add(url)
+                        relatorio["localizados_teams"].setdefault(proj, []).append(name)
 
                 print(
-                    f"\r[VARREDURA] Pastas Teams: {idx}/{len(root_folders)} | projetos localizados: "
-                    f"{len(report['localizados_teams'])}",
+                    f"\r[VARREDURA] Pastas Teams: {idx}/{len(root_folders)} | "
+                    f"projetos localizados: {len(project_sources)}      ",
                     end="",
                     flush=True,
                 )
@@ -614,75 +568,108 @@ def main():
                 ids = (
                     project_ids_from_name(item.get("Name", ""))
                     | project_ids_from_name(item.get("ServerRelativeUrl", ""))
-                ) & alvos
+                ) & faltantes
+
                 if ids:
                     root_file_projects[item["ServerRelativeUrl"]] = ids
                     for proj in ids:
-                        report["localizados_teams"].setdefault(proj, []).append(item.get("Name", ""))
+                        project_sources.setdefault(proj, set()).add(item["ServerRelativeUrl"])
+                        relatorio["localizados_teams"].setdefault(proj, []).append(item.get("Name", ""))
 
-            # Detecta projetos com mais de uma origem de primeiro nível.
-            for proj, origins in report["localizados_teams"].items():
-                uniq = sorted(set(origins))
-                if len(uniq) > 1:
-                    report["divergencias"].append(
-                        {
-                            "projeto": proj,
-                            "tipo": "MULTIPLAS_ORIGENS_TEAMS",
-                            "origens": uniq,
-                        }
-                    )
+            # Bloqueia projeto encontrado em mais de uma origem.
+            divergentes = set()
+            for proj, sources in project_sources.items():
+                if len(sources) > 1:
+                    divergentes.add(proj)
+                    relatorio["divergencias"].append({
+                        "projeto": proj,
+                        "origens": sorted(sources),
+                    })
 
-            # Upload de pastas inteiras somente quando contêm pelo menos um projeto
-            # que ainda não está representado no destino.
+            # Pasta inteira.
             for folder_url, ids in folder_projects.items():
-                needed = ids & faltavam
+                needed = (ids & faltantes) - divergentes
                 if not needed:
                     continue
-                print(f"[UPLOAD] Pasta Teams: {folder_url.rsplit('/',1)[-1]} | projetos: {', '.join(sorted(needed))}")
-                result = upload_source_folder(context, drive, folder_url, DRIVE_DESTINO_ID)
-                result["projetos"] = sorted(needed)
-                report["uploads"].append(result)
 
+                print(
+                    f"\n[PREPARANDO] Pasta Teams: {folder_url.rsplit('/',1)[-1]} | "
+                    f"projetos: {', '.join(sorted(needed))}"
+                )
+
+                local = baixar_pasta_teams(context, folder_url)
+                upload_drive_browser(drive_page, local)
+
+                salvar_enviado(needed)
+                relatorio["uploads"].append({
+                    "origem": folder_url,
+                    "projetos": sorted(needed),
+                    "tipo": "PASTA_INTEIRA",
+                })
+
+                shutil.rmtree(TEMP_ROOT, ignore_errors=True)
+
+            # Arquivos soltos na raiz.
             for remote, ids in root_file_projects.items():
-                needed = ids & faltavam
+                needed = (ids & faltantes) - divergentes
                 if not needed:
                     continue
-                item = next((x for x in root_files if x.get("ServerRelativeUrl") == remote), None)
+
+                item = next(
+                    (x for x in root_files if x.get("ServerRelativeUrl") == remote),
+                    None,
+                )
                 if not item:
                     continue
-                print(f"[UPLOAD] Arquivo Teams: {item.get('Name')} | projetos: {', '.join(sorted(needed))}")
-                result = upload_root_file(context, drive, item, DRIVE_DESTINO_ID)
-                result["projetos"] = sorted(needed)
-                report["uploads"].append(result)
 
-            localizados = set(report["localizados_teams"])
-            report["nao_localizados_teams"] = sorted(faltavam - localizados)
+                print(
+                    f"\n[PREPARANDO] Arquivo Teams: {item.get('Name')} | "
+                    f"projetos: {', '.join(sorted(needed))}"
+                )
+
+                local = baixar_arquivo_teams(context, item)
+                upload_drive_browser(drive_page, local)
+
+                salvar_enviado(needed)
+                relatorio["uploads"].append({
+                    "origem": remote,
+                    "projetos": sorted(needed),
+                    "tipo": "ARQUIVO_RAIZ",
+                })
+
+                shutil.rmtree(TEMP_ROOT, ignore_errors=True)
+
+            localizados = set(relatorio["localizados_teams"])
+            relatorio["nao_localizados_teams"] = sorted(faltantes - localizados)
 
         finally:
             context.close()
 
-    RELATORIO.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    RELATORIO.write_text(
+        json.dumps(relatorio, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
 
     print()
     print("=" * 78)
     print("RESUMO")
-    print(f"Programação: {len(projetos)} projeto(s)")
-    print(f"Já no Drive: {len(report['ja_no_drive'])}")
-    print(f"Localizados no Teams: {len(report['localizados_teams'])}")
-    print(f"Não localizados no Teams: {len(report['nao_localizados_teams'])}")
-    print(f"Pastas/arquivos enviados: {len(report['uploads'])}")
-    print(f"Divergências: {len(report['divergencias'])}")
+    print(f"Programação: {len(projetos)}")
+    print(f"Já no Drive/estado: {len(relatorio['ja_no_drive_ou_estado'])}")
+    print(f"Localizados no Teams: {len(relatorio['localizados_teams'])}")
+    print(f"Não localizados: {len(relatorio['nao_localizados_teams'])}")
+    print(f"Divergências: {len(relatorio['divergencias'])}")
+    print(f"Uploads efetuados: {len(relatorio['uploads'])}")
     print(f"Relatório: {RELATORIO}")
     print("=" * 78)
 
-    if report["nao_localizados_teams"]:
-        print("\n[NÃO LOCALIZADO] Projetos não encontrados por número em pasta/arquivo do Teams:")
-        for p in report["nao_localizados_teams"]:
-            print(" -", p)
+    if relatorio["nao_localizados_teams"]:
+        print("\n[NÃO LOCALIZADO]")
+        for proj in relatorio["nao_localizados_teams"]:
+            print(" -", proj)
 
-    if report["divergencias"]:
-        print("\n[DIVERGÊNCIA] Projetos encontrados em mais de uma origem do Teams:")
-        for d in report["divergencias"]:
+    if relatorio["divergencias"]:
+        print("\n[DIVERGÊNCIA — NÃO ENVIADO AUTOMATICAMENTE]")
+        for d in relatorio["divergencias"]:
             print(" -", d["projeto"], "=>", " | ".join(d["origens"]))
 
 
