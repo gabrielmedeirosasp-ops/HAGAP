@@ -36,6 +36,10 @@
     .toolbar input[type=search]{flex:1;min-width:250px}.toolbar select{min-width:185px;font-weight:700;color:var(--azul)}
     .checks{display:flex;gap:10px;flex-wrap:wrap}.checks label{font-size:12px;font-weight:700}
     .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:12px}
+    .tabs{display:flex;gap:8px;margin-bottom:11px}
+    .tab{border:1px solid #bfcde0;background:#fff;color:var(--azul);font-weight:900;border-radius:9px;padding:10px 14px;cursor:pointer}
+    .tab.active{background:var(--azul);color:#fff;border-color:var(--azul)}
+    .sourcewarn{background:#fff3cd;border:1px solid #efd98a;color:#704f00;border-radius:9px;padding:10px 12px;margin-bottom:11px;font-weight:800;font-size:12px}
     .table-shell{background:#fff;border:1px solid var(--linha);border-radius:10px;box-shadow:var(--sombra);overflow:auto;max-height:calc(100vh - 250px)}
     table{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;background:#fff}
     thead th{
@@ -103,6 +107,8 @@
 <main class="wrap">
   <section class="cards">
     <div class="card"><div class="label">Obras na base</div><div id="kTotal" class="value">—</div></div>
+    <div class="card"><div class="label">Em aberto</div><div id="kAbertas" class="value">—</div></div>
+    <div class="card"><div class="label">Executadas / pagamentos</div><div id="kExecutadas" class="value">—</div></div>
     <div class="card"><div class="label">Com AES</div><div id="kAes" class="value">—</div></div>
     <div class="card"><div class="label">Projeto Teams</div><div id="kProjeto" class="value">—</div></div>
     <div class="card"><div class="label">Pedido sem PDE/PLV</div><div id="kSemLib" class="value">—</div></div>
@@ -111,6 +117,13 @@
     <div class="card"><div class="label">Com BMD</div><div id="kBmd" class="value">—</div></div>
     <div class="card"><div class="label">Com FFO</div><div id="kFfo" class="value">—</div></div>
   </section>
+
+  <div id="sourceWarn" class="sourcewarn hidden"></div>
+
+  <div class="tabs">
+    <button id="tabAbertas" class="tab active" onclick="mudarAba('abertas')">OBRAS EM ABERTO</button>
+    <button id="tabExecutadas" class="tab" onclick="mudarAba('executadas')">EXECUTADAS / PAGAMENTOS</button>
+  </div>
 
   <section class="panel toolbar">
     <input id="busca" type="search" placeholder="Pesquisar projeto, cidade ou serviço..." oninput="filtrar()">
@@ -198,6 +211,7 @@
 
 <script>
   let base=null, linhas=[];
+  let abaAtual='abertas';
   let ordem={campo:'prazoAes',dir:'asc'};
   const el=id=>document.getElementById(id);
   const COLUNAS_PADRAO={
@@ -263,6 +277,13 @@
       return '<div class="statusstack">'+p.ffoLinks.map((x,i)=>statusLink(x.urlEmail,'FFO '+(i+1),'final',x.anexo)).join('')+'</div>';
     }
     return badge('—','');
+  }
+
+  function mudarAba(aba){
+    abaAtual=aba==='executadas'?'executadas':'abertas';
+    el('tabAbertas').classList.toggle('active',abaAtual==='abertas');
+    el('tabExecutadas').classList.toggle('active',abaAtual==='executadas');
+    filtrar();
   }
 
   function ordenar(campo){
@@ -461,6 +482,8 @@
         base=d;linhas=d.projetos||[];
         el('logo').src=d.logoUrl||'';
         el('kTotal').textContent=d.resumo.total||0;
+        el('kAbertas').textContent=d.resumo.abertas||0;
+        el('kExecutadas').textContent=d.resumo.executadas||0;
         el('kAes').textContent=d.resumo.comAes||0;
         el('kProjeto').textContent=d.resumo.comProjetoPdf||0;
         el('kSemLib').textContent=d.resumo.pedidosSemLiberacao||0;
@@ -471,6 +494,16 @@
         el('syncTxt').textContent=d.ultimaSync?'Atualizado: '+fmtDataHora(d.ultimaSync):'Aguardando sincronização';
         el('statusBase').textContent=(d.backfillConcluido?'Gmail histórico concluído':'Gmail histórico em carga')+
           (d.baseTeamsAtualizada?' · Teams: '+fmtDataHora(d.baseTeamsAtualizada):' · Fonte antiga do site: DESATIVADA');
+
+        const temTeams=(d.resumo.comAes||0)>0 || (d.resumo.comProjetoPdf||0)>0;
+        if(!temTeams){
+          el('sourceWarn').classList.remove('hidden');
+          el('sourceWarn').textContent='[PENDENTE] BASE_TEAMS vazia. AES, prazo, cidade e projetos ainda NÃO foram carregados do Teams.';
+        }else{
+          el('sourceWarn').classList.add('hidden');
+          el('sourceWarn').textContent='';
+        }
+
         montarMeses();
         filtrar();
         aplicarLargurasSalvas();
@@ -502,6 +535,9 @@
     const ativo=Object.values(filtros).some(Boolean);
 
     const arr=linhas.filter(p=>{
+      if(abaAtual==='abertas' && p.executada)return false;
+      if(abaAtual==='executadas' && !p.executada)return false;
+
       const txt=(p.projeto+' '+(p.municipio||'')+' '+(p.servicoResumo||'')+' '+(p.aes||'')).toLowerCase();
       if(q&&!txt.includes(q))return false;
       if(mes&&mesChave(p.prazoAes)!==mes)return false;
@@ -512,7 +548,7 @@
         (filtros.bmd&&p.temBmd)||(filtros.ffo&&p.temFfo);
     });
 
-    el('contador').textContent=arr.length+' obra(s) exibida(s)';
+    el('contador').textContent=arr.length+' obra(s) exibida(s) · '+(abaAtual==='executadas'?'EXECUTADAS / PAGAMENTOS':'OBRAS EM ABERTO');
     renderTabela(arr);
   }
 
