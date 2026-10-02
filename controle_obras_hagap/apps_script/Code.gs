@@ -414,6 +414,45 @@ function salvarAjusteProjeto(projeto,campo,valor) {
 }
 
 
+function refazerBaseTeamsDoZero() {
+  const ss = getSS_();
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+
+  try {
+    // Descarta somente bases derivadas/ajustes locais.
+    // Mantém EVENTOS e EMAILS_PROCESSADOS porque são a trilha do Gmail.
+    [
+      {nome:HAGAP.ABAS.BASE_PC,headers:HAGAP.HEAD_PC},
+      {nome:HAGAP.ABAS.BASE_TEAMS,headers:HAGAP.HEAD_TEAMS},
+      {nome:HAGAP.ABAS.AJUSTES,headers:HAGAP.HEAD_AJUSTES}
+    ].forEach(item => {
+      const aba = garantirAba_(ss,item.nome,item.headers);
+      if (aba.getLastRow() > 1) {
+        aba.getRange(2,1,aba.getLastRow()-1,Math.max(aba.getLastColumn(),item.headers.length)).clearContent();
+      }
+    });
+
+    const props = PropertiesService.getScriptProperties();
+    [
+      'BASE_PC_HASH',
+      'BASE_PC_ATUALIZADA',
+      'BASE_TEAMS_ATUALIZADA'
+    ].forEach(k => props.deleteProperty(k));
+
+    log_('CONFIRMADO','REFAZER_BASE_TEAMS_DO_ZERO',
+      'BASE_PC legado, BASE_TEAMS e AJUSTES_MANUAIS limpos. Gmail preservado. Fonte técnica agora: Teams/SharePoint + Gmail.');
+
+    return {
+      ok:true,
+      mensagem:'Base técnica limpa. Gmail preservado. Importe uma nova base_teams.json gerada do Teams.'
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+
 function importarBaseTeams(jsonTexto) {
   const ss = getSS_();
   const aba = garantirAba_(ss,HAGAP.ABAS.BASE_TEAMS,HAGAP.HEAD_TEAMS);
