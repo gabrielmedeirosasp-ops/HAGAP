@@ -1481,7 +1481,21 @@ function calcularAlertaPedido_(pedido,temLiberacao) {
 function parseDataBr_(v) {
   const m = String(v || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
   if (!m) return null;
-  return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));
+
+  const dia = Number(m[1]);
+  const mes = Number(m[2]);
+  const ano = Number(m[3]);
+  const d = new Date(ano,mes-1,dia);
+
+  if (
+    d.getFullYear() !== ano ||
+    d.getMonth() !== mes-1 ||
+    d.getDate() !== dia
+  ) {
+    return null;
+  }
+
+  return d;
 }
 
 
