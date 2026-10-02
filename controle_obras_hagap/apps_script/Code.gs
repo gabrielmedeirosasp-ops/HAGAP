@@ -16,6 +16,7 @@ const HAGAP = {
     EVENTOS: 'EVENTOS',
     EMAILS: 'EMAILS_PROCESSADOS',
     BASE_PC: 'BASE_PC',
+    AJUSTES: 'AJUSTES_MANUAIS',
     LOG: 'LOG',
     CONFIG: 'CONFIG'
   },
@@ -31,7 +32,8 @@ const HAGAP = {
   HEAD_PC: [
     'PROJETO','PROJETO_BASE','AES','PRAZO_AES','LOCAL','STATUS_PC','ARQUIVO_AES',
     'PASTA_PROJETO','PDFS_PROJETO_JSON','BMDS_JSON','FFOS_JSON','ORIGEM_JSON','ATUALIZADO'
-  ]
+  ],
+  HEAD_AJUSTES: ['PROJETO','MUNICIPIO','PRAZO_AES','DATA_AJUSTE']
 };
 
 
@@ -50,6 +52,7 @@ function configurarSistema() {
   garantirAba_(ss, HAGAP.ABAS.EVENTOS, HAGAP.HEAD_EVENTOS);
   garantirAba_(ss, HAGAP.ABAS.EMAILS, HAGAP.HEAD_EMAILS);
   garantirAba_(ss, HAGAP.ABAS.BASE_PC, HAGAP.HEAD_PC);
+  garantirAba_(ss, HAGAP.ABAS.AJUSTES, HAGAP.HEAD_AJUSTES);
   garantirAba_(ss, HAGAP.ABAS.LOG, ['DATA','NIVEL','ACAO','DETALHE']);
   garantirAba_(ss, HAGAP.ABAS.CONFIG, ['CHAVE','VALOR']);
 
@@ -325,6 +328,93 @@ function jsonArraySeguro_(v) {
     return Array.isArray(x) ? x : [];
   } catch (e) {
     return [];
+  }
+}
+
+
+function lerAjustes_(ss) {
+  const aba = ss.getSheetByName(HAGAP.ABAS.AJUSTES);
+  const mapa = {};
+  if (!aba || aba.getLastRow() <= 1) return mapa;
+
+  aba.getRange(2,1,aba.getLastRow()-1,HAGAP.HEAD_AJUSTES.length).getValues().forEach(r => {
+    const projeto = String(r[0] || '').trim().toUpperCase();
+    if (!projeto) return;
+    mapa[projeto] = {
+      municipio:String(r[1] || '').trim(),
+      prazoAes:formatarDataBr_(r[2]),
+      dataAjuste:r[3]
+    };
+  });
+
+  return mapa;
+}
+
+
+function salvarAjusteProjeto(projeto,campo,valor) {
+  const p = String(projeto || '').trim().toUpperCase();
+  const c = String(campo || '').trim().toUpperCase();
+  let v = String(valor == null ? '' : valor).trim();
+
+  if (!/^\d{7}[A-Z]{0,3}$/.test(p)) {
+    throw new Error('Projeto inválido.');
+  }
+
+  if (c !== 'MUNICIPIO' && c !== 'PRAZO_AES') {
+    throw new Error('Campo de ajuste inválido.');
+  }
+
+  if (c === 'MUNICIPIO') {
+    v = v.replace(/\s+/g,' ').trim().toUpperCase();
+  }
+
+  if (c === 'PRAZO_AES' && v) {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(v) || !parseDataBr_(v)) {
+      throw new Error('Prazo inválido. Use DD/MM/AAAA.');
+    }
+  }
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+
+  try {
+    const ss = getSS_();
+    const aba = garantirAba_(ss,HAGAP.ABAS.AJUSTES,HAGAP.HEAD_AJUSTES);
+    const qtd = Math.max(0,aba.getLastRow()-1);
+    let linha = -1;
+    let atual = ['', '', '', ''];
+
+    if (qtd > 0) {
+      const dados = aba.getRange(2,1,qtd,HAGAP.HEAD_AJUSTES.length).getValues();
+      for (let i=0;i<dados.length;i++) {
+        if (String(dados[i][0] || '').trim().toUpperCase() === p) {
+          linha = i + 2;
+          atual = dados[i].slice();
+          break;
+        }
+      }
+    }
+
+    atual[0] = p;
+    if (c === 'MUNICIPIO') atual[1] = v;
+    if (c === 'PRAZO_AES') atual[2] = v;
+    atual[3] = new Date();
+
+    const semAjuste = !String(atual[1] || '').trim() && !String(atual[2] || '').trim();
+
+    if (linha > 0 && semAjuste) {
+      aba.deleteRow(linha);
+    } else if (linha > 0) {
+      aba.getRange(linha,1,1,HAGAP.HEAD_AJUSTES.length).setValues([atual]);
+    } else if (!semAjuste) {
+      aba.appendRow(atual);
+    }
+
+    log_('CONFIRMADO','AJUSTE_MANUAL',p + ' | ' + c + ' = ' + (v || '[REVERTER BASE]'));
+    return {ok:true,projeto:p,campo:c,valor:v};
+
+  } finally {
+    lock.releaseLock();
   }
 }
 
@@ -958,6 +1048,7 @@ function getPainelData() {
 
   const eventos = lerEventos_(ss);
   const basePc = lerBasePc_(ss);
+  const ajustes = lerAjustes_(ss);
   const mapa = {};
 
   function novoProjeto_(projeto, projetoBase) {
@@ -965,9 +1056,13 @@ function getPainelData() {
       projeto:projeto,
       projetoBase:projetoBase || projeto.substring(0,7),
       municipio:'',
+      municipioFonte:'',
       aes:'',
       prazoAes:'',
-      statusPc:'',
+      prazoAesFonte:'',
+      ajusteMunicipio:false,
+      ajustePrazo:false,
+      statusPc:'
       arquivoAes:'',
       pastaProjeto:'',
       pdfsProjeto:[],
@@ -993,8 +1088,10 @@ function getPainelData() {
     if (!r.projeto) return;
     const p = novoProjeto_(r.projeto,r.projetoBase);
     p.municipio = r.local || '';
+    p.municipioFonte = r.local || '';
     p.aes = r.aes || '';
     p.prazoAes = r.prazoAes || '';
+    p.prazoAesFonte = r.prazoAes || '';
     p.statusPc = r.statusPc || '';
     p.arquivoAes = r.arquivoAes || '';
     p.pastaProjeto = r.pastaProjeto || '';
@@ -1097,6 +1194,16 @@ function getPainelData() {
       ? p.ultimoPedido.observacao
       : '';
 
+    const ajuste = ajustes[p.projeto] || {};
+    if (ajuste.municipio) {
+      p.municipio = ajuste.municipio;
+      p.ajusteMunicipio = true;
+    }
+    if (ajuste.prazoAes) {
+      p.prazoAes = ajuste.prazoAes;
+      p.ajustePrazo = true;
+    }
+
     p.temProjetoPdf = p.pdfsProjeto.length > 0;
     p.temBmd = p.bmdsPc.length > 0 || p.bmdLinks.length > 0;
     p.temFfo = p.ffosPc.length > 0 || p.ffoLinks.length > 0;
@@ -1187,11 +1294,16 @@ function getProjetoDetalhes(projeto) {
   const alvo = String(projeto || '').toUpperCase();
   const ss = getSS_();
   const pc = lerBasePc_(ss).find(x => x.projeto === alvo) || null;
+  const ajuste = lerAjustes_(ss)[alvo] || {};
 
   const pcDetalhes = pc ? {
     aes:pc.aes,
-    prazoAes:pc.prazoAes,
-    local:pc.local,
+    prazoAes:ajuste.prazoAes || pc.prazoAes,
+    prazoAesFonte:pc.prazoAes,
+    ajustePrazo:!!ajuste.prazoAes,
+    local:ajuste.municipio || pc.local,
+    localFonte:pc.local,
+    ajusteMunicipio:!!ajuste.municipio,
     statusPc:pc.statusPc,
     arquivoAes:pc.arquivoAes,
     aesUrl:pc.arquivoAes
