@@ -4,6 +4,8 @@ import json
 import os
 import re
 import shutil
+import socket
+import subprocess
 import sys
 import time
 from datetime import date, datetime
@@ -24,6 +26,8 @@ DRIVE_FOLDER_ID = "1TTdT09m-WOVeEiii2hed9y4JhsNw8uh9"
 URL_DRIVE = f"https://drive.google.com/drive/u/0/folders/{DRIVE_FOLDER_ID}"
 
 PERFIL_EDGE = Path(r"C:\HAGAP\ENVIO_PROGRAMADOS_BROWSER")
+PERFIL_GOOGLE_EDGE = Path(r"C:\HAGAP\GOOGLE_DRIVE_BROWSER_PROFILE")
+CDP_GOOGLE_PORT = 9223
 TEMP_ROOT = Path(r"C:\HAGAP\TEMP_ENVIO_PROGRAMADOS")
 RELATORIO = BASE / "RELATORIO_ENVIO_PROGRAMADOS_DRIVE.json"
 ESTADO = BASE / "ESTADO_ENVIO_PROGRAMADOS.json"
@@ -345,10 +349,95 @@ def baixar_arquivo_teams(context, item):
 
 
 # ============================================================
-# GOOGLE DRIVE - LOGIN NORMAL PELO EDGE
+# GOOGLE DRIVE - EDGE NORMAL (fora do Playwright)
 # ============================================================
 
-def aguardar_login_drive(page, limite=300):
+def encontrar_edge():
+    candidatos = [
+        Path(os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)")) / "Microsoft/Edge/Application/msedge.exe",
+        Path(os.environ.get("PROGRAMFILES", r"C:\Program Files")) / "Microsoft/Edge/Application/msedge.exe",
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft/Edge/Application/msedge.exe",
+    ]
+    for p in candidatos:
+        if p.exists():
+            return p
+    raise RuntimeError("Microsoft Edge não localizado no computador.")
+
+
+def porta_aberta(host, port):
+    try:
+        with socket.create_connection((host, port), timeout=0.5):
+            return True
+    except OSError:
+        return False
+
+
+def abrir_edge_google_normal():
+    """
+    Abre um Edge NORMAL, sem o modo de automação do Playwright.
+    Isso evita o bloqueio de login do Google em navegador automatizado.
+    O perfil fica salvo em C:\HAGAP\GOOGLE_DRIVE_BROWSER_PROFILE.
+    """
+    if porta_aberta("127.0.0.1", CDP_GOOGLE_PORT):
+        return
+
+    PERFIL_GOOGLE_EDGE.mkdir(parents=True, exist_ok=True)
+    edge = encontrar_edge()
+
+    args = [
+        str(edge),
+        f"--remote-debugging-port={CDP_GOOGLE_PORT}",
+        "--remote-allow-origins=*",
+        f"--user-data-dir={PERFIL_GOOGLE_EDGE}",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--new-window",
+        URL_DRIVE,
+    ]
+
+    subprocess.Popen(
+        args,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0),
+    )
+
+    inicio = time.time()
+    while time.time() - inicio < 30:
+        if porta_aberta("127.0.0.1", CDP_GOOGLE_PORT):
+            return
+        time.sleep(0.5)
+
+    raise RuntimeError("O Edge abriu, mas não consegui conectar ao navegador do Google Drive.")
+
+
+def conectar_google_drive_edge(playwright):
+    abrir_edge_google_normal()
+
+    try:
+        browser = playwright.chromium.connect_over_cdp(
+            f"http://127.0.0.1:{CDP_GOOGLE_PORT}",
+            timeout=30000,
+        )
+    except Exception as exc:
+        raise RuntimeError(f"Não consegui conectar ao Edge normal do Google Drive: {exc}")
+
+    contexts = browser.contexts
+    if not contexts:
+        raise RuntimeError("O Edge do Google abriu sem contexto navegável.")
+
+    context = contexts[0]
+
+    for page in context.pages:
+        if "drive.google.com" in page.url.lower():
+            return browser, page
+
+    page = context.new_page()
+    page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
+    return browser, page
+
+
+def aguardar_login_drive(page, limite=600):
     page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
     inicio = time.time()
 
@@ -360,7 +449,7 @@ def aguardar_login_drive(page, limite=300):
             return
 
         print(
-            "\rAguardando login do Google no Edge... entre na sua conta se solicitado.       ",
+            "\rAguardando login Google no Edge NORMAL... faça o login uma vez se solicitado.       ",
             end="",
             flush=True,
         )
@@ -572,7 +661,7 @@ def main():
     print(f"[CONFIRMADO] Já conhecidos no Drive/estado local: {len(alvos & conhecidos)}")
     print(f"[PENDENTE] A procurar no Teams: {len(faltantes)}")
     print("[CONFIRMADO] Teams é somente leitura; nada será removido.")
-    print("[CONFIRMADO] Google Drive será acessado pelo login normal do Edge.")
+    print("[CONFIRMADO] Google Drive será aberto em Edge normal, com perfil próprio persistente.")
     print("=" * 78)
 
     relatorio = {
@@ -600,7 +689,8 @@ def main():
             teams_page = context.pages[0] if context.pages else context.new_page()
             aguardar_login_teams(context, teams_page)
 
-            drive_page = context.new_page()
+            print("\n[Google Drive] Abrindo Edge normal para permitir o login Google...")
+            drive_browser, drive_page = conectar_google_drive_edge(p)
             aguardar_login_drive(drive_page)
 
             root_files, root_folders = listar_arvore(context, PASTA_TEAMS)
