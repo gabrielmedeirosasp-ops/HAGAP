@@ -104,7 +104,7 @@
   <section class="cards">
     <div class="card"><div class="label">Obras na base</div><div id="kTotal" class="value">—</div></div>
     <div class="card"><div class="label">Com AES</div><div id="kAes" class="value">—</div></div>
-    <div class="card"><div class="label">Projeto no PC</div><div id="kProjeto" class="value">—</div></div>
+    <div class="card"><div class="label">Projeto Teams</div><div id="kProjeto" class="value">—</div></div>
     <div class="card"><div class="label">Pedido sem PDE/PLV</div><div id="kSemLib" class="value">—</div></div>
     <div class="card"><div class="label">Alertas pedido</div><div id="kAlertas" class="value">—</div></div>
     <div class="card"><div class="label">Documentos enviados</div><div id="kDocs" class="value">—</div></div>
@@ -121,11 +121,14 @@
       <label><input id="fSemPedido" type="checkbox" onchange="filtrar()"> Sem pedido</label>
       <label><input id="fAlerta" type="checkbox" onchange="filtrar()"> Alerta pedido</label>
       <label><input id="fDocs" type="checkbox" onchange="filtrar()"> Documentos</label>
-      <label><input id="fProjeto" type="checkbox" onchange="filtrar()"> Projeto PC</label>
+      <label><input id="fProjeto" type="checkbox" onchange="filtrar()"> Projeto Teams</label>
       <label><input id="fBmd" type="checkbox" onchange="filtrar()"> BMD</label>
       <label><input id="fFfo" type="checkbox" onchange="filtrar()"> FFO</label>
     </div>
+    <button class="btn" onclick="abrirColunas()">Ajustar colunas</button>
     <button class="btn" onclick="restaurarLarguras()">Restaurar larguras</button>
+    <button class="btn" onclick="el('arquivoTeams').click()">Importar Teams</button>
+    <input id="arquivoTeams" type="file" accept=".json,application/json" style="display:none" onchange="importarTeamsArquivo(event)">
     <button class="btn" onclick="limpar()">Limpar filtros</button>
   </section>
 
@@ -147,7 +150,7 @@
         <col data-col="servicoResumo" style="width:320px">
         <col data-col="pedido" style="width:115px">
         <col data-col="pde" style="width:130px">
-        <col data-col="plv" style="width:130px">
+        <col data-col="plv" style="width:90px">
         <col data-col="omb" style="width:130px">
         <col data-col="projetoPdf" style="width:115px">
         <col data-col="documentos" style="width:125px">
@@ -179,6 +182,13 @@
   </div>
 </main>
 
+<div id="modalColunas" class="modal hidden" onclick="fecharColunasFora(event)">
+  <div class="modalbox" style="width:min(760px,95vw)">
+    <div class="mhead"><h2>Ajustar largura das colunas</h2><button class="close" onclick="fecharColunas()">×</button></div>
+    <div id="colunasBody" class="timeline"></div>
+  </div>
+</div>
+
 <div id="modal" class="modal hidden" onclick="fecharFora(event)">
   <div class="modalbox">
     <div class="mhead"><h2 id="mtitle">Projeto</h2><button class="close" onclick="fechar()">×</button></div>
@@ -192,7 +202,7 @@
   const el=id=>document.getElementById(id);
   const COLUNAS_PADRAO={
     prazoAes:105,projeto:105,aes:110,municipio:160,dataSolicitada:105,
-    servicoResumo:320,pedido:115,pde:130,plv:130,omb:130,
+    servicoResumo:320,pedido:115,pde:130,plv:90,omb:130,
     projetoPdf:115,documentos:125,bmd:120,ffo:120,abrir:78
   };
 
@@ -224,7 +234,9 @@
 
   function projetoHtml(p){
     if(!p.projetoUrls||!p.projetoUrls.length)return badge('—','');
-    return statusLink(p.projetoUrls[0].url,'PDF '+p.projetoUrls.length,'blue','Abrir '+p.projetoUrls[0].nome);
+    const primeiro=p.projetoUrls[0]||{};
+    if(primeiro.url)return statusLink(primeiro.url,'PDF '+p.projetoUrls.length,'blue','Abrir '+primeiro.nome);
+    return badge('PDF '+p.projetoUrls.length,'blue');
   }
 
   function docsHtml(p){
@@ -234,8 +246,8 @@
   }
 
   function bmdHtml(p){
-    if(p.bmdsPc&&p.bmdsPc.length){
-      return '<div class="statusstack">'+p.bmdsPc.map((x,i)=>statusLink(x.url,'BMD '+(i+1),'blue',x.arquivo)).join('')+'</div>';
+    if(p.bmdsTeams&&p.bmdsTeams.length){
+      return '<div class="statusstack">'+p.bmdsTeams.map((x,i)=>x.url?statusLink(x.url,'BMD '+(i+1),'blue',x.arquivo):badge('BMD '+(i+1),'blue')).join('')+'</div>';
     }
     if(p.bmdLinks&&p.bmdLinks.length){
       return '<div class="statusstack">'+p.bmdLinks.map((x,i)=>statusLink(x.urlEmail,'BMD '+(i+1),x.status==='PARCIAL'?'warn':'blue',x.anexo)).join('')+'</div>';
@@ -244,8 +256,8 @@
   }
 
   function ffoHtml(p){
-    if(p.ffosPc&&p.ffosPc.length){
-      return '<div class="statusstack">'+p.ffosPc.map((x,i)=>statusLink(x.url,'FFO '+(i+1),'final',x.arquivo)).join('')+'</div>';
+    if(p.ffosTeams&&p.ffosTeams.length){
+      return '<div class="statusstack">'+p.ffosTeams.map((x,i)=>x.url?statusLink(x.url,'FFO '+(i+1),'final',x.arquivo):badge('FFO '+(i+1),'final')).join('')+'</div>';
     }
     if(p.ffoLinks&&p.ffoLinks.length){
       return '<div class="statusstack">'+p.ffoLinks.map((x,i)=>statusLink(x.urlEmail,'FFO '+(i+1),'final',x.anexo)).join('')+'</div>';
@@ -378,6 +390,71 @@
   }
 
 
+  function abrirColunas(){
+    const nomes={
+      prazoAes:'Venc. AES',projeto:'Projeto',aes:'AES',municipio:'Cidade',
+      dataSolicitada:'Pedido para',servicoResumo:'Serviço / observação',
+      pedido:'Pedido',pde:'PDE',plv:'PLV',omb:'OMB',projetoPdf:'Projeto PDF',
+      documentos:'Documentos',bmd:'BMD',ffo:'FFO',abrir:'Abrir'
+    };
+    el('colunasBody').innerHTML=Object.keys(COLUNAS_PADRAO).map(k=>{
+      const col=document.querySelector('col[data-col="'+k+'"]');
+      const atual=Math.round(col?col.getBoundingClientRect().width:COLUNAS_PADRAO[k]);
+      return '<div style="display:grid;grid-template-columns:180px 1fr 80px;gap:10px;align-items:center;margin-bottom:10px">'+
+        '<strong>'+esc(nomes[k]||k)+'</strong>'+
+        '<input type="range" min="55" max="600" value="'+atual+'" oninput="ajustarColunaInput(\''+k+'\',this.value);this.nextElementSibling.value=this.value">'+
+        '<input type="number" min="55" max="600" value="'+atual+'" oninput="ajustarColunaInput(\''+k+'\',this.value);this.previousElementSibling.value=this.value">'+
+      '</div>';
+    }).join('');
+    el('modalColunas').classList.remove('hidden');
+  }
+
+  function ajustarColunaInput(k,v){
+    const n=Math.max(55,Math.min(600,Number(v)||COLUNAS_PADRAO[k]||100));
+    const col=document.querySelector('col[data-col="'+k+'"]');
+    if(col)col.style.width=n+'px';
+    localStorage.setItem('hagap_col_'+k,Math.round(n));
+  }
+
+  function fecharColunas(){el('modalColunas').classList.add('hidden')}
+  function fecharColunasFora(e){if(e.target===el('modalColunas'))fecharColunas()}
+
+  function importarTeamsArquivo(ev){
+    const arq=ev.target.files&&ev.target.files[0];
+    if(!arq)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const txt=String(reader.result||'');
+      try{
+        const dados=JSON.parse(txt);
+        if(!Array.isArray(dados))throw new Error('O JSON não contém uma lista.');
+      }catch(e){
+        alert('Arquivo Teams inválido: '+e.message);
+        ev.target.value='';
+        return;
+      }
+
+      if(!confirm('Importar esta base Teams e substituir a BASE_TEAMS atual?')) {
+        ev.target.value='';
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(r=>{
+          alert('BASE_TEAMS importada: '+(r.registros||0)+' projeto(s).');
+          ev.target.value='';
+          carregar();
+        })
+        .withFailureHandler(err=>{
+          alert(err.message||err);
+          ev.target.value='';
+        })
+        .importarBaseTeams(txt);
+    };
+    reader.readAsText(arq,'UTF-8');
+  }
+
+
   function carregar(){
     google.script.run
       .withSuccessHandler(d=>{
@@ -393,7 +470,7 @@
         el('kFfo').textContent=d.resumo.comFfo||0;
         el('syncTxt').textContent=d.ultimaSync?'Atualizado: '+fmtDataHora(d.ultimaSync):'Aguardando sincronização';
         el('statusBase').textContent=(d.backfillConcluido?'Gmail histórico concluído':'Gmail histórico em carga')+
-          (d.basePcAtualizada?' · Base AES/PC: '+fmtDataHora(d.basePcAtualizada):'');
+          (d.baseTeamsAtualizada?' · Teams: '+fmtDataHora(d.baseTeamsAtualizada):' · Fonte antiga do site: DESATIVADA');
         montarMeses();
         filtrar();
         aplicarLargurasSalvas();
@@ -526,24 +603,23 @@
       .withSuccessHandler(d=>{
         let html='';
 
-        if(d.pc){
-          const pc=d.pc;
-          html+='<div class="pcbox"><h3>Base AES / arquivos do PC</h3>'+
+        if(d.teams){
+          const pc=d.teams;
+          html+='<div class="pcbox"><h3>Fonte Teams / SharePoint</h3>'+
             '<div><strong>AES:</strong> '+esc(pc.aes||'—')+
             ' &nbsp; <strong>Prazo:</strong> '+esc(pc.prazoAes||'—')+
             ' <button class="editbtn" onclick="editarCampo(\''+esc(projeto)+'\',\'PRAZO_AES\',\''+esc(pc.prazoAes||'')+'\')">✎</button>'+
-            (pc.ajustePrazo?'<span class="ajustado">Fonte original: '+esc(pc.prazoAesFonte||'—')+'</span>':'')+
-            ' &nbsp; <strong>Local:</strong> '+esc(pc.local||'—')+
+            ' &nbsp; <strong>Município:</strong> '+esc(pc.local||'—')+
             ' <button class="editbtn" onclick="editarCampo(\''+esc(projeto)+'\',\'MUNICIPIO\',\''+esc(pc.local||'')+'\')">✎</button>'+
-            (pc.ajusteMunicipio?'<span class="ajustado">Fonte original: '+esc(pc.localFonte||'—')+'</span>':'')+
-            ' &nbsp; <strong>Status:</strong> '+esc(pc.statusPc||'—')+'</div>'+
+            '</div>'+
+            ((pc.divergencias&&pc.divergencias.length)?'<div class="meta"><strong>Divergências Teams:</strong> '+esc(pc.divergencias.join(' | '))+'</div>':'')+
             '<div class="filegrid">'+
-              (pc.aesUrl?'<a class="filelink" href="'+esc(pc.aesUrl)+'" target="_blank">Abrir AES</a>':'')+
-              (pc.projetos||[]).map(x=>'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.nome)+'</a>').join('')+
-              (pc.bmds||[]).map(x=>'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.arquivo)+'</a>').join('')+
-              (pc.ffos||[]).map(x=>'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.arquivo)+'</a>').join('')+
+              (pc.projetos||[]).map(x=>x.url?'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.nome||x.arquivo||'Projeto')+'</a>':'<span class="filelink">'+esc(x.nome||x.arquivo||x)+'</span>').join('')+
+              (pc.bmds||[]).map(x=>x.url?'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.arquivo||'BMD')+'</a>':'<span class="filelink">'+esc(x.arquivo||x)+'</span>').join('')+
+              (pc.ffos||[]).map(x=>x.url?'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.arquivo||'FFO')+'</a>':'<span class="filelink">'+esc(x.arquivo||x)+'</span>').join('')+
             '</div></div>';
         }
+
 
         if(!d.eventos.length){
           html+='<div class="empty">Sem eventos de Gmail para este projeto.</div>';
