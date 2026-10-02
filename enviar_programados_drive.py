@@ -370,46 +370,114 @@ def aguardar_login_drive(page, limite=300):
     raise RuntimeError("Não foi possível abrir a pasta do Google Drive.")
 
 
+def _input_upload_direto(page, caminho):
+    """
+    Método preferencial: usa diretamente o input de upload que o Google Drive
+    mantém oculto na página. Não depende do botão 'Novo'.
+    """
+    caminho = Path(caminho)
+
+    if caminho.is_dir():
+        seletores = [
+            'input[type="file"][webkitdirectory]',
+            'input[type="file"][directory]',
+        ]
+    else:
+        seletores = [
+            'input[type="file"]:not([webkitdirectory]):not([directory])',
+        ]
+
+    for seletor in seletores:
+        try:
+            loc = page.locator(seletor)
+            qtd = loc.count()
+            for i in range(qtd):
+                try:
+                    alvo = loc.nth(i)
+                    alvo.set_input_files(str(caminho), timeout=15000)
+                    return True
+                except Exception:
+                    continue
+        except Exception:
+            continue
+
+    return False
+
+
 def _clicar_novo(page):
+    """
+    Fallback para layouts em que o input direto ainda não foi criado.
+    Aceita botão, div e elementos com aria-label.
+    """
+    regex = re.compile(r"^(Novo|New|Novo\s*\+?|\+\s*Novo)$", re.I)
+
     tentativas = [
-        lambda: page.get_by_role("button", name=re.compile(r"^(Novo|New)$", re.I)).first,
-        lambda: page.locator('[aria-label="Novo"]').first,
-        lambda: page.locator('[aria-label="New"]').first,
-        lambda: page.get_by_text(re.compile(r"^(Novo|New)$", re.I), exact=True).first,
+        page.get_by_role("button", name=regex),
+        page.locator('[aria-label*="Novo"]'),
+        page.locator('[aria-label*="New"]'),
+        page.locator('div[role="button"]').filter(has_text=re.compile(r"Novo|New", re.I)),
+        page.get_by_text(re.compile(r"Novo|New", re.I)),
     ]
 
-    for getloc in tentativas:
+    for loc in tentativas:
         try:
-            loc = getloc()
-            if loc.count() and loc.is_visible(timeout=1500):
-                loc.click()
-                return
+            if loc.count():
+                alvo = loc.first
+                alvo.click(timeout=5000)
+                return True
         except Exception:
-            pass
+            continue
 
-    raise RuntimeError("Não encontrei o botão Novo/New no Google Drive.")
+    return False
 
 
 def _menu_upload(page, pasta):
-    regex = (
-        re.compile(r"^(Upload de pasta|Folder upload)$", re.I)
+    expressoes = (
+        [
+            re.compile(r"Upload\s+de\s+pasta", re.I),
+            re.compile(r"Folder\s+upload", re.I),
+            re.compile(r"Fazer\s+upload\s+de\s+pasta", re.I),
+        ]
         if pasta
-        else re.compile(r"^(Upload de arquivo|File upload)$", re.I)
+        else [
+            re.compile(r"Upload\s+de\s+arquivo", re.I),
+            re.compile(r"File\s+upload", re.I),
+            re.compile(r"Fazer\s+upload\s+de\s+arquivo", re.I),
+        ]
     )
 
-    loc = page.get_by_text(regex, exact=True)
-    if not loc.count():
-        # Alguns layouts expõem como menuitem.
-        loc = page.get_by_role("menuitem", name=regex)
+    for rx in expressoes:
+        for loc in [
+            page.get_by_role("menuitem", name=rx),
+            page.get_by_text(rx),
+            page.locator('[role="menuitem"]').filter(has_text=rx),
+        ]:
+            try:
+                if loc.count():
+                    return loc.first
+            except Exception:
+                continue
 
-    if not loc.count():
-        raise RuntimeError(
-            "Não encontrei a opção "
-            + ("Upload de pasta" if pasta else "Upload de arquivo")
-            + " no Google Drive."
-        )
+    return None
 
-    return loc.first
+
+def _selecionar_upload_via_menu(page, caminho):
+    if not _clicar_novo(page):
+        return False
+
+    time.sleep(1)
+    menu = _menu_upload(page, caminho.is_dir())
+    if menu is None:
+        return False
+
+    try:
+        with page.expect_file_chooser(timeout=15000) as fc_info:
+            menu.click()
+        chooser = fc_info.value
+        chooser.set_files(str(caminho))
+        return True
+    except Exception:
+        return False
 
 
 def _esperar_upload(page, nome, timeout_s):
@@ -442,18 +510,21 @@ def upload_drive_browser(page, caminho):
         raise RuntimeError(f"Arquivo/pasta local não existe: {caminho}")
 
     page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
-    time.sleep(2)
+    time.sleep(3)
 
-    _clicar_novo(page)
-    menu = _menu_upload(page, caminho.is_dir())
+    # 1) Método principal: input de upload oculto do próprio Google Drive.
+    selecionado = _input_upload_direto(page, caminho)
 
-    try:
-        with page.expect_file_chooser(timeout=15000) as fc_info:
-            menu.click()
-        chooser = fc_info.value
-        chooser.set_files(str(caminho))
-    except Exception as exc:
-        raise RuntimeError(f"Falha ao selecionar {caminho.name} para upload: {exc}")
+    # 2) Fallback: botão/menu Novo.
+    if not selecionado:
+        selecionado = _selecionar_upload_via_menu(page, caminho)
+
+    if not selecionado:
+        raise RuntimeError(
+            "Não consegui iniciar o upload no Google Drive. "
+            "O programa procurou o input direto de upload e também o menu Novo. "
+            "Deixe a pasta do Drive aberta e atualizada e tente novamente."
+        )
 
     total = 0
     if caminho.is_dir():
