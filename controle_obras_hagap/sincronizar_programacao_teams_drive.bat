@@ -8,7 +8,6 @@ echo Destino Drive: projetos
 echo ============================================================
 echo.
 python -m pip install --quiet openpyxl playwright google-api-python-client google-auth
-python -m playwright install chromium >nul 2>&1
 python sincronizar_programacao_teams_drive.py
 echo.
 pause
