@@ -14,68 +14,63 @@
       --sombra:0 8px 24px rgba(18,57,105,.09)
     }
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--txt)}
     header{
-      padding:15px 22px;background:linear-gradient(95deg,var(--azul),#0e4ca6 65%,var(--amarelo));
-      color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;
+      padding:14px 20px;background:linear-gradient(95deg,var(--azul),#0e4ca6 65%,var(--amarelo));
+      color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;
       box-shadow:0 4px 14px rgba(0,0,0,.16)
     }
-    .brand{display:flex;align-items:center;gap:14px}.brand img{width:150px;max-height:62px;object-fit:contain;background:#fff;border-radius:9px;padding:4px 8px}
-    h1{margin:0;font-size:25px}.sub{margin-top:4px;font-weight:700;opacity:.92;font-size:13px}
+    .brand{display:flex;align-items:center;gap:13px}.brand img{width:145px;max-height:60px;object-fit:contain;background:#fff;border-radius:9px;padding:4px 8px}
+    h1{margin:0;font-size:24px}.sub{margin-top:4px;font-weight:700;opacity:.92;font-size:13px}
     .actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-    .btn{border:1px solid transparent;border-radius:8px;padding:9px 12px;font-weight:800;cursor:pointer;background:#fff;color:var(--azul)}
+    .btn{border:1px solid transparent;border-radius:8px;padding:8px 11px;font-weight:800;cursor:pointer;background:#fff;color:var(--azul)}
     .btn.primary{background:var(--azul);color:#fff;border-color:#fff}.btn:disabled{opacity:.55;cursor:wait}
-    .wrap{max-width:1800px;margin:auto;padding:16px}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:12px}
-    .card,.panel{background:#fff;border:1px solid var(--linha);border-radius:11px;box-shadow:var(--sombra)}
-    .card{padding:12px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;color:var(--muted)}
-    .value{font-size:26px;font-weight:900;color:var(--azul);margin-top:4px}
-    .panel{padding:12px;margin-bottom:12px}
-    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .toolbar input[type=search],.toolbar select{padding:10px 11px;border:1px solid #c8d3e2;border-radius:8px;font-size:13px;background:#fff}
-    .toolbar input[type=search]{flex:1;min-width:240px}.toolbar select{min-width:175px;font-weight:700;color:var(--azul)}
+    .wrap{max-width:1900px;margin:auto;padding:14px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin-bottom:11px}
+    .card,.panel{background:#fff;border:1px solid var(--linha);border-radius:10px;box-shadow:var(--sombra)}
+    .card{padding:11px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;color:var(--muted)}
+    .value{font-size:25px;font-weight:900;color:var(--azul);margin-top:4px}
+    .panel{padding:11px;margin-bottom:11px}
+    .toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    .toolbar input[type=search],.toolbar select{padding:9px 10px;border:1px solid #c8d3e2;border-radius:8px;font-size:13px;background:#fff}
+    .toolbar input[type=search]{flex:1;min-width:250px}.toolbar select{min-width:185px;font-weight:700;color:var(--azul)}
     .checks{display:flex;gap:10px;flex-wrap:wrap}.checks label{font-size:12px;font-weight:700}
     .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:12px}
-    #agenda{display:flex;flex-direction:column;gap:14px}
-    .day{background:#fff;border:1px solid var(--linha);border-radius:11px;box-shadow:var(--sombra);overflow:visible}
-    .day-title{
-      position:sticky;top:0;z-index:30;background:linear-gradient(90deg,var(--azul),var(--azul2));
-      color:#fff;padding:10px 13px;border-radius:10px 10px 0 0;
-      display:flex;justify-content:space-between;align-items:center;font-weight:900
+    .table-shell{background:#fff;border:1px solid var(--linha);border-radius:10px;box-shadow:var(--sombra);overflow:auto;max-height:calc(100vh - 250px)}
+    table{border-collapse:separate;border-spacing:0;width:100%;min-width:1740px;background:#fff}
+    thead th{
+      position:sticky;top:0;z-index:20;background:var(--azul);color:#fff;text-align:left;
+      padding:9px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;
+      border-bottom:2px solid #083372;white-space:nowrap
     }
-    .day-title .count{font-size:11px;background:rgba(255,255,255,.18);padding:4px 8px;border-radius:999px}
-    .tablewrap{overflow-x:auto}
-    table{border-collapse:separate;border-spacing:0;width:100%;min-width:1370px;background:#fff}
-    th{
-      position:sticky;top:40px;z-index:25;background:#f5f8fd;color:#274260;text-align:left;
-      padding:8px 9px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;
-      border-bottom:2px solid #cbd8e8
+    td{padding:8px;border-bottom:1px solid #edf1f6;font-size:12px;vertical-align:top}
+    tbody tr.data-row:hover{background:#f7faff}
+    .group-row td{
+      background:#dce9fb;color:#0a3f87;font-weight:900;font-size:12px;padding:8px 10px;
+      border-top:5px solid var(--bg);border-bottom:1px solid #c4d5eb
     }
-    td{padding:8px 9px;border-bottom:1px solid #edf1f6;font-size:12px;vertical-align:top}
-    tbody tr:hover{background:#f7faff}
-    .col-projeto{width:96px}.col-cidade{width:155px}.col-servico{min-width:285px}.col-status{width:115px}.col-detalhes{width:78px}
     .projeto{color:var(--azul);font-weight:900;cursor:pointer;border:0;background:transparent;padding:0;font-size:13px}
-    .servico{font-weight:700;line-height:1.35}.muted{color:var(--muted);font-size:11px}
+    .servico{font-weight:700;line-height:1.35;max-width:300px}.muted{color:var(--muted);font-size:10px;margin-top:3px}
     .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900;background:#f0f2f5;color:#8994a3;white-space:nowrap}
     .ok{background:var(--verdebg);color:var(--verde)}.warn{background:var(--ambarbg);color:var(--ambar)}
     .danger{background:var(--vermelhobg);color:var(--vermelho)}.today{background:#ffe7c2;color:#9b4d00}
     .blue{background:#e3edff;color:var(--azul)}.final{background:var(--roxobg);color:var(--roxo)}
-    a.statuslink{text-decoration:none;display:inline-block;margin:1px 2px 2px 0}
-    .statusstack{display:flex;gap:3px;flex-wrap:wrap;align-items:flex-start}
-    .alerttxt{margin-top:4px;font-size:10px;font-weight:900;color:var(--vermelho)}
-    .warntext{color:var(--ambar)}
-    .empty{text-align:center;color:var(--muted);padding:28px;background:#fff;border:1px solid var(--linha);border-radius:11px}
+    a.statuslink{text-decoration:none;display:inline-block;margin:1px 2px 2px 0}.statusstack{display:flex;gap:3px;flex-wrap:wrap;align-items:flex-start}
+    .alerttxt{margin-top:4px;font-size:10px;font-weight:900;color:var(--vermelho)}.warntext{color:var(--ambar)}
+    .empty{text-align:center;color:var(--muted);padding:28px}
     .modal{position:fixed;inset:0;background:rgba(5,18,40,.58);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}
-    .hidden{display:none}.modalbox{width:min(960px,97vw);max-height:88vh;overflow:auto;background:#fff;border-radius:15px;box-shadow:0 28px 70px rgba(0,0,0,.35)}
-    .mhead{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--linha);padding:15px 18px;display:flex;justify-content:space-between;align-items:center}
+    .hidden{display:none}.modalbox{width:min(1000px,97vw);max-height:90vh;overflow:auto;background:#fff;border-radius:15px;box-shadow:0 28px 70px rgba(0,0,0,.35)}
+    .mhead{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--linha);padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
     .mhead h2{margin:0}.close{width:34px;height:34px;border:0;border-radius:50%;font-size:22px;cursor:pointer}
-    .timeline{padding:18px}.event{border-left:4px solid var(--amarelo);background:#f9fbfe;border-radius:9px;padding:11px 13px;margin-bottom:10px}
+    .timeline{padding:16px}.pcbox{border:1px solid #cddbef;background:#f6f9fe;border-radius:9px;padding:12px;margin-bottom:14px}
+    .pcbox h3{margin:0 0 8px;color:var(--azul)}.filegrid{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .filelink{display:inline-block;text-decoration:none;background:#fff;border:1px solid #cad8ea;border-radius:7px;padding:6px 8px;color:var(--azul);font-size:11px;font-weight:800}
+    .event{border-left:4px solid var(--amarelo);background:#f9fbfe;border-radius:9px;padding:10px 12px;margin-bottom:9px}
     .eventtop{display:flex;justify-content:space-between;gap:10px;margin-bottom:5px}.kind{font-weight:900;color:var(--azul)}
     .meta{color:var(--muted);font-size:12px;margin-top:5px}.mail{display:inline-block;margin-top:7px;color:var(--azul);font-size:12px;font-weight:800;text-decoration:none}
     @media(max-width:900px){
-      header{align-items:flex-start;flex-direction:column;padding:12px}.brand img{width:115px}.brand h1{font-size:21px}
-      .wrap{padding:8px}.cards{grid-template-columns:repeat(2,1fr)}th{top:40px}
+      header{align-items:flex-start;flex-direction:column;padding:12px}.brand img{width:110px}.brand h1{font-size:20px}
+      .wrap{padding:8px}.cards{grid-template-columns:repeat(2,1fr)}.table-shell{max-height:calc(100vh - 220px)}
     }
   </style>
 </head>
@@ -85,7 +80,7 @@
     <img id="logo" alt="HAGAP">
     <div>
       <h1>Controle de Obras</h1>
-      <div class="sub">Pedido → PDE/PLV → OMB → Documentos → BMD → FFO</div>
+      <div class="sub">AES/Prazo → Pedido → PDE/PLV → OMB → Projeto → Documentos → BMD → FFO</div>
     </div>
   </div>
   <div class="actions">
@@ -97,10 +92,11 @@
 
 <main class="wrap">
   <section class="cards">
-    <div class="card"><div class="label">Obras</div><div id="kTotal" class="value">—</div></div>
-    <div class="card"><div class="label">Com pedido</div><div id="kPedidos" class="value">—</div></div>
+    <div class="card"><div class="label">Obras na base</div><div id="kTotal" class="value">—</div></div>
+    <div class="card"><div class="label">Com AES</div><div id="kAes" class="value">—</div></div>
+    <div class="card"><div class="label">Projeto no PC</div><div id="kProjeto" class="value">—</div></div>
     <div class="card"><div class="label">Pedido sem PDE/PLV</div><div id="kSemLib" class="value">—</div></div>
-    <div class="card"><div class="label">Alertas de pedido</div><div id="kAlertas" class="value">—</div></div>
+    <div class="card"><div class="label">Alertas pedido</div><div id="kAlertas" class="value">—</div></div>
     <div class="card"><div class="label">Documentos enviados</div><div id="kDocs" class="value">—</div></div>
     <div class="card"><div class="label">Com BMD</div><div id="kBmd" class="value">—</div></div>
     <div class="card"><div class="label">Com FFO</div><div id="kFfo" class="value">—</div></div>
@@ -108,12 +104,14 @@
 
   <section class="panel toolbar">
     <input id="busca" type="search" placeholder="Pesquisar projeto, cidade ou serviço..." oninput="filtrar()">
-    <select id="mes" onchange="filtrar()"><option value="">Todos os meses</option></select>
+    <select id="mesAes" onchange="filtrar()"><option value="">Todos os vencimentos AES</option></select>
     <div class="checks">
+      <label><input id="fSemAes" type="checkbox" onchange="filtrar()"> Sem AES</label>
       <label><input id="fPedido" type="checkbox" onchange="filtrar()"> Pedido</label>
       <label><input id="fSemPedido" type="checkbox" onchange="filtrar()"> Sem pedido</label>
-      <label><input id="fAlerta" type="checkbox" onchange="filtrar()"> Alerta</label>
+      <label><input id="fAlerta" type="checkbox" onchange="filtrar()"> Alerta pedido</label>
       <label><input id="fDocs" type="checkbox" onchange="filtrar()"> Documentos</label>
+      <label><input id="fProjeto" type="checkbox" onchange="filtrar()"> Projeto PC</label>
       <label><input id="fBmd" type="checkbox" onchange="filtrar()"> BMD</label>
       <label><input id="fFfo" type="checkbox" onchange="filtrar()"> FFO</label>
     </div>
@@ -127,7 +125,30 @@
     </div>
   </section>
 
-  <div id="agenda"><div class="empty">Carregando...</div></div>
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Venc. AES</th>
+          <th>Projeto</th>
+          <th>AES</th>
+          <th>Cidade</th>
+          <th>Pedido para</th>
+          <th>Serviço / observação</th>
+          <th>Pedido</th>
+          <th>PDE</th>
+          <th>PLV</th>
+          <th>OMB</th>
+          <th>Projeto PDF</th>
+          <th>Documentos</th>
+          <th>BMD</th>
+          <th>FFO</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"><tr><td colspan="15" class="empty">Carregando...</td></tr></tbody>
+    </table>
+  </div>
 </main>
 
 <div id="modal" class="modal hidden" onclick="fecharFora(event)">
@@ -144,90 +165,58 @@
   function esc(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  function badge(v,cls){return '<span class="badge '+(cls||'')+'">'+esc(v)+'</span>'}
+  function fmtDataHora(v){if(!v)return '—';const d=new Date(v);return isNaN(d.getTime())?esc(v):d.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}
+  function parseBr(v){const m=String(v||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?new Date(Number(m[3]),Number(m[2])-1,Number(m[1])):null}
+  function chaveData(v){const m=String(v||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?(m[3]+'-'+m[2]+'-'+m[1]):'9999-99-99'}
+  function mesChave(v){const d=parseBr(v);return d?(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')):'SEM_AES'}
+  function mesNome(ch){if(ch==='SEM_AES')return 'Sem AES';const p=ch.split('-').map(Number);const d=new Date(p[0],p[1]-1,1);const s=d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});return s.charAt(0).toUpperCase()+s.slice(1)}
+  function statusLink(url,texto,cls,title){const b=badge(texto,cls);return url?'<a class="statuslink" href="'+esc(url)+'" target="_blank" title="'+esc(title||'Abrir')+'">'+b+'</a>':b}
 
-  function badge(v,cls){
-    return '<span class="badge '+(cls||'')+'">'+esc(v)+'</span>';
-  }
-
-  function fmtDataHora(v){
-    if(!v)return '—';
-    const d=new Date(v);
-    return isNaN(d.getTime())?esc(v):d.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
-  }
-
-  function parseBr(v){
-    const m=String(v||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    return m?new Date(Number(m[3]),Number(m[2])-1,Number(m[1])):null;
-  }
-
-  function chaveData(v){
-    const m=String(v||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    return m?(m[3]+'-'+m[2]+'-'+m[1]):'9999-99-99';
-  }
-
-  function tituloData(v){
-    if(!v)return 'SEM DATA DEFINIDA';
-    const d=parseBr(v);
-    if(!d)return String(v);
-    const dia=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
-    return dia.charAt(0).toUpperCase()+dia.slice(1);
-  }
-
-  function mesChave(v){
-    const d=parseBr(v);
-    return d?(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')):'SEM_DATA';
-  }
-
-  function mesNome(ch){
-    if(ch==='SEM_DATA')return 'Sem data';
-    const p=ch.split('-').map(Number);
-    const d=new Date(p[0],p[1]-1,1);
-    const s=d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-    return s.charAt(0).toUpperCase()+s.slice(1);
-  }
-
-  function statusLink(url,texto,cls,title){
-    const b=badge(texto,cls);
-    if(!url)return b;
-    return '<a class="statuslink" href="'+esc(url)+'" target="_blank" title="'+esc(title||'Abrir e-mail')+'">'+b+'</a>';
-  }
-
-  function linksHtml(lista,prefixo,cls){
+  function linksEmail(lista,prefixo){
     if(!lista||!lista.length)return badge('—','');
-    return '<div class="statusstack">'+lista.map((x,i)=>{
-      const txt=x.referencia?(prefixo+' '+x.referencia):(prefixo+' '+(i+1));
-      return statusLink(x.urlEmail,txt,cls,x.status||txt);
-    }).join('')+'</div>';
+    return '<div class="statusstack">'+lista.map(x=>statusLink(x.urlEmail,prefixo+' '+(x.referencia||''),'blue',x.status||prefixo)).join('')+'</div>';
   }
 
   function pedidoHtml(p){
     if(!p.pedido||!p.ultimoPedido)return badge('NÃO PEDIDO','');
-    const ped=p.ultimoPedido;
-    const a=p.alertaPedido||{};
+    const a=p.alertaPedido||{}, ped=p.ultimoPedido;
     const cls=a.nivel==='OK'?'ok':a.nivel==='ALERTA'?'warn':a.nivel==='HOJE'?'today':a.nivel==='ATRASADO'?'danger':'blue';
     let html=statusLink(ped.urlEmail,'PEDIDO',cls,'Abrir pedido no Gmail');
-    if(a.nivel==='ATRASADO'||a.nivel==='HOJE'){
-      html+='<div class="alerttxt">'+esc(a.texto)+'</div>';
-    }else if(a.nivel==='ALERTA'){
-      html+='<div class="alerttxt warntext">'+esc(a.texto)+'</div>';
-    }
+    if(a.nivel==='ATRASADO'||a.nivel==='HOJE')html+='<div class="alerttxt">'+esc(a.texto)+'</div>';
+    else if(a.nivel==='ALERTA')html+='<div class="alerttxt warntext">'+esc(a.texto)+'</div>';
     return html;
+  }
+
+  function projetoHtml(p){
+    if(!p.projetoUrls||!p.projetoUrls.length)return badge('—','');
+    return statusLink(p.projetoUrls[0].url,'PDF '+p.projetoUrls.length,'blue','Abrir '+p.projetoUrls[0].nome);
   }
 
   function docsHtml(p){
     if(p.docFinal)return statusLink(p.docUrl,'ENVIADOS','ok','Abrir e-mail de documentos');
-    if(p.docParcial)return statusLink(p.docParcialUrl,'PARCIAL','warn','Abrir e-mail de documentos parciais');
+    if(p.docParcial)return statusLink(p.docParcialUrl,'PARCIAL','warn','Abrir e-mail parcial');
     return badge('—','');
   }
 
   function bmdHtml(p){
-    if(!p.bmdLinks||!p.bmdLinks.length)return badge('—','');
-    return '<div class="statusstack">'+p.bmdLinks.map((x,i)=>statusLink(x.urlEmail,'BMD '+(i+1),x.status==='PARCIAL'?'warn':'blue',x.anexo||'Abrir BMD')).join('')+'</div>';
+    if(p.bmdsPc&&p.bmdsPc.length){
+      return '<div class="statusstack">'+p.bmdsPc.map((x,i)=>statusLink(x.url,'BMD '+(i+1),'blue',x.arquivo)).join('')+'</div>';
+    }
+    if(p.bmdLinks&&p.bmdLinks.length){
+      return '<div class="statusstack">'+p.bmdLinks.map((x,i)=>statusLink(x.urlEmail,'BMD '+(i+1),x.status==='PARCIAL'?'warn':'blue',x.anexo)).join('')+'</div>';
+    }
+    return badge('—','');
   }
 
   function ffoHtml(p){
-    if(!p.ffoLinks||!p.ffoLinks.length)return badge('—','');
-    return '<div class="statusstack">'+p.ffoLinks.map((x,i)=>statusLink(x.urlEmail,'FFO '+(i+1),'final',x.anexo||'Abrir FFO')).join('')+'</div>';
+    if(p.ffosPc&&p.ffosPc.length){
+      return '<div class="statusstack">'+p.ffosPc.map((x,i)=>statusLink(x.url,'FFO '+(i+1),'final',x.arquivo)).join('')+'</div>';
+    }
+    if(p.ffoLinks&&p.ffoLinks.length){
+      return '<div class="statusstack">'+p.ffoLinks.map((x,i)=>statusLink(x.urlEmail,'FFO '+(i+1),'final',x.anexo)).join('')+'</div>';
+    }
+    return badge('—','');
   }
 
   function carregar(){
@@ -235,126 +224,118 @@
       .withSuccessHandler(d=>{
         base=d;linhas=d.projetos||[];
         el('logo').src=d.logoUrl||'';
-        el('kTotal').textContent=d.resumo.total;
-        el('kPedidos').textContent=d.resumo.comPedido||0;
+        el('kTotal').textContent=d.resumo.total||0;
+        el('kAes').textContent=d.resumo.comAes||0;
+        el('kProjeto').textContent=d.resumo.comProjetoPdf||0;
         el('kSemLib').textContent=d.resumo.pedidosSemLiberacao||0;
         el('kAlertas').textContent=d.resumo.alertasPedido||0;
         el('kDocs').textContent=d.resumo.documentosEnviados||0;
         el('kBmd').textContent=d.resumo.comBmd||0;
         el('kFfo').textContent=d.resumo.comFfo||0;
         el('syncTxt').textContent=d.ultimaSync?'Atualizado: '+fmtDataHora(d.ultimaSync):'Aguardando sincronização';
-        el('statusBase').textContent=d.backfillConcluido?'Histórico 01/2025 → hoje concluído':'Carga histórica automática em andamento';
+        el('statusBase').textContent=(d.backfillConcluido?'Gmail histórico concluído':'Gmail histórico em carga')+
+          (d.basePcAtualizada?' · Base AES/PC: '+fmtDataHora(d.basePcAtualizada):'');
         montarMeses();
         filtrar();
       })
       .withFailureHandler(err=>{
-        el('agenda').innerHTML='<div class="empty">Erro: '+esc(err.message||err)+'</div>';
+        el('tbody').innerHTML='<tr><td colspan="15" class="empty">Erro: '+esc(err.message||err)+'</td></tr>';
       })
       .getPainelData();
   }
 
   function montarMeses(){
-    const atual=el('mes').value;
-    const meses=[...new Set(linhas.map(p=>mesChave(p.dataProgramacao)))].sort();
-    el('mes').innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>'<option value="'+esc(m)+'">'+esc(mesNome(m))+'</option>').join('');
-
-    if(atual&&meses.includes(atual)){
-      el('mes').value=atual;
-      return;
-    }
-
-    const hoje=new Date();
-    const corrente=hoje.getFullYear()+'-'+String(hoje.getMonth()+1).padStart(2,'0');
-    if(meses.includes(corrente))el('mes').value=corrente;
+    const atual=el('mesAes').value;
+    const meses=[...new Set(linhas.map(p=>mesChave(p.prazoAes)))].sort((a,b)=>{
+      if(a==='SEM_AES')return 1;if(b==='SEM_AES')return -1;return a.localeCompare(b);
+    });
+    el('mesAes').innerHTML='<option value="">Todos os vencimentos AES</option>'+
+      meses.map(m=>'<option value="'+esc(m)+'">'+esc(mesNome(m))+'</option>').join('');
+    if(atual&&meses.includes(atual))el('mesAes').value=atual;
   }
 
   function filtrar(){
     const q=el('busca').value.trim().toLowerCase();
-    const mes=el('mes').value;
+    const mes=el('mesAes').value;
     const filtros={
-      pedido:el('fPedido').checked,semPedido:el('fSemPedido').checked,alerta:el('fAlerta').checked,
-      docs:el('fDocs').checked,bmd:el('fBmd').checked,ffo:el('fFfo').checked
+      semAes:el('fSemAes').checked,pedido:el('fPedido').checked,semPedido:el('fSemPedido').checked,
+      alerta:el('fAlerta').checked,docs:el('fDocs').checked,projeto:el('fProjeto').checked,
+      bmd:el('fBmd').checked,ffo:el('fFfo').checked
     };
     const ativo=Object.values(filtros).some(Boolean);
 
     const arr=linhas.filter(p=>{
-      const txt=(p.projeto+' '+(p.municipio||'')+' '+(p.servicoResumo||'')).toLowerCase();
+      const txt=(p.projeto+' '+(p.municipio||'')+' '+(p.servicoResumo||'')+' '+(p.aes||'')).toLowerCase();
       if(q&&!txt.includes(q))return false;
-      if(mes&&mesChave(p.dataProgramacao)!==mes)return false;
+      if(mes&&mesChave(p.prazoAes)!==mes)return false;
       if(!ativo)return true;
       const alerta=p.alertaPedido&&['ALERTA','HOJE','ATRASADO'].includes(p.alertaPedido.nivel);
-      return (filtros.pedido&&p.pedido)||(filtros.semPedido&&!p.pedido)||(filtros.alerta&&alerta)||(filtros.docs&&p.docFinal)||(filtros.bmd&&p.bmds>0)||(filtros.ffo&&p.ffos>0);
+      return (filtros.semAes&&!p.temAes)||(filtros.pedido&&p.pedido)||(filtros.semPedido&&!p.pedido)||
+        (filtros.alerta&&alerta)||(filtros.docs&&p.docFinal)||(filtros.projeto&&p.temProjetoPdf)||
+        (filtros.bmd&&p.temBmd)||(filtros.ffo&&p.temFfo);
     });
 
     el('contador').textContent=arr.length+' obra(s) exibida(s)';
-    renderAgenda(arr);
+    renderTabela(arr);
   }
 
-  function renderAgenda(arr){
+  function renderTabela(arr){
     if(!arr.length){
-      el('agenda').innerHTML='<div class="empty">Nenhuma obra encontrada para os filtros selecionados.</div>';
+      el('tbody').innerHTML='<tr><td colspan="15" class="empty">Nenhuma obra encontrada.</td></tr>';
       return;
     }
 
     const grupos={};
     arr.forEach(p=>{
-      const k=p.dataProgramacao||'SEM_DATA';
+      const k=p.prazoAes||'SEM_AES';
       if(!grupos[k])grupos[k]=[];
       grupos[k].push(p);
     });
 
     const chaves=Object.keys(grupos).sort((a,b)=>{
-      if(a==='SEM_DATA')return 1;
-      if(b==='SEM_DATA')return -1;
+      if(a==='SEM_AES')return 1;if(b==='SEM_AES')return -1;
       return chaveData(a).localeCompare(chaveData(b));
     });
 
-    el('agenda').innerHTML=chaves.map(data=>{
-      const obras=grupos[data].sort((a,b)=>a.projeto.localeCompare(b.projeto));
-      return '<section class="day">'+
-        '<div class="day-title"><span>'+esc(tituloData(data==='SEM_DATA'?'':data))+'</span><span class="count">'+obras.length+' obra(s)</span></div>'+
-        '<div class="tablewrap"><table>'+
-          '<thead><tr>'+
-            '<th class="col-projeto">Projeto</th>'+
-            '<th class="col-cidade">Cidade</th>'+
-            '<th class="col-servico">Serviço / observação</th>'+
-            '<th class="col-status">Pedido</th>'+
-            '<th class="col-status">PDE</th>'+
-            '<th class="col-status">PLV</th>'+
-            '<th class="col-status">OMB</th>'+
-            '<th class="col-status">Documentos</th>'+
-            '<th class="col-status">BMD</th>'+
-            '<th class="col-status">FFO</th>'+
-            '<th class="col-detalhes"></th>'+
-          '</tr></thead>'+
-          '<tbody>'+obras.map(linhaProjeto).join('')+'</tbody>'+
-        '</table></div>'+
-      '</section>';
-    }).join('');
-  }
+    let html='';
+    chaves.forEach(data=>{
+      const obras=grupos[data].sort((a,b)=>{
+        const da=chaveData(a.dataSolicitada), db=chaveData(b.dataSolicitada);
+        if(da!==db)return da.localeCompare(db);
+        return a.projeto.localeCompare(b.projeto);
+      });
 
-  function linhaProjeto(p){
-    return '<tr>'+
-      '<td><button class="projeto" onclick="detalhes(\''+esc(p.projeto)+'\')">'+esc(p.projeto)+'</button></td>'+
-      '<td>'+esc(p.municipio||'—')+'</td>'+
-      '<td><div class="servico">'+esc(p.servicoResumo||'—')+'</div>'+
-        (p.ultimoPedido&&p.ultimoPedido.horaInicio?'<div class="muted">'+esc(p.ultimoPedido.horaInicio)+(p.ultimoPedido.horaFim?' às '+esc(p.ultimoPedido.horaFim):'')+'</div>':'')+
-      '</td>'+
-      '<td>'+pedidoHtml(p)+'</td>'+
-      '<td>'+linksHtml(p.linksPde,'PDE','blue')+'</td>'+
-      '<td>'+linksHtml(p.linksPlv,'PLV','blue')+'</td>'+
-      '<td>'+linksHtml(p.linksOmb,'OMB','blue')+'</td>'+
-      '<td>'+docsHtml(p)+'</td>'+
-      '<td>'+bmdHtml(p)+'</td>'+
-      '<td>'+ffoHtml(p)+'</td>'+
-      '<td><button class="btn" onclick="detalhes(\''+esc(p.projeto)+'\')">Abrir</button></td>'+
-    '</tr>';
+      html+='<tr class="group-row"><td colspan="15">'+
+        (data==='SEM_AES'?'[AES NÃO LOCALIZADA]':'VENCIMENTO AES — '+esc(data))+
+        ' · '+obras.length+' obra(s)</td></tr>';
+
+      html+=obras.map(p=>'<tr class="data-row">'+
+        '<td>'+esc(p.prazoAes||'—')+'</td>'+
+        '<td><button class="projeto" onclick="detalhes(\''+esc(p.projeto)+'\')">'+esc(p.projeto)+'</button></td>'+
+        '<td>'+(p.aes?statusLink(p.aesUrl,'AES '+p.aes,'blue',p.arquivoAes):badge('—',''))+'</td>'+
+        '<td>'+esc(p.municipio||'—')+'</td>'+
+        '<td>'+esc(p.dataSolicitada||'—')+'</td>'+
+        '<td><div class="servico">'+esc(p.servicoResumo||'—')+'</div>'+
+          (p.ultimoPedido&&p.ultimoPedido.horaInicio?'<div class="muted">'+esc(p.ultimoPedido.horaInicio)+(p.ultimoPedido.horaFim?' às '+esc(p.ultimoPedido.horaFim):'')+'</div>':'')+
+        '</td>'+
+        '<td>'+pedidoHtml(p)+'</td>'+
+        '<td>'+linksEmail(p.linksPde,'PDE')+'</td>'+
+        '<td>'+linksEmail(p.linksPlv,'PLV')+'</td>'+
+        '<td>'+linksEmail(p.linksOmb,'OMB')+'</td>'+
+        '<td>'+projetoHtml(p)+'</td>'+
+        '<td>'+docsHtml(p)+'</td>'+
+        '<td>'+bmdHtml(p)+'</td>'+
+        '<td>'+ffoHtml(p)+'</td>'+
+        '<td><button class="btn" onclick="detalhes(\''+esc(p.projeto)+'\')">Abrir</button></td>'+
+      '</tr>').join('');
+    });
+
+    el('tbody').innerHTML=html;
   }
 
   function limpar(){
-    el('busca').value='';
-    el('mes').value='';
-    ['fPedido','fSemPedido','fAlerta','fDocs','fBmd','fFfo'].forEach(id=>el(id).checked=false);
+    el('busca').value='';el('mesAes').value='';
+    ['fSemAes','fPedido','fSemPedido','fAlerta','fDocs','fProjeto','fBmd','fFfo'].forEach(id=>el(id).checked=false);
     filtrar();
   }
 
@@ -366,25 +347,43 @@
       .sincronizarAgora();
   }
 
-  function abrirPlanilha(){
-    if(base&&base.planilhaUrl)window.open(base.planilhaUrl,'_blank');
-  }
+  function abrirPlanilha(){if(base&&base.planilhaUrl)window.open(base.planilhaUrl,'_blank')}
 
   function detalhes(projeto){
     el('modal').classList.remove('hidden');
     el('mtitle').textContent='Projeto '+projeto;
-    el('mbody').innerHTML='<div class="empty">Carregando histórico...</div>';
+    el('mbody').innerHTML='<div class="empty">Carregando...</div>';
 
     google.script.run
       .withSuccessHandler(d=>{
-        if(!d.eventos.length){el('mbody').innerHTML='<div class="empty">Sem eventos.</div>';return}
-        el('mbody').innerHTML=d.eventos.map(e=>{
+        let html='';
+
+        if(d.pc){
+          const pc=d.pc;
+          html+='<div class="pcbox"><h3>Base AES / arquivos do PC</h3>'+
+            '<div><strong>AES:</strong> '+esc(pc.aes||'—')+
+            ' &nbsp; <strong>Prazo:</strong> '+esc(pc.prazoAes||'—')+
+            ' &nbsp; <strong>Local:</strong> '+esc(pc.local||'—')+
+            ' &nbsp; <strong>Status:</strong> '+esc(pc.statusPc||'—')+'</div>'+
+            '<div class="filegrid">'+
+              (pc.aesUrl?'<a class="filelink" href="'+esc(pc.aesUrl)+'" target="_blank">Abrir AES</a>':'')+
+              (pc.projetos||[]).map(x=>'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.nome)+'</a>').join('')+
+              (pc.bmds||[]).map(x=>'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.arquivo)+'</a>').join('')+
+              (pc.ffos||[]).map(x=>'<a class="filelink" href="'+esc(x.url)+'" target="_blank">'+esc(x.arquivo)+'</a>').join('')+
+            '</div></div>';
+        }
+
+        if(!d.eventos.length){
+          html+='<div class="empty">Sem eventos de Gmail para este projeto.</div>';
+          el('mbody').innerHTML=html;
+          return;
+        }
+
+        html+=d.eventos.map(e=>{
           const meta=[
             e.referencia?'Nº '+e.referencia:'',
             e.pdeRelacionado?'PDE '+e.pdeRelacionado:'',
-            e.status||'',
-            e.municipio||'',
-            e.dataServico||'',
+            e.status||'',e.municipio||'',e.dataServico||'',
             (e.horaInicio&&e.horaFim)?e.horaInicio+' às '+e.horaFim:''
           ].filter(Boolean).join(' · ');
 
@@ -397,6 +396,8 @@
             (e.urlEmail?'<a class="mail" href="'+esc(e.urlEmail)+'" target="_blank">Abrir e-mail de origem</a>':'')+
           '</div>';
         }).join('');
+
+        el('mbody').innerHTML=html;
       })
       .withFailureHandler(err=>{el('mbody').innerHTML='<div class="empty">Erro: '+esc(err.message||err)+'</div>'})
       .getProjetoDetalhes(projeto);
