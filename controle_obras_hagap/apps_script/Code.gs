@@ -115,6 +115,32 @@ function sincronizarAgora() {
 }
 
 
+// Executar UMA VEZ manualmente quando a integração BASE_PC for ativada.
+// A chamada fica fora do try/catch de sincronizarGmail_ para forçar o Google
+// a solicitar a permissão de acesso externo (UrlFetchApp).
+function autorizarBasePc() {
+  const resp = UrlFetchApp.fetch(HAGAP.API_DADOS_PC, {
+    method:'get',
+    muteHttpExceptions:true,
+    followRedirects:true
+  });
+
+  const code = resp.getResponseCode();
+  if (code !== 200) {
+    throw new Error('BASE_PC respondeu HTTP ' + code + '.');
+  }
+
+  const dados = JSON.parse(resp.getContentText('UTF-8'));
+  if (!Array.isArray(dados)) {
+    throw new Error('BASE_PC não retornou uma lista de obras.');
+  }
+
+  const r = sincronizarBasePc_(getSS_());
+  log_('CONFIRMADO','AUTORIZAR_BASE_PC','Base externa autorizada e carregada: ' + (r.registros || 0) + ' registro(s).');
+  return r;
+}
+
+
 function sincronizarGmail_() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(1000)) {
