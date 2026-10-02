@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import importlib.util
+import base64
 import io
 import json
+import os
 import mimetypes
 import re
 import sys
@@ -26,6 +28,7 @@ URL_INICIAL = (
 PERFIL_EDGE = Path(r"C:\HAGAP\SHAREPOINT_BROWSER_PROFILE")
 DRIVE_DESTINO_ID = "1TTdT09m-WOVeEiii2hed9y4JhsNw8uh9"
 RELATORIO = BASE / "RELATORIO_ENVIO_PROGRAMADOS_DRIVE.json"
+CONFIG_LOCAL = BASE / "config_envio_drive.json"
 
 RE_PROJ = re.compile(r"(?<!\d)(\d{7}[A-Z]?)(?!\d)", re.I)
 
@@ -257,37 +260,216 @@ def project_ids_from_name(s):
     return {m.upper() for m in RE_PROJ.findall(str(s or ""))}
 
 
-def get_drive_service():
-    """Reutiliza somente a autenticação Drive já existente do HAGAP."""
-    candidatos = [
-        Path(r"C:\HAGAP\gerador.py"),
-        BASE / "gerador.py",
-        BASE.parent / "gerador.py",
-        BASE.parent.parent / "gerador.py",
-    ]
+def _config_get():
+    try:
+        return json.loads(CONFIG_LOCAL.read_text(encoding="utf-8")) if CONFIG_LOCAL.exists() else {}
+    except Exception:
+        return {}
 
-    gerador_py = next((p for p in candidatos if p.exists()), None)
-    if not gerador_py:
-        raise RuntimeError(
-            "Não encontrei gerador.py com a autenticação do Google Drive. "
-            "Mantenha C:\\HAGAP\\gerador.py ou coloque este programa ao lado dele."
-        )
+
+def _config_set(**kwargs):
+    cfg = _config_get()
+    cfg.update(kwargs)
+    CONFIG_LOCAL.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _service_from_info(info):
+    from google.oauth2 import service_account
+    from googleapiclient.discovery import build
+
+    creds = service_account.Credentials.from_service_account_info(
+        info,
+        scopes=["https://www.googleapis.com/auth/drive"],
+    )
+    return build("drive", "v3", credentials=creds)
+
+
+def _service_from_json(path):
+    try:
+        info = json.loads(Path(path).read_text(encoding="utf-8"))
+        if (
+            info.get("type") == "service_account"
+            and info.get("client_email")
+            and info.get("private_key")
+        ):
+            return _service_from_info(info)
+    except Exception:
+        pass
+    return None
+
+
+def _service_from_python(path):
+    """
+    Reutiliza LOCALMENTE a autenticação que já existe no HAGAP.
+    A chave não é exibida, impressa ou copiada para o relatório.
+    """
+    try:
+        txt = Path(path).read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return None
+
+    m = re.search(r'_GOOGLE_SA_B64\\s*=\\s*(["\\\'])(.*?)\\1', txt, re.S)
+    if not m:
+        return None
 
     try:
-        spec = importlib.util.spec_from_file_location("hagap_gerador_drive", gerador_py)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-    except Exception as exc:
-        raise RuntimeError(f"Não consegui abrir a autenticação Drive do HAGAP: {exc}")
+        b64 = m.group(2).strip()
+        b64 += "=" * (-len(b64) % 4)
+        info = json.loads(base64.b64decode(b64).decode("utf-8"))
+        if info.get("type") == "service_account":
+            return _service_from_info(info)
+    except Exception:
+        return None
 
-    if not hasattr(mod, "_get_drive_service_local"):
-        raise RuntimeError("O gerador.py localizado não possui a integração Google Drive esperada.")
+    return None
 
-    svc = mod._get_drive_service_local()
-    if not svc:
-        raise RuntimeError("Autenticação Google Drive não disponível no HAGAP.")
 
-    return svc
+def _candidate_roots():
+    roots = [
+        Path(r"C:\\HAGAP"),
+        BASE,
+        BASE.parent,
+        Path.home() / "Downloads",
+        Path.home() / "Desktop",
+        Path.home() / "Documents",
+    ]
+
+    onedrive = Path.home() / "OneDrive"
+    if onedrive.exists():
+        roots.append(onedrive)
+
+    out = []
+    for root in roots:
+        try:
+            rr = root.resolve()
+            if rr.exists() and rr not in out:
+                out.append(rr)
+        except Exception:
+            pass
+    return out
+
+
+def _search_existing_drive_auth():
+    """
+    Procura gerador.py/app.py ou JSON de service account
+    nos locais mais prováveis do computador.
+    """
+    py_names = {"gerador.py", "app.py"}
+    json_names = {
+        "credenciais_google.json",
+        "service_account.json",
+        "google_service_account.json",
+    }
+    skip_dirs = {"node_modules", ".git", "venv", ".venv", "AppData", "__pycache__"}
+    encontrados = []
+    vistos = 0
+    limite = 30000
+
+    for root in _candidate_roots():
+        try:
+            for cur, dirs, files in os.walk(root):
+                dirs[:] = [d for d in dirs if d not in skip_dirs]
+
+                try:
+                    if len(Path(cur).relative_to(root).parts) > 6:
+                        dirs[:] = []
+                except Exception:
+                    pass
+
+                for fn in files:
+                    vistos += 1
+                    if vistos > limite:
+                        return encontrados
+
+                    low = fn.lower()
+                    if low in py_names or low in json_names:
+                        encontrados.append(Path(cur) / fn)
+        except Exception:
+            continue
+
+    return encontrados
+
+
+def _manual_auth_file():
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+
+        root = tk.Tk()
+        root.withdraw()
+        arq = filedialog.askopenfilename(
+            title="Selecione gerador.py OU JSON da conta de serviço do HAGAP",
+            filetypes=[
+                ("Python ou JSON", "*.py *.json"),
+                ("Todos os arquivos", "*.*"),
+            ],
+        )
+        root.destroy()
+        return Path(arq) if arq else None
+    except Exception:
+        return None
+
+
+def get_drive_service():
+    """
+    Procura automaticamente a autenticação Drive já existente do HAGAP.
+    Não exige mais C:\\HAGAP\\gerador.py em um caminho fixo.
+    """
+
+    # 1) Credencial padrão configurada no Windows.
+    env = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "").strip()
+    if env and Path(env).exists():
+        svc = _service_from_json(env)
+        if svc:
+            print("[CONFIRMADO] Drive: autenticação via GOOGLE_APPLICATION_CREDENTIALS.")
+            return svc
+
+    # 2) Caminho salvo de uma execução anterior.
+    salvo = _config_get().get("credencial_drive")
+    if salvo and Path(salvo).exists():
+        svc = (
+            _service_from_json(salvo)
+            if str(salvo).lower().endswith(".json")
+            else _service_from_python(salvo)
+        )
+        if svc:
+            print("[CONFIRMADO] Drive: autenticação HAGAP reutilizada.")
+            return svc
+
+    # 3) Busca automática.
+    print("[Drive] Procurando autenticação já existente do HAGAP no computador...")
+    for arq in _search_existing_drive_auth():
+        svc = (
+            _service_from_json(arq)
+            if arq.suffix.lower() == ".json"
+            else _service_from_python(arq)
+        )
+        if svc:
+            _config_set(credencial_drive=str(arq))
+            print(f"[CONFIRMADO] Autenticação Drive encontrada em: {arq}")
+            return svc
+
+    # 4) Seleção manual, uma vez.
+    print("[PENDENTE] Não localizei automaticamente a autenticação do Drive.")
+    print("Será aberta uma janela. Selecione o gerador.py antigo do HAGAP")
+    print("ou o JSON da conta de serviço que já era usado pelo HAGAP.")
+
+    arq = _manual_auth_file()
+    if arq and arq.exists():
+        svc = (
+            _service_from_json(arq)
+            if arq.suffix.lower() == ".json"
+            else _service_from_python(arq)
+        )
+        if svc:
+            _config_set(credencial_drive=str(arq))
+            print("[CONFIRMADO] Autenticação aceita e salva para as próximas execuções.")
+            return svc
+
+    raise RuntimeError(
+        "Não foi possível localizar uma autenticação Google Drive já existente do HAGAP. "
+        "Selecione o gerador.py antigo ou o JSON da conta de serviço."
+    )
 
 
 def drive_children(service, parent_id):
