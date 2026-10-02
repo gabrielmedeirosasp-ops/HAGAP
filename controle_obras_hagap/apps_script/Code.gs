@@ -62,6 +62,16 @@ function configurarSistema() {
     props.setProperty('BACKFILL_CONCLUIDO', '0');
   }
 
+  // Migração v1: PEDIDOS passaram a fazer parte da rotina.
+  // Reinicia a varredura histórica uma única vez; os IDs já processados
+  // continuam deduplicados, então não duplica os eventos existentes.
+  if (props.getProperty('MIGRACAO_PEDIDO_V1') !== '1') {
+    props.setProperty('BACKFILL_MES', HAGAP.INICIO_HISTORICO.substring(0,7));
+    props.setProperty('BACKFILL_OFFSET', '0');
+    props.setProperty('BACKFILL_CONCLUIDO', '0');
+    props.setProperty('MIGRACAO_PEDIDO_V1', '1');
+  }
+
   criarTriggerAutomatico_();
   log_('CONFIRMADO','CONFIGURAR','Sistema configurado: ' + ss.getUrl());
 
