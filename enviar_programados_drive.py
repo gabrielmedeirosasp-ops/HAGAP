@@ -576,33 +576,53 @@ def _input_upload_direto(page, caminho):
 
 def _clicar_novo(page):
     """
-    Fallback para layouts diferentes do Google Drive.
-    Procura por texto, aria-label, tooltip e elementos de navegação lateral.
+    Usa os seletores reais observados na interface atual do Google Drive.
+    O botão Novo NÃO possui aria-label; ele é um <button role="button">
+    com o texto Novo e, em alguns estados, guidedhelpid=td_new_menu_button.
     """
-    tentativas = [
-        page.get_by_role("button", name=re.compile(r"Novo|New", re.I)),
-        page.locator('[aria-label*="Novo"]'),
-        page.locator('[aria-label*="New"]'),
-        page.locator('[data-tooltip*="Novo"]'),
-        page.locator('[data-tooltip*="New"]'),
-        page.locator('div[role="button"]').filter(has_text=re.compile(r"Novo|New", re.I)),
-        page.locator('button').filter(has_text=re.compile(r"Novo|New", re.I)),
-        page.get_by_text(re.compile(r"^\\s*(Novo|New)\\s*$", re.I)),
+    seletores = [
+        'button[guidedhelpid="td_new_menu_button"]:not([aria-disabled="true"])',
+        'button.brbsPe:not([aria-disabled="true"])',
+        'button[role="button"]:not([aria-disabled="true"])',
     ]
 
-    for loc in tentativas:
+    for seletor in seletores:
         try:
+            loc = page.locator(seletor).filter(
+                has_text=re.compile(r"^\\s*(Novo|New)\\s*$", re.I)
+            )
             qtd = min(loc.count(), 10)
             for i in range(qtd):
                 alvo = loc.nth(i)
                 try:
-                    if alvo.is_visible(timeout=1000):
-                        alvo.click(timeout=5000)
+                    if alvo.is_visible(timeout=1500):
+                        alvo.scroll_into_view_if_needed()
+                        alvo.click(timeout=7000, force=True)
+                        time.sleep(1)
                         return True
                 except Exception:
                     continue
         except Exception:
             continue
+
+    # Último fallback: o span visível "Novo" e sobe até o botão pai.
+    try:
+        spans = page.locator("span.jYPt8c").filter(
+            has_text=re.compile(r"^\\s*(Novo|New)\\s*$", re.I)
+        )
+        for i in range(min(spans.count(), 10)):
+            sp = spans.nth(i)
+            try:
+                if sp.is_visible(timeout=1000):
+                    btn = sp.locator("xpath=ancestor::button[1]")
+                    if btn.count() and btn.get_attribute("aria-disabled") != "true":
+                        btn.click(timeout=7000, force=True)
+                        time.sleep(1)
+                        return True
+            except Exception:
+                continue
+    except Exception:
+        pass
 
     return False
 
@@ -610,27 +630,57 @@ def _clicar_novo(page):
 def _menu_upload(page, pasta):
     expressoes = (
         [
-            re.compile(r"Upload\s+de\s+pasta", re.I),
-            re.compile(r"Folder\s+upload", re.I),
-            re.compile(r"Fazer\s+upload\s+de\s+pasta", re.I),
+            re.compile(r"Upload.*pasta", re.I),
+            re.compile(r"Fazer.*upload.*pasta", re.I),
+            re.compile(r"Folder.*upload", re.I),
         ]
         if pasta
         else [
-            re.compile(r"Upload\s+de\s+arquivo", re.I),
-            re.compile(r"File\s+upload", re.I),
-            re.compile(r"Fazer\s+upload\s+de\s+arquivo", re.I),
+            re.compile(r"Upload.*arquivo", re.I),
+            re.compile(r"Fazer.*upload.*arquivo", re.I),
+            re.compile(r"File.*upload", re.I),
         ]
     )
 
+    # Aguarda o menu ser montado após clicar em Novo.
+    try:
+        page.wait_for_timeout(1000)
+    except Exception:
+        pass
+
+    candidatos = [
+        '[role="menuitem"]',
+        '[role="menuitemradio"]',
+        '[role="option"]',
+        'div[role="menu"] *',
+    ]
+
     for rx in expressoes:
+        # Primeiro por role/acessibilidade.
         for loc in [
             page.get_by_role("menuitem", name=rx),
             page.get_by_text(rx),
-            page.locator('[role="menuitem"]').filter(has_text=rx),
         ]:
             try:
                 if loc.count():
-                    return loc.first
+                    for i in range(min(loc.count(), 10)):
+                        alvo = loc.nth(i)
+                        if alvo.is_visible(timeout=1000):
+                            return alvo
+            except Exception:
+                pass
+
+        # Depois por texto dentro dos elementos reais do menu.
+        for seletor in candidatos:
+            try:
+                loc = page.locator(seletor).filter(has_text=rx)
+                for i in range(min(loc.count(), 20)):
+                    alvo = loc.nth(i)
+                    try:
+                        if alvo.is_visible(timeout=800):
+                            return alvo
+                    except Exception:
+                        continue
             except Exception:
                 continue
 
@@ -639,11 +689,13 @@ def _menu_upload(page, pasta):
 
 def _selecionar_upload_via_menu(page, caminho):
     if not _clicar_novo(page):
+        salvar_diagnostico_drive(page, "BOTAO_NOVO_NAO_CLICADO")
         return False
 
     time.sleep(1)
     menu = _menu_upload(page, caminho.is_dir())
     if menu is None:
+        salvar_diagnostico_drive(page, "MENU_UPLOAD_NAO_LOCALIZADO")
         return False
 
     try:
