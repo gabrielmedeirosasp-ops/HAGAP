@@ -16,6 +16,7 @@ const HAGAP = {
     EVENTOS: 'EVENTOS',
     EMAILS: 'EMAILS_PROCESSADOS',
     BASE_PC: 'BASE_PC',
+    BASE_TEAMS: 'BASE_TEAMS',
     AJUSTES: 'AJUSTES_MANUAIS',
     LOG: 'LOG',
     CONFIG: 'CONFIG'
@@ -32,6 +33,11 @@ const HAGAP = {
   HEAD_PC: [
     'PROJETO','PROJETO_BASE','AES','PRAZO_AES','LOCAL','STATUS_PC','ARQUIVO_AES',
     'PASTA_PROJETO','PDFS_PROJETO_JSON','BMDS_JSON','FFOS_JSON','ORIGEM_JSON','ATUALIZADO'
+  ],
+  HEAD_TEAMS: [
+    'PROJETO','AES','PRAZO_AES','MUNICIPIO','ARQUIVO_AES',
+    'ARQUIVOS_PROJETO_JSON','BMDS_JSON','FFOS_JSON',
+    'FONTES_JSON','DIVERGENCIAS_JSON','ATUALIZADO'
   ],
   HEAD_AJUSTES: ['PROJETO','MUNICIPIO','PRAZO_AES','DATA_AJUSTE']
 };
@@ -52,6 +58,7 @@ function configurarSistema() {
   garantirAba_(ss, HAGAP.ABAS.EVENTOS, HAGAP.HEAD_EVENTOS);
   garantirAba_(ss, HAGAP.ABAS.EMAILS, HAGAP.HEAD_EMAILS);
   garantirAba_(ss, HAGAP.ABAS.BASE_PC, HAGAP.HEAD_PC);
+  garantirAba_(ss, HAGAP.ABAS.BASE_TEAMS, HAGAP.HEAD_TEAMS);
   garantirAba_(ss, HAGAP.ABAS.AJUSTES, HAGAP.HEAD_AJUSTES);
   garantirAba_(ss, HAGAP.ABAS.LOG, ['DATA','NIVEL','ACAO','DETALHE']);
   garantirAba_(ss, HAGAP.ABAS.CONFIG, ['CHAVE','VALOR']);
@@ -167,18 +174,6 @@ function sincronizarGmail_() {
       historico:0,
       basePc:0
     };
-
-    // Base mestre: lê, sem alterar, os dados já consolidados pelo HAGAP antigo.
-    // Isso traz AES/prazo, projetos do PC, BMD e FFO para o novo painel.
-    if (Date.now() < prazo) {
-      try {
-        const pc = sincronizarBasePc_(ss);
-        stats.basePc = pc.registros || 0;
-      } catch (e) {
-        stats.erros++;
-        log_('PENDENTE','BASE_PC',String(e && e.message ? e.message : e));
-      }
-    }
 
     // Sempre prioriza novidades recentes.
     if (Date.now() < prazo) {
@@ -416,6 +411,82 @@ function salvarAjusteProjeto(projeto,campo,valor) {
   } finally {
     lock.releaseLock();
   }
+}
+
+
+function importarBaseTeams(jsonTexto) {
+  const ss = getSS_();
+  const aba = garantirAba_(ss,HAGAP.ABAS.BASE_TEAMS,HAGAP.HEAD_TEAMS);
+  const dados = JSON.parse(String(jsonTexto || '[]'));
+
+  if (!Array.isArray(dados)) {
+    throw new Error('BASE_TEAMS inválida: esperado uma lista JSON.');
+  }
+
+  const linhas = [];
+  const vistos = new Set();
+  const agora = new Date();
+
+  dados.forEach(r => {
+    const projeto = String((r && r.projeto) || '').trim().toUpperCase();
+    if (!/^\d{7}[A-Z]{0,3}$/.test(projeto)) return;
+    if (vistos.has(projeto)) {
+      throw new Error('Projeto duplicado na BASE_TEAMS: ' + projeto);
+    }
+    vistos.add(projeto);
+
+    const prazo = formatarDataBr_((r && r.prazoAes) || '');
+    if ((r && r.prazoAes) && !parseDataBr_(prazo)) {
+      throw new Error('Prazo AES inválido no projeto ' + projeto + ': ' + r.prazoAes);
+    }
+
+    linhas.push([
+      projeto,
+      String((r && r.aes) || ''),
+      prazo,
+      String((r && r.municipio) || ''),
+      String((r && r.arquivoAes) || ''),
+      JSON.stringify(Array.isArray(r && r.arquivosProjeto) ? r.arquivosProjeto : []),
+      JSON.stringify(Array.isArray(r && r.bmds) ? r.bmds : []),
+      JSON.stringify(Array.isArray(r && r.ffos) ? r.ffos : []),
+      JSON.stringify(Array.isArray(r && r.fontes) ? r.fontes : []),
+      JSON.stringify(Array.isArray(r && r.divergencias) ? r.divergencias : []),
+      agora
+    ]);
+  });
+
+  if (aba.getLastRow() > 1) {
+    aba.getRange(2,1,aba.getLastRow()-1,aba.getLastColumn()).clearContent();
+  }
+  if (linhas.length) {
+    aba.getRange(2,1,linhas.length,HAGAP.HEAD_TEAMS.length).setValues(linhas);
+  }
+
+  PropertiesService.getScriptProperties()
+    .setProperty('BASE_TEAMS_ATUALIZADA',agora.toISOString());
+
+  log_('CONFIRMADO','IMPORTAR_BASE_TEAMS','Importados ' + linhas.length + ' projeto(s) diretamente da base Teams.');
+  return {ok:true,registros:linhas.length};
+}
+
+
+function lerBaseTeams_(ss) {
+  const aba = ss.getSheetByName(HAGAP.ABAS.BASE_TEAMS);
+  if (!aba || aba.getLastRow() <= 1) return [];
+
+  return aba.getRange(2,1,aba.getLastRow()-1,HAGAP.HEAD_TEAMS.length).getValues().map(r => ({
+    projeto:String(r[0] || ''),
+    aes:String(r[1] || ''),
+    prazoAes:formatarDataBr_(r[2]),
+    municipio:String(r[3] || ''),
+    arquivoAes:String(r[4] || ''),
+    arquivosProjeto:jsonArraySeguro_(r[5]),
+    bmds:jsonArraySeguro_(r[6]),
+    ffos:jsonArraySeguro_(r[7]),
+    fontes:jsonArraySeguro_(r[8]),
+    divergencias:jsonArraySeguro_(r[9]),
+    atualizado:r[10]
+  }));
 }
 
 
@@ -1047,7 +1118,7 @@ function getPainelData() {
   resolverOmbs_(ss);
 
   const eventos = lerEventos_(ss);
-  const basePc = lerBasePc_(ss);
+  const baseTeams = lerBaseTeams_(ss);
   const ajustes = lerAjustes_(ss);
   const mapa = {};
 
@@ -1062,13 +1133,12 @@ function getPainelData() {
       prazoAesFonte:'',
       ajusteMunicipio:false,
       ajustePrazo:false,
-      statusPc:'',
       arquivoAes:'',
-      pastaProjeto:'',
-      pdfsProjeto:[],
-      bmdsPc:[],
-      ffosPc:[],
-      origemPc:[],
+      arquivosProjeto:[],
+      bmdsTeams:[],
+      ffosTeams:[],
+      fontesTeams:[],
+      divergenciasTeams:[],
       docFinal:false,
       docParcial:false,
       docUrl:'',
@@ -1083,25 +1153,25 @@ function getPainelData() {
     };
   }
 
-  // A base do PC/AES é a lista mestre. O Gmail entra por cima.
-  basePc.forEach(r => {
+  // Fonte técnica primária: Teams/SharePoint importado do zero.
+  baseTeams.forEach(r => {
     if (!r.projeto) return;
-    const p = novoProjeto_(r.projeto,r.projetoBase);
-    p.municipio = r.local || '';
-    p.municipioFonte = r.local || '';
+    const p = novoProjeto_(r.projeto,r.projeto.substring(0,7));
+    p.municipio = r.municipio || '';
+    p.municipioFonte = r.municipio || '';
     p.aes = r.aes || '';
     p.prazoAes = r.prazoAes || '';
     p.prazoAesFonte = r.prazoAes || '';
-    p.statusPc = r.statusPc || '';
     p.arquivoAes = r.arquivoAes || '';
-    p.pastaProjeto = r.pastaProjeto || '';
-    p.pdfsProjeto = r.pdfsProjeto || [];
-    p.bmdsPc = r.bmdsPc || [];
-    p.ffosPc = r.ffosPc || [];
-    p.origemPc = r.origemPc || [];
+    p.arquivosProjeto = r.arquivosProjeto || [];
+    p.bmdsTeams = r.bmds || [];
+    p.ffosTeams = r.ffos || [];
+    p.fontesTeams = r.fontes || [];
+    p.divergenciasTeams = r.divergencias || [];
     mapa[r.projeto] = p;
   });
 
+  // Gmail complementa Pedido/PDE/PLV/OMB/Documentos/BMD/FFO.
   eventos.forEach(e => {
     if (!e.projeto) return;
 
@@ -1110,7 +1180,6 @@ function getPainelData() {
     }
 
     const p = mapa[e.projeto];
-
     if (e.municipio && !p.municipio) p.municipio = e.municipio;
     if (e.dataServico) p.datasServico.push(e.dataServico);
 
@@ -1131,38 +1200,28 @@ function getPainelData() {
       p.docFinal = true;
       if (e.urlEmail) p.docUrl = e.urlEmail;
     }
-
     if (e.tipo === 'DOC_PARCIAL') {
       p.docParcial = true;
       if (e.urlEmail) p.docParcialUrl = e.urlEmail;
     }
-
     if (e.tipo === 'PDE' && e.referencia) {
       p.pdes[e.referencia] = {
         referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico
       };
     }
-
     if (e.tipo === 'PLV' && e.referencia) {
       p.plvs[e.referencia] = {
         referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico
       };
     }
-
     if (e.tipo === 'OMB' && e.referencia) {
       p.ombs[e.referencia] = {
         referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,
         dataServico:e.dataServico,pdeRelacionado:e.pdeRelacionado
       };
     }
-
-    if (e.tipo === 'BMD') {
-      p.bmdLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
-    }
-
-    if (e.tipo === 'FFO') {
-      p.ffoLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
-    }
+    if (e.tipo === 'BMD') p.bmdLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
+    if (e.tipo === 'FFO') p.ffoLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
 
     const iso = dataIso_(e.dataEmail);
     if (iso > p.ultimoMovimento) p.ultimoMovimento = iso;
@@ -1204,38 +1263,26 @@ function getPainelData() {
       p.ajustePrazo = true;
     }
 
-    p.temProjetoPdf = p.pdfsProjeto.length > 0;
-    p.temBmd = p.bmdsPc.length > 0 || p.bmdLinks.length > 0;
-    p.temFfo = p.ffosPc.length > 0 || p.ffoLinks.length > 0;
+    p.temProjetoPdf = p.arquivosProjeto.length > 0;
+    p.temBmd = p.bmdsTeams.length > 0 || p.bmdLinks.length > 0;
+    p.temFfo = p.ffosTeams.length > 0 || p.ffoLinks.length > 0;
     p.temAes = !!(p.aes || p.prazoAes || p.arquivoAes);
+    p.temDivergenciaTeams = p.divergenciasTeams.length > 0;
 
-    p.aesUrl = p.arquivoAes
-      ? HAGAP.SITE_HAGAP + '/pdfs/aes/' + encodeURIComponent(p.arquivoAes)
-      : '';
-
-    p.projetoUrls = p.pdfsProjeto.map(nome => ({
-      nome:nome,
-      url:HAGAP.SITE_HAGAP + '/pdfs/projetos/' +
-        encodeURIComponent(p.pastaProjeto || p.projeto) + '/' +
-        String(nome).split('/').map(encodeURIComponent).join('/')
+    // Links do Teams serão preenchidos pelo coletor quando houver webUrl.
+    p.projetoUrls = p.arquivosProjeto.map(x => ({
+      nome:String((x && x.nome) || x || ''),
+      url:String((x && x.url) || '')
     }));
-
-    p.bmdsPc = p.bmdsPc.map(x => ({
+    p.bmdsTeams = p.bmdsTeams.map(x => ({
       arquivo:String((x && x.arquivo) || ''),
-      status:String((x && x.status) || ''),
-      data:String((x && x.data) || ''),
-      url:(x && x.arquivo)
-        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
-        : ''
+      url:String((x && x.url) || ''),
+      status:String((x && x.status) || '')
     }));
-
-    p.ffosPc = p.ffosPc.map(x => ({
+    p.ffosTeams = p.ffosTeams.map(x => ({
       arquivo:String((x && x.arquivo) || ''),
-      status:String((x && x.status) || ''),
-      data:String((x && x.data) || ''),
-      url:(x && x.arquivo)
-        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
-        : ''
+      url:String((x && x.url) || ''),
+      status:String((x && x.status) || '')
     }));
 
     delete p.pdes;
@@ -1246,22 +1293,12 @@ function getPainelData() {
     return p;
   });
 
-  // ORDEM PRINCIPAL: vencimento da AES.
-  // Sem AES fica no fim, claramente separado.
   projetos.sort((a,b) => {
     const pa = dataBrParaChave_(a.prazoAes);
     const pb = dataBrParaChave_(b.prazoAes);
-
     if (pa && pb && pa !== pb) return pa.localeCompare(pb);
     if (pa && !pb) return -1;
     if (!pa && pb) return 1;
-
-    const da = dataBrParaChave_(a.dataSolicitada);
-    const db = dataBrParaChave_(b.dataSolicitada);
-    if (da && db && da !== db) return da.localeCompare(db);
-    if (da && !db) return -1;
-    if (!da && db) return 1;
-
     return a.projeto.localeCompare(b.projeto);
   });
 
@@ -1278,11 +1315,12 @@ function getPainelData() {
       documentosEnviados:projetos.filter(p => p.docFinal).length,
       documentosParciais:projetos.filter(p => p.docParcial && !p.docFinal).length,
       comBmd:projetos.filter(p => p.temBmd).length,
-      comFfo:projetos.filter(p => p.temFfo).length
+      comFfo:projetos.filter(p => p.temFfo).length,
+      divergenciasTeams:projetos.filter(p => p.temDivergenciaTeams).length
     },
     projetos:projetos,
     ultimaSync:PropertiesService.getScriptProperties().getProperty('ULTIMA_SYNC_OK') || '',
-    basePcAtualizada:PropertiesService.getScriptProperties().getProperty('BASE_PC_ATUALIZADA') || '',
+    baseTeamsAtualizada:PropertiesService.getScriptProperties().getProperty('BASE_TEAMS_ATUALIZADA') || '',
     backfillConcluido:backfillConcluido_(),
     planilhaUrl:ss.getUrl(),
     logoUrl:HAGAP.LOGO_URL
@@ -1293,45 +1331,28 @@ function getPainelData() {
 function getProjetoDetalhes(projeto) {
   const alvo = String(projeto || '').toUpperCase();
   const ss = getSS_();
-  const pc = lerBasePc_(ss).find(x => x.projeto === alvo) || null;
+  const teams = lerBaseTeams_(ss).find(x => x.projeto === alvo) || null;
   const ajuste = lerAjustes_(ss)[alvo] || {};
 
-  const pcDetalhes = pc ? {
-    aes:pc.aes,
-    prazoAes:ajuste.prazoAes || pc.prazoAes,
-    prazoAesFonte:pc.prazoAes,
+  const teamsDetalhes = teams ? {
+    aes:teams.aes,
+    prazoAes:ajuste.prazoAes || teams.prazoAes,
+    prazoAesFonte:teams.prazoAes,
     ajustePrazo:!!ajuste.prazoAes,
-    local:ajuste.municipio || pc.local,
-    localFonte:pc.local,
+    local:ajuste.municipio || teams.municipio,
+    localFonte:teams.municipio,
     ajusteMunicipio:!!ajuste.municipio,
-    statusPc:pc.statusPc,
-    arquivoAes:pc.arquivoAes,
-    aesUrl:pc.arquivoAes
-      ? HAGAP.SITE_HAGAP + '/pdfs/aes/' + encodeURIComponent(pc.arquivoAes)
-      : '',
-    projetos:(pc.pdfsProjeto || []).map(nome => ({
-      nome:nome,
-      url:HAGAP.SITE_HAGAP + '/pdfs/projetos/' +
-        encodeURIComponent(pc.pastaProjeto || alvo) + '/' +
-        String(nome).split('/').map(encodeURIComponent).join('/')
-    })),
-    bmds:(pc.bmdsPc || []).map(x => ({
-      arquivo:String((x && x.arquivo) || ''),
-      url:(x && x.arquivo)
-        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
-        : ''
-    })),
-    ffos:(pc.ffosPc || []).map(x => ({
-      arquivo:String((x && x.arquivo) || ''),
-      url:(x && x.arquivo)
-        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
-        : ''
-    }))
+    arquivoAes:teams.arquivoAes,
+    projetos:teams.arquivosProjeto,
+    bmds:teams.bmds,
+    ffos:teams.ffos,
+    fontes:teams.fontes,
+    divergencias:teams.divergencias
   } : null;
 
   return {
     projeto:alvo,
-    pc:pcDetalhes,
+    teams:teamsDetalhes,
     eventos:lerEventos_(ss)
       .filter(e => e.projeto === alvo)
       .sort((a,b) => dataIso_(b.dataEmail).localeCompare(dataIso_(a.dataEmail)))
