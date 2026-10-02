@@ -10,9 +10,12 @@ const HAGAP = {
   LIMITE_MS: 4.5 * 60 * 1000,
   LOTE_THREADS: 20,
   LOGO_URL: 'https://raw.githubusercontent.com/gabrielmedeirosasp-ops/HAGAP/main/logo_hagap.png',
+  SITE_HAGAP: 'https://hagap.onrender.com',
+  API_DADOS_PC: 'https://hagap.onrender.com/api/dados',
   ABAS: {
     EVENTOS: 'EVENTOS',
     EMAILS: 'EMAILS_PROCESSADOS',
+    BASE_PC: 'BASE_PC',
     LOG: 'LOG',
     CONFIG: 'CONFIG'
   },
@@ -24,6 +27,10 @@ const HAGAP = {
   ],
   HEAD_EMAILS: [
     'ID_EMAIL','DATA_EMAIL','ASSUNTO','TIPO','STATUS','DATA_PROCESSAMENTO'
+  ],
+  HEAD_PC: [
+    'PROJETO','PROJETO_BASE','AES','PRAZO_AES','LOCAL','STATUS_PC','ARQUIVO_AES',
+    'PASTA_PROJETO','PDFS_PROJETO_JSON','BMDS_JSON','FFOS_JSON','ORIGEM_JSON','ATUALIZADO'
   ]
 };
 
@@ -42,6 +49,7 @@ function configurarSistema() {
 
   garantirAba_(ss, HAGAP.ABAS.EVENTOS, HAGAP.HEAD_EVENTOS);
   garantirAba_(ss, HAGAP.ABAS.EMAILS, HAGAP.HEAD_EMAILS);
+  garantirAba_(ss, HAGAP.ABAS.BASE_PC, HAGAP.HEAD_PC);
   garantirAba_(ss, HAGAP.ABAS.LOG, ['DATA','NIVEL','ACAO','DETALHE']);
   garantirAba_(ss, HAGAP.ABAS.CONFIG, ['CHAVE','VALOR']);
 
@@ -127,8 +135,21 @@ function sincronizarGmail_() {
       eventosNovos:0,
       erros:0,
       incremental:0,
-      historico:0
+      historico:0,
+      basePc:0
     };
+
+    // Base mestre: lê, sem alterar, os dados já consolidados pelo HAGAP antigo.
+    // Isso traz AES/prazo, projetos do PC, BMD e FFO para o novo painel.
+    if (Date.now() < prazo) {
+      try {
+        const pc = sincronizarBasePc_(ss);
+        stats.basePc = pc.registros || 0;
+      } catch (e) {
+        stats.erros++;
+        log_('PENDENTE','BASE_PC',String(e && e.message ? e.message : e));
+      }
+    }
 
     // Sempre prioriza novidades recentes.
     if (Date.now() < prazo) {
@@ -167,6 +188,117 @@ function sincronizarGmail_() {
 
   } finally {
     lock.releaseLock();
+  }
+}
+
+
+function sincronizarBasePc_(ss) {
+  const resp = UrlFetchApp.fetch(HAGAP.API_DADOS_PC, {
+    method:'get',
+    muteHttpExceptions:true,
+    followRedirects:true
+  });
+
+  const code = resp.getResponseCode();
+  if (code !== 200) {
+    throw new Error('[PENDENTE] API HAGAP retornou HTTP ' + code);
+  }
+
+  const texto = resp.getContentText('UTF-8');
+  const hash = Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, texto)
+  );
+
+  const props = PropertiesService.getScriptProperties();
+  const aba = getSS_().getSheetByName(HAGAP.ABAS.BASE_PC);
+
+  if (props.getProperty('BASE_PC_HASH') === hash && aba.getLastRow() > 1) {
+    return {alterou:false,registros:aba.getLastRow()-1};
+  }
+
+  const dados = JSON.parse(texto);
+  if (!Array.isArray(dados)) {
+    throw new Error('[PENDENTE] /api/dados não retornou lista.');
+  }
+
+  const linhas = [];
+  const agora = new Date();
+
+  dados.forEach(r => {
+    const projeto = String(r.projeto || '').trim().toUpperCase();
+    // Mantém projetos COPEL e seus sufixos (I/C/S/II etc.) sem misturar.
+    if (!/^\d{7}[A-Z]{0,3}$/.test(projeto)) return;
+
+    const bmds = (Array.isArray(r.bmds) ? r.bmds : []).filter(x => {
+      const nome = normalizar_((x && x.arquivo) || '');
+      return nome.indexOf('BMD') >= 0 && nome.indexOf('MULTA') < 0;
+    });
+
+    const ffos = (Array.isArray(r.ffos) ? r.ffos : []).filter(x => {
+      const nome = normalizar_((x && x.arquivo) || '');
+      return nome.indexOf('FFO') >= 0 || nome.indexOf('FF0') >= 0;
+    });
+
+    linhas.push([
+      projeto,
+      projeto.substring(0,7),
+      String(r.ae || ''),
+      formatarDataBr_(r.prazo || ''),
+      String(r.local || ''),
+      String(r.status || ''),
+      String(r.arquivo_ae || ''),
+      String(r.pasta_projeto || ''),
+      JSON.stringify(Array.isArray(r.pdfs_projeto) ? r.pdfs_projeto : []),
+      JSON.stringify(bmds),
+      JSON.stringify(ffos),
+      JSON.stringify(Array.isArray(r.origem) ? r.origem : []),
+      agora
+    ]);
+  });
+
+  if (aba.getLastRow() > 1) {
+    aba.getRange(2,1,aba.getLastRow()-1,aba.getLastColumn()).clearContent();
+  }
+
+  if (linhas.length) {
+    aba.getRange(2,1,linhas.length,HAGAP.HEAD_PC.length).setValues(linhas);
+  }
+
+  props.setProperty('BASE_PC_HASH',hash);
+  props.setProperty('BASE_PC_ATUALIZADA',agora.toISOString());
+
+  return {alterou:true,registros:linhas.length};
+}
+
+
+function lerBasePc_(ss) {
+  const aba = ss.getSheetByName(HAGAP.ABAS.BASE_PC);
+  if (!aba || aba.getLastRow() <= 1) return [];
+
+  return aba.getRange(2,1,aba.getLastRow()-1,HAGAP.HEAD_PC.length).getValues().map(r => ({
+    projeto:String(r[0] || ''),
+    projetoBase:String(r[1] || ''),
+    aes:String(r[2] || ''),
+    prazoAes:formatarDataBr_(r[3]),
+    local:String(r[4] || ''),
+    statusPc:String(r[5] || ''),
+    arquivoAes:String(r[6] || ''),
+    pastaProjeto:String(r[7] || ''),
+    pdfsProjeto:jsonArraySeguro_(r[8]),
+    bmdsPc:jsonArraySeguro_(r[9]),
+    ffosPc:jsonArraySeguro_(r[10]),
+    origemPc:jsonArraySeguro_(r[11]),
+    atualizado:r[12]
+  }));
+}
+
+
+function jsonArraySeguro_(v) {
+  try {
+    const x = JSON.parse(String(v || '[]'));
+    return Array.isArray(x) ? x : [];
+  } catch (e) {
+    return [];
   }
 }
 
@@ -799,36 +931,66 @@ function getPainelData() {
   resolverOmbs_(ss);
 
   const eventos = lerEventos_(ss);
+  const basePc = lerBasePc_(ss);
   const mapa = {};
+
+  function novoProjeto_(projeto, projetoBase) {
+    return {
+      projeto:projeto,
+      projetoBase:projetoBase || projeto.substring(0,7),
+      municipio:'',
+      aes:'',
+      prazoAes:'',
+      statusPc:'',
+      arquivoAes:'',
+      pastaProjeto:'',
+      pdfsProjeto:[],
+      bmdsPc:[],
+      ffosPc:[],
+      origemPc:[],
+      docFinal:false,
+      docParcial:false,
+      docUrl:'',
+      docParcialUrl:'',
+      pedido:false,
+      pedidos:[],
+      pdes:{},plvs:{},ombs:{},
+      bmdLinks:[],
+      ffoLinks:[],
+      datasServico:[],
+      ultimoMovimento:''
+    };
+  }
+
+  // A base do PC/AES é a lista mestre. O Gmail entra por cima.
+  basePc.forEach(r => {
+    if (!r.projeto) return;
+    const p = novoProjeto_(r.projeto,r.projetoBase);
+    p.municipio = r.local || '';
+    p.aes = r.aes || '';
+    p.prazoAes = r.prazoAes || '';
+    p.statusPc = r.statusPc || '';
+    p.arquivoAes = r.arquivoAes || '';
+    p.pastaProjeto = r.pastaProjeto || '';
+    p.pdfsProjeto = r.pdfsProjeto || [];
+    p.bmdsPc = r.bmdsPc || [];
+    p.ffosPc = r.ffosPc || [];
+    p.origemPc = r.origemPc || [];
+    mapa[r.projeto] = p;
+  });
 
   eventos.forEach(e => {
     if (!e.projeto) return;
 
-    // Projeto I/C/S permanece separado. Não mistura silenciosamente.
     if (!mapa[e.projeto]) {
-      mapa[e.projeto] = {
-        projeto:e.projeto,
-        projetoBase:e.projetoBase,
-        municipio:'',
-        docFinal:false,
-        docParcial:false,
-        docUrl:'',
-        docParcialUrl:'',
-        pedido:false,
-        pedidos:[],
-        pdes:{},plvs:{},ombs:{},
-        bmds:0,ffos:0,
-        bmdLinks:[],
-        ffoLinks:[],
-        datasServico:[],
-        ultimoMovimento:''
-      };
+      mapa[e.projeto] = novoProjeto_(e.projeto,e.projetoBase);
     }
 
     const p = mapa[e.projeto];
 
     if (e.municipio && !p.municipio) p.municipio = e.municipio;
     if (e.dataServico) p.datasServico.push(e.dataServico);
+
     if (e.tipo === 'PEDIDO') {
       p.pedido = true;
       p.pedidos.push({
@@ -841,29 +1003,41 @@ function getPainelData() {
         urlEmail:e.urlEmail
       });
     }
+
     if (e.tipo === 'DOC_FINAL') {
       p.docFinal = true;
       if (e.urlEmail) p.docUrl = e.urlEmail;
     }
+
     if (e.tipo === 'DOC_PARCIAL') {
       p.docParcial = true;
       if (e.urlEmail) p.docParcialUrl = e.urlEmail;
     }
+
     if (e.tipo === 'PDE' && e.referencia) {
-      p.pdes[e.referencia] = {referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico};
+      p.pdes[e.referencia] = {
+        referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico
+      };
     }
+
     if (e.tipo === 'PLV' && e.referencia) {
-      p.plvs[e.referencia] = {referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico};
+      p.plvs[e.referencia] = {
+        referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico
+      };
     }
+
     if (e.tipo === 'OMB' && e.referencia) {
-      p.ombs[e.referencia] = {referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico,pdeRelacionado:e.pdeRelacionado};
+      p.ombs[e.referencia] = {
+        referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,
+        dataServico:e.dataServico,pdeRelacionado:e.pdeRelacionado
+      };
     }
+
     if (e.tipo === 'BMD') {
-      p.bmds++;
       p.bmdLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
     }
+
     if (e.tipo === 'FFO') {
-      p.ffos++;
       p.ffoLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
     }
 
@@ -877,24 +1051,59 @@ function getPainelData() {
     p.qtdPde = Object.keys(p.pdes).length;
     p.qtdPlv = Object.keys(p.plvs).length;
     p.qtdOmb = Object.keys(p.ombs).length;
-    p.programada = p.qtdPde > 0 || p.qtdPlv > 0 || p.qtdOmb > 0;
     p.temLiberacao = p.qtdPde > 0 || p.qtdPlv > 0;
 
-    p.pedidos.sort((a,b) => dataBrParaChave_(b.dataServico).localeCompare(dataBrParaChave_(a.dataServico)));
+    p.pedidos.sort((a,b) =>
+      dataBrParaChave_(b.dataServico).localeCompare(dataBrParaChave_(a.dataServico))
+    );
     p.ultimoPedido = p.pedidos.length ? p.pedidos[0] : null;
-    p.alertaPedido = calcularAlertaPedido_(p.ultimoPedido, p.temLiberacao);
+    p.alertaPedido = calcularAlertaPedido_(p.ultimoPedido,p.temLiberacao);
 
     p.linksPde = Object.values(p.pdes);
     p.linksPlv = Object.values(p.plvs);
     p.linksOmb = Object.values(p.ombs);
 
-    p.dataProgramacao = p.ultimoPedido && p.ultimoPedido.dataServico
+    p.dataSolicitada = p.ultimoPedido && p.ultimoPedido.dataServico
       ? p.ultimoPedido.dataServico
       : escolherDataPrincipal_(p.datasServico);
 
     p.servicoResumo = p.ultimoPedido && p.ultimoPedido.observacao
       ? p.ultimoPedido.observacao
       : '';
+
+    p.temProjetoPdf = p.pdfsProjeto.length > 0;
+    p.temBmd = p.bmdsPc.length > 0 || p.bmdLinks.length > 0;
+    p.temFfo = p.ffosPc.length > 0 || p.ffoLinks.length > 0;
+    p.temAes = !!(p.aes || p.prazoAes || p.arquivoAes);
+
+    p.aesUrl = p.arquivoAes
+      ? HAGAP.SITE_HAGAP + '/pdfs/aes/' + encodeURIComponent(p.arquivoAes)
+      : '';
+
+    p.projetoUrls = p.pdfsProjeto.map(nome => ({
+      nome:nome,
+      url:HAGAP.SITE_HAGAP + '/pdfs/projetos/' +
+        encodeURIComponent(p.pastaProjeto || p.projeto) + '/' +
+        String(nome).split('/').map(encodeURIComponent).join('/')
+    }));
+
+    p.bmdsPc = p.bmdsPc.map(x => ({
+      arquivo:String((x && x.arquivo) || ''),
+      status:String((x && x.status) || ''),
+      data:String((x && x.data) || ''),
+      url:(x && x.arquivo)
+        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
+        : ''
+    }));
+
+    p.ffosPc = p.ffosPc.map(x => ({
+      arquivo:String((x && x.arquivo) || ''),
+      status:String((x && x.status) || ''),
+      data:String((x && x.data) || ''),
+      url:(x && x.arquivo)
+        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
+        : ''
+    }));
 
     delete p.pdes;
     delete p.plvs;
@@ -904,31 +1113,43 @@ function getPainelData() {
     return p;
   });
 
+  // ORDEM PRINCIPAL: vencimento da AES.
+  // Sem AES fica no fim, claramente separado.
   projetos.sort((a,b) => {
-    const da = dataBrParaChave_(a.dataProgramacao);
-    const db = dataBrParaChave_(b.dataProgramacao);
+    const pa = dataBrParaChave_(a.prazoAes);
+    const pb = dataBrParaChave_(b.prazoAes);
+
+    if (pa && pb && pa !== pb) return pa.localeCompare(pb);
+    if (pa && !pb) return -1;
+    if (!pa && pb) return 1;
+
+    const da = dataBrParaChave_(a.dataSolicitada);
+    const db = dataBrParaChave_(b.dataSolicitada);
     if (da && db && da !== db) return da.localeCompare(db);
     if (da && !db) return -1;
     if (!da && db) return 1;
-    return b.ultimoMovimento.localeCompare(a.ultimoMovimento) ||
-      b.projeto.localeCompare(a.projeto);
+
+    return a.projeto.localeCompare(b.projeto);
   });
 
   return {
     resumo:{
       total:projetos.length,
+      comAes:projetos.filter(p => p.temAes).length,
+      comProjetoPdf:projetos.filter(p => p.temProjetoPdf).length,
       comPedido:projetos.filter(p => p.pedido).length,
       pedidosSemLiberacao:projetos.filter(p => p.pedido && !p.temLiberacao).length,
-      alertasPedido:projetos.filter(p => p.alertaPedido && (p.alertaPedido.nivel === 'ALERTA' || p.alertaPedido.nivel === 'HOJE' || p.alertaPedido.nivel === 'ATRASADO')).length,
+      alertasPedido:projetos.filter(p =>
+        p.alertaPedido && ['ALERTA','HOJE','ATRASADO'].indexOf(p.alertaPedido.nivel) >= 0
+      ).length,
       documentosEnviados:projetos.filter(p => p.docFinal).length,
       documentosParciais:projetos.filter(p => p.docParcial && !p.docFinal).length,
-      programadas:projetos.filter(p => p.programada).length,
-      comBmd:projetos.filter(p => p.bmds > 0).length,
-      comFfo:projetos.filter(p => p.ffos > 0).length
+      comBmd:projetos.filter(p => p.temBmd).length,
+      comFfo:projetos.filter(p => p.temFfo).length
     },
     projetos:projetos,
-    ultimaSync:PropertiesService.getScriptProperties()
-      .getProperty('ULTIMA_SYNC_OK') || '',
+    ultimaSync:PropertiesService.getScriptProperties().getProperty('ULTIMA_SYNC_OK') || '',
+    basePcAtualizada:PropertiesService.getScriptProperties().getProperty('BASE_PC_ATUALIZADA') || '',
     backfillConcluido:backfillConcluido_(),
     planilhaUrl:ss.getUrl(),
     logoUrl:HAGAP.LOGO_URL
@@ -938,10 +1159,42 @@ function getPainelData() {
 
 function getProjetoDetalhes(projeto) {
   const alvo = String(projeto || '').toUpperCase();
+  const ss = getSS_();
+  const pc = lerBasePc_(ss).find(x => x.projeto === alvo) || null;
+
+  const pcDetalhes = pc ? {
+    aes:pc.aes,
+    prazoAes:pc.prazoAes,
+    local:pc.local,
+    statusPc:pc.statusPc,
+    arquivoAes:pc.arquivoAes,
+    aesUrl:pc.arquivoAes
+      ? HAGAP.SITE_HAGAP + '/pdfs/aes/' + encodeURIComponent(pc.arquivoAes)
+      : '',
+    projetos:(pc.pdfsProjeto || []).map(nome => ({
+      nome:nome,
+      url:HAGAP.SITE_HAGAP + '/pdfs/projetos/' +
+        encodeURIComponent(pc.pastaProjeto || alvo) + '/' +
+        String(nome).split('/').map(encodeURIComponent).join('/')
+    })),
+    bmds:(pc.bmdsPc || []).map(x => ({
+      arquivo:String((x && x.arquivo) || ''),
+      url:(x && x.arquivo)
+        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
+        : ''
+    })),
+    ffos:(pc.ffosPc || []).map(x => ({
+      arquivo:String((x && x.arquivo) || ''),
+      url:(x && x.arquivo)
+        ? HAGAP.SITE_HAGAP + '/pdfs/medicoes/' + encodeURIComponent(x.arquivo)
+        : ''
+    }))
+  } : null;
 
   return {
     projeto:alvo,
-    eventos:lerEventos_(getSS_())
+    pc:pcDetalhes,
+    eventos:lerEventos_(ss)
       .filter(e => e.projeto === alvo)
       .sort((a,b) => dataIso_(b.dataEmail).localeCompare(dataIso_(a.dataEmail)))
       .map(e => ({
