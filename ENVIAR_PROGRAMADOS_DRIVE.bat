@@ -12,7 +12,7 @@ echo.
 echo Este programa e independente do Controle de Obras.
 echo.
 
-python -m pip install --quiet openpyxl playwright google-api-python-client google-auth
+python -m pip install --quiet openpyxl playwright
 python enviar_programados_drive.py
 
 echo.
