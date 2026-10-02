@@ -129,25 +129,9 @@ function sincronizarAgora() {
 // A chamada fica fora do try/catch de sincronizarGmail_ para forçar o Google
 // a solicitar a permissão de acesso externo (UrlFetchApp).
 function autorizarBasePc() {
-  const resp = UrlFetchApp.fetch(HAGAP.API_DADOS_PC, {
-    method:'get',
-    muteHttpExceptions:true,
-    followRedirects:true
-  });
-
-  const code = resp.getResponseCode();
-  if (code !== 200) {
-    throw new Error('BASE_PC respondeu HTTP ' + code + '.');
-  }
-
-  const dados = JSON.parse(resp.getContentText('UTF-8'));
-  if (!Array.isArray(dados)) {
-    throw new Error('BASE_PC não retornou uma lista de obras.');
-  }
-
-  const r = sincronizarBasePc_(getSS_());
-  log_('CONFIRMADO','AUTORIZAR_BASE_PC','Base externa autorizada e carregada: ' + (r.registros || 0) + ' registro(s).');
-  return r;
+  throw new Error(
+    'BASE_PC DESATIVADA. Esta integração antiga foi bloqueada para não reintroduzir dados incorretos do site.'
+  );
 }
 
 
@@ -217,81 +201,9 @@ function sincronizarGmail_() {
 
 
 function sincronizarBasePc_(ss) {
-  const resp = UrlFetchApp.fetch(HAGAP.API_DADOS_PC, {
-    method:'get',
-    muteHttpExceptions:true,
-    followRedirects:true
-  });
-
-  const code = resp.getResponseCode();
-  if (code !== 200) {
-    throw new Error('[PENDENTE] API HAGAP retornou HTTP ' + code);
-  }
-
-  const texto = resp.getContentText('UTF-8');
-  const hash = Utilities.base64EncodeWebSafe(
-    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, texto)
+  throw new Error(
+    'BASE_PC DESATIVADA: a base do site antigo não pode mais alimentar este sistema. Use somente BASE_TEAMS + Gmail.'
   );
-
-  const props = PropertiesService.getScriptProperties();
-  const aba = getSS_().getSheetByName(HAGAP.ABAS.BASE_PC);
-
-  if (props.getProperty('BASE_PC_HASH') === hash && aba.getLastRow() > 1) {
-    return {alterou:false,registros:aba.getLastRow()-1};
-  }
-
-  const dados = JSON.parse(texto);
-  if (!Array.isArray(dados)) {
-    throw new Error('[PENDENTE] /api/dados não retornou lista.');
-  }
-
-  const linhas = [];
-  const agora = new Date();
-
-  dados.forEach(r => {
-    const projeto = String(r.projeto || '').trim().toUpperCase();
-    // Mantém projetos COPEL e seus sufixos (I/C/S/II etc.) sem misturar.
-    if (!/^\d{7}[A-Z]{0,3}$/.test(projeto)) return;
-
-    const bmds = (Array.isArray(r.bmds) ? r.bmds : []).filter(x => {
-      const nome = normalizar_((x && x.arquivo) || '');
-      return nome.indexOf('BMD') >= 0 && nome.indexOf('MULTA') < 0;
-    });
-
-    const ffos = (Array.isArray(r.ffos) ? r.ffos : []).filter(x => {
-      const nome = normalizar_((x && x.arquivo) || '');
-      return nome.indexOf('FFO') >= 0 || nome.indexOf('FF0') >= 0;
-    });
-
-    linhas.push([
-      projeto,
-      projeto.substring(0,7),
-      String(r.ae || ''),
-      formatarDataBr_(r.prazo || ''),
-      String(r.local || ''),
-      String(r.status || ''),
-      String(r.arquivo_ae || ''),
-      String(r.pasta_projeto || ''),
-      JSON.stringify(Array.isArray(r.pdfs_projeto) ? r.pdfs_projeto : []),
-      JSON.stringify(bmds),
-      JSON.stringify(ffos),
-      JSON.stringify(Array.isArray(r.origem) ? r.origem : []),
-      agora
-    ]);
-  });
-
-  if (aba.getLastRow() > 1) {
-    aba.getRange(2,1,aba.getLastRow()-1,aba.getLastColumn()).clearContent();
-  }
-
-  if (linhas.length) {
-    aba.getRange(2,1,linhas.length,HAGAP.HEAD_PC.length).setValues(linhas);
-  }
-
-  props.setProperty('BASE_PC_HASH',hash);
-  props.setProperty('BASE_PC_ATUALIZADA',agora.toISOString());
-
-  return {alterou:true,registros:linhas.length};
 }
 
 
@@ -1308,6 +1220,11 @@ function getPainelData() {
     p.temAes = !!(p.aes || p.prazoAes || p.arquivoAes);
     p.temDivergenciaTeams = p.divergenciasTeams.length > 0;
 
+    // [CALCULADO] Executada = houve DOCUMENTOS final no Gmail ou FFO.
+    // Não usa mais o status do site antigo.
+    p.executada = !!(p.docFinal || p.temFfo);
+
+
     // Links do Teams serão preenchidos pelo coletor quando houver webUrl.
     p.projetoUrls = p.arquivosProjeto.map(x => ({
       nome:String((x && x.nome) || x || ''),
@@ -1355,6 +1272,8 @@ function getPainelData() {
       documentosParciais:projetos.filter(p => p.docParcial && !p.docFinal).length,
       comBmd:projetos.filter(p => p.temBmd).length,
       comFfo:projetos.filter(p => p.temFfo).length,
+      executadas:projetos.filter(p => p.executada).length,
+      abertas:projetos.filter(p => !p.executada).length,
       divergenciasTeams:projetos.filter(p => p.temDivergenciaTeams).length
     },
     projetos:projetos,
