@@ -437,26 +437,107 @@ def conectar_google_drive_edge(playwright):
     return browser, page
 
 
+def drive_autenticado(page):
+    """
+    Só considera o Drive autenticado quando a interface real do Drive aparece.
+    URL sozinha NÃO é suficiente: quando o Google redireciona para login,
+    a URL pode continuar parecendo a pasta do Drive.
+    """
+    try:
+        url = (page.url or "").lower()
+        titulo = (page.title() or "").lower()
+
+        if "accounts.google.com" in url:
+            return False
+
+        if "sign in" in titulo or "fazer login" in titulo or "login" == titulo.strip():
+            return False
+
+        sinais = [
+            '[aria-label*="Novo"]',
+            '[aria-label*="New"]',
+            '[data-tooltip*="Novo"]',
+            '[data-tooltip*="New"]',
+            'div[role="main"]',
+            '[aria-label*="Meu Drive"]',
+            '[aria-label*="My Drive"]',
+        ]
+
+        achou_interface = 0
+        for seletor in sinais:
+            try:
+                if page.locator(seletor).count():
+                    achou_interface += 1
+            except Exception:
+                pass
+
+        # Exige interface real do Drive + domínio Drive.
+        return "drive.google.com" in url and achou_interface >= 2
+
+    except Exception:
+        return False
+
+
+def salvar_diagnostico_drive(page, motivo):
+    try:
+        diag = BASE / "DIAGNOSTICO_DRIVE"
+        diag.mkdir(exist_ok=True)
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        (diag / f"{stamp}_url.txt").write_text(
+            f"MOTIVO: {motivo}\nURL: {page.url}\nTITULO: {page.title()}\n",
+            encoding="utf-8",
+        )
+        page.screenshot(path=str(diag / f"{stamp}_tela.png"), full_page=True)
+        (diag / f"{stamp}_pagina.html").write_text(
+            page.content(), encoding="utf-8", errors="ignore"
+        )
+        print(f"[DIAGNÓSTICO] Salvo em: {diag}")
+    except Exception:
+        pass
+
+
 def aguardar_login_drive(page, limite=600):
+    """
+    Abre a pasta destino e aguarda o usuário concluir o login Google.
+    Não avança enquanto a interface autenticada do Drive não estiver presente.
+    """
     page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
+
     inicio = time.time()
+    ultimo_aviso = 0
 
     while time.time() - inicio < limite:
-        url = page.url.lower()
+        if drive_autenticado(page):
+            # Garante que estamos na pasta destino depois do login.
+            if DRIVE_FOLDER_ID not in (page.url or ""):
+                try:
+                    page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
+                    time.sleep(2)
+                except Exception:
+                    pass
 
-        if "drive.google.com/drive" in url:
-            print("\n[CONFIRMADO] Google Drive aberto.")
-            return
+            if drive_autenticado(page):
+                print("\n[CONFIRMADO] Google Drive autenticado e pasta destino aberta.")
+                return
 
-        print(
-            "\rAguardando login Google no Edge NORMAL... faça o login uma vez se solicitado.       ",
-            end="",
-            flush=True,
-        )
-        time.sleep(3)
+        agora = time.time()
+        if agora - ultimo_aviso >= 5:
+            print(
+                "\r[PENDENTE] No Edge do Google: faça LOGIN normalmente e deixe a pasta 'projetos' aberta. "
+                "O programa só continuará depois disso.       ",
+                end="",
+                flush=True,
+            )
+            ultimo_aviso = agora
+
+        time.sleep(2)
 
     print()
-    raise RuntimeError("Não foi possível abrir a pasta do Google Drive.")
+    salvar_diagnostico_drive(page, "TIMEOUT_LOGIN")
+    raise RuntimeError(
+        "O Google Drive não chegou ao estado autenticado. "
+        "Faça o login no Edge que o programa abriu e deixe a pasta 'projetos' visível."
+    )
 
 
 def _input_upload_direto(page, caminho):
@@ -495,25 +576,31 @@ def _input_upload_direto(page, caminho):
 
 def _clicar_novo(page):
     """
-    Fallback para layouts em que o input direto ainda não foi criado.
-    Aceita botão, div e elementos com aria-label.
+    Fallback para layouts diferentes do Google Drive.
+    Procura por texto, aria-label, tooltip e elementos de navegação lateral.
     """
-    regex = re.compile(r"^(Novo|New|Novo\s*\+?|\+\s*Novo)$", re.I)
-
     tentativas = [
-        page.get_by_role("button", name=regex),
+        page.get_by_role("button", name=re.compile(r"Novo|New", re.I)),
         page.locator('[aria-label*="Novo"]'),
         page.locator('[aria-label*="New"]'),
+        page.locator('[data-tooltip*="Novo"]'),
+        page.locator('[data-tooltip*="New"]'),
         page.locator('div[role="button"]').filter(has_text=re.compile(r"Novo|New", re.I)),
-        page.get_by_text(re.compile(r"Novo|New", re.I)),
+        page.locator('button').filter(has_text=re.compile(r"Novo|New", re.I)),
+        page.get_by_text(re.compile(r"^\\s*(Novo|New)\\s*$", re.I)),
     ]
 
     for loc in tentativas:
         try:
-            if loc.count():
-                alvo = loc.first
-                alvo.click(timeout=5000)
-                return True
+            qtd = min(loc.count(), 10)
+            for i in range(qtd):
+                alvo = loc.nth(i)
+                try:
+                    if alvo.is_visible(timeout=1000):
+                        alvo.click(timeout=5000)
+                        return True
+                except Exception:
+                    continue
         except Exception:
             continue
 
@@ -609,10 +696,15 @@ def upload_drive_browser(page, caminho):
         selecionado = _selecionar_upload_via_menu(page, caminho)
 
     if not selecionado:
+        salvar_diagnostico_drive(page, "UPLOAD_NAO_INICIADO")
+        if not drive_autenticado(page):
+            raise RuntimeError(
+                "O Google Drive perdeu/não concluiu o login. "
+                "Faça login no Edge do Google e deixe a pasta 'projetos' aberta."
+            )
         raise RuntimeError(
-            "Não consegui iniciar o upload no Google Drive. "
-            "O programa procurou o input direto de upload e também o menu Novo. "
-            "Deixe a pasta do Drive aberta e atualizada e tente novamente."
+            "O Drive está autenticado, mas o upload não iniciou. "
+            "Foi salvo um diagnóstico em DIAGNOSTICO_DRIVE para eu ajustar exatamente à sua tela."
         )
 
     total = 0
