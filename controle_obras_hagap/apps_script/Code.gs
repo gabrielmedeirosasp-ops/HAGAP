@@ -1062,7 +1062,7 @@ function getPainelData() {
       prazoAesFonte:'',
       ajusteMunicipio:false,
       ajustePrazo:false,
-      statusPc:'
+      statusPc:'',
       arquivoAes:'',
       pastaProjeto:'',
       pdfsProjeto:[],
