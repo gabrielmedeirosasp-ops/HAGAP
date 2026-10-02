@@ -37,20 +37,30 @@
     .checks{display:flex;gap:10px;flex-wrap:wrap}.checks label{font-size:12px;font-weight:700}
     .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:12px}
     .table-shell{background:#fff;border:1px solid var(--linha);border-radius:10px;box-shadow:var(--sombra);overflow:auto;max-height:calc(100vh - 250px)}
-    table{border-collapse:separate;border-spacing:0;width:100%;min-width:1740px;background:#fff}
+    table{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;background:#fff}
     thead th{
       position:sticky;top:0;z-index:20;background:var(--azul);color:#fff;text-align:left;
-      padding:9px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;
-      border-bottom:2px solid #083372;white-space:nowrap
+      padding:0;font-size:10px;text-transform:uppercase;letter-spacing:.04em;
+      border-bottom:2px solid #083372;white-space:nowrap;user-select:none
     }
-    td{padding:8px;border-bottom:1px solid #edf1f6;font-size:12px;vertical-align:top}
+    .thbox{position:relative;display:flex;align-items:center;height:34px;padding:0 15px 0 8px}
+    .thsort{cursor:pointer;display:flex;align-items:center;gap:5px;width:100%;height:100%}
+    .sortmark{font-size:10px;opacity:.8}
+    .resize-handle{position:absolute;right:-3px;top:0;width:7px;height:100%;cursor:col-resize;z-index:30}
+    .resize-handle:hover,.resize-handle.active{background:rgba(255,208,0,.75)}
+    td{padding:8px;border-bottom:1px solid #edf1f6;font-size:12px;vertical-align:top;overflow:hidden;overflow-wrap:anywhere}
+    .cell-edit{display:flex;align-items:flex-start;gap:5px;min-width:0}
+    .cell-edit>span:first-child{min-width:0;overflow-wrap:anywhere}
+    .editbtn{flex:0 0 auto;border:0;background:transparent;color:var(--azul);font-weight:900;cursor:pointer;padding:0 2px;font-size:13px}
+    .editbtn:hover{background:#e3edff;border-radius:4px}
+    .ajustado{display:block;color:var(--ambar);font-size:9px;font-weight:900;margin-top:2px}
     tbody tr.data-row:hover{background:#f7faff}
     .group-row td{
       background:#dce9fb;color:#0a3f87;font-weight:900;font-size:12px;padding:8px 10px;
       border-top:5px solid var(--bg);border-bottom:1px solid #c4d5eb
     }
     .projeto{color:var(--azul);font-weight:900;cursor:pointer;border:0;background:transparent;padding:0;font-size:13px}
-    .servico{font-weight:700;line-height:1.35;max-width:300px}.muted{color:var(--muted);font-size:10px;margin-top:3px}
+    .servico{font-weight:700;line-height:1.35;max-width:100%}.muted{color:var(--muted);font-size:10px;margin-top:3px}
     .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900;background:#f0f2f5;color:#8994a3;white-space:nowrap}
     .ok{background:var(--verdebg);color:var(--verde)}.warn{background:var(--ambarbg);color:var(--ambar)}
     .danger{background:var(--vermelhobg);color:var(--vermelho)}.today{background:#ffe7c2;color:#9b4d00}
@@ -115,6 +125,7 @@
       <label><input id="fBmd" type="checkbox" onchange="filtrar()"> BMD</label>
       <label><input id="fFfo" type="checkbox" onchange="filtrar()"> FFO</label>
     </div>
+    <button class="btn" onclick="restaurarLarguras()">Restaurar larguras</button>
     <button class="btn" onclick="limpar()">Limpar filtros</button>
   </section>
 
@@ -126,24 +137,41 @@
   </section>
 
   <div class="table-shell">
-    <table>
+    <table id="tabelaObras">
+      <colgroup>
+        <col data-col="prazoAes" style="width:105px">
+        <col data-col="projeto" style="width:105px">
+        <col data-col="aes" style="width:110px">
+        <col data-col="municipio" style="width:160px">
+        <col data-col="dataSolicitada" style="width:105px">
+        <col data-col="servicoResumo" style="width:320px">
+        <col data-col="pedido" style="width:115px">
+        <col data-col="pde" style="width:130px">
+        <col data-col="plv" style="width:130px">
+        <col data-col="omb" style="width:130px">
+        <col data-col="projetoPdf" style="width:115px">
+        <col data-col="documentos" style="width:125px">
+        <col data-col="bmd" style="width:120px">
+        <col data-col="ffo" style="width:120px">
+        <col data-col="abrir" style="width:78px">
+      </colgroup>
       <thead>
         <tr>
-          <th>Venc. AES</th>
-          <th>Projeto</th>
-          <th>AES</th>
-          <th>Cidade</th>
-          <th>Pedido para</th>
-          <th>Serviço / observação</th>
-          <th>Pedido</th>
-          <th>PDE</th>
-          <th>PLV</th>
-          <th>OMB</th>
-          <th>Projeto PDF</th>
-          <th>Documentos</th>
-          <th>BMD</th>
-          <th>FFO</th>
-          <th></th>
+          <th data-col="prazoAes"><div class="thbox"><span class="thsort" onclick="ordenar('prazoAes')">Venc. AES<span class="sortmark" id="sort-prazoAes"></span></span><span class="resize-handle" data-col="prazoAes"></span></div></th>
+          <th data-col="projeto"><div class="thbox"><span class="thsort" onclick="ordenar('projeto')">Projeto<span class="sortmark" id="sort-projeto"></span></span><span class="resize-handle" data-col="projeto"></span></div></th>
+          <th data-col="aes"><div class="thbox"><span class="thsort" onclick="ordenar('aes')">AES<span class="sortmark" id="sort-aes"></span></span><span class="resize-handle" data-col="aes"></span></div></th>
+          <th data-col="municipio"><div class="thbox"><span class="thsort" onclick="ordenar('municipio')">Cidade<span class="sortmark" id="sort-municipio"></span></span><span class="resize-handle" data-col="municipio"></span></div></th>
+          <th data-col="dataSolicitada"><div class="thbox"><span class="thsort" onclick="ordenar('dataSolicitada')">Pedido para<span class="sortmark" id="sort-dataSolicitada"></span></span><span class="resize-handle" data-col="dataSolicitada"></span></div></th>
+          <th data-col="servicoResumo"><div class="thbox"><span class="thsort" onclick="ordenar('servicoResumo')">Serviço / observação<span class="sortmark" id="sort-servicoResumo"></span></span><span class="resize-handle" data-col="servicoResumo"></span></div></th>
+          <th data-col="pedido"><div class="thbox"><span class="thsort" onclick="ordenar('pedido')">Pedido<span class="sortmark" id="sort-pedido"></span></span><span class="resize-handle" data-col="pedido"></span></div></th>
+          <th data-col="pde"><div class="thbox"><span class="thsort" onclick="ordenar('pde')">PDE<span class="sortmark" id="sort-pde"></span></span><span class="resize-handle" data-col="pde"></span></div></th>
+          <th data-col="plv"><div class="thbox"><span class="thsort" onclick="ordenar('plv')">PLV<span class="sortmark" id="sort-plv"></span></span><span class="resize-handle" data-col="plv"></span></div></th>
+          <th data-col="omb"><div class="thbox"><span class="thsort" onclick="ordenar('omb')">OMB<span class="sortmark" id="sort-omb"></span></span><span class="resize-handle" data-col="omb"></span></div></th>
+          <th data-col="projetoPdf"><div class="thbox"><span class="thsort" onclick="ordenar('projetoPdf')">Projeto PDF<span class="sortmark" id="sort-projetoPdf"></span></span><span class="resize-handle" data-col="projetoPdf"></span></div></th>
+          <th data-col="documentos"><div class="thbox"><span class="thsort" onclick="ordenar('documentos')">Documentos<span class="sortmark" id="sort-documentos"></span></span><span class="resize-handle" data-col="documentos"></span></div></th>
+          <th data-col="bmd"><div class="thbox"><span class="thsort" onclick="ordenar('bmd')">BMD<span class="sortmark" id="sort-bmd"></span></span><span class="resize-handle" data-col="bmd"></span></div></th>
+          <th data-col="ffo"><div class="thbox"><span class="thsort" onclick="ordenar('ffo')">FFO<span class="sortmark" id="sort-ffo"></span></span><span class="resize-handle" data-col="ffo"></span></div></th>
+          <th data-col="abrir"><div class="thbox"><span>Abrir</span><span class="resize-handle" data-col="abrir"></span></div></th>
         </tr>
       </thead>
       <tbody id="tbody"><tr><td colspan="15" class="empty">Carregando...</td></tr></tbody>
@@ -160,7 +188,13 @@
 
 <script>
   let base=null, linhas=[];
+  let ordem={campo:'prazoAes',dir:'asc'};
   const el=id=>document.getElementById(id);
+  const COLUNAS_PADRAO={
+    prazoAes:105,projeto:105,aes:110,municipio:160,dataSolicitada:105,
+    servicoResumo:320,pedido:115,pde:130,plv:130,omb:130,
+    projetoPdf:115,documentos:125,bmd:120,ffo:120,abrir:78
+  };
 
   function esc(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -219,6 +253,131 @@
     return badge('—','');
   }
 
+  function ordenar(campo){
+    if(ordem.campo===campo){
+      ordem.dir=ordem.dir==='asc'?'desc':'asc';
+    }else{
+      ordem={campo:campo,dir:'asc'};
+    }
+    filtrar();
+  }
+
+  function atualizarSetas(){
+    document.querySelectorAll('.sortmark').forEach(x=>x.textContent='');
+    const alvo=el('sort-'+ordem.campo);
+    if(alvo)alvo.textContent=ordem.dir==='asc'?'▲':'▼';
+  }
+
+  function valorOrdem(p,campo){
+    switch(campo){
+      case 'prazoAes': return chaveData(p.prazoAes);
+      case 'projeto': return String(p.projeto||'');
+      case 'aes': return String(p.aes||'');
+      case 'municipio': return String(p.municipio||'');
+      case 'dataSolicitada': return chaveData(p.dataSolicitada);
+      case 'servicoResumo': return String(p.servicoResumo||'');
+      case 'pedido': return p.pedido?1:0;
+      case 'pde': return Number(p.qtdPde||0);
+      case 'plv': return Number(p.qtdPlv||0);
+      case 'omb': return Number(p.qtdOmb||0);
+      case 'projetoPdf': return p.temProjetoPdf?1:0;
+      case 'documentos': return p.docFinal?2:(p.docParcial?1:0);
+      case 'bmd': return p.temBmd?1:0;
+      case 'ffo': return p.temFfo?1:0;
+      default: return '';
+    }
+  }
+
+  function comparar(a,b){
+    const va=valorOrdem(a,ordem.campo), vb=valorOrdem(b,ordem.campo);
+    let r=0;
+    if(typeof va==='number'&&typeof vb==='number'){
+      r=va-vb;
+    }else{
+      const sa=String(va??''), sb=String(vb??'');
+      const vazioA=!sa||sa==='9999-99-99', vazioB=!sb||sb==='9999-99-99';
+      if(vazioA&&!vazioB)r=1;
+      else if(!vazioA&&vazioB)r=-1;
+      else r=sa.localeCompare(sb,'pt-BR',{numeric:true,sensitivity:'base'});
+    }
+    return ordem.dir==='asc'?r:-r;
+  }
+
+  function aplicarLargurasSalvas(){
+    document.querySelectorAll('col[data-col]').forEach(col=>{
+      const k=col.dataset.col;
+      const v=Number(localStorage.getItem('hagap_col_'+k)||COLUNAS_PADRAO[k]||100);
+      col.style.width=Math.max(55,v)+'px';
+    });
+  }
+
+  function iniciarResize(){
+    aplicarLargurasSalvas();
+    document.querySelectorAll('.resize-handle').forEach(handle=>{
+      handle.onmousedown=e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        handle.classList.add('active');
+        const key=handle.dataset.col;
+        const col=document.querySelector('col[data-col="'+key+'"]');
+        if(!col)return;
+        const startX=e.clientX;
+        const startW=col.getBoundingClientRect().width;
+
+        const move=ev=>{
+          const w=Math.max(55,startW+(ev.clientX-startX));
+          col.style.width=w+'px';
+        };
+        const up=()=>{
+          document.removeEventListener('mousemove',move);
+          document.removeEventListener('mouseup',up);
+          handle.classList.remove('active');
+          localStorage.setItem('hagap_col_'+key,Math.round(col.getBoundingClientRect().width));
+        };
+        document.addEventListener('mousemove',move);
+        document.addEventListener('mouseup',up);
+      };
+    });
+  }
+
+  function restaurarLarguras(){
+    Object.keys(COLUNAS_PADRAO).forEach(k=>localStorage.removeItem('hagap_col_'+k));
+    aplicarLargurasSalvas();
+  }
+
+  function editarCampo(projeto,campo,atual){
+    const prazo=campo==='PRAZO_AES';
+    const nome=prazo?'prazo da AES':'cidade';
+    const dica=prazo?'Use DD/MM/AAAA.':'Digite o município correto.';
+    const v=prompt('Editar '+nome+' do projeto '+projeto+'\n'+dica+'\n\nDeixe vazio para voltar ao valor da base.',atual||'');
+    if(v===null)return;
+
+    const limpo=String(v).trim();
+    if(prazo&&limpo&&!/^\d{2}\/\d{2}\/\d{4}$/.test(limpo)){
+      alert('Data inválida. Use DD/MM/AAAA.');
+      return;
+    }
+
+    if(!limpo&&!confirm('Remover o ajuste manual e voltar ao valor original da base?'))return;
+
+    google.script.run
+      .withSuccessHandler(()=>carregar())
+      .withFailureHandler(err=>alert(err.message||err))
+      .salvarAjusteProjeto(projeto,campo,limpo);
+  }
+
+  function campoEditavel(p,campo){
+    if(campo==='MUNICIPIO'){
+      return '<div class="cell-edit"><span>'+esc(p.municipio||'—')+
+        (p.ajusteMunicipio?'<span class="ajustado">AJUSTADO</span>':'')+
+        '</span><button class="editbtn" title="Editar cidade" onclick="editarCampo(\''+esc(p.projeto)+'\',\'MUNICIPIO\',\''+esc(p.municipio||'')+'\')">✎</button></div>';
+    }
+    return '<div class="cell-edit"><span>'+esc(p.prazoAes||'—')+
+      (p.ajustePrazo?'<span class="ajustado">AJUSTADO</span>':'')+
+      '</span><button class="editbtn" title="Editar prazo da AES" onclick="editarCampo(\''+esc(p.projeto)+'\',\'PRAZO_AES\',\''+esc(p.prazoAes||'')+'\')">✎</button></div>';
+  }
+
+
   function carregar(){
     google.script.run
       .withSuccessHandler(d=>{
@@ -237,6 +396,7 @@
           (d.basePcAtualizada?' · Base AES/PC: '+fmtDataHora(d.basePcAtualizada):'');
         montarMeses();
         filtrar();
+        aplicarLargurasSalvas();
       })
       .withFailureHandler(err=>{
         el('tbody').innerHTML='<tr><td colspan="15" class="empty">Erro: '+esc(err.message||err)+'</td></tr>';
@@ -282,55 +442,63 @@
   function renderTabela(arr){
     if(!arr.length){
       el('tbody').innerHTML='<tr><td colspan="15" class="empty">Nenhuma obra encontrada.</td></tr>';
+      atualizarSetas();
       return;
     }
 
-    const grupos={};
-    arr.forEach(p=>{
-      const k=p.prazoAes||'SEM_AES';
-      if(!grupos[k])grupos[k]=[];
-      grupos[k].push(p);
-    });
-
-    const chaves=Object.keys(grupos).sort((a,b)=>{
-      if(a==='SEM_AES')return 1;if(b==='SEM_AES')return -1;
-      return chaveData(a).localeCompare(chaveData(b));
-    });
-
+    const ordenadas=[...arr].sort(comparar);
     let html='';
-    chaves.forEach(data=>{
-      const obras=grupos[data].sort((a,b)=>{
-        const da=chaveData(a.dataSolicitada), db=chaveData(b.dataSolicitada);
-        if(da!==db)return da.localeCompare(db);
-        return a.projeto.localeCompare(b.projeto);
+
+    if(ordem.campo==='prazoAes'){
+      const grupos={};
+      ordenadas.forEach(p=>{
+        const k=p.prazoAes||'SEM_AES';
+        if(!grupos[k])grupos[k]=[];
+        grupos[k].push(p);
       });
 
-      html+='<tr class="group-row"><td colspan="15">'+
-        (data==='SEM_AES'?'[AES NÃO LOCALIZADA]':'VENCIMENTO AES — '+esc(data))+
-        ' · '+obras.length+' obra(s)</td></tr>';
+      const chaves=Object.keys(grupos).sort((a,b)=>{
+        const aa=a==='SEM_AES'?'9999-99-99':chaveData(a);
+        const bb=b==='SEM_AES'?'9999-99-99':chaveData(b);
+        const r=aa.localeCompare(bb);
+        return ordem.dir==='asc'?r:-r;
+      });
 
-      html+=obras.map(p=>'<tr class="data-row">'+
-        '<td>'+esc(p.prazoAes||'—')+'</td>'+
-        '<td><button class="projeto" onclick="detalhes(\''+esc(p.projeto)+'\')">'+esc(p.projeto)+'</button></td>'+
-        '<td>'+(p.aes?statusLink(p.aesUrl,'AES '+p.aes,'blue',p.arquivoAes):badge('—',''))+'</td>'+
-        '<td>'+esc(p.municipio||'—')+'</td>'+
-        '<td>'+esc(p.dataSolicitada||'—')+'</td>'+
-        '<td><div class="servico">'+esc(p.servicoResumo||'—')+'</div>'+
-          (p.ultimoPedido&&p.ultimoPedido.horaInicio?'<div class="muted">'+esc(p.ultimoPedido.horaInicio)+(p.ultimoPedido.horaFim?' às '+esc(p.ultimoPedido.horaFim):'')+'</div>':'')+
-        '</td>'+
-        '<td>'+pedidoHtml(p)+'</td>'+
-        '<td>'+linksEmail(p.linksPde,'PDE')+'</td>'+
-        '<td>'+linksEmail(p.linksPlv,'PLV')+'</td>'+
-        '<td>'+linksEmail(p.linksOmb,'OMB')+'</td>'+
-        '<td>'+projetoHtml(p)+'</td>'+
-        '<td>'+docsHtml(p)+'</td>'+
-        '<td>'+bmdHtml(p)+'</td>'+
-        '<td>'+ffoHtml(p)+'</td>'+
-        '<td><button class="btn" onclick="detalhes(\''+esc(p.projeto)+'\')">Abrir</button></td>'+
-      '</tr>').join('');
-    });
+      chaves.forEach(data=>{
+        html+='<tr class="group-row"><td colspan="15">'+
+          (data==='SEM_AES'?'[AES NÃO LOCALIZADA]':'VENCIMENTO AES — '+esc(data))+
+          ' · '+grupos[data].length+' obra(s)</td></tr>';
+        html+=grupos[data].map(linhaProjeto).join('');
+      });
+    }else{
+      html=ordenadas.map(linhaProjeto).join('');
+    }
 
     el('tbody').innerHTML=html;
+    atualizarSetas();
+    aplicarLargurasSalvas();
+  }
+
+  function linhaProjeto(p){
+    return '<tr class="data-row">'+
+      '<td>'+campoEditavel(p,'PRAZO_AES')+'</td>'+
+      '<td><button class="projeto" onclick="detalhes(\''+esc(p.projeto)+'\')">'+esc(p.projeto)+'</button></td>'+
+      '<td>'+(p.aes?statusLink(p.aesUrl,'AES '+p.aes,'blue',p.arquivoAes):badge('—',''))+'</td>'+
+      '<td>'+campoEditavel(p,'MUNICIPIO')+'</td>'+
+      '<td>'+esc(p.dataSolicitada||'—')+'</td>'+
+      '<td><div class="servico">'+esc(p.servicoResumo||'—')+'</div>'+
+        (p.ultimoPedido&&p.ultimoPedido.horaInicio?'<div class="muted">'+esc(p.ultimoPedido.horaInicio)+(p.ultimoPedido.horaFim?' às '+esc(p.ultimoPedido.horaFim):'')+'</div>':'')+
+      '</td>'+
+      '<td>'+pedidoHtml(p)+'</td>'+
+      '<td>'+linksEmail(p.linksPde,'PDE')+'</td>'+
+      '<td>'+linksEmail(p.linksPlv,'PLV')+'</td>'+
+      '<td>'+linksEmail(p.linksOmb,'OMB')+'</td>'+
+      '<td>'+projetoHtml(p)+'</td>'+
+      '<td>'+docsHtml(p)+'</td>'+
+      '<td>'+bmdHtml(p)+'</td>'+
+      '<td>'+ffoHtml(p)+'</td>'+
+      '<td><button class="btn" onclick="detalhes(\''+esc(p.projeto)+'\')">Abrir</button></td>'+
+    '</tr>';
   }
 
   function limpar(){
@@ -363,7 +531,11 @@
           html+='<div class="pcbox"><h3>Base AES / arquivos do PC</h3>'+
             '<div><strong>AES:</strong> '+esc(pc.aes||'—')+
             ' &nbsp; <strong>Prazo:</strong> '+esc(pc.prazoAes||'—')+
+            ' <button class="editbtn" onclick="editarCampo(\''+esc(projeto)+'\',\'PRAZO_AES\',\''+esc(pc.prazoAes||'')+'\')">✎</button>'+
+            (pc.ajustePrazo?'<span class="ajustado">Fonte original: '+esc(pc.prazoAesFonte||'—')+'</span>':'')+
             ' &nbsp; <strong>Local:</strong> '+esc(pc.local||'—')+
+            ' <button class="editbtn" onclick="editarCampo(\''+esc(projeto)+'\',\'MUNICIPIO\',\''+esc(pc.local||'')+'\')">✎</button>'+
+            (pc.ajusteMunicipio?'<span class="ajustado">Fonte original: '+esc(pc.localFonte||'—')+'</span>':'')+
             ' &nbsp; <strong>Status:</strong> '+esc(pc.statusPc||'—')+'</div>'+
             '<div class="filegrid">'+
               (pc.aesUrl?'<a class="filelink" href="'+esc(pc.aesUrl)+'" target="_blank">Abrir AES</a>':'')+
@@ -406,6 +578,7 @@
   function fechar(){el('modal').classList.add('hidden')}
   function fecharFora(e){if(e.target===el('modal'))fechar()}
 
+  iniciarResize();
   carregar();
   setInterval(carregar,60000);
 </script>
