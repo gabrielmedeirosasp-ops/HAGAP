@@ -1234,13 +1234,39 @@ function lerEventos_(ss) {
     status:String(r[8] || ''),
     municipio:String(r[9] || ''),
     dataServico:formatarDataBr_(r[10]),
-    horaInicio:String(r[11] || ''),
-    horaFim:String(r[12] || ''),
+    horaInicio:formatarHora_(r[11]),
+    horaFim:formatarHora_(r[12]),
     assunto:String(r[13] || ''),
     anexo:String(r[14] || ''),
     urlEmail:String(r[15] || ''),
     observacao:String(r[17] || '')
   }));
+}
+
+
+function formatarHora_(v) {
+  if (!v) return '';
+
+  if (v instanceof Date && !isNaN(v.getTime())) {
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), 'HH:mm');
+  }
+
+  const s = String(v || '').trim();
+
+  // Já está no formato correto.
+  const direto = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (direto) {
+    return String(Number(direto[1])).padStart(2,'0') + ':' + direto[2];
+  }
+
+  // Corrige valores de horário que o Google Sheets converte para
+  // datas-base de 1899/1900 (ex.: Sat Dec 30 1899 10:00:00...).
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    return Utilities.formatDate(d, Session.getScriptTimeZone(), 'HH:mm');
+  }
+
+  return s;
 }
 
 
