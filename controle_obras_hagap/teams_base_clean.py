@@ -103,6 +103,102 @@ def aes_number(path: Path, text: str) -> str:
     return ""
 
 
+def visual_aes_rows(path: Path, aes: str):
+    """
+    Segunda leitura independente da AES usando posição visual das colunas.
+    Só relaciona quando encontra cabeçalhos PRAZO e PROJ. na mesma página
+    e consegue ler 1 projeto + 1 prazo dentro das respectivas colunas.
+    """
+    if pdfplumber is None:
+        return []
+
+    out = []
+
+    try:
+        with pdfplumber.open(path) as pdf:
+            for page in pdf.pages:
+                words = page.extract_words(
+                    keep_blank_chars=False,
+                    use_text_flow=False,
+                    x_tolerance=2,
+                    y_tolerance=2,
+                ) or []
+
+                if not words:
+                    continue
+
+                # Agrupa palavras visualmente por linha.
+                rows = []
+                for w in sorted(words, key=lambda x: (float(x.get("top", 0)), float(x.get("x0", 0)))):
+                    top = float(w.get("top", 0))
+                    alvo = None
+                    for r in rows:
+                        if abs(r["top"] - top) <= 3.5:
+                            alvo = r
+                            break
+                    if alvo is None:
+                        alvo = {"top": top, "words": []}
+                        rows.append(alvo)
+                    alvo["words"].append(w)
+
+                header = None
+                for r in rows:
+                    textos = [norm(w.get("text", "")) for w in r["words"]]
+                    if any(t == "PRAZO" for t in textos) and any(t.startswith("PROJ") for t in textos):
+                        header = r
+                        break
+
+                if not header:
+                    continue
+
+                hw = sorted(header["words"], key=lambda x: float(x.get("x0", 0)))
+                centers = [
+                    ((float(w.get("x0", 0)) + float(w.get("x1", 0))) / 2, norm(w.get("text", "")))
+                    for w in hw
+                ]
+
+                prazo_i = next((i for i,(_,t) in enumerate(centers) if t == "PRAZO"), None)
+                proj_i = next((i for i,(_,t) in enumerate(centers) if t.startswith("PROJ")), None)
+                if prazo_i is None or proj_i is None:
+                    continue
+
+                def bounds(i):
+                    x = centers[i][0]
+                    left = 0.0 if i == 0 else (centers[i-1][0] + x) / 2
+                    right = float(page.width) if i == len(centers)-1 else (x + centers[i+1][0]) / 2
+                    return left, right
+
+                prazo_left, prazo_right = bounds(prazo_i)
+                proj_left, proj_right = bounds(proj_i)
+
+                for r in rows:
+                    if r["top"] <= header["top"] + 3.5:
+                        continue
+
+                    proj_tokens = []
+                    prazo_tokens = []
+
+                    for w in r["words"]:
+                        cx = (float(w.get("x0", 0)) + float(w.get("x1", 0))) / 2
+                        txt = str(w.get("text", ""))
+
+                        if proj_left <= cx <= proj_right:
+                            proj_tokens.extend(RE_PROJECT.findall(txt))
+                        if prazo_left <= cx <= prazo_right:
+                            prazo_tokens.extend(RE_DATE.findall(txt))
+
+                    proj_tokens = list(dict.fromkeys(proj_tokens))
+                    prazo_tokens = [d for d in dict.fromkeys(prazo_tokens) if valid_date_br(d)]
+
+                    if len(proj_tokens) == 1 and len(prazo_tokens) == 1:
+                        out.append((proj_tokens[0], prazo_tokens[0], aes, "VISUAL:PRAZO/PROJ"))
+
+    except Exception:
+        return []
+
+    return out
+
+
 def parse_aes_rows(path: Path):
     text = text_pdf(path)
     aes = aes_number(path, text)
@@ -143,6 +239,10 @@ def parse_aes_rows(path: Path):
             dates = [d for d in RE_DATE.findall(linha) if valid_date_br(d)]
             if len(projs) == 1 and len(dates) == 1:
                 found.append((projs[0], dates[0], aes, "TABELA:FALLBACK_MESMA_LINHA"))
+
+    # Segunda leitura: posição visual das colunas PRAZO e PROJ.
+    # Serve para AES em que o extract_tables não reconhece corretamente a grade.
+    found.extend(visual_aes_rows(path, aes))
 
     # Deduplica o mesmo achado.
     out = []
