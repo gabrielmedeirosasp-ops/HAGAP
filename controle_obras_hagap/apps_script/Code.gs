@@ -812,10 +812,15 @@ function getPainelData() {
         municipio:'',
         docFinal:false,
         docParcial:false,
+        docUrl:'',
+        docParcialUrl:'',
         pedido:false,
         pedidos:[],
         pdes:{},plvs:{},ombs:{},
         bmds:0,ffos:0,
+        bmdLinks:[],
+        ffoLinks:[],
+        datasServico:[],
         ultimoMovimento:''
       };
     }
@@ -823,6 +828,7 @@ function getPainelData() {
     const p = mapa[e.projeto];
 
     if (e.municipio && !p.municipio) p.municipio = e.municipio;
+    if (e.dataServico) p.datasServico.push(e.dataServico);
     if (e.tipo === 'PEDIDO') {
       p.pedido = true;
       p.pedidos.push({
@@ -835,13 +841,31 @@ function getPainelData() {
         urlEmail:e.urlEmail
       });
     }
-    if (e.tipo === 'DOC_FINAL') p.docFinal = true;
-    if (e.tipo === 'DOC_PARCIAL') p.docParcial = true;
-    if (e.tipo === 'PDE' && e.referencia) p.pdes[e.referencia] = true;
-    if (e.tipo === 'PLV' && e.referencia) p.plvs[e.referencia] = true;
-    if (e.tipo === 'OMB' && e.referencia) p.ombs[e.referencia] = true;
-    if (e.tipo === 'BMD') p.bmds++;
-    if (e.tipo === 'FFO') p.ffos++;
+    if (e.tipo === 'DOC_FINAL') {
+      p.docFinal = true;
+      if (e.urlEmail) p.docUrl = e.urlEmail;
+    }
+    if (e.tipo === 'DOC_PARCIAL') {
+      p.docParcial = true;
+      if (e.urlEmail) p.docParcialUrl = e.urlEmail;
+    }
+    if (e.tipo === 'PDE' && e.referencia) {
+      p.pdes[e.referencia] = {referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico};
+    }
+    if (e.tipo === 'PLV' && e.referencia) {
+      p.plvs[e.referencia] = {referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico};
+    }
+    if (e.tipo === 'OMB' && e.referencia) {
+      p.ombs[e.referencia] = {referencia:e.referencia,status:e.status,urlEmail:e.urlEmail,dataServico:e.dataServico,pdeRelacionado:e.pdeRelacionado};
+    }
+    if (e.tipo === 'BMD') {
+      p.bmds++;
+      p.bmdLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
+    }
+    if (e.tipo === 'FFO') {
+      p.ffos++;
+      p.ffoLinks.push({status:e.status,urlEmail:e.urlEmail,anexo:e.anexo});
+    }
 
     const iso = dataIso_(e.dataEmail);
     if (iso > p.ultimoMovimento) p.ultimoMovimento = iso;
@@ -856,21 +880,39 @@ function getPainelData() {
     p.programada = p.qtdPde > 0 || p.qtdPlv > 0 || p.qtdOmb > 0;
     p.temLiberacao = p.qtdPde > 0 || p.qtdPlv > 0;
 
-    p.pedidos.sort((a,b) => String(b.dataServico || '').localeCompare(String(a.dataServico || '')));
+    p.pedidos.sort((a,b) => dataBrParaChave_(b.dataServico).localeCompare(dataBrParaChave_(a.dataServico)));
     p.ultimoPedido = p.pedidos.length ? p.pedidos[0] : null;
     p.alertaPedido = calcularAlertaPedido_(p.ultimoPedido, p.temLiberacao);
+
+    p.linksPde = Object.values(p.pdes);
+    p.linksPlv = Object.values(p.plvs);
+    p.linksOmb = Object.values(p.ombs);
+
+    p.dataProgramacao = p.ultimoPedido && p.ultimoPedido.dataServico
+      ? p.ultimoPedido.dataServico
+      : escolherDataPrincipal_(p.datasServico);
+
+    p.servicoResumo = p.ultimoPedido && p.ultimoPedido.observacao
+      ? p.ultimoPedido.observacao
+      : '';
 
     delete p.pdes;
     delete p.plvs;
     delete p.ombs;
+    delete p.datasServico;
 
     return p;
   });
 
-  projetos.sort((a,b) =>
-    b.ultimoMovimento.localeCompare(a.ultimoMovimento) ||
-    b.projeto.localeCompare(a.projeto)
-  );
+  projetos.sort((a,b) => {
+    const da = dataBrParaChave_(a.dataProgramacao);
+    const db = dataBrParaChave_(b.dataProgramacao);
+    if (da && db && da !== db) return da.localeCompare(db);
+    if (da && !db) return -1;
+    if (!da && db) return 1;
+    return b.ultimoMovimento.localeCompare(a.ultimoMovimento) ||
+      b.projeto.localeCompare(a.projeto);
+  });
 
   return {
     resumo:{
@@ -938,7 +980,7 @@ function lerEventos_(ss) {
     pdeRelacionado:String(r[7] || ''),
     status:String(r[8] || ''),
     municipio:String(r[9] || ''),
-    dataServico:String(r[10] || ''),
+    dataServico:formatarDataBr_(r[10]),
     horaInicio:String(r[11] || ''),
     horaFim:String(r[12] || ''),
     assunto:String(r[13] || ''),
@@ -946,6 +988,55 @@ function lerEventos_(ss) {
     urlEmail:String(r[15] || ''),
     observacao:String(r[17] || '')
   }));
+}
+
+
+function formatarDataBr_(v) {
+  if (!v) return '';
+
+  if (v instanceof Date && !isNaN(v.getTime())) {
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), 'dd/MM/yyyy');
+  }
+
+  const s = String(v || '').trim();
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    return Utilities.formatDate(d, Session.getScriptTimeZone(), 'dd/MM/yyyy');
+  }
+
+  return s;
+}
+
+
+function dataBrParaChave_(v) {
+  const m = String(v || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? (m[3] + '-' + m[2] + '-' + m[1]) : '';
+}
+
+
+function escolherDataPrincipal_(datas) {
+  const validas = (datas || [])
+    .map(formatarDataBr_)
+    .filter(d => /^\d{2}\/\d{2}\/\d{4}$/.test(d));
+
+  if (!validas.length) return '';
+
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
+
+  const itens = validas.map(d => ({texto:d,data:parseDataBr_(d)}))
+    .filter(x => x.data);
+
+  const futuras = itens.filter(x => x.data >= hoje)
+    .sort((a,b) => a.data - b.data);
+
+  if (futuras.length) return futuras[0].texto;
+
+  itens.sort((a,b) => b.data - a.data);
+  return itens.length ? itens[0].texto : '';
 }
 
 
