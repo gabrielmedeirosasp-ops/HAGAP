@@ -20,7 +20,7 @@ const HAGAP = {
     'CHAVE_EVENTO','ID_EMAIL','DATA_EMAIL','TIPO','PROJETO','PROJETO_BASE',
     'REFERENCIA','PDE_RELACIONADO','STATUS','MUNICIPIO',
     'DATA_SERVICO','HORA_INICIO','HORA_FIM',
-    'ASSUNTO','ANEXO','URL_EMAIL','DATA_PROCESSAMENTO'
+    'ASSUNTO','ANEXO','URL_EMAIL','DATA_PROCESSAMENTO','OBSERVACAO'
   ],
   HEAD_EMAILS: [
     'ID_EMAIL','DATA_EMAIL','ASSUNTO','TIPO','STATUS','DATA_PROCESSAMENTO'
@@ -47,9 +47,10 @@ function configurarSistema() {
 
   const cfg = ss.getSheetByName(HAGAP.ABAS.CONFIG);
   if (cfg.getLastRow() <= 1) {
-    cfg.getRange(2,1,4,2).setValues([
+    cfg.getRange(2,1,5,2).setValues([
       ['INICIO_HISTORICO', HAGAP.INICIO_HISTORICO],
       ['INTERVALO_MINUTOS', String(HAGAP.INTERVALO_MINUTOS)],
+      ['ALERTA_PEDIDO_DIAS', '1'],
       ['PLANILHA_ID', ss.getId()],
       ['PLANILHA_URL', ss.getUrl()]
     ]);
@@ -123,7 +124,7 @@ function sincronizarGmail_() {
     if (Date.now() < prazo) {
       const inc = processarBusca_(
         ss,
-        'newer_than:7d {in:sent subject:DOCUMENTOS subject:"PDE número:" subject:"PLV número:" subject:"OMB Enviado Integração" subject:BMD subject:FFO}',
+        'newer_than:7d {in:sent subject:DOCUMENTOS subject:"Confirmação de Recebimento: Solicitação para o Projeto" subject:"PDE número:" subject:"PLV número:" subject:"OMB Enviado Integração" subject:BMD subject:FFO}',
         processados,
         chaves,
         prazo,
@@ -174,7 +175,7 @@ function processarBackfill_(ss, processados, chaves, prazo) {
   const query =
     'after:' + fmtQueryDate_(janela.inicio) +
     ' before:' + fmtQueryDate_(janela.fim) +
-    ' {in:sent subject:DOCUMENTOS subject:"PDE número:" subject:"PLV número:" subject:"OMB Enviado Integração" subject:BMD subject:FFO}';
+    ' {in:sent subject:DOCUMENTOS subject:"Confirmação de Recebimento: Solicitação para o Projeto" subject:"PDE número:" subject:"PLV número:" subject:"OMB Enviado Integração" subject:BMD subject:FFO}';
 
   const r = processarBusca_(
     ss, query, processados, chaves, prazo,
@@ -275,6 +276,28 @@ function processarMensagem_(msg) {
     assunto:assunto,
     urlEmail:'https://mail.google.com/mail/u/0/#all/' + msg.getId()
   };
+
+  if (tipo === 'PEDIDO') {
+    const corpo = msg.getPlainBody() || '';
+    const projeto = extrairProjetoPedido_(assunto, corpo);
+
+    if (!projeto) {
+      throw new Error('[PENDENTE] Pedido sem projeto confirmado.');
+    }
+
+    const info = extrairPedido_(corpo);
+
+    return [evento_(base,{
+      tipo:'PEDIDO',
+      projeto:projeto,
+      status:info.tipoDocumento || 'PEDIDO',
+      municipio:info.municipio || '',
+      dataServico:info.data || '',
+      horaInicio:info.horaInicio || '',
+      horaFim:info.horaFim || '',
+      observacao:info.servico || ''
+    })];
+  }
 
   if (tipo === 'DOC_FINAL' || tipo === 'DOC_PARCIAL') {
     const nomes = anexos.map(a => a.getName()).join(' ');
@@ -459,6 +482,7 @@ function primeiroPdf_(anexos) {
 function classificarAssunto_(assunto) {
   const s = normalizar_(assunto);
 
+  if (s.indexOf('CONFIRMACAO DE RECEBIMENTO: SOLICITACAO PARA O PROJETO') >= 0) return 'PEDIDO';
   if (s.indexOf('DOCUMENTOS PARCIAL') >= 0 || s.indexOf('DOCUMENTO PARCIAL') >= 0) return 'DOC_PARCIAL';
   if (s.indexOf('DOCUMENTOS') >= 0 || s.indexOf('DOCUMENTO ') === 0) return 'DOC_FINAL';
   if (s.indexOf('PDE NUMERO:') >= 0 || s.indexOf('PDE ') === 0) return 'PDE';
@@ -473,6 +497,33 @@ function classificarAssunto_(assunto) {
   if (bmd) return 'BMD';
 
   return '';
+}
+
+
+function extrairProjetoPedido_(assunto,corpo) {
+  const fonte = String(assunto || '') + '\n' + String(corpo || '');
+  const m = fonte.match(/(?:PROJETO|projeto)\s+(\d{7}[A-Za-z]?)/);
+  return m ? m[1].toUpperCase() : '';
+}
+
+
+function extrairPedido_(corpo) {
+  const t = String(corpo || '');
+  const municipio = (t.match(/Munic[ií]pio\s*:\s*([^\n\r]+)/i) || [,''])[1].trim();
+  const dataMatch = t.match(/Data\s*:\s*(\d{2}\/\d{2}\/\d{4})(?:\s+das?\s+(\d{1,2}:\d{2})\s+(?:à|a)s?\s+(\d{1,2}:\d{2}))?/i);
+  const servico = (t.match(/Servi[cç]o\s+Solicitado\s*:\s*([\s\S]*?)(?:\n\s*\n|A\s+Copel\s+entrar[aá]|$)/i) || [,''])[1]
+    .replace(/\s+/g,' ')
+    .trim();
+  const tipoDocumento = (t.match(/documento\s+do\s+tipo\s+(PDE|PLV)/i) || [,''])[1].toUpperCase();
+
+  return {
+    municipio:municipio,
+    data:dataMatch ? dataMatch[1] : '',
+    horaInicio:dataMatch && dataMatch[2] ? dataMatch[2] : '',
+    horaFim:dataMatch && dataMatch[3] ? dataMatch[3] : '',
+    servico:servico,
+    tipoDocumento:tipoDocumento
+  };
 }
 
 
@@ -612,7 +663,8 @@ function evento_(base,dados) {
     assunto:base.assunto || '',
     anexo:dados.anexo || '',
     urlEmail:base.urlEmail || '',
-    dataProcessamento:new Date()
+    dataProcessamento:new Date(),
+    observacao:dados.observacao || ''
   };
 
   ev.chaveEvento = [
@@ -634,7 +686,7 @@ function gravarEventos_(ss,eventos,chaves) {
       ev.chaveEvento,ev.idEmail,ev.dataEmail,ev.tipo,ev.projeto,ev.projetoBase,
       ev.referencia,ev.pdeRelacionado,ev.status,ev.municipio,
       ev.dataServico,ev.horaInicio,ev.horaFim,
-      ev.assunto,ev.anexo,ev.urlEmail,ev.dataProcessamento
+      ev.assunto,ev.anexo,ev.urlEmail,ev.dataProcessamento,ev.observacao
     ]);
 
     chaves.add(ev.chaveEvento);
@@ -750,6 +802,8 @@ function getPainelData() {
         municipio:'',
         docFinal:false,
         docParcial:false,
+        pedido:false,
+        pedidos:[],
         pdes:{},plvs:{},ombs:{},
         bmds:0,ffos:0,
         ultimoMovimento:''
@@ -759,6 +813,18 @@ function getPainelData() {
     const p = mapa[e.projeto];
 
     if (e.municipio && !p.municipio) p.municipio = e.municipio;
+    if (e.tipo === 'PEDIDO') {
+      p.pedido = true;
+      p.pedidos.push({
+        dataEmail:dataIso_(e.dataEmail),
+        dataServico:e.dataServico,
+        horaInicio:e.horaInicio,
+        horaFim:e.horaFim,
+        tipoDocumento:e.status,
+        observacao:e.observacao,
+        urlEmail:e.urlEmail
+      });
+    }
     if (e.tipo === 'DOC_FINAL') p.docFinal = true;
     if (e.tipo === 'DOC_PARCIAL') p.docParcial = true;
     if (e.tipo === 'PDE' && e.referencia) p.pdes[e.referencia] = true;
@@ -778,6 +844,11 @@ function getPainelData() {
     p.qtdPlv = Object.keys(p.plvs).length;
     p.qtdOmb = Object.keys(p.ombs).length;
     p.programada = p.qtdPde > 0 || p.qtdPlv > 0 || p.qtdOmb > 0;
+    p.temLiberacao = p.qtdPde > 0 || p.qtdPlv > 0;
+
+    p.pedidos.sort((a,b) => String(b.dataServico || '').localeCompare(String(a.dataServico || '')));
+    p.ultimoPedido = p.pedidos.length ? p.pedidos[0] : null;
+    p.alertaPedido = calcularAlertaPedido_(p.ultimoPedido, p.temLiberacao);
 
     delete p.pdes;
     delete p.plvs;
@@ -794,6 +865,9 @@ function getPainelData() {
   return {
     resumo:{
       total:projetos.length,
+      comPedido:projetos.filter(p => p.pedido).length,
+      pedidosSemLiberacao:projetos.filter(p => p.pedido && !p.temLiberacao).length,
+      alertasPedido:projetos.filter(p => p.alertaPedido && (p.alertaPedido.nivel === 'ALERTA' || p.alertaPedido.nivel === 'HOJE' || p.alertaPedido.nivel === 'ATRASADO')).length,
       documentosEnviados:projetos.filter(p => p.docFinal).length,
       documentosParciais:projetos.filter(p => p.docParcial && !p.docFinal).length,
       programadas:projetos.filter(p => p.programada).length,
@@ -830,6 +904,7 @@ function getProjetoDetalhes(projeto) {
         horaFim:e.horaFim,
         assunto:e.assunto,
         anexo:e.anexo,
+        observacao:e.observacao,
         urlEmail:e.urlEmail
       }))
   };
@@ -858,8 +933,37 @@ function lerEventos_(ss) {
     horaFim:String(r[12] || ''),
     assunto:String(r[13] || ''),
     anexo:String(r[14] || ''),
-    urlEmail:String(r[15] || '')
+    urlEmail:String(r[15] || ''),
+    observacao:String(r[17] || '')
   }));
+}
+
+
+function calcularAlertaPedido_(pedido,temLiberacao) {
+  if (!pedido) return {nivel:'SEM_PEDIDO',texto:'SEM PEDIDO'};
+  if (temLiberacao) return {nivel:'OK',texto:'PDE/PLV RECEBIDO'};
+  if (!pedido.dataServico) return {nivel:'PEDIDO',texto:'PEDIDO — DATA NÃO LOCALIZADA'};
+
+  const alvo = parseDataBr_(pedido.dataServico);
+  if (!alvo) return {nivel:'PEDIDO',texto:'PEDIDO — DATA NÃO LOCALIZADA'};
+
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
+  alvo.setHours(0,0,0,0);
+
+  const dias = Math.round((alvo.getTime() - hoje.getTime()) / 86400000);
+
+  if (dias < 0) return {nivel:'ATRASADO',texto:'DATA PASSOU — SEM PDE/PLV',dias:dias};
+  if (dias === 0) return {nivel:'HOJE',texto:'HOJE — SEM PDE/PLV',dias:dias};
+  if (dias <= 1) return {nivel:'ALERTA',texto:'FALTA 1 DIA — SEM PDE/PLV',dias:dias};
+  return {nivel:'PEDIDO',texto:'PEDIDO',dias:dias};
+}
+
+
+function parseDataBr_(v) {
+  const m = String(v || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return null;
+  return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));
 }
 
 
@@ -882,6 +986,13 @@ function garantirAba_(ss,nome,headers) {
   if (aba.getLastRow() === 0) {
     aba.getRange(1,1,1,headers.length).setValues([headers]);
     aba.setFrozenRows(1);
+  } else {
+    const atuais = aba.getRange(1,1,1,Math.max(aba.getLastColumn(),headers.length)).getValues()[0];
+    const diferentes = headers.some((h,i) => String(atuais[i] || '') !== h);
+    if (diferentes || aba.getLastColumn() < headers.length) {
+      aba.getRange(1,1,1,headers.length).setValues([headers]);
+      aba.setFrozenRows(1);
+    }
   }
 
   return aba;
