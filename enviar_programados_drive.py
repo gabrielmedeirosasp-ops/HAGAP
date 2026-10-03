@@ -576,36 +576,44 @@ def _input_upload_direto(page, caminho):
 
 def _clicar_novo(page):
     """
-    Usa os seletores reais observados na interface atual do Google Drive.
-    O botão Novo NÃO possui aria-label; ele é um <button role="button">
-    com o texto Novo e, em alguns estados, guidedhelpid=td_new_menu_button.
+    Seletor confirmado pelo diagnóstico real do Drive:
+      button[guidedhelpid="new_menu_button"][aria-disabled="false"]
+    Primeiro tenta clique DOM direto para não depender de acessibilidade/role.
     """
-    seletores = [
-        'button[guidedhelpid="td_new_menu_button"]:not([aria-disabled="true"])',
-        'button.brbsPe:not([aria-disabled="true"])',
-        'button[role="button"]:not([aria-disabled="true"])',
-    ]
 
-    for seletor in seletores:
-        try:
-            loc = page.locator(seletor).filter(
-                has_text=re.compile(r"^\\s*(Novo|New)\\s*$", re.I)
-            )
-            qtd = min(loc.count(), 10)
-            for i in range(qtd):
-                alvo = loc.nth(i)
-                try:
-                    if alvo.is_visible(timeout=1500):
-                        alvo.scroll_into_view_if_needed()
-                        alvo.click(timeout=7000, force=True)
-                        time.sleep(1)
-                        return True
-                except Exception:
-                    continue
-        except Exception:
-            continue
+    # Método 1 — clique DOM direto no botão ATIVO confirmado no HTML.
+    try:
+        clicou = page.evaluate("""
+            () => {
+                const btn = document.querySelector(
+                    'button[guidedhelpid="new_menu_button"][aria-disabled="false"]'
+                );
+                if (!btn) return false;
+                btn.scrollIntoView({block: 'center', inline: 'center'});
+                btn.click();
+                return true;
+            }
+        """)
+        if clicou:
+            page.wait_for_timeout(1200)
+            return True
+    except Exception:
+        pass
 
-    # Último fallback: o span visível "Novo" e sobe até o botão pai.
+    # Método 2 — Playwright no seletor exato.
+    try:
+        btn = page.locator(
+            'button[guidedhelpid="new_menu_button"][aria-disabled="false"]'
+        ).first
+        if btn.count():
+            btn.scroll_into_view_if_needed()
+            btn.click(timeout=7000, force=True)
+            page.wait_for_timeout(1200)
+            return True
+    except Exception:
+        pass
+
+    # Método 3 — fallback pelo texto visual Novo/New.
     try:
         spans = page.locator("span.jYPt8c").filter(
             has_text=re.compile(r"^\\s*(Novo|New)\\s*$", re.I)
@@ -613,12 +621,14 @@ def _clicar_novo(page):
         for i in range(min(spans.count(), 10)):
             sp = spans.nth(i)
             try:
-                if sp.is_visible(timeout=1000):
-                    btn = sp.locator("xpath=ancestor::button[1]")
-                    if btn.count() and btn.get_attribute("aria-disabled") != "true":
-                        btn.click(timeout=7000, force=True)
-                        time.sleep(1)
-                        return True
+                btn = sp.locator("xpath=ancestor::button[1]")
+                if (
+                    btn.count()
+                    and btn.get_attribute("aria-disabled") != "true"
+                ):
+                    btn.evaluate("(el) => el.click()")
+                    page.wait_for_timeout(1200)
+                    return True
             except Exception:
                 continue
     except Exception:
@@ -689,7 +699,7 @@ def _menu_upload(page, pasta):
 
 def _selecionar_upload_via_menu(page, caminho):
     if not _clicar_novo(page):
-        salvar_diagnostico_drive(page, "BOTAO_NOVO_NAO_CLICADO")
+        salvar_diagnostico_drive(page, "BOTAO_NOVO_ATIVO_NAO_CLICADO")
         return False
 
     time.sleep(1)
