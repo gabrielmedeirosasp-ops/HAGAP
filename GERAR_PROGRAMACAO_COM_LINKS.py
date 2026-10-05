@@ -218,7 +218,7 @@ def coletar_itens_drive(page):
                     }
 
                     if (!nome) {
-                        const linhas = (row.innerText || '').split(/\n+/).map(x => x.trim()).filter(Boolean);
+                        const linhas = (row.innerText || '').split(String.fromCharCode(10)).map(x => x.trim()).filter(Boolean);
                         if (linhas.length) nome = linhas[0];
                     }
 
