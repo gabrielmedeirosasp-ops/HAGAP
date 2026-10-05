@@ -697,6 +697,36 @@ def _menu_upload(page, pasta):
     return None
 
 
+def _selecionar_upload_via_atalho(page, caminho):
+    """
+    Método principal confirmado pela documentação oficial do Google Drive:
+    Windows/ChromeOS
+      Upload de arquivo: Alt+C, depois U
+      Upload de pasta:   Alt+C, depois I
+    Isso evita depender do botão Novo e do menu visual.
+    """
+    try:
+        page.bring_to_front()
+        page.locator("body").click(position={"x": 400, "y": 300}, timeout=3000, force=True)
+    except Exception:
+        pass
+
+    tecla = "i" if Path(caminho).is_dir() else "u"
+
+    try:
+        with page.expect_file_chooser(timeout=15000) as fc_info:
+            page.keyboard.press("Alt+C")
+            page.wait_for_timeout(350)
+            page.keyboard.press(tecla)
+
+        chooser = fc_info.value
+        chooser.set_files(str(caminho))
+        return True
+
+    except Exception:
+        return False
+
+
 def _selecionar_upload_via_menu(page, caminho):
     if not _clicar_novo(page):
         salvar_diagnostico_drive(page, "BOTAO_NOVO_ATIVO_NAO_CLICADO")
@@ -750,10 +780,15 @@ def upload_drive_browser(page, caminho):
     page.goto(URL_DRIVE, wait_until="domcontentloaded", timeout=120000)
     time.sleep(3)
 
-    # 1) Método principal: input de upload oculto do próprio Google Drive.
-    selecionado = _input_upload_direto(page, caminho)
+    # 1) Método principal: atalho oficial do Google Drive.
+    #    Pasta: Alt+C e depois I | Arquivo: Alt+C e depois U.
+    selecionado = _selecionar_upload_via_atalho(page, caminho)
 
-    # 2) Fallback: botão/menu Novo.
+    # 2) Fallback: input de upload oculto do próprio Google Drive.
+    if not selecionado:
+        selecionado = _input_upload_direto(page, caminho)
+
+    # 3) Último fallback: botão/menu Novo.
     if not selecionado:
         selecionado = _selecionar_upload_via_menu(page, caminho)
 
